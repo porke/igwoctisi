@@ -1,1 +1,2 @@
 D:\Projects\C#\ZPI Client\Hnatkowska_B_124\IGWOCTISI\Content\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Projects\C#\ZPIC\Content\obj\x86\Debug\ResolveAssemblyReference.cache
