@@ -22,6 +22,8 @@
         bool IsConnectionSuccessful = false;
         Exception socketexception = null;
         ManualResetEvent TimeoutObject = new ManualResetEvent(false);
+        NetworkStream networkStream;
+        StreamWriter networkStreamWriter;
 
         private const int TIMEOUT_MILLISECONDS = 3000;
 
@@ -49,15 +51,14 @@
             }
         }
 
-        private void BeginReceive(NetworkStream stream)
+        private void StartReceiving()
         {
-            var thread = new Thread(new ParameterizedThreadStart(ReceiveThread));
-            thread.Start(stream);
+            var thread = new Thread(new ThreadStart(ReceiveThread));
+            thread.Start();
         }
 
-        private void ReceiveThread(object obj)
+        private void ReceiveThread()
         {
-            var networkStream = obj as NetworkStream;
             var sr = new StreamReader(networkStream, System.Text.Encoding.UTF8);
             string line = null;
             try
@@ -86,6 +87,11 @@
                     OnDisconnect.Invoke("Connection ended.");
                 }
             }
+        }
+
+        private void Send(string message)
+        {
+            networkStreamWriter.WriteLine(message);
         }
     
         #endregion
@@ -124,7 +130,9 @@
                 {
                     if (IsConnectionSuccessful)
                     {
-                        BeginReceive(tcpClient.GetStream());
+                        networkStream = tcpClient.GetStream();
+                        networkStreamWriter = new StreamWriter(networkStream, System.Text.Encoding.UTF8);
+                        StartReceiving();
                         return true;
                     }
                     else
