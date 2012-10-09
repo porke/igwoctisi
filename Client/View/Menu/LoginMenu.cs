@@ -7,6 +7,7 @@
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
+    using System.Net;
 
     class LoginMenu : IView
     {
@@ -53,7 +54,10 @@
             };
             ViewMgr.PushLayer(messageBox);
 
-            ViewMgr.Client.Network.BeginConnect(null, OnConnect, messageBox);
+            string hostname = "localhost";// "v.zloichuj.eu";
+            int port = 23456;
+
+            ViewMgr.Client.Network.BeginConnect(hostname, port, OnConnect, messageBox);
         }
         protected void Back_Pressed(object sender, EventArgs e)
         {
