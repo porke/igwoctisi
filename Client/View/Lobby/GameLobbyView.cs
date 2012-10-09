@@ -7,7 +7,7 @@
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
 
-    class LobbyMenu : IView
+    class GameLobbyView : IView
     {
         #region Protected members
 
@@ -65,7 +65,7 @@
         public LobbyState State { get; protected set; }
         public ViewManager ViewMgr { get; protected set; }
 
-        public LobbyMenu(LobbyState state)
+        public GameLobbyView(LobbyState state)
         {
             State = state;
             _screen = new Screen(800, 600);

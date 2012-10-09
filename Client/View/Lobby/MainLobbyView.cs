@@ -53,6 +53,7 @@
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.75f, 0))
             };
 
+            Refresh_Pressed(null, null);
             _screen.Desktop.Children.AddRange(new Control[] { btnJoinGame, btnCreateGame, btnLogout, btnRefresh, _gameList });
         }
 
@@ -72,8 +73,9 @@
         }
 
         protected void CreateGame_Pressed(object sender, EventArgs e)
-        {
-            // TODO: Implement create game
+        {            
+            ViewMgr.PopLayer(); // this
+            ViewMgr.PushLayer(new CreateGameView(State));
         }
 
         private void OnLogout(IAsyncResult result)
