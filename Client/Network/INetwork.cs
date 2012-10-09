@@ -16,6 +16,8 @@
         void EndLogin(IAsyncResult asyncResult);
         IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState);
         void EndDisconnect(IAsyncResult asyncResult);
+        IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState);
+        void EndGetGameList(IAsyncResult asyncResult);
 
         IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState);
         GameState EndReceiveGameState(IAsyncResult asyncResult);
