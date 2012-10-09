@@ -21,7 +21,7 @@
         Exception socketexception = null;
         ManualResetEvent TimeoutObject = new ManualResetEvent(false);
 
-        private const int TIMEOUT_MILISECONDS = 3000;
+        private const int TIMEOUT_MILLISECONDS = 3000;
 
         private void TcpConnectCallback(IAsyncResult tcpAsyncResult)
         {
@@ -80,7 +80,7 @@
             var ar = new AsyncResult<object>(asyncCallback, asyncState);
             ar.BeginInvoke(() =>
             {
-                if (TimeoutObject.WaitOne(TIMEOUT_MILISECONDS, false))
+                if (TimeoutObject.WaitOne(TIMEOUT_MILLISECONDS, false))
                 {
                     if (IsConnectionSuccessful)
                     {
