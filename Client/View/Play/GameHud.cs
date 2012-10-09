@@ -1,5 +1,6 @@
 ﻿namespace Client.View.Play
 {
+    using System;
     using Common;
     using Input;
     using Nuclex.UserInterface;
@@ -13,33 +14,54 @@
 
         protected Screen _screen;
 
-        private ListControl _ordersList;
+        private ListControl _orderList;
         private LabelControl _fleetCount;
         private LabelControl _fleetIncomeCount;
 
         protected void CreateChildControls()
         {
             var ordersHeader = new LabelControl("Orders")
-            {
-                Bounds = new UniRectangle()
+            {                
+                Bounds = new UniRectangle(new UniScalar(0.78f, 0), new UniScalar(0.22f, 0), new UniScalar(0.34f, 0), new UniScalar(0.1f, 0))
             };
 
-            _ordersList = new ListControl()
+            _orderList = new ListControl()
             {
-                Bounds = new UniRectangle()
+                SelectionMode = ListSelectionMode.Single,
+                Bounds = new UniRectangle(new UniScalar(0.65f, 0), new UniScalar(0.3f, 0), new UniScalar(0.34f, 0), new UniScalar(0.45f, 0))
+            };
+            _orderList.Items.Add("Move 2 fleets from Alpha to Beta");
+            _orderList.Items.Add("Deploy 2 fleets on Gamma");
+
+            _fleetCount = new LabelControl("Deployable fleets: 4")
+            {
+                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.0f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
             };
 
-            _fleetCount = new LabelControl()
-            {
-                Bounds = new UniRectangle()
+            _fleetIncomeCount = new LabelControl("Fleets per turn: 5")
+            {                
+                Bounds = new UniRectangle(new UniScalar(0.4f, 0), new UniScalar(0.0f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
             };
 
-            _fleetIncomeCount = new LabelControl()
+            var btnLeaveGame = new ButtonControl()
             {
-                Bounds = new UniRectangle()
+                Text = "Leave",
+                Bounds = new UniRectangle(new UniScalar(0.02f, 0), new UniScalar(0.93f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
+            };
+            btnLeaveGame.Pressed += LeaveGame_Pressed;
+
+            var btnDeleteOrder = new ButtonControl()
+            {
+                Text = "Delete",
+                Bounds = new UniRectangle(new UniScalar(0.65f, 0), new UniScalar(0.77f, 0), new UniScalar(0.15f, 0), new UniScalar(0.05f, 0))
             };
 
-            _screen.Desktop.Children.AddRange(new Control[] {ordersHeader, _ordersList, _fleetIncomeCount, _fleetCount});
+            _screen.Desktop.Children.AddRange(new Control[] {ordersHeader, _orderList, _fleetIncomeCount, _fleetCount, btnDeleteOrder, btnLeaveGame});
+        }
+
+        private void LeaveGame_Pressed(object sender, EventArgs e)
+        {
+            State.Client.ChangeState(new LobbyState(State.Game));
         }
 
         #endregion
@@ -68,6 +90,7 @@
         }
         public void Draw(double delta, double time)
         {
+            ViewMgr.Client.Visualizer.Draw(_screen);
         }
 
         #endregion
