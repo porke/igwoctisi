@@ -74,7 +74,7 @@
                     }
                 }
             }
-            catch (IOException ex)
+            catch (IOException)
             {
                 // Connection may be forcibly closed while waiting for message.
                 // We will just catch it.

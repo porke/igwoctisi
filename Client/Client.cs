@@ -1,5 +1,6 @@
 ﻿namespace Client
 {
+    using System;
     using Input;
     using Microsoft.Xna.Framework;
     using Network;
@@ -36,7 +37,7 @@
             Visualizer = FlatGuiVisualizer.FromFile(Services, "Content\\Skin\\SuaveSkin.xml");
         }
 
-        protected override void OnExiting(object sender, System.EventArgs args)
+        protected override void OnExiting(object sender, EventArgs args)
         {
             Input.Release();
             Network.Release();
