@@ -10,7 +10,7 @@
         void Release();
         void Update(double delta, double time);
 
-        IAsyncResult BeginConnect(EndPoint remoteEP, AsyncCallback asyncCallback, object asyncState);
+        IAsyncResult BeginConnect(string hostname, int port, AsyncCallback asyncCallback, object asyncState);
         void EndConnect(IAsyncResult asyncResult);
         IAsyncResult BeginLogin(string login, string password, AsyncCallback asyncCallback, object asyncState);
         void EndLogin(IAsyncResult asyncResult);
