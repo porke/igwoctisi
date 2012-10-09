@@ -57,6 +57,30 @@
             ar.EndInvoke();
         }
 
+        public IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState)
+        {
+            var ar = new AsyncResult<object>(asyncCallback, asyncState);            
+            ar.BeginInvoke(() => 
+            {
+                var rand = new Random();
+                int numGames = rand.Next(5, 15);
+                var gameNames = new string[numGames];
+
+                for (int i = 0; i < numGames; ++i)
+                {
+                    gameNames[i] = string.Format("Game {0}", i + 1);
+                }
+
+                return gameNames;
+            });
+            return ar;
+        }
+        public void EndGetGameList(IAsyncResult asyncResult)
+        {
+            var ar = (AsyncResult<object>)asyncResult;
+            ar.EndInvoke();
+        }
+
         public IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<GameState>(asyncCallback, asyncState);

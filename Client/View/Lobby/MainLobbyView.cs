@@ -6,6 +6,8 @@
     using Nuclex.UserInterface;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
+    using Nuclex.UserInterface.Controls.Arcade;
+    using Nuclex.UserInterface.Controls;
 
     class MainLobbyView : IView
     {
@@ -13,23 +15,55 @@
 
         protected Screen _screen;
 
+        private ListControl _gameList;
+
         protected void CreateChildControls()
         {
             var btnJoinGame = new ButtonControl
             {
                 Text = "Join Game",
-                Bounds = new UniRectangle(new UniScalar(0.4f, 0), new UniScalar(0.40f, 0), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.85f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
             };
             btnJoinGame.Pressed += JoinGame_Pressed;
+
+            var btnRefresh = new ButtonControl
+            {
+                Text = "Refresh",
+                Bounds = new UniRectangle(new UniScalar(0.283f, 0), new UniScalar(0.85f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
+            };
+            btnRefresh.Pressed += Refresh_Pressed;
 
             var btnCreateGame = new ButtonControl
             {
                 Text = "Create Game",
-                Bounds = new UniRectangle(new UniScalar(0.4f, 0), new UniScalar(0.55f, 0), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.516f, 0), new UniScalar(0.85f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
             };
-            btnCreateGame.Pressed += CreateGame_Pressed;
+            btnCreateGame.Pressed += CreateGame_Pressed;            
 
-            _screen.Desktop.Children.AddRange(new[] { btnJoinGame, btnCreateGame });
+            var btnLogout = new ButtonControl
+            {
+                Text = "Logout",
+                Bounds = new UniRectangle(new UniScalar(0.749f, 0), new UniScalar(0.85f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
+            };
+            btnLogout.Pressed += Logout_Pressed;            
+
+            _gameList = new ListControl
+            {
+                SelectionMode = ListSelectionMode.Single,                
+                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.75f, 0))
+            };
+
+            _screen.Desktop.Children.AddRange(new Control[] { btnJoinGame, btnCreateGame, btnLogout, btnRefresh, _gameList });
+        }
+
+        protected void Logout_Pressed(object sender, EventArgs e)
+        {
+            State.Client.Network.BeginDisconnect(OnLogout, null);
+        }
+
+        protected void Refresh_Pressed(object sender, EventArgs e)
+        {
+            State.Client.Network.BeginGetGameList(OnReceiveGameList, null);
         }
 
         protected void JoinGame_Pressed(object sender, EventArgs e)
@@ -40,6 +74,26 @@
         protected void CreateGame_Pressed(object sender, EventArgs e)
         {
             // TODO: Implement create game
+        }
+
+        private void OnLogout(IAsyncResult result)
+        {
+            State.Client.Network.EndDisconnect(result);
+            State.Client.ChangeState(new MenuState(State.Game));
+        }
+
+        private void OnReceiveGameList(IAsyncResult result)
+        {            
+            _gameList.Items.Clear();
+
+            var asyncResult = result as AsyncResult<object>;
+            var gameNames = asyncResult.Result as string[];
+            foreach (var name in gameNames)
+            {
+                _gameList.Items.Add(name);
+            }
+
+            State.Client.Network.EndGetGameList(result);
         }
 
         #endregion
@@ -80,6 +134,7 @@
         {
             State = state;
             _screen = new Screen(800, 600);
+            _screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.2f, 0), new UniScalar(0.6f, 0), new UniScalar(0.6f, 0));
             InputReceiver = new NuclexScreenInputReceiver(_screen, false);
 
             CreateChildControls();
