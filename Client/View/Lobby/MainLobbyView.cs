@@ -1,4 +1,4 @@
-﻿namespace Client.View.Menu
+﻿namespace Client.View.Lobby
 {
     using System;
     using Common;
@@ -7,7 +7,7 @@
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
 
-    class BeginGameMenu : IView
+    class MainLobbyView : IView
     {
         #region Protected members
 
@@ -34,12 +34,12 @@
 
         protected void JoinGame_Pressed(object sender, EventArgs e)
         {
-            State.Game.ChangeState(new LobbyState(State.Game));
+            //TODO: Implement join game
         }
 
         protected void CreateGame_Pressed(object sender, EventArgs e)
         {
-            State.Game.ChangeState(new LobbyState(State.Game));
+            // TODO: Implement create game
         }
 
         #endregion
@@ -73,10 +73,10 @@
 
         #endregion
 
-        public MenuState State { get; protected set; }
+        public LobbyState State { get; protected set; }
         public ViewManager ViewMgr { get; protected set; }
 
-        public BeginGameMenu(MenuState state)
+        public MainLobbyView(LobbyState state)
         {
             State = state;
             _screen = new Screen(800, 600);

@@ -91,7 +91,7 @@
                 ViewMgr.PopLayer(); // MessageBox
                 ViewMgr.PopLayer(); // this
 
-                ViewMgr.PushLayer(new BeginGameMenu(State));
+                ViewMgr.Client.ChangeState(new LobbyState(State.Game));
             }
             catch (Exception exc)
             {

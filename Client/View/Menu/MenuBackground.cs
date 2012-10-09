@@ -1,4 +1,4 @@
-﻿namespace Client.View
+﻿namespace Client.View.Menu
 {
     using System;
     using System.Linq;
@@ -9,7 +9,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using State;
 
-    public class BackgroundPlaceholder : IView
+    public class MenuBackground : IView
     {
         #region Protected members
 
@@ -76,7 +76,7 @@
         public GameState State { get; protected set; }
         public ViewManager ViewMgr { get; protected set; }
 
-        public BackgroundPlaceholder(GameState state)
+        public MenuBackground(GameState state)
         {
             IsLoaded = false;
             State = state;

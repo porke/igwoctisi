@@ -12,7 +12,7 @@
             Game = game;
             var intro1 = new SplashScreen(this, "Textures\\SplashScreen1", 1);
             var intro2 = new SplashScreen(this, "Textures\\SplashScreen2", 1);
-            var menuBackground = new BackgroundPlaceholder(this);
+            var menuBackground = new MenuBackground(this);
             var mainMenu = new MainMenu(this);
 
             intro1.NextLayers = new[] { intro2 };

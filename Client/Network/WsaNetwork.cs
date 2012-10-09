@@ -8,8 +8,6 @@
 
     public class WsaNetwork : INetwork
     {
-
-
         #region INetwork members
 
         public void Initialize(Client client)
@@ -38,8 +36,8 @@
         }
         public IAsyncResult BeginLogin(string login, string password, AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<GameState>(asyncCallback, asyncState);
-
+            var ar = new AsyncResult<object>(asyncCallback, asyncState);
+            ar.BeginInvoke(() => { Thread.Sleep(500); return null; });
             return ar;
         }
         public void EndLogin(IAsyncResult asyncResult)

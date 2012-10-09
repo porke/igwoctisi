@@ -2,7 +2,6 @@
 {
     using View;
     using View.Lobby;
-    using View.Menu;
 
     class LobbyState : GameState
     {
@@ -11,8 +10,8 @@
         public LobbyState(IGWOCTISI game) : base(game)
         {
             Game = game;
-            var menuBackground = new BackgroundPlaceholder(this);
-            var lobbyMenu = new LobbyMenu(this);
+            var menuBackground = new LobbyBackground(this);
+            var lobbyMenu = new MainLobbyView(this);
 
             ViewMgr.PushLayer(menuBackground);
             ViewMgr.PushLayer(lobbyMenu);
