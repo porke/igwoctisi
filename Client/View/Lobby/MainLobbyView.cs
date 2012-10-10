@@ -31,7 +31,9 @@
                 Text = "Refresh",
                 Bounds = new UniRectangle(new UniScalar(0.283f, 0), new UniScalar(0.85f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
             };
-            btnRefresh.Pressed += Refresh_Pressed;
+            // FIXIT: Refresh must be called on the main thread or else it can break the ui
+            // (weird exceptions resulting from concurrent collection modifications) 
+            //btnRefresh.Pressed += Refresh_Pressed;
 
             var btnCreateGame = new ButtonControl
             {
