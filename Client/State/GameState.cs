@@ -1,13 +1,18 @@
 ﻿namespace Client.State
 {
-    using View;
+    using System;
+    using System.Collections.Generic;
     using Microsoft.Xna.Framework;
+    using View;
 
     public abstract class GameState
     {
         public Client Client { get; protected set; }
         public IGWOCTISI Game { get; protected set; }
         public ViewManager ViewMgr { get; protected set; }
+
+        protected delegate void EventHandler(EventArgs args);
+        protected Dictionary<string, EventHandler> eventHandlers = new Dictionary<string, EventHandler>();
 
         public GameState(Client client)
         {
@@ -37,6 +42,14 @@
 
             graphicsDevice.Clear(Color.White);
             ViewMgr.Draw(delta, time);
+        }
+
+        public void HandleViewEvent(string eventId, EventArgs args)
+        {
+            if (eventHandlers.ContainsKey(eventId))
+            {
+                eventHandlers[eventId](args);
+            }
         }
     }
 }

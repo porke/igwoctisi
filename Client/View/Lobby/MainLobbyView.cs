@@ -4,10 +4,9 @@
     using Common;
     using Input;
     using Nuclex.UserInterface;
+    using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
-    using Nuclex.UserInterface.Controls.Arcade;
-    using Nuclex.UserInterface.Controls;
 
     class MainLobbyView : BaseView
     {
@@ -29,9 +28,6 @@
                 Text = "Refresh",
                 Bounds = new UniRectangle(new UniScalar(0.283f, 0), new UniScalar(0.85f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
             };
-            // FIXIT: Refresh must be called on the main thread or else it can break the ui
-            // (weird exceptions resulting from concurrent collection modifications) 
-            //btnRefresh.Pressed += Refresh_Pressed;
 
             var btnCreateGame = new ButtonControl
             {
@@ -52,6 +48,11 @@
                 SelectionMode = ListSelectionMode.Single,                
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.75f, 0))
             };
+            _gameList.Items.Add("Game 1");
+            _gameList.Items.Add("Game 2");
+            _gameList.Items.Add("Game 3");
+            _gameList.Items.Add("Game 4");
+            _gameList.Items.Add("Game 5");
 
             Refresh_Pressed(null, null);
             screen.Desktop.Children.AddRange(new Control[] { btnJoinGame, btnCreateGame, btnLogout, btnRefresh, _gameList });
@@ -59,43 +60,22 @@
 
         protected void Logout_Pressed(object sender, EventArgs e)
         {
-            state.Client.Network.BeginDisconnect(OnLogout, null);
+            state.HandleViewEvent("Logout", e);
         }
 
         protected void Refresh_Pressed(object sender, EventArgs e)
         {
-            state.Client.Network.BeginGetGameList(OnReceiveGameList, null);
+            state.HandleViewEvent("RefreshGameList", e);
         }
 
         protected void JoinGame_Pressed(object sender, EventArgs e)
         {
-            //TODO: Implement join game
+            state.HandleViewEvent("JoinGame", new JoinGameArgs(string.Empty));
         }
 
         protected void CreateGame_Pressed(object sender, EventArgs e)
-        {            
-            ViewMgr.PopLayer(); // this
-            ViewMgr.PushLayer(new CreateGameView(state));
-        }
-
-        private void OnLogout(IAsyncResult result)
         {
-            state.Client.Network.EndDisconnect(result);
-            state.Client.ChangeState(new MenuState(state.Game));
-        }
-
-        private void OnReceiveGameList(IAsyncResult result)
-        {            
-            _gameList.Items.Clear();
-
-            var asyncResult = result as AsyncResult<object>;
-            var gameNames = asyncResult.Result as string[];
-            foreach (var name in gameNames)
-            {
-                _gameList.Items.Add(name);
-            }
-
-            state.Client.Network.EndGetGameList(result);
+            state.HandleViewEvent("EnterCreateGameView", e);
         }
 
         #endregion
