@@ -77,7 +77,7 @@
 
         /// <summary>
         /// Given Func should return true if listener is waiting for Content packet type.
-        /// This is only considered when given by argument PacketType is Header.
+        /// This is only considered when, given by argument, PacketType is Header.
         /// </summary> 
         Dictionary<int, Func<JObject, PacketType, MessageContentType, bool>> messageResponses
             = new Dictionary<int, Func<JObject, PacketType, MessageContentType, bool>>();
@@ -284,8 +284,11 @@
 
             SendJson(header);
 
-            // Send content
-            SendJson(jsonRequestContent);
+            // Send message content if needed
+            if (jsonRequestContent != null)
+            {
+                SendJson(jsonRequestContent);
+            }
         }
     
         #endregion
@@ -410,26 +413,43 @@
 
         public IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<object>(asyncCallback, asyncState);            
-            ar.BeginInvoke(() => 
-            {
-                var rand = new Random();
-                int numGames = rand.Next(5, 15);
-                var gameNames = new string[numGames];
+            var ar = new AsyncResult<List<GameInfo>>(asyncCallback, asyncState);
 
-                for (int i = 0; i < numGames; ++i)
+            SendRequest(MessageContentType.GameList, null, (jObject, packetType, messageContentType) => {
+                if (packetType == PacketType.Header)
                 {
-                    gameNames[i] = string.Format("Game {0}", i + 1);
+                    if (messageContentType == MessageContentType.GameList)
+                    {
+                        return true;
+                    }
+                    else if (messageContentType == MessageContentType.GameListEmpty)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException("Waiting for game list and received " + messageContentType + '.');
+                    }
+                }
+                else if (packetType == PacketType.Content)
+                {
+                    ar.BeginInvoke(() =>
+                    {
+                        return jObject.ToObject<List<GameInfo>>();
+                    });
                 }
 
-                return gameNames;
+                return false;
             });
+            
             return ar;
         }
-        public void EndGetGameList(IAsyncResult asyncResult)
+        public List<GameInfo> EndGetGameList(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<object>)asyncResult;
+            var ar = (AsyncResult<List<GameInfo>>)asyncResult;
             ar.EndInvoke();
+
+            return ar.Result;
         }
 
         public IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState)

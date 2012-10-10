@@ -3,6 +3,7 @@
     using System;
     using System.Net;
     using Model;
+    using System.Collections.Generic;
 
     public interface INetwork
     {
@@ -17,7 +18,7 @@
         IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState);
         void EndDisconnect(IAsyncResult asyncResult);
         IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState);
-        void EndGetGameList(IAsyncResult asyncResult);
+        List<GameInfo> EndGetGameList(IAsyncResult asyncResult);
 
         IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState);
         GameState EndReceiveGameState(IAsyncResult asyncResult);
