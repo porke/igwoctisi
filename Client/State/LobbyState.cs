@@ -26,6 +26,20 @@
         }
 
         #region Event handlers
+
+        public override void OnEnter()
+        {
+            var network = Client.Network;
+
+            var messageBox = new MessageBox(MessageBoxButtons.None)
+            {
+                Title = "Entering Main Lobby",
+                Message = "Downloading game list..."
+            };
+
+            ViewMgr.PushLayer(messageBox);
+            network.BeginGetGameList(OnGetGameList, messageBox);
+        }
         
         private void LeaveGameLobby(EventArgs args)
         {
@@ -68,7 +82,7 @@
 
         private void RefreshGameList(EventArgs args)
         {
-            Client.Network.BeginGetGameList(OnReceiveGameList, null);
+            Client.Network.BeginGetGameList(OnGetGameList, null);
         }
 
         #endregion
@@ -80,17 +94,25 @@
             Client.Network.EndDisconnect(result);
             Client.ChangeState(new MenuState(Game));
         }
-
-        private void OnReceiveGameList(IAsyncResult result)
+                
+        private void OnGetGameList(IAsyncResult ar)
         {
-            var asyncResult = result as AsyncResult<object>;
-            var gameNames = asyncResult.Result as string[];
-            
-            // TODO push refresh to views
-            // Refresh must be called on the main thread or else it can break the ui
-            // (weird exceptions resulting from concurrent collection modifications) 
+            var network = ViewMgr.Client.Network;
+            var messageBox = (MessageBox)ar.AsyncState;
 
-            Client.Network.EndGetGameList(result);
+            try
+            {
+                // TODO Populate game list in MainLobbyView
+                var games = network.EndGetGameList(ar);
+
+                ViewMgr.PopLayer(); // MessageBox
+            }
+            catch (Exception exc)
+            {
+                messageBox.Message = exc.Message;
+                messageBox.Buttons = MessageBoxButtons.OK;
+                messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
+            }
         }
 
         #endregion
