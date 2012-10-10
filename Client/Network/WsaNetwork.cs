@@ -135,101 +135,102 @@
                         {
                             jObject = JObject.Parse(jsonLine);
                         }
-                    catch (JsonReaderException)
+                        catch (JsonReaderException)
                         {
                             // Ignore that packet and continue listening.
                             Debug.WriteLine("Bad Json format: " + jsonLine, "Network");
                             continue;
                         }
 
-                    if (nextPacketType == PacketType.Header)
-                    {
-                        string typeStr = jObject["type"].Value<string>();
-                        messageId = jObject["id"].Value<int>();
-
-                        // Make first letter be an upper letter (for e.g. change gameStart to GameStart).
-                        typeStr = char.ToUpper(typeStr[0]) + typeStr.Substring(1);
-                        MessageContentType type = (MessageContentType)Enum.Parse(typeof(MessageContentType), typeStr);
-
-                        // Incoming message may be a response to previous request
-                        if (messageResponses.ContainsKey(messageId))
+                        if (nextPacketType == PacketType.Header)
                         {
-                            responseCallback = messageResponses[messageId];
-                            messageResponses.Remove(messageId);
+                            string typeStr = jObject["type"].Value<string>();
+                            messageId = jObject["id"].Value<int>();
 
-                            if (responseCallback.Invoke(jsonLine, PacketType.Header, type))
-                            {
-                                // Next packet will be content and then we will call callback,
-                                // for e.g. callback given to BeginLogin.
-                                nextPacketType = PacketType.ContentAsResponse;
-                            }
-                            else
-                            {
-                                // Don't listen for Content. It will not come.
-                                nextPacketType = PacketType.Header;
-                            }
-                        }
+                            // Make first letter be an upper letter (for e.g. change gameStart to GameStart).
+                            typeStr = char.ToUpper(typeStr[0]) + typeStr.Substring(1);
+                            MessageContentType type = (MessageContentType)Enum.Parse(typeof(MessageContentType), typeStr);
 
-                        // If this message isn't a response to the client's request then check what it is, actually.
-                        else if (type == MessageContentType.Chat)
-                        {
-                            // Next packet should contain {username, message, time}
-                            nextPacketType = PacketType.Content;
-                        }
-                        else if (type == MessageContentType.GameKick)
-                        {
-                            if (OnDisconnected != null)
+                            // Incoming message may be a response to previous request
+                            if (messageResponses.ContainsKey(messageId))
                             {
-                                OnDisconnected.Invoke("You were kicked from the server.");
+                                responseCallback = messageResponses[messageId];
+                                messageResponses.Remove(messageId);
+
+                                if (responseCallback.Invoke(jsonLine, PacketType.Header, type))
+                                {
+                                    // Next packet will be content and then we will call callback,
+                                    // for e.g. callback given to BeginLogin.
+                                    nextPacketType = PacketType.ContentAsResponse;
+                                }
+                                else
+                                {
+                                    // Don't listen for Content. It will not come.
+                                    nextPacketType = PacketType.Header;
+                                }
                             }
 
-                            throw new SocketException((int)SocketError.ConnectionAborted);
-                        }
-                        else if (type == MessageContentType.GameStart)
-                        {
-                            // TODO implement!
-                        }
-                        else if (type == MessageContentType.RoundStart)
-                        {
-                            // TODO implement!
-                        }
-                        else if (type == MessageContentType.RoundEnd)
-                        {
-                            // TODO implement!
-                        }
-                        else if (type == MessageContentType.GameEnd)
-                        {
-                            // TODO implement!
-                        }
-
-                        // This variable is going to be used only when
-                        // nextPacketType is PacketType.Content or PacketType.ContentAsResponse.
-                        nextContentType = type;
-                    }
-                    else if (nextPacketType == PacketType.Content)
-                    {
-                        if (nextContentType == MessageContentType.Chat)
-                        {
-                            string username = jObject.First.Value<string>();
-                            string message = jObject.First.Next.Value<string>();
-                            string timeStr = jObject.First.Next.Next.Value<string>();
-
-                            if (OnChatMessageReceived != null)
+                            // If this message isn't a response to the client's request then check what it is, actually.
+                            else if (type == MessageContentType.Chat)
                             {
-                                var msg = JsonConvert.DeserializeObject<ChatMessage>(jsonLine);
-                                OnChatMessageReceived.Invoke(msg);
+                                // Next packet should contain {username, message, time}
+                                nextPacketType = PacketType.Content;
                             }
+                            else if (type == MessageContentType.GameKick)
+                            {
+                                if (OnDisconnected != null)
+                                {
+                                    OnDisconnected.Invoke("You were kicked from the server.");
+                                }
+
+                                throw new SocketException((int)SocketError.ConnectionAborted);
+                            }
+                            else if (type == MessageContentType.GameStart)
+                            {
+                                // TODO implement!
+                            }
+                            else if (type == MessageContentType.RoundStart)
+                            {
+                                // TODO implement!
+                            }
+                            else if (type == MessageContentType.RoundEnd)
+                            {
+                                // TODO implement!
+                            }
+                            else if (type == MessageContentType.GameEnd)
+                            {
+                                // TODO implement!
+                            }
+
+                            // This variable is going to be used only when
+                            // nextPacketType is PacketType.Content or PacketType.ContentAsResponse.
+                            nextContentType = type;
                         }
+                        else if (nextPacketType == PacketType.Content)
+                        {
+                            if (nextContentType == MessageContentType.Chat)
+                            {
+                                string username = jObject.First.Value<string>();
+                                string message = jObject.First.Next.Value<string>();
+                                string timeStr = jObject.First.Next.Next.Value<string>();
 
-                        // Next packet will be a header for some another message.
-                        nextPacketType = PacketType.Header;
-                    }
-                    else if (nextPacketType == PacketType.ContentAsResponse)
-                    {
-                        responseCallback.Invoke(jsonLine, PacketType.Content, nextContentType);
+                                if (OnChatMessageReceived != null)
+                                {
+                                    var msg = JsonConvert.DeserializeObject<ChatMessage>(jsonLine);
+                                    OnChatMessageReceived.Invoke(msg);
+                                }
+                            }
 
-                        // Next packet will be a header for some another message.
-                        nextPacketType = PacketType.Header;
+                            // Next packet will be a header for some another message.
+                            nextPacketType = PacketType.Header;
+                        }
+                        else if (nextPacketType == PacketType.ContentAsResponse)
+                        {
+                            responseCallback.Invoke(jsonLine, PacketType.Content, nextContentType);
+
+                            // Next packet will be a header for some another message.
+                            nextPacketType = PacketType.Header;
+                        }
                     }
                 }
             }
