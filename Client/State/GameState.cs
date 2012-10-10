@@ -14,7 +14,7 @@
         protected delegate void EventHandler(EventArgs args);
         protected Dictionary<string, EventHandler> eventHandlers = new Dictionary<string, EventHandler>();
 
-        public GameState(Client client)
+        public GameState(GameClient client)
         {
             Game = client as IGWOCTISI;
             Client = client;

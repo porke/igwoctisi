@@ -56,7 +56,6 @@
             _gameList.Items.Add("Game 4");
             _gameList.Items.Add("Game 5");
 
-            Refresh_Pressed(null, null);
             screen.Desktop.Children.AddRange(new Control[] { btnJoinGame, btnCreateGame, btnLogout, btnRefresh, _gameList });
         }
 
@@ -78,50 +77,11 @@
         protected void CreateGame_Pressed(object sender, EventArgs e)
         {
             state.HandleViewEvent("EnterCreateGameView", e);
-            var asyncResult = result as AsyncResult<List<GameInfo>>;
-            var gameList = asyncResult.Result as List<GameInfo>;
-            State.Client.Network.EndGetGameList(result);
-
-            foreach (GameInfo game in gameList)
-            {
-                _gameList.Items.Add(game.Name);
-            }
-
-            State.Client.Network.EndGetGameList(result);
         }
 
         #endregion
 
-        #region IView members
-
-        public bool IsLoaded
-        {
-            get { return true; }
-        }
-        public bool IsTransparent
-        {
-            get { return true; }
-        }
-        public IInputReceiver InputReceiver { get; protected set; }
-
-        public void OnShow(ViewManager viewMgr, double time)
-        {
-            ViewMgr = viewMgr;
-        }
-        public void OnHide(double time)
-        {   
-        }
-        public void Update(double delta, double time)
-        {
-        }
-        public void Draw(double delta, double time)
-        {
-            ViewMgr.Client.Visualizer.Draw(_screen);
-        }
-
-        #endregion
-
-        public MainLobbyView(GameState state)
+        public MainLobbyView(State.GameState state)
             : base(state)
         {
             IsLoaded = true;
