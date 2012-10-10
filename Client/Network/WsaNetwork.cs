@@ -306,19 +306,12 @@
         /// Connects to the server and starts listening for messages from it.
         /// To receive messages register OnMessageReceived event.
         /// </summary>
-        /// <param name="hostname"></param>
-        /// <param name="port"></param>
-        /// <param name="asyncCallback"></param>
-        /// <param name="asyncState"></param>
-        /// <returns></returns>
         public IAsyncResult BeginConnect(string hostname, int port, AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<bool>(asyncCallback, asyncState);
             var tcpClient = new TcpClient();
 
             tcpClient.BeginConnect(hostname, port, new AsyncCallback(TcpConnectCallback), tcpClient);
-
-            var ar = new AsyncResult<object>(asyncCallback, asyncState);
             ar.BeginInvoke(() =>
             {
                 if (TimeoutObject.WaitOne(TIMEOUT_MILLISECONDS, false))
