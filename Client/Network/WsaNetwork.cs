@@ -274,9 +274,17 @@
             // Save callback awaiting for response
             messageResponses.Add(id, responseCallback);
 
-            // Send header and content
+            // Send header
             string messageContentTypeStr = char.ToLower(messageContentType.ToString()[0]) + messageContentType.ToString().Substring(1);
-            SendJson("{id:" + id + ",type:\"" + messageContentTypeStr + "\"}" + Environment.NewLine);
+            var header = JsonConvert.SerializeObject(new
+            {
+                id = id,
+                type = messageContentTypeStr
+            }, Formatting.None);
+
+            SendJson(header);
+
+            // Send content
             SendJson(jsonRequestContent);
         }
     
@@ -347,8 +355,13 @@
         public IAsyncResult BeginLogin(string login, string password, AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<bool>(asyncCallback, asyncState);
-            
-            string requestContent = "{\"" + login + "\",\"" + password + "\"}";
+
+            string requestContent = JsonConvert.SerializeObject(new
+            {
+                login = login,
+                password = password
+            });
+
             SendRequest(MessageContentType.Login, requestContent, (jObject, packetType, messageContentType) => {
                 // It always should should be Header.
                 Debug.Assert(packetType == PacketType.Header);
