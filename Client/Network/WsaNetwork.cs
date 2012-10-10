@@ -67,13 +67,20 @@
             GameCreateFailed//Server
         }
 
+        TcpClient tcpClient;
         bool IsConnectionSuccessful = false;
         Exception socketexception = null;
         ManualResetEvent TimeoutObject = new ManualResetEvent(false);
         NetworkStream networkStream;
         StreamWriter networkStreamWriter;
-        Dictionary<int, Action<JObject>> messageResponses = new Dictionary<int, Action<JObject>>();
         int lastGeneratedId = 0;
+
+        /// <summary>
+        /// Given Func should return true if listener is waiting for Content packet type.
+        /// This is only considered when given by argument PacketType is Header.
+        /// </summary> 
+        Dictionary<int, Func<JObject, PacketType, MessageContentType, bool>> messageResponses
+            = new Dictionary<int, Func<JObject, PacketType, MessageContentType, bool>>();
 
         private const int TIMEOUT_MILLISECONDS = 3000;
 
@@ -82,11 +89,11 @@
             try
             {
                 IsConnectionSuccessful = false;
-                TcpClient tcpclient = tcpAsyncResult.AsyncState as TcpClient;
+                tcpClient = tcpAsyncResult.AsyncState as TcpClient;
              
-                if (tcpclient.Client != null)
+                if (tcpClient.Client != null)
                 {
-                    tcpclient.EndConnect(tcpAsyncResult);
+                    tcpClient.EndConnect(tcpAsyncResult);
                     IsConnectionSuccessful = true;
                 }
             }
@@ -114,7 +121,7 @@
             PacketType nextPacketType = PacketType.Header;
             MessageContentType nextContentType = MessageContentType.None;
             int messageId = 0;
-            Action<JObject> responseCallback = null;
+            Func<JObject, PacketType, MessageContentType, bool> responseCallback = null;
 
             try
             {
@@ -148,9 +155,17 @@
                             responseCallback = messageResponses[messageId];
                             messageResponses.Remove(messageId);
 
-                            // Next packet will be content and then we will call callback,
-                            // for e.g. callback given to BeginLogin.
-                            nextPacketType = PacketType.ContentAsResponse;
+                            if (responseCallback.Invoke(jObject, PacketType.Header, type))
+                            {
+                                // Next packet will be content and then we will call callback,
+                                // for e.g. callback given to BeginLogin.
+                                nextPacketType = PacketType.ContentAsResponse;
+                            }
+                            else
+                            {
+                                // Don't listen for Content. It will not come.
+                                nextPacketType = PacketType.Header;
+                            }
                         }
 
                         // If this message isn't a response to the client's request then check what it is, actually.
@@ -208,7 +223,7 @@
                     }
                     else if (nextPacketType == PacketType.ContentAsResponse)
                     {
-                        responseCallback.Invoke(jObject);
+                        responseCallback.Invoke(jObject, PacketType.Content, nextContentType);
 
                         // Next packet will be a header for some another message.
                         nextPacketType = PacketType.Header;
@@ -223,8 +238,11 @@
                     // It also could be a kick from the server.
                     // We will just catch it and go away.
                 }
-
-                throw;
+                else
+                {
+                    // Throw unknown exceptions.
+                    throw;
+                }
             }
             finally
             {
@@ -241,7 +259,8 @@
             networkStreamWriter.Flush();
         }
 
-        private void SendRequest(MessageContentType messageContentType, string jsonRequestContent, Action<JObject> responseCallback)
+        private void SendRequest(MessageContentType messageContentType, string jsonRequestContent,
+            Func<JObject, PacketType, MessageContentType, bool> responseCallback)
         {
             // Generate id of message
             int id = Interlocked.Increment(ref lastGeneratedId);
@@ -266,6 +285,11 @@
         public void Release()
         {
             Client = null;
+            try
+            {
+                tcpClient.Close();
+            }
+            catch { }
         }
         public void Update(double delta, double time)
         {
@@ -322,19 +346,33 @@
         }
         public IAsyncResult BeginLogin(string login, string password, AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<GameState>(asyncCallback, asyncState);
+            var ar = new AsyncResult<bool>(asyncCallback, asyncState);
             
             string requestContent = "{\"" + login + "\",\"" + password + "\"}";
-            SendRequest(MessageContentType.Login, requestContent, jObject => {
-                // TODO interpret jObject response from server
-                //jObject
+            SendRequest(MessageContentType.Login, requestContent, (jObject, packetType, messageContentType) => {
+                // It always should should be Header.
+                Debug.Assert(packetType == PacketType.Header);
+
+                bool loggedIn = messageContentType == MessageContentType.Ok;
+                ar.BeginInvoke(() =>
+                {
+                    if (loggedIn)
+                        return true;
+                    else
+                        throw new Exception("Login failed due to error: " + messageContentType.ToString());
+                });
+
+                // We don't want any Content packet.
+                return false;
             });
 
             return ar;
         }
-        public void EndLogin(IAsyncResult asyncResult)
+        public bool EndLogin(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<object>)asyncResult;
+            var ar = (AsyncResult<bool>)asyncResult;
+            ar.EndInvoke();
+            return (bool)ar.Result;
         }
         public IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState)
         {
