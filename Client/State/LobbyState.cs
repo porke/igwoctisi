@@ -4,6 +4,8 @@
     using View.Lobby;
     using System;
     using Common;
+    using System.Collections.Generic;
+    using Client.Model;
 
     class LobbyState : GameState
     {
@@ -81,8 +83,8 @@
         }
 
         private void RefreshGameList(EventArgs args)
-        {
-            Client.Network.BeginGetGameList(OnGetGameList, null);
+        {            
+            Client.Network.BeginGetGameList(OnReceiveGameList, (args as SenderEventArgs).Sender);
         }
 
         #endregion
@@ -97,12 +99,11 @@
                 
         private void OnGetGameList(IAsyncResult ar)
         {
-            var network = ViewMgr.Client.Network;
-            var messageBox = (MessageBox)ar.AsyncState;
+            var asyncResult = result as AsyncResult<List<GameInfo>>;
+            var gameNames = asyncResult.Result as List<GameInfo>;
 
-            try
-            {
-                // TODO Populate game list in MainLobbyView
+            var lobbyWindow = asyncResult.AsyncState as MainLobbyView;
+            lobbyWindow.Invoke(lobbyWindow.RefreshGameList, gameNames);
                 var games = network.EndGetGameList(ar);
 
                 ViewMgr.PopLayer(); // MessageBox

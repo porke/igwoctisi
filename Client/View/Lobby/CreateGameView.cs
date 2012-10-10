@@ -33,7 +33,6 @@
                 SelectionMode = ListSelectionMode.Single,
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.5f, 0), new UniScalar(1.0f, 0))
             };
-            LoadMapNames();
 
             _gameName = new InputControl()
             {
@@ -56,6 +55,16 @@
             btnCancel.Pressed += Cancel_Pressed;
 
             screen.Desktop.Children.AddRange(new Control[] {lblGameName, lblMaps, _mapList, btnCancel, btnCreateGame, _gameName} );
+
+            LoadMapNames();
+            if (_mapList.Items.Count > 0)
+            {
+                _mapList.SelectedItems.Add(0);
+            }
+            else
+            {
+                btnCreateGame.Enabled = false;
+            }
         }
 
         private void Cancel_Pressed(object sender, EventArgs args)

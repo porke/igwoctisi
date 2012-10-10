@@ -20,6 +20,7 @@
             ViewMgr.PushLayer(gameHud);
 
             eventHandlers.Add("LeaveGame", LeaveGame);
+            eventHandlers.Add("SendOrders", SendOrders);
         }
 
         #region Event handlers
@@ -27,6 +28,11 @@
         private void LeaveGame(EventArgs args)
         {
             Client.ChangeState(new LobbyState(Game));
+        }
+
+        private void SendOrders(EventArgs args)
+        {
+            // TODO: Send orders
         }
 
         #endregion
