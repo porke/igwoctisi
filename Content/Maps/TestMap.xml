@@ -1,0 +1,40 @@
+<Map Name="Duel">
+	<Planets>
+		<Planet Id="1" Name="Alpha" 	 BaseUnitsPerTurn="5" X="300" Y="400" Z="0"/>
+		<Planet Id="2" Name="Beta" 		 BaseUnitsPerTurn="3" X="300" Y="700" Z="0"/>
+		<Planet Id="3" Name="Gamma" 	 BaseUnitsPerTurn="3" X="600" Y="400" Z="0"/>
+		<Planet Id="4" Name="A" 		 BaseUnitsPerTurn="5" X="800" Y="900" Z="0"/>
+		<Planet Id="5" Name="B" 		 BaseUnitsPerTurn="3" X="600" Y="900" Z="0"/>
+		<Planet Id="6" Name="C" 		 BaseUnitsPerTurn="3" X="800" Y="700" Z="0"/>
+		<Planet Id="7" Name="Core Prime" BaseUnitsPerTurn="6" X="600" Y="700" Z="0"/>
+	</Planets>
+	
+	<Links>
+		<Link SourceId="1" TargetId="2"/>
+		<Link SourceId="1" TargetId="3"/>
+		<Link SourceId="2" TargetId="7"/>
+		<Link SourceId="3" TargetId="7"/>
+		<Link SourceId="7" TargetId="5"/>
+		<Link SourceId="7" TargetId="6"/>
+		<Link SourceId="4" TargetId="5"/>
+		<Link SourceId="4" TargetId="6"/>
+	</Links>
+	
+	<Systems>
+		<System Name="Southern Sector" FleetBonusPerTurn="4">
+			<PlanetId>1</PlanetId>
+			<PlanetId>2</PlanetId>
+			<PlanetId>3</PlanetId>			
+		</System>
+		<System Name="Northern Sector" FleetBonusPerTurn="4">
+			<PlanetId>4</PlanetId>
+			<PlanetId>5</PlanetId>
+			<PlanetId>6</PlanetId>			
+		</System>
+	</Systems>
+	
+	<PlayerStartingData>
+		<StartingData PlanetId="1"/>
+		<StartingData PlanetId="4"/>
+	</PlayerStartingData>
+</Map>
