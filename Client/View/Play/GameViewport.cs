@@ -2,46 +2,29 @@
 {
     using Input;
     using State;
+    using Model;
 
-    class GameViewport : IView
+    class GameViewport : BaseView
     {
         #region IView members
 
-        public bool IsLoaded { get; protected set; }
-        public bool IsTransparent
+        public override void Draw(double delta, double time)
         {
-            get { return false; }
-        }
-        public IInputReceiver InputReceiver { get; protected set; }
-
-        public void OnShow(ViewManager viewMgr, double time)
-        {
-            ViewMgr = viewMgr;
-        }
-        public void OnHide(double time)
-        {
-        }
-        public void Update(double delta, double time)
-        {
-        }
-        public void Draw(double delta, double time)
-        {
-            var renderer = State.Client.Renderer;
-            var scene = State.Scene;
+            var renderer = state.Client.Renderer;
 
             renderer.Draw(scene, delta, time);
         }
 
         #endregion
 
-        public PlayState State { get; protected set; }
-        public ViewManager ViewMgr { get; protected set; }
+        private Scene scene;
 
-        public GameViewport(PlayState state)
+        public GameViewport(State.GameState state) : base(state)
         {
             IsLoaded = true;
-            State = state;
+            IsTransparent = false;
             InputReceiver = new InputReceiver(false);
+            scene = (state as PlayState).Scene;
         }
     }
 }

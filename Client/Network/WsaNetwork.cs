@@ -135,13 +135,15 @@
                         {
                             jObject = JObject.Parse(jsonLine);
                         }
-                        catch (JsonReaderException ex)
+                    catch (JsonReaderException)
                         {
                             // Ignore that packet and continue listening.
                             Debug.WriteLine("Bad Json format: " + jsonLine, "Network");
                             continue;
                         }
 
+                    if (nextPacketType == PacketType.Header)
+                    {
                         string typeStr = jObject["type"].Value<string>();
                         messageId = jObject["id"].Value<int>();
 
@@ -208,6 +210,10 @@
                     {
                         if (nextContentType == MessageContentType.Chat)
                         {
+                            string username = jObject.First.Value<string>();
+                            string message = jObject.First.Next.Value<string>();
+                            string timeStr = jObject.First.Next.Next.Value<string>();
+
                             if (OnChatMessageReceived != null)
                             {
                                 var msg = JsonConvert.DeserializeObject<ChatMessage>(jsonLine);
