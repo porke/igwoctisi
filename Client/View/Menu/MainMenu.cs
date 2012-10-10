@@ -41,8 +41,16 @@
 
         protected void NewGame_Pressed(object sender, EventArgs e)
         {
-            ViewMgr.PopLayer();
-            ViewMgr.PushLayer(new LoginMenu(State));
+            string hostname = "localhost";// "v.zloichuj.eu";
+            int port = 23456;
+
+            var messageBox = new MessageBox(MessageBoxButtons.None)
+            {
+                Title = "Login",
+                Message = "Connecting..."
+            };
+            ViewMgr.PushLayer(messageBox);
+            ViewMgr.Client.Network.BeginConnect(hostname, port, OnConnect, messageBox);
         }
 
         protected void Credits_Pressed(object sender, EventArgs e)
@@ -53,6 +61,27 @@
         protected void Quit_Pressed(object sender, EventArgs e)
         {
             State.Client.Exit();
+        }
+
+        protected void OnConnect(IAsyncResult ar)
+        {
+            var network = ViewMgr.Client.Network;
+            var messageBox = (MessageBox)ar.AsyncState;
+
+            try
+            {
+                network.EndConnect(ar);
+
+                ViewMgr.PopLayer(); // MessageBox
+                ViewMgr.PopLayer(); // this
+                ViewMgr.PushLayer(new LoginMenu(State));
+            }
+            catch (Exception exc)
+            {
+                messageBox.Message = exc.Message;
+                messageBox.Buttons = MessageBoxButtons.OK;
+                messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
+            }
         }
 
         #endregion
