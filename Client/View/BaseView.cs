@@ -16,6 +16,7 @@
 
         protected BaseView(GameState controller)
         {
+            state = controller;
             screen = new Screen(800, 600);
         }
 

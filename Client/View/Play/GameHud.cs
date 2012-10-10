@@ -59,7 +59,7 @@
 
         private void LeaveGame_Pressed(object sender, EventArgs e)
         {
-            state.Client.ChangeState(new LobbyState(state.Game));
+            state.HandleViewEvent("LeaveGame", e);
         }
 
         #endregion

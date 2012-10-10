@@ -60,14 +60,12 @@
 
         private void Cancel_Pressed(object sender, EventArgs args)
         {
-            ViewMgr.PopLayer();     // this
-            ViewMgr.PushLayer(new MainLobbyView(state));
+            state.HandleViewEvent("CancelCreateGame", args);
         }
 
         private void CreateGame_Pressed(object sender, EventArgs args)
         {
-            ViewMgr.PopLayer();     // this
-            ViewMgr.PushLayer(new GameLobbyView(state));
+            state.HandleViewEvent("CreateGame", args);
         }
 
         private void LoadMapNames()

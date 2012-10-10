@@ -46,12 +46,12 @@
 
         protected void BeginGame_Pressed(object sender, EventArgs e)
         {
-            state.Game.ChangeState(new PlayState(state.Game));
+            state.HandleViewEvent("BeginGame", e);
         }
 
         protected void LeaveGame_Pressed(object sender, EventArgs e)
         {
-            state.Game.ChangeState(new LobbyState(state.Game));
+            state.HandleViewEvent("LeaveGameLobby", e);
         }
 
         #endregion
