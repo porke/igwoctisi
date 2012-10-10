@@ -27,22 +27,14 @@
             eventHandlers.Add("RefreshGameList", RefreshGameList);
         }
 
-        #region Event handlers
-
         public override void OnEnter()
         {
             var network = Client.Network;
+            this.RefreshGameList(new SenderEventArgs(ViewMgr.PeekLayer()));
+        }        
 
-            var messageBox = new MessageBox(MessageBoxButtons.None)
-            {
-                Title = "Entering Main Lobby",
-                Message = "Downloading game list..."
-            };
+        #region Event handlers
 
-            ViewMgr.PushLayer(messageBox);
-            network.BeginGetGameList(OnGetGameList, messageBox);
-        }
-        
         private void LeaveGameLobby(EventArgs args)
         {
             ViewMgr.PopLayer(); // pop game lobby
@@ -83,8 +75,17 @@
         }
 
         private void RefreshGameList(EventArgs args)
-        {            
-            Client.Network.BeginGetGameList(OnReceiveGameList, (args as SenderEventArgs).Sender);
+        {
+            var messageBox = new MessageBox(MessageBoxButtons.None)
+            {
+                Title = "Loading Main Lobby",
+                Message = "Downloading game list..."
+            };            
+
+            ViewMgr.PushLayer(messageBox);
+
+            var mainLobbyView = (args as SenderEventArgs).Sender;
+            Client.Network.BeginGetGameList(OnGetGameList, mainLobbyView);
         }
 
         #endregion
@@ -97,23 +98,13 @@
             Client.ChangeState(new MenuState(Game));
         }
                 
-        private void OnGetGameList(IAsyncResult ar)
-        {
-            var asyncResult = result as AsyncResult<List<GameInfo>>;
-            var gameNames = asyncResult.Result as List<GameInfo>;
-
-            var lobbyWindow = asyncResult.AsyncState as MainLobbyView;
+        private void OnGetGameList(IAsyncResult result)
+        {            
+            var gameNames = Game.Network.EndGetGameList(result);
+            var lobbyWindow = result.AsyncState as MainLobbyView;
             lobbyWindow.Invoke(lobbyWindow.RefreshGameList, gameNames);
-                var games = network.EndGetGameList(ar);
 
-                ViewMgr.PopLayer(); // MessageBox
-            }
-            catch (Exception exc)
-            {
-                messageBox.Message = exc.Message;
-                messageBox.Buttons = MessageBoxButtons.OK;
-                messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
-            }
+            ViewMgr.PopLayer(); // MessageBox            
         }
 
         #endregion

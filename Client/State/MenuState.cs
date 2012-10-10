@@ -28,7 +28,7 @@
 
         private void RequestLogin(EventArgs args)
         {
-            string hostname = "v.zloichuj.eu";
+            string hostname = "localhost"; // "v.zloichuj.eu";
             int port = 23456;
             var loginData = args as LoginEventArgs;
 
@@ -58,12 +58,6 @@
                 network.BeginLogin(loginData.Login, loginData.Password, OnLogin, messageBox);
 
                 messageBox.Message = "Logging in as " + loginData.Login + "...";
-
-                //ViewMgr.PopLayer(); // MessageBox
-
-                // TODO: Implementation depends on success of the login request
-                //ViewMgr.PopLayer(); // Main menu view
-                //ViewMgr.PushLayer(new MainMenu(this));
             }
             catch (Exception exc)
             {
