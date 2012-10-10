@@ -48,18 +48,30 @@
             };
             btnLeaveGame.Pressed += LeaveGame_Pressed;
 
+            var btnSendOrders = new ButtonControl()
+            {
+                Text = "Send orders",
+                Bounds = new UniRectangle(new UniScalar(0.14f, 0), new UniScalar(0.93f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
+            };
+            btnSendOrders.Pressed += SendOrders_Pressed;
+
             var btnDeleteOrder = new ButtonControl()
             {
                 Text = "Delete",
                 Bounds = new UniRectangle(new UniScalar(0.65f, 0), new UniScalar(0.77f, 0), new UniScalar(0.15f, 0), new UniScalar(0.05f, 0))
             };
 
-            screen.Desktop.Children.AddRange(new Control[] {ordersHeader, _orderList, _fleetIncomeCount, _fleetCount, btnDeleteOrder, btnLeaveGame});
+            screen.Desktop.Children.AddRange(new Control[] {ordersHeader, _orderList, _fleetIncomeCount, _fleetCount, btnDeleteOrder, btnLeaveGame, btnSendOrders});
         }
 
         private void LeaveGame_Pressed(object sender, EventArgs e)
         {
             state.HandleViewEvent("LeaveGame", e);
+        }
+
+        private void SendOrders_Pressed(object sender, EventArgs e)
+        {
+            state.HandleViewEvent("SendOrders", e);
         }
 
         #endregion

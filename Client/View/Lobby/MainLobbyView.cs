@@ -30,6 +30,7 @@
                 Text = "Refresh",
                 Bounds = new UniRectangle(new UniScalar(0.283f, 0), new UniScalar(0.85f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
             };
+            btnRefresh.Pressed += Refresh_Pressed;
 
             var btnCreateGame = new ButtonControl
             {
@@ -66,7 +67,7 @@
 
         protected void Refresh_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("RefreshGameList", e);
+            state.HandleViewEvent("RefreshGameList", new SenderEventArgs(this));
         }
 
         protected void JoinGame_Pressed(object sender, EventArgs e)
@@ -90,6 +91,17 @@
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();
+        }
+
+        public void RefreshGameList(object gameInfoList)
+        {
+            var gameInfo = gameInfoList as List<GameInfo>;
+            _gameList.Items.Clear();
+
+            foreach (var info in gameInfo)
+            {
+                _gameList.Items.Add(info.Name);
+            }
         }
     }
 }

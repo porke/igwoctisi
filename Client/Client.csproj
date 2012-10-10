@@ -130,6 +130,7 @@
     <Compile Include="View\Lobby\GameLobbyView.cs" />
     <Compile Include="View\Menu\MenuBackground.cs" />
     <Compile Include="View\MessageBox.cs" />
+    <Compile Include="View\SenderEventArgs.cs" />
     <Compile Include="View\SplashScreen.cs" />
     <Compile Include="View\Menu\MainMenuView.cs" />
     <Compile Include="View\ViewManager.cs" />
