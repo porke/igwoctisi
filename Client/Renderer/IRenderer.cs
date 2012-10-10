@@ -4,7 +4,7 @@
 
     public interface IRenderer
     {
-        void Initialize(Client client);
+        void Initialize(GameClient client);
         void Release();
         void Draw(Scene scene, double delta, double time);
     }

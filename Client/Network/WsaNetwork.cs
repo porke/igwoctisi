@@ -19,7 +19,7 @@
         /// <summary>
         /// Arguments: username, chat message, time
         /// </summary>
-        public event Action<string, string, string> OnChatMessageReceived;
+        public event Action<ChatMessage> OnChatMessageReceived;
         
         /// <summary>
         /// Argument: disconnection reason (may be empty)
@@ -79,8 +79,8 @@
         /// Given Func should return true if listener is waiting for Content packet type.
         /// This is only considered when, given by argument, PacketType is Header.
         /// </summary> 
-        Dictionary<int, Func<JObject, PacketType, MessageContentType, bool>> messageResponses
-            = new Dictionary<int, Func<JObject, PacketType, MessageContentType, bool>>();
+        Dictionary<int, Func<string, PacketType, MessageContentType, bool>> messageResponses
+            = new Dictionary<int, Func<string, PacketType, MessageContentType, bool>>();
 
         private const int TIMEOUT_MILLISECONDS = 3000;
 
@@ -121,27 +121,27 @@
             PacketType nextPacketType = PacketType.Header;
             MessageContentType nextContentType = MessageContentType.None;
             int messageId = 0;
-            Func<JObject, PacketType, MessageContentType, bool> responseCallback = null;
+            Func<string, PacketType, MessageContentType, bool> responseCallback = null;
 
             try
             {
                 while ((jsonLine = sr.ReadLine()) != null)
                 {
-                    // Handle situation when jsonLine isn't actually Json
-                    JObject jObject = null;
-                    try
-                    {
-                        jObject = JObject.Parse(jsonLine);
-                    }
-                    catch (JsonReaderException ex)
-                    {
-                        // Ignore that packet and continue listening.
-                        Debug.WriteLine("Bad Json format: " + jsonLine, "Network");
-                        continue;
-                    }
-
                     if (nextPacketType == PacketType.Header)
                     {
+                        // Handle situation when jsonLine isn't actually Json
+                        JObject jObject = null;
+                        try
+                        {
+                            jObject = JObject.Parse(jsonLine);
+                        }
+                        catch (JsonReaderException ex)
+                        {
+                            // Ignore that packet and continue listening.
+                            Debug.WriteLine("Bad Json format: " + jsonLine, "Network");
+                            continue;
+                        }
+
                         string typeStr = jObject["type"].Value<string>();
                         messageId = jObject["id"].Value<int>();
 
@@ -155,7 +155,7 @@
                             responseCallback = messageResponses[messageId];
                             messageResponses.Remove(messageId);
 
-                            if (responseCallback.Invoke(jObject, PacketType.Header, type))
+                            if (responseCallback.Invoke(jsonLine, PacketType.Header, type))
                             {
                                 // Next packet will be content and then we will call callback,
                                 // for e.g. callback given to BeginLogin.
@@ -208,13 +208,10 @@
                     {
                         if (nextContentType == MessageContentType.Chat)
                         {
-                            string username = jObject.First.Value<string>();
-                            string message = jObject.First.Next.Value<string>();
-                            string timeStr = jObject.First.Next.Next.Value<string>();
-
                             if (OnChatMessageReceived != null)
                             {
-                                OnChatMessageReceived.Invoke(username, message, timeStr);
+                                var msg = JsonConvert.DeserializeObject<ChatMessage>(jsonLine);
+                                OnChatMessageReceived.Invoke(msg);
                             }
                         }
 
@@ -223,7 +220,7 @@
                     }
                     else if (nextPacketType == PacketType.ContentAsResponse)
                     {
-                        responseCallback.Invoke(jObject, PacketType.Content, nextContentType);
+                        responseCallback.Invoke(jsonLine, PacketType.Content, nextContentType);
 
                         // Next packet will be a header for some another message.
                         nextPacketType = PacketType.Header;
@@ -266,7 +263,7 @@
         }
 
         private void SendRequest(MessageContentType messageContentType, string jsonRequestContent,
-            Func<JObject, PacketType, MessageContentType, bool> responseCallback)
+            Func<string, PacketType, MessageContentType, bool> responseCallback)
         {
             // Generate id of message
             int id = Interlocked.Increment(ref lastGeneratedId);
@@ -295,7 +292,7 @@
 
         #region INetwork members
 
-        public void Initialize(Client client)
+        public void Initialize(GameClient client)
         {
             Client = client;
         }
@@ -415,7 +412,7 @@
         {
             var ar = new AsyncResult<List<GameInfo>>(asyncCallback, asyncState);
 
-            SendRequest(MessageContentType.GameList, null, (jObject, packetType, messageContentType) => {
+            SendRequest(MessageContentType.GameList, null, (jsonStr, packetType, messageContentType) => {
                 if (packetType == PacketType.Header)
                 {
                     if (messageContentType == MessageContentType.GameList)
@@ -435,7 +432,7 @@
                 {
                     ar.BeginInvoke(() =>
                     {
-                        return jObject.ToObject<List<GameInfo>>();
+                        return JsonConvert.DeserializeObject<List<GameInfo>>(jsonStr);
                     });
                 }
 
@@ -479,6 +476,6 @@
 
         #endregion
 
-        public Client Client { get; protected set; }
+        public GameClient Client { get; protected set; }
     }
 }

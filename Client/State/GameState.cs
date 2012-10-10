@@ -5,10 +5,10 @@
 
     public abstract class GameState
     {
-        public Client Client { get; protected set; }
+        public GameClient Client { get; protected set; }
         public ViewManager ViewMgr { get; protected set; }
 
-        public GameState(Client client)
+        public GameState(GameClient client)
         {
             Client = client;
             ViewMgr = new ViewManager(Client);
