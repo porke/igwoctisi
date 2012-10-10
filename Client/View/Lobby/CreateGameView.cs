@@ -1,14 +1,13 @@
 ﻿namespace Client.View.Lobby
 {
+    using System;
+    using System.IO;
     using Common;
     using Input;
     using Nuclex.UserInterface;
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
-    using System;
-    using System.IO;
-    using System.Reflection;
 
     class CreateGameView : IView
     {
