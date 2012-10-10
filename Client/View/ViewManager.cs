@@ -13,7 +13,7 @@
         #region Protected members
 
         protected double currentTime;
-        protected List<IView> _viewStack;
+        protected List<BaseView> _viewStack;
 
         #endregion
 
@@ -102,7 +102,7 @@
 
         public ViewManager(Client client)
         {
-            _viewStack = new List<IView>();
+            _viewStack = new List<BaseView>();
 
             Client = client;
             InputReceiver = new ViewManagerInputReceiver(this);
@@ -134,7 +134,7 @@
             }
         }
 
-        public void PushLayer(IView view)
+        public void PushLayer(BaseView view)
         {
             lock (_viewStack)
             {
@@ -144,9 +144,9 @@
             view.OnShow(this, currentTime);
         }
 
-        public IView PopLayer()
+        public BaseView PopLayer()
         {
-            IView view;
+            BaseView view;
             lock (_viewStack)
             {
                 view = _viewStack[_viewStack.Count - 1];
@@ -157,7 +157,7 @@
             return view;
         }
 
-        public IView PeekLayer()
+        public BaseView PeekLayer()
         {
             lock (_viewStack)
             {

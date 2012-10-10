@@ -133,7 +133,7 @@
                     {
                         jObject = JObject.Parse(jsonLine);
                     }
-                    catch (JsonReaderException ex)
+                    catch (JsonReaderException)
                     {
                         // Ignore that packet and continue listening.
                         Debug.WriteLine("Bad Json format: " + jsonLine, "Network");

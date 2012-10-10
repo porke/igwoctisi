@@ -2,12 +2,9 @@
 {
     using View;
     using View.Menu;
-    using View.Lobby;
 
     public class MenuState : GameState
     {
-        public IGWOCTISI Game { get; protected set; }
-
         public MenuState(IGWOCTISI game) : base(game)
         {
             Game = game;

@@ -5,8 +5,6 @@
 
     class LobbyState : GameState
     {
-        public IGWOCTISI Game { get; protected set; }
-
         public LobbyState(IGWOCTISI game) : base(game)
         {
             Game = game;

@@ -8,11 +8,9 @@
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
 
-    class GameHud : IView
+    class GameHud : BaseView
     {
         #region Protected members
-
-        protected Screen _screen;
 
         private ListControl _orderList;
         private LabelControl _fleetCount;
@@ -56,53 +54,21 @@
                 Bounds = new UniRectangle(new UniScalar(0.65f, 0), new UniScalar(0.77f, 0), new UniScalar(0.15f, 0), new UniScalar(0.05f, 0))
             };
 
-            _screen.Desktop.Children.AddRange(new Control[] {ordersHeader, _orderList, _fleetIncomeCount, _fleetCount, btnDeleteOrder, btnLeaveGame});
+            screen.Desktop.Children.AddRange(new Control[] {ordersHeader, _orderList, _fleetIncomeCount, _fleetCount, btnDeleteOrder, btnLeaveGame});
         }
 
         private void LeaveGame_Pressed(object sender, EventArgs e)
         {
-            State.Client.ChangeState(new LobbyState(State.Game));
+            state.Client.ChangeState(new LobbyState(state.Game));
         }
 
         #endregion
 
-        #region IView members
-
-        public bool IsLoaded
+        public GameHud(PlayState state) : base(state)
         {
-            get { return true; }
-        }
-        public bool IsTransparent
-        {
-            get { return true; }
-        }
-        public IInputReceiver InputReceiver { get; protected set; }
-
-        public void OnShow(ViewManager viewMgr, double time)
-        {
-            ViewMgr = viewMgr;
-        }
-        public void OnHide(double time)
-        {
-        }
-        public void Update(double delta, double time)
-        {
-        }
-        public void Draw(double delta, double time)
-        {
-            ViewMgr.Client.Visualizer.Draw(_screen);
-        }
-
-        #endregion
-
-        public PlayState State { get; protected set; }
-        public ViewManager ViewMgr { get; protected set; }
-
-        public GameHud(PlayState state)
-        {
-            State = state;
-            _screen = new Screen(800, 600);
-            InputReceiver = new NuclexScreenInputReceiver(_screen, false);
+            IsLoaded = true;
+            IsTransparent = true;
+            InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();
         }
