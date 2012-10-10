@@ -1,18 +1,16 @@
 ﻿namespace Client.State
 {
-    using View;
-    using View.Play;
+    using System;
     using Model;
+    using View.Play;
 
     class PlayState : GameState
     {
-        public IGWOCTISI Game { get; protected set; }
         public Scene Scene { get; protected set; }
 
         public PlayState(IGWOCTISI game)
             : base(game)
         {
-            Game = game;
             Scene = new Scene();
 
             var gameViewport = new GameViewport(this);
@@ -20,6 +18,17 @@
 
             ViewMgr.PushLayer(gameViewport);
             ViewMgr.PushLayer(gameHud);
+
+            eventHandlers.Add("LeaveGame", LeaveGame);
         }
+
+        #region Event handlers
+
+        private void LeaveGame(EventArgs args)
+        {
+            Client.ChangeState(new LobbyState(Game));
+        }
+
+        #endregion
     }
 }

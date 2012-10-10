@@ -9,7 +9,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using State;
 
-    public class LobbyBackground : IView
+    public class LobbyBackground : BaseView
     {
         #region Protected members
 
@@ -28,29 +28,12 @@
 
         #region IView members
 
-        public bool IsLoaded { get; protected set; }
-        public bool IsTransparent
-        {
-            get { return false; }
-        }
-        public IInputReceiver InputReceiver { get; protected set; }
-
-        public void OnShow(ViewManager viewMgr, double time)
-        {
-            ViewMgr = viewMgr;
-        }
-        public void OnHide(double time)
-        {
-        }
-        public void Update(double delta, double time)
-        {
-        }
-        public void Draw(double delta, double time)
+        public override void Draw(double delta, double time)
         {
             if (!IsLoaded)
                 return;
 
-            var graphicsDevice = State.Client.GraphicsDevice;
+            var graphicsDevice = state.Client.GraphicsDevice;
             var world = Matrix.CreateRotationZ((float)(time + MathHelper.PiOver4));
             var view = Matrix.CreateLookAt(Vector3.Backward * -2, Vector3.Zero, Vector3.Up);
             var projection = Matrix.CreatePerspectiveFieldOfView(
@@ -71,15 +54,12 @@
 
         #endregion
 
-        public GameState State { get; protected set; }
-        public ViewManager ViewMgr { get; protected set; }
-
-        public LobbyBackground(GameState state)
+        public LobbyBackground(GameState state): base(state)
         {
             IsLoaded = false;
-            State = state;
-            var graphicsDevice = State.Client.GraphicsDevice;
-            var contentMgr = State.Client.Content;
+            IsTransparent = false;
+            var graphicsDevice = state.Client.GraphicsDevice;
+            var contentMgr = state.Client.Content;
             InputReceiver = new InputReceiver(false);
 
             contentMgr.BeginLoad<Effect>("Effects\\Menu", OnEffectLoad, contentMgr);

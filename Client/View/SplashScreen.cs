@@ -10,7 +10,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using State;
 
-    public class SplashScreen : IView
+    public class SplashScreen : BaseView
     {
         #region Protected members
 
@@ -30,25 +30,13 @@
 
         #region IView members
 
-        public bool IsLoaded { get; protected set; }
-        public bool IsTransparent
-        {
-            get { return false; }
-        }
-        public IInputReceiver InputReceiver { get; protected set; }
-
-        public void OnShow(ViewManager viewMgr, double time)
+        public override void OnShow(ViewManager viewMgr, double time)
         {
             ViewMgr = viewMgr;
             _elapsedTime = 0;
         }
 
-        public void OnHide(double time)
-        {
-
-        }
-
-        public void Update(double delta, double time)
+        public override void Update(double delta, double time)
         {
             _elapsedTime += delta;
 
@@ -68,12 +56,12 @@
                 }
             }
         }
-        public void Draw(double delta, double time)
+        public override void Draw(double delta, double time)
         {
             if (!IsLoaded)
                 return;
 
-            var graphicsDevice = State.Client.GraphicsDevice;
+            var graphicsDevice = state.Client.GraphicsDevice;
             var viewport = graphicsDevice.Viewport.Bounds;
 
             var destPos = new Vector2((viewport.Width - _texture.Width)/2.0f, (viewport.Height - _texture.Height)/2.0f);
@@ -84,17 +72,15 @@
 
         #endregion
 
-        public GameState State { get; protected set; }
-        public ViewManager ViewMgr { get; protected set; }
         public double SwitchTime { get; protected set; }
-        public IList<IView> NextLayers { get; set; }
+        public IList<BaseView> NextLayers { get; set; }
 
-        public SplashScreen(GameState state, string textureName, double switchTime)
+        public SplashScreen(GameState state, string textureName, double switchTime) : base(state)
         {
+            IsTransparent = false;
             IsLoaded = false;
-            State = state;
-            var graphicsDevice = State.Client.GraphicsDevice;
-            var contentMgr = State.Client.Content;
+            var graphicsDevice = state.Client.GraphicsDevice;
+            var contentMgr = state.Client.Content;
             InputReceiver = new InputReceiver(false);
             SwitchTime = switchTime;
             Thread.MemoryBarrier();

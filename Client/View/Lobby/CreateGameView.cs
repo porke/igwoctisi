@@ -1,20 +1,17 @@
 ﻿namespace Client.View.Lobby
 {
+    using System;
+    using System.IO;
     using Common;
     using Input;
     using Nuclex.UserInterface;
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
-    using System;
-    using System.IO;
-    using System.Reflection;
 
-    class CreateGameView : IView
+    class CreateGameView : BaseView
     {
         #region Protected members
-
-        protected Screen _screen;
 
         private ListControl _mapList;
         private InputControl _gameName;
@@ -58,19 +55,17 @@
             };
             btnCancel.Pressed += Cancel_Pressed;
 
-            _screen.Desktop.Children.AddRange(new Control[] {lblGameName, lblMaps, _mapList, btnCancel, btnCreateGame, _gameName} );
+            screen.Desktop.Children.AddRange(new Control[] {lblGameName, lblMaps, _mapList, btnCancel, btnCreateGame, _gameName} );
         }
 
         private void Cancel_Pressed(object sender, EventArgs args)
         {
-            ViewMgr.PopLayer();     // this
-            ViewMgr.PushLayer(new MainLobbyView(State));
+            state.HandleViewEvent("CancelCreateGame", args);
         }
 
         private void CreateGame_Pressed(object sender, EventArgs args)
         {
-            ViewMgr.PopLayer();     // this
-            ViewMgr.PushLayer(new GameLobbyView(State));
+            state.HandleViewEvent("CreateGame", args);
         }
 
         private void LoadMapNames()
@@ -86,44 +81,13 @@
 
         #endregion
 
-        #region IView members
-
-        public bool IsLoaded
+        public CreateGameView(GameState state)
+            : base(state)
         {
-            get { return true; }
-        }
-        public bool IsTransparent
-        {
-            get { return true; }
-        }
-        public IInputReceiver InputReceiver { get; protected set; }
-
-        public void OnShow(ViewManager viewMgr, double time)
-        {
-            ViewMgr = viewMgr;
-        }
-        public void OnHide(double time)
-        {
-        }
-        public void Update(double delta, double time)
-        {
-        }
-        public void Draw(double delta, double time)
-        {
-            ViewMgr.Client.Visualizer.Draw(_screen);
-        }
-
-        #endregion
-
-        public LobbyState State { get; protected set; }
-        public ViewManager ViewMgr { get; protected set; }
-
-        public CreateGameView(LobbyState state)
-        {
-            State = state;
-            _screen = new Screen(800, 600);
-            _screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.25f, 0), new UniScalar(0.4f, 0), new UniScalar(0.5f, 0));
-            InputReceiver = new NuclexScreenInputReceiver(_screen, false);
+            IsLoaded = true;
+            IsTransparent = true;
+            screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.25f, 0), new UniScalar(0.4f, 0), new UniScalar(0.5f, 0));
+            InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();            
         }

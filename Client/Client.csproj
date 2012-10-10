@@ -120,17 +120,18 @@
     <Compile Include="State\MenuState.cs" />
     <Compile Include="State\PlayState.cs" />
     <Compile Include="View\Lobby\CreateGameView.cs" />
+    <Compile Include="View\Lobby\JoinGameArgs.cs" />
     <Compile Include="View\Lobby\LobbyBackground.cs" />
     <Compile Include="View\Lobby\MainLobbyView.cs" />
+    <Compile Include="View\Menu\LoginEventArgs.cs" />
     <Compile Include="View\Play\GameHud.cs" />
     <Compile Include="View\Play\GameViewport.cs" />
-    <Compile Include="View\IView.cs" />
+    <Compile Include="View\BaseView.cs" />
     <Compile Include="View\Lobby\GameLobbyView.cs" />
     <Compile Include="View\Menu\MenuBackground.cs" />
-    <Compile Include="View\Menu\LoginMenu.cs" />
     <Compile Include="View\MessageBox.cs" />
     <Compile Include="View\SplashScreen.cs" />
-    <Compile Include="View\Menu\MainMenu.cs" />
+    <Compile Include="View\Menu\MainMenuView.cs" />
     <Compile Include="View\ViewManager.cs" />
   </ItemGroup>
   <ItemGroup>

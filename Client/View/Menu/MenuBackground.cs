@@ -9,7 +9,7 @@
     using Microsoft.Xna.Framework.Graphics;
     using State;
 
-    public class MenuBackground : IView
+    public class MenuBackground : BaseView
     {
         #region Protected members
 
@@ -28,29 +28,12 @@
 
         #region IView members
 
-        public bool IsLoaded { get; protected set; }
-        public bool IsTransparent
-        {
-            get { return false; }
-        }
-        public IInputReceiver InputReceiver { get; protected set; }
-
-        public void OnShow(ViewManager viewMgr, double time)
-        {
-            ViewMgr = viewMgr;
-        }
-        public void OnHide(double time)
-        {
-        }
-        public void Update(double delta, double time)
-        {
-        }
-        public void Draw(double delta, double time)
+        public override void Draw(double delta, double time)
         {
             if (!IsLoaded)
                 return;
 
-            var graphicsDevice = State.Client.GraphicsDevice;
+            var graphicsDevice = state.Client.GraphicsDevice;
             var world = Matrix.CreateRotationX((float)time) * 
                         Matrix.CreateRotationY((float)(time + MathHelper.PiOver4)) * 
                         Matrix.CreateRotationZ((float)(time + MathHelper.PiOver4*3.0));
@@ -73,15 +56,12 @@
 
         #endregion
 
-        public GameState State { get; protected set; }
-        public ViewManager ViewMgr { get; protected set; }
-
-        public MenuBackground(GameState state)
+        public MenuBackground(GameState state) : base(state)
         {
+            IsTransparent = false;
             IsLoaded = false;
-            State = state;
-            var graphicsDevice = State.Client.GraphicsDevice;
-            var contentMgr = State.Client.Content;
+            var graphicsDevice = state.Client.GraphicsDevice;
+            var contentMgr = state.Client.Content;
             InputReceiver = new InputReceiver(false);
 
             contentMgr.BeginLoad<Effect>("Effects\\Menu", OnEffectLoad, contentMgr);
