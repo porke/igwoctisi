@@ -52,6 +52,7 @@
                 Title = "Login",
                 Message = "Logging in..."
             };
+            ViewMgr.PushLayer(messageBox);
 
             ViewMgr.Client.Network.BeginLogin(tbLogin.Text, tbPassword.Text, OnLogin, messageBox);
 
