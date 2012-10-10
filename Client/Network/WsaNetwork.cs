@@ -327,7 +327,7 @@
             string requestContent = "{\"" + login + "\",\"" + password + "\"}";
             SendRequest(MessageContentType.Login, requestContent, jObject => {
                 // TODO interpret jObject response from server
-                jObject
+                //jObject
             });
 
             return ar;
