@@ -51,11 +51,6 @@
                 SelectionMode = ListSelectionMode.Single,                
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.75f, 0))
             };
-            _gameList.Items.Add("Game 1");
-            _gameList.Items.Add("Game 2");
-            _gameList.Items.Add("Game 3");
-            _gameList.Items.Add("Game 4");
-            _gameList.Items.Add("Game 5");
 
             screen.Desktop.Children.AddRange(new Control[] { btnJoinGame, btnCreateGame, btnLogout, btnRefresh, _gameList });
         }
