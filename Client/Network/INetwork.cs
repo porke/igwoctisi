@@ -24,5 +24,15 @@
         GameState EndReceiveGameState(IAsyncResult asyncResult);
         IAsyncResult BeginSendCommands(UserCommands commands, AsyncCallback asyncCallback, object asyncState);
         void EndSendCommands(IAsyncResult asyncResult);
+
+        /// <summary>
+        /// Arguments: username, chat message, time
+        /// </summary>
+        event Action<ChatMessage> OnChatMessageReceived;
+
+        /// <summary>
+        /// Argument: disconnection reason (may be empty)
+        /// </summary>
+        event Action<string> OnDisconnected;
     }
 }

@@ -372,7 +372,7 @@
                     if (loggedIn)
                         return true;
                     else
-                        throw new Exception("Login failed due to error: " + messageContentType.ToString());
+                        throw new Exception("Login failed due to the error: " + messageContentType.ToString());
                 });
 
                 // We don't want any Content packet.
