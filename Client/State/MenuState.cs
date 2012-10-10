@@ -17,6 +17,17 @@
 
             eventHandlers.Add("QuitGame", QuitGame);
             eventHandlers.Add("RequestLogin", RequestLogin);
+            eventHandlers.Add("OnDisconnected", OnDisconnected);
+        }
+
+        public override void OnEnter()
+        {
+            Client.Network.OnDisconnected += new Action<string>(OnDisconnected_EventHandler);
+        }
+
+        public override void OnExit()
+        {
+            Client.Network.OnDisconnected -= new Action<string>(OnDisconnected_EventHandler);
         }
 
         #region Event handlers
@@ -39,6 +50,18 @@
             };
             ViewMgr.PushLayer(messageBox);
             Client.Network.BeginConnect(hostname, port, OnConnect, Tuple.Create<MessageBox, LoginEventArgs>(messageBox, loginData));
+        }
+
+        private void OnDisconnected(EventArgs args)
+        {
+            var msgBoxArgs = args as MessageBoxArgs;
+            var messageBox = new MessageBox(MessageBoxButtons.OK)
+            {
+                Title = msgBoxArgs.Title,
+                Message = msgBoxArgs.Message
+            };
+            messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
+            ViewMgr.PushLayer(messageBox);
         }
 
         #endregion
@@ -86,7 +109,13 @@
                 messageBox.Buttons = MessageBoxButtons.OK;
                 messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
             }
-        }        
+        }
+
+        private void OnDisconnected_EventHandler(string reason)
+        {
+            //ViewMgr.PopLayer(); //
+            //HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were forcefully kicked out by the server."));
+        }
 
         #endregion
     }

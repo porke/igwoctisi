@@ -124,6 +124,7 @@
     <Compile Include="View\Lobby\LobbyBackground.cs" />
     <Compile Include="View\Lobby\MainLobbyView.cs" />
     <Compile Include="View\Menu\LoginEventArgs.cs" />
+    <Compile Include="View\MessageBoxArgs.cs" />
     <Compile Include="View\Play\GameHud.cs" />
     <Compile Include="View\Play\GameViewport.cs" />
     <Compile Include="View\BaseView.cs" />

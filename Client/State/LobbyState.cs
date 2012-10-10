@@ -29,9 +29,14 @@
 
         public override void OnEnter()
         {
-            var network = Client.Network;
+            Client.Network.OnDisconnected += new Action<string>(OnDisconnected_EventHandler);
             this.RefreshGameList(new SenderEventArgs(ViewMgr.PeekLayer()));
-        }        
+        }
+
+        public override void OnExit()
+        {
+            Client.Network.OnDisconnected -= new Action<string>(OnDisconnected_EventHandler);
+        }
 
         #region Event handlers
 
@@ -105,6 +110,13 @@
             lobbyWindow.Invoke(lobbyWindow.RefreshGameList, gameNames);
 
             ViewMgr.PopLayer(); // MessageBox            
+        }
+
+        private void OnDisconnected_EventHandler(string reason)
+        {
+            var menuState = new MenuState(Game);
+            Client.ChangeState(menuState);
+            menuState.HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were forcefully kicked out by the server."));
         }
 
         #endregion
