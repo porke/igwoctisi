@@ -27,7 +27,7 @@
 
         private void RequestLogin(EventArgs args)
         {
-            string hostname = "localhost"; //"v.zloichuj.eu";
+            string hostname = "v.zloichuj.eu";
             int port = 23456;
             var loginData = args as LoginEventArgs;
 

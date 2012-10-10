@@ -419,7 +419,8 @@
         {
             var ar = new AsyncResult<List<GameInfo>>(asyncCallback, asyncState);
 
-            SendRequest(MessageContentType.GameList, null, (jsonStr, packetType, messageContentType) => {
+            SendRequest(MessageContentType.GameList, null, (jsonStr, packetType, messageContentType) =>
+            {
                 if (packetType == PacketType.Header)
                 {
                     if (messageContentType == MessageContentType.GameList)

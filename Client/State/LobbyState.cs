@@ -4,6 +4,8 @@
     using View.Lobby;
     using System;
     using Common;
+    using System.Collections.Generic;
+    using Client.Model;
 
     class LobbyState : GameState
     {
@@ -67,8 +69,8 @@
         }
 
         private void RefreshGameList(EventArgs args)
-        {
-            Client.Network.BeginGetGameList(OnReceiveGameList, null);
+        {            
+            Client.Network.BeginGetGameList(OnReceiveGameList, (args as SenderEventArgs).Sender);
         }
 
         #endregion
@@ -83,12 +85,11 @@
 
         private void OnReceiveGameList(IAsyncResult result)
         {
-            var asyncResult = result as AsyncResult<object>;
-            var gameNames = asyncResult.Result as string[];
-            
-            // TODO push refresh to views
-            // Refresh must be called on the main thread or else it can break the ui
-            // (weird exceptions resulting from concurrent collection modifications) 
+            var asyncResult = result as AsyncResult<List<GameInfo>>;
+            var gameNames = asyncResult.Result as List<GameInfo>;
+
+            var lobbyWindow = asyncResult.AsyncState as MainLobbyView;
+            lobbyWindow.Invoke(lobbyWindow.RefreshGameList, gameNames);
 
             Client.Network.EndGetGameList(result);
         }
