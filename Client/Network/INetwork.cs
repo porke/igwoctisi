@@ -11,7 +11,7 @@
         void Update(double delta, double time);
 
         IAsyncResult BeginConnect(string hostname, int port, AsyncCallback asyncCallback, object asyncState);
-        void EndConnect(IAsyncResult asyncResult);
+        bool EndConnect(IAsyncResult asyncResult);
         IAsyncResult BeginLogin(string login, string password, AsyncCallback asyncCallback, object asyncState);
         void EndLogin(IAsyncResult asyncResult);
         IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState);
