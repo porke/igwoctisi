@@ -250,6 +250,12 @@
                 {
                     OnDisconnected.Invoke("Connection ended.");
                 }
+
+                try
+                {
+                    TimeoutObject.Reset();
+                }
+                catch { }
             }
         }
 
@@ -290,6 +296,7 @@
                 tcpClient.Close();
             }
             catch { }
+            tcpClient = null;
         }
         public void Update(double delta, double time)
         {
@@ -306,7 +313,7 @@
         /// <returns></returns>
         public IAsyncResult BeginConnect(string hostname, int port, AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<object>(asyncCallback, asyncState);
+            var ar = new AsyncResult<bool>(asyncCallback, asyncState);
             var tcpClient = new TcpClient();
 
             tcpClient.BeginConnect(hostname, port, new AsyncCallback(TcpConnectCallback), tcpClient);
@@ -338,11 +345,10 @@
         }
         public bool EndConnect(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<object>)asyncResult;
-            var res = ar.Result;
+            var ar = (AsyncResult<bool>)asyncResult;
             ar.EndInvoke();
 
-            return (bool)res;
+            return ar.Result;
         }
         public IAsyncResult BeginLogin(string login, string password, AsyncCallback asyncCallback, object asyncState)
         {
@@ -377,8 +383,16 @@
         public IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<object>(asyncCallback, asyncState);
-            // simulate time consuming task
-            ar.BeginInvoke(() => { Thread.Sleep(500); return null; });
+
+            ar.BeginInvoke(() => {
+                try
+                {
+                    tcpClient.Close();
+                }
+                catch { }
+                tcpClient = null;
+                return null;
+            });
             return ar;
         }
         public void EndDisconnect(IAsyncResult asyncResult)

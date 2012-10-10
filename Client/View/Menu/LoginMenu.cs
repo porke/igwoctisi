@@ -50,40 +50,19 @@
             var messageBox = new MessageBox(MessageBoxButtons.None)
             {
                 Title = "Login",
-                Message = "Connecting..."
+                Message = "Logging in..."
             };
-            ViewMgr.PushLayer(messageBox);
 
-            string hostname = "localhost";// "v.zloichuj.eu";
-            int port = 23456;
+            ViewMgr.Client.Network.BeginLogin(tbLogin.Text, tbPassword.Text, OnLogin, messageBox);
 
-            ViewMgr.Client.Network.BeginConnect(hostname, port, OnConnect, messageBox);
         }
         protected void Back_Pressed(object sender, EventArgs e)
         {
+            ViewMgr.Client.Network.BeginDisconnect(null, null);
             ViewMgr.PopLayer();
             ViewMgr.PushLayer(new MainMenu(State));
         }
-
-        protected void OnConnect(IAsyncResult ar)
-        {
-            var network = ViewMgr.Client.Network;
-            var messageBox = (MessageBox) ar.AsyncState;
-
-            try
-            {
-                network.EndConnect(ar);
-                messageBox.Message = "Logging in...";
-
-                network.BeginLogin(tbLogin.Text, tbPassword.Text, OnLogin, messageBox);
-            }
-            catch (Exception exc)
-            {
-                messageBox.Message = exc.Message;
-                messageBox.Buttons = MessageBoxButtons.OK;
-                messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
-            }
-        }
+                
         protected void OnLogin(IAsyncResult ar)
         {
             var network = ViewMgr.Client.Network;
