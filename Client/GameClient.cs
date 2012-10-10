@@ -9,7 +9,7 @@
     using Renderer;
     using State;
 
-    public abstract class Client : Game
+    public abstract class GameClient : Game
     {
         public GraphicsDeviceManager GraphicsManager { get; protected set; }
         public IRenderer Renderer { get; protected set; }
@@ -18,7 +18,7 @@
         public IGuiVisualizer Visualizer { get; protected set; }
         public GameState State { get; protected set; }
 
-        protected Client()
+        protected GameClient()
         {
             GraphicsManager = new GraphicsDeviceManager(this);
 

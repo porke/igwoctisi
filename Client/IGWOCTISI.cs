@@ -3,7 +3,7 @@ namespace Client
     using View;
     using State;
 
-    public class IGWOCTISI : Client
+    public class IGWOCTISI : GameClient
     {
         #region Microsoft.Xna.Framework.Game members
 

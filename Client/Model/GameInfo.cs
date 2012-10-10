@@ -1,10 +1,10 @@
 ﻿
-namespace Client.Network
+namespace Client.Model
 {
     public class GameInfo
     {
-        int LobbyId;
-        int PlayersCount;
-        string Name;
+        public int LobbyId { get; set; }
+        public int PlayersCount { get; set; }
+        public string Name { get; set; }
     }
 }

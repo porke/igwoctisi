@@ -17,7 +17,7 @@
 
         #region IInput members
 
-        public void Initialize(Client client)
+        public void Initialize(GameClient client)
         {
             Client = client;
 
@@ -141,6 +141,6 @@
 
         #endregion
 
-        public Client Client { get; protected set; }
+        public GameClient Client { get; protected set; }
     }
 }

@@ -97,10 +97,10 @@
 
         #endregion
 
-        public Client Client { get; protected set; }
+        public GameClient Client { get; protected set; }
         public IInputReceiver InputReceiver { get; protected set; }
 
-        public ViewManager(Client client)
+        public ViewManager(GameClient client)
         {
             _viewStack = new List<IView>();
 

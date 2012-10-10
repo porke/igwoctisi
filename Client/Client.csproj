@@ -92,7 +92,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client.cs" />
+    <Compile Include="GameClient.cs" />
     <Compile Include="Common\AsyncResult.cs" />
     <Compile Include="Common\Logger.cs" />
     <Compile Include="Common\SystemExtensions.cs" />
@@ -102,6 +102,7 @@
     <Compile Include="Input\InputReceiver.cs" />
     <Compile Include="Input\NuclexScreenInputReceiver.cs" />
     <Compile Include="Input\XnaInput.cs" />
+    <Compile Include="Model\ChatMessage.cs" />
     <Compile Include="Model\GameState.cs" />
     <Compile Include="Model\Planet.cs" />
     <Compile Include="Model\Scene.cs" />

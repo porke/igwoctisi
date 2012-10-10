@@ -8,6 +8,8 @@
     using State;
     using Nuclex.UserInterface.Controls.Arcade;
     using Nuclex.UserInterface.Controls;
+    using System.Collections.Generic;
+    using Client.Model;
 
     class MainLobbyView : IView
     {
@@ -90,14 +92,15 @@
         {            
             _gameList.Items.Clear();
 
-            var asyncResult = result as AsyncResult<object>;
-            var gameNames = asyncResult.Result as string[];
-            foreach (var name in gameNames)
+            var asyncResult = result as AsyncResult<List<GameInfo>>;
+            var gameList = asyncResult.Result as List<GameInfo>;
+            State.Client.Network.EndGetGameList(result);
+
+            foreach (GameInfo game in gameList)
             {
-                _gameList.Items.Add(name);
+                _gameList.Items.Add(game.Name);
             }
 
-            State.Client.Network.EndGetGameList(result);
         }
 
         #endregion
