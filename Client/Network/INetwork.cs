@@ -13,7 +13,7 @@
         IAsyncResult BeginConnect(string hostname, int port, AsyncCallback asyncCallback, object asyncState);
         bool EndConnect(IAsyncResult asyncResult);
         IAsyncResult BeginLogin(string login, string password, AsyncCallback asyncCallback, object asyncState);
-        void EndLogin(IAsyncResult asyncResult);
+        bool EndLogin(IAsyncResult asyncResult);
         IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState);
         void EndDisconnect(IAsyncResult asyncResult);
 
