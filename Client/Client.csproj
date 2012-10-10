@@ -122,7 +122,7 @@
     <Compile Include="View\Lobby\MainLobbyView.cs" />
     <Compile Include="View\Play\GameHud.cs" />
     <Compile Include="View\Play\GameViewport.cs" />
-    <Compile Include="View\IView.cs" />
+    <Compile Include="View\View.cs" />
     <Compile Include="View\Lobby\GameLobbyView.cs" />
     <Compile Include="View\Menu\MenuBackground.cs" />
     <Compile Include="View\Menu\LoginMenu.cs" />

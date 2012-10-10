@@ -9,11 +9,9 @@
     using Nuclex.UserInterface.Controls.Arcade;
     using Nuclex.UserInterface.Controls;
 
-    class MainLobbyView : IView
+    class MainLobbyView : BaseView
     {
         #region Protected members
-
-        protected Screen _screen;
 
         private ListControl _gameList;
 
@@ -56,17 +54,17 @@
             };
 
             Refresh_Pressed(null, null);
-            _screen.Desktop.Children.AddRange(new Control[] { btnJoinGame, btnCreateGame, btnLogout, btnRefresh, _gameList });
+            screen.Desktop.Children.AddRange(new Control[] { btnJoinGame, btnCreateGame, btnLogout, btnRefresh, _gameList });
         }
 
         protected void Logout_Pressed(object sender, EventArgs e)
         {
-            State.Client.Network.BeginDisconnect(OnLogout, null);
+            state.Client.Network.BeginDisconnect(OnLogout, null);
         }
 
         protected void Refresh_Pressed(object sender, EventArgs e)
         {
-            State.Client.Network.BeginGetGameList(OnReceiveGameList, null);
+            state.Client.Network.BeginGetGameList(OnReceiveGameList, null);
         }
 
         protected void JoinGame_Pressed(object sender, EventArgs e)
@@ -77,13 +75,13 @@
         protected void CreateGame_Pressed(object sender, EventArgs e)
         {            
             ViewMgr.PopLayer(); // this
-            ViewMgr.PushLayer(new CreateGameView(State));
+            ViewMgr.PushLayer(new CreateGameView(state));
         }
 
         private void OnLogout(IAsyncResult result)
         {
-            State.Client.Network.EndDisconnect(result);
-            State.Client.ChangeState(new MenuState(State.Game));
+            state.Client.Network.EndDisconnect(result);
+            state.Client.ChangeState(new MenuState(state.Game));
         }
 
         private void OnReceiveGameList(IAsyncResult result)
@@ -97,49 +95,18 @@
                 _gameList.Items.Add(name);
             }
 
-            State.Client.Network.EndGetGameList(result);
+            state.Client.Network.EndGetGameList(result);
         }
 
         #endregion
 
-        #region IView members
-
-        public bool IsLoaded
+        public MainLobbyView(GameState state)
+            : base(state)
         {
-            get { return true; }
-        }
-        public bool IsTransparent
-        {
-            get { return true; }
-        }
-        public IInputReceiver InputReceiver { get; protected set; }
-
-        public void OnShow(ViewManager viewMgr, double time)
-        {
-            ViewMgr = viewMgr;
-        }
-        public void OnHide(double time)
-        {   
-        }
-        public void Update(double delta, double time)
-        {
-        }
-        public void Draw(double delta, double time)
-        {
-            ViewMgr.Client.Visualizer.Draw(_screen);
-        }
-
-        #endregion
-
-        public LobbyState State { get; protected set; }
-        public ViewManager ViewMgr { get; protected set; }
-
-        public MainLobbyView(LobbyState state)
-        {
-            State = state;
-            _screen = new Screen(800, 600);
-            _screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.2f, 0), new UniScalar(0.6f, 0), new UniScalar(0.6f, 0));
-            InputReceiver = new NuclexScreenInputReceiver(_screen, false);
+            IsLoaded = true;
+            IsTransparent = true;
+            screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.2f, 0), new UniScalar(0.6f, 0), new UniScalar(0.6f, 0));
+            InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();
         }

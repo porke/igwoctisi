@@ -6,10 +6,12 @@
     public abstract class GameState
     {
         public Client Client { get; protected set; }
+        public IGWOCTISI Game { get; protected set; }
         public ViewManager ViewMgr { get; protected set; }
 
         public GameState(Client client)
         {
+            Game = client as IGWOCTISI;
             Client = client;
             ViewMgr = new ViewManager(Client);
         }

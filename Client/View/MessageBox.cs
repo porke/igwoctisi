@@ -7,7 +7,6 @@
     using Nuclex.UserInterface;
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
-    using IInputReceiver = Input.IInputReceiver;
 
     enum MessageBoxButtons
     {
@@ -15,11 +14,10 @@
         OK
     }
 
-    class MessageBox : IView
+    class MessageBox : BaseView
     {
         #region Protected members
 
-        protected Screen _screen;
         protected MessageBoxButtons _buttons;
         protected WindowControl _window;
         protected LabelControl _lblMessage;
@@ -39,7 +37,7 @@
             };
 
             _window.Children.AddRange(new[] { _lblMessage });
-            _screen.Desktop.Children.AddRange(new[] { _window });
+            screen.Desktop.Children.AddRange(new[] { _window });
         }
         protected void UpdateButtons(MessageBoxButtons buttons)
         {
@@ -73,36 +71,6 @@
 
         #endregion
 
-        #region IView members
-
-        public bool IsLoaded
-        {
-            get { return true; }
-        }
-        public bool IsTransparent
-        {
-            get { return true; }
-        }
-        public IInputReceiver InputReceiver { get; protected set; }
-
-        public void OnShow(ViewManager viewMgr, double time)
-        {
-            ViewMgr = viewMgr;
-        }
-        public void OnHide(double time)
-        {
-        }
-        public void Update(double delta, double time)
-        {
-        }
-        public void Draw(double delta, double time)
-        {
-            ViewMgr.Client.Visualizer.Draw(_screen);
-        }
-
-        #endregion
-
-        public ViewManager ViewMgr { get; protected set; }
         public string Title
         {
             get { return _window.Title; }
@@ -121,13 +89,15 @@
 
         public event EventHandler OkPressed;
 
-        public MessageBox(MessageBoxButtons buttons)
+        public MessageBox(MessageBoxButtons buttons) : base(null)
         {
-            _screen = new Screen(800, 600);
-            InputReceiver = new NuclexScreenInputReceiver(_screen, true);
+            screen = new Screen(800, 600);
+            InputReceiver = new NuclexScreenInputReceiver(screen, true);
 
             CreateChildControls();
             Buttons = buttons;
+            IsLoaded = true;
+            IsTransparent = true;
         }
         public void RaiseOkPressed(object sender, EventArgs e)
         {

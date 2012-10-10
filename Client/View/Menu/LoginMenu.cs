@@ -9,11 +9,10 @@
     using State;
     using System.Net;
 
-    class LoginMenu : IView
+    class LoginMenu : BaseView
     {
         #region Protected members
 
-        protected Screen _screen;
         protected InputControl tbLogin;
         protected InputControl tbPassword;
 
@@ -43,7 +42,7 @@
             };
             btnBack.Pressed += Back_Pressed;
 
-            _screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnBack });
+            screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnBack });
         }
         protected void Login_Pressed(object sender, EventArgs e)
         {
@@ -60,7 +59,7 @@
         {
             ViewMgr.Client.Network.BeginDisconnect(null, null);
             ViewMgr.PopLayer();
-            ViewMgr.PushLayer(new MainMenu(State));
+            ViewMgr.PushLayer(new MainMenu(state));
         }
                 
         protected void OnLogin(IAsyncResult ar)
@@ -74,7 +73,7 @@
                 ViewMgr.PopLayer(); // MessageBox
                 ViewMgr.PopLayer(); // this
 
-                ViewMgr.Client.ChangeState(new LobbyState(State.Game));
+                ViewMgr.Client.ChangeState(new LobbyState(state.Game));
             }
             catch (Exception exc)
             {
@@ -86,43 +85,12 @@
 
         #endregion
 
-        #region IView members
-
-        public bool IsLoaded
+        public LoginMenu(GameState state)
+            : base(state)
         {
-            get { return true; }
-        }
-        public bool IsTransparent
-        {
-            get { return true; }
-        }
-        public IInputReceiver InputReceiver { get; protected set; }
-
-        public void OnShow(ViewManager viewMgr, double time)
-        {
-            ViewMgr = viewMgr;
-        }
-        public void OnHide(double time)
-        {
-        }
-        public void Update(double delta, double time)
-        {
-        }
-        public void Draw(double delta, double time)
-        {
-            ViewMgr.Client.Visualizer.Draw(_screen);
-        }
-
-        #endregion
-
-        public MenuState State { get; protected set; }
-        public ViewManager ViewMgr { get; protected set; }
-
-        public LoginMenu(MenuState state)
-        {
-            State = state;
-            _screen = new Screen(800, 600);
-            InputReceiver = new NuclexScreenInputReceiver(_screen, false);
+            IsLoaded = true;
+            IsTransparent = true;
+            InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();
         }

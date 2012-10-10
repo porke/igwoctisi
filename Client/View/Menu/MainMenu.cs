@@ -7,11 +7,9 @@
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
 
-    class MainMenu : IView
+    class MainMenu : BaseView
     {
         #region Protected members
-
-        protected Screen _screen;
 
         protected void CreateChildControls()
         {
@@ -36,7 +34,7 @@
             };
             btnQuit.Pressed += Quit_Pressed;
 
-            _screen.Desktop.Children.AddRange(new[] { btnNewGame, btnCredits, btnQuit });
+            screen.Desktop.Children.AddRange(new[] { btnNewGame, btnCredits, btnQuit });
         }
 
         protected void NewGame_Pressed(object sender, EventArgs e)
@@ -60,7 +58,7 @@
 
         protected void Quit_Pressed(object sender, EventArgs e)
         {
-            State.Client.Exit();
+            state.Client.Exit();
         }
 
         protected void OnConnect(IAsyncResult ar)
@@ -74,7 +72,7 @@
 
                 ViewMgr.PopLayer(); // MessageBox
                 ViewMgr.PopLayer(); // this
-                ViewMgr.PushLayer(new LoginMenu(State));
+                ViewMgr.PushLayer(new LoginMenu(state));
             }
             catch (Exception exc)
             {
@@ -86,43 +84,11 @@
 
         #endregion
 
-        #region IView members
-
-        public bool IsLoaded
+        public MainMenu(GameState state) : base(state)
         {
-            get { return true; }
-        }
-        public bool IsTransparent
-        {
-            get { return true; }
-        }
-        public IInputReceiver InputReceiver { get; protected set; }
-
-        public void OnShow(ViewManager viewMgr, double time)
-        {
-            ViewMgr = viewMgr;
-        }
-        public void OnHide(double time)
-        {   
-        }
-        public void Update(double delta, double time)
-        {
-        }
-        public void Draw(double delta, double time)
-        {
-            ViewMgr.Client.Visualizer.Draw(_screen);
-        }
-
-        #endregion
-
-        public MenuState State { get; protected set; }
-        public ViewManager ViewMgr { get; protected set; }
-
-        public MainMenu(MenuState state)
-        {
-            State = state;
-            _screen = new Screen(800, 600);
-            InputReceiver = new NuclexScreenInputReceiver(_screen, false);
+            IsLoaded = true;
+            IsTransparent = true;
+            InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();
         }
