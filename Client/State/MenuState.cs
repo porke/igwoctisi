@@ -39,17 +39,19 @@
 
         private void RequestLogin(EventArgs args)
         {
+            var network = Client.Network;
             string hostname = "localhost"; // "v.zloichuj.eu";
             int port = 23456;
             var loginData = args as LoginEventArgs;
 
             var messageBox = new MessageBox(MessageBoxButtons.None)
             {
-                Title = "Login",
+                Title = "Log in",
                 Message = string.Format("Connecting... {0}@{1}", loginData.Login, loginData.Password)
             };
+
+            network.BeginConnect(hostname, port, OnConnect, Tuple.Create<MessageBox, LoginEventArgs>(messageBox, loginData));
             ViewMgr.PushLayer(messageBox);
-            Client.Network.BeginConnect(hostname, port, OnConnect, Tuple.Create<MessageBox, LoginEventArgs>(messageBox, loginData));
         }
 
         private void OnDisconnected(EventArgs args)
@@ -77,10 +79,15 @@
 
             try
             {
-                network.EndConnect(ar);
-                network.BeginLogin(loginData.Login, loginData.Password, OnLogin, messageBox);
-
-                messageBox.Message = "Logging in as " + loginData.Login + "...";
+                if (network.EndConnect(ar))
+                {
+                    network.BeginLogin(loginData.Login, loginData.Password, OnLogin, messageBox);
+                    messageBox.Message = "Logging in as " + loginData.Login + "...";
+                }
+                else
+                {
+                    throw new Exception("Couldn't connect to the server.");
+                }
             }
             catch (Exception exc)
             {
@@ -97,24 +104,37 @@
 
             try
             {
-                network.EndLogin(ar);
-                ViewMgr.PopLayer(); // MessageBox
-                ViewMgr.PopLayer(); // login input
-                
-                Client.ChangeState(new LobbyState(Game));
+                if (network.EndLogin(ar))
+                {
+                    //ViewMgr.PopLayer(); // MessageBox
+                    //ViewMgr.PopLayer(); // login input
+
+                    Client.ChangeState(new LobbyState(Game));
+                }
+                else
+                {
+                    throw new Exception("Login failed!");
+                }
             }
             catch (Exception exc)
             {
+                network.BeginDisconnect(OnDisconnect, null);
                 messageBox.Message = exc.Message;
                 messageBox.Buttons = MessageBoxButtons.OK;
                 messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
             }
         }
 
+        private void OnDisconnect(IAsyncResult ar)
+        {
+            var network = ViewMgr.Client.Network;
+            network.EndDisconnect(ar);
+        }
+
         private void OnDisconnected_EventHandler(string reason)
         {
-            //ViewMgr.PopLayer(); //
-            //HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were forcefully kicked out by the server."));
+            ViewMgr.PopLayer(); // Probably "Logging in..." MessageBox
+            HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were forcefully kicked out by the server."));
         }
 
         #endregion
