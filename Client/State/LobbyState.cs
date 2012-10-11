@@ -71,9 +71,15 @@
 
         private void JoinGame(EventArgs args)
         {
-            //TODO: Implement join game
             var joinGameArgs = args as JoinGameArgs;
-            Client.Network.BeginJoinGameLobby(joinGameArgs.LobbyId, OnJoinLobby, null);
+
+            var messageBox = new MessageBox(MessageBoxButtons.None)
+            {
+                Title = "Join Game",
+                Message = "Joining in..."
+            };
+            ViewMgr.PushLayer(messageBox);
+            Client.Network.BeginJoinGameLobby(joinGameArgs.LobbyId, OnJoinLobby, messageBox);
         }
 
         private void BeginGame(EventArgs args)
@@ -116,13 +122,21 @@
 
         private void OnJoinLobby(IAsyncResult result)
         {
+            var messageBox = result.AsyncState as MessageBox;
+
             try
             {
                 var gameInfo = Game.Network.EndJoinGameLobby(result);
+
+                ViewMgr.PopLayer(); // MessageBox
+                ViewMgr.PopLayer(); // MainLobbyView
+                ViewMgr.PushLayer(new GameLobbyView(this));
             }
             catch (Exception exc)
             {
-                // TODO show messagebox with exc.Message
+                messageBox.Buttons = MessageBoxButtons.OK;
+                messageBox.Message = exc.Message;
+                messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
             }
         }
 
