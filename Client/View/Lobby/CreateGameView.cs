@@ -74,7 +74,8 @@
 
         private void CreateGame_Pressed(object sender, EventArgs args)
         {
-            state.HandleViewEvent("CreateGame", args);
+            var mapName = _mapList.Items[_mapList.SelectedItems[0]];
+            state.HandleViewEvent("CreateGame", new CreateGameArgs(_gameName.Text, mapName));
         }
 
         private void LoadMapNames()
