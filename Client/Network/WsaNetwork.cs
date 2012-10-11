@@ -211,7 +211,7 @@
                         {
                             if (OnChatMessageReceived != null)
                             {
-                                var msg = JsonConvert.DeserializeObject<ChatMessage>(jsonLine);
+                                var msg = JsonLowercaseSerializer.DeserializeObject<ChatMessage>(jsonLine);
                                 OnChatMessageReceived.Invoke(msg);
                             }
                         }
@@ -274,11 +274,11 @@
 
             // Send header
             string messageContentTypeStr = char.ToLower(messageContentType.ToString()[0]) + messageContentType.ToString().Substring(1);
-            var header = JsonConvert.SerializeObject(new
+            var header = JsonLowercaseSerializer.SerializeObject(new
             {
                 id = id,
                 type = messageContentTypeStr
-            }, Formatting.None);
+            });
 
             SendJson(header);
 
@@ -358,13 +358,14 @@
         {
             var ar = new AsyncResult<bool>(asyncCallback, asyncState);
 
-            string requestContent = JsonConvert.SerializeObject(new
+            string requestContent = JsonLowercaseSerializer.SerializeObject(new
             {
                 login = login,
                 password = password
             });
 
-            SendRequest(MessageContentType.Login, requestContent, (jObject, packetType, messageContentType) => {
+            SendRequest(MessageContentType.Login, requestContent, (jsonStr, packetType, messageContentType) =>
+            {
                 // It always should should be Header.
                 Debug.Assert(packetType == PacketType.Header);
 
@@ -389,6 +390,59 @@
             ar.EndInvoke();
             return (bool)ar.Result;
         }
+
+        public IAsyncResult BeginJoinGameLobby(int lobbyId, AsyncCallback asyncCallback, object asyncState)
+        {
+            var ar = new AsyncResult<GameInfo>(asyncCallback, asyncState);
+
+            string requestContent = JsonLowercaseSerializer.SerializeObject(new
+            {
+                LobbyId = lobbyId
+            });
+
+            SendRequest(MessageContentType.GameJoin, requestContent, (jsonStr, packetType, messageContentType) =>
+            {
+                if (packetType == PacketType.Header)
+                {
+                    if (messageContentType == MessageContentType.GameInfo)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        string errorMessage = "Couldn't join game: " + messageContentType.ToString();
+
+                        if (messageContentType == MessageContentType.GameFull)
+                        {
+                            errorMessage = "Couldn't join game. Lobby is full.";
+                        }
+
+                        ar.HandleException(new Exception(errorMessage), false);
+                    }
+                }
+                else if (packetType == PacketType.Content)
+                {
+                    ar.BeginInvoke(() =>
+                    {
+                        return JsonLowercaseSerializer.DeserializeObject<GameInfo>(jsonStr);
+                    });
+                }
+                
+                return false;
+            });
+
+            return ar;
+        }
+
+        public GameInfo EndJoinGameLobby(IAsyncResult asyncResult)
+        {
+            var ar = (AsyncResult<GameInfo>)asyncResult;
+            var res = ar.Result;
+            ar.EndInvoke();
+
+            return res;
+        }
+
         public IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<object>(asyncCallback, asyncState);
@@ -412,7 +466,7 @@
 
         public IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<List<GameInfo>>(asyncCallback, asyncState);
+            var ar = new AsyncResult<List<LobbyInfo>>(asyncCallback, asyncState);
 
             SendRequest(MessageContentType.GameList, null, (jsonStr, packetType, messageContentType) =>
             {
@@ -435,7 +489,7 @@
                 {
                     ar.BeginInvoke(() =>
                     {
-                        return JsonConvert.DeserializeObject<List<GameInfo>>(jsonStr);
+                        return JsonLowercaseSerializer.DeserializeObject<List<LobbyInfo>>(jsonStr);
                     });
                 }
 
@@ -444,9 +498,9 @@
             
             return ar;
         }
-        public List<GameInfo> EndGetGameList(IAsyncResult asyncResult)
+        public List<LobbyInfo> EndGetGameList(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<List<GameInfo>>)asyncResult;
+            var ar = (AsyncResult<List<LobbyInfo>>)asyncResult;
             ar.EndInvoke();
 
             return ar.Result;

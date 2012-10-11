@@ -4,11 +4,11 @@
 
     class JoinGameArgs : EventArgs
     {
-        public string GameId { get; private set; }
+        public int LobbyId { get; private set; }
 
-        public JoinGameArgs(string gameId)
+        public JoinGameArgs(int lobbyId)
         {
-            GameId = gameId;
+            LobbyId = lobbyId;
         }
     }
 }

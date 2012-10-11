@@ -72,6 +72,8 @@
         private void JoinGame(EventArgs args)
         {
             //TODO: Implement join game
+            var joinGameArgs = args as JoinGameArgs;
+            Client.Network.BeginJoinGameLobby(joinGameArgs.LobbyId, OnJoinLobby, null);
         }
 
         private void BeginGame(EventArgs args)
@@ -110,6 +112,18 @@
             lobbyWindow.Invoke(lobbyWindow.RefreshGameList, gameNames);
 
             ViewMgr.PopLayer(); // MessageBox            
+        }
+
+        private void OnJoinLobby(IAsyncResult result)
+        {
+            try
+            {
+                var gameInfo = Game.Network.EndJoinGameLobby(result);
+            }
+            catch (Exception exc)
+            {
+                // TODO show messagebox with exc.Message
+            }
         }
 
         private void OnDisconnected_EventHandler(string reason)
