@@ -34,6 +34,7 @@
 
         private void QuitGame(EventArgs args)
         {
+            Client.Network.BeginDisconnect(null, null);
             Client.Exit();
         }
 

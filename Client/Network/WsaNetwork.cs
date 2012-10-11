@@ -123,6 +123,7 @@
             int messageId = 0;
             Func<string, PacketType, MessageContentType, bool> responseCallback = null;
 
+            messageResponses.Clear();
             try
             {
                 while ((jsonLine = sr.ReadLine()) != null)
