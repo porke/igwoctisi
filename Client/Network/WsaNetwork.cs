@@ -25,7 +25,7 @@
         /// Argument: disconnection reason (may be empty)
         /// </summary>
         public event Action<string> OnDisconnected;
-
+        
         #endregion
 
         #region Internal connection handling
@@ -319,6 +319,7 @@
             var ar = new AsyncResult<bool>(asyncCallback, asyncState);
             var tcpClient = new TcpClient();
 
+            TimeoutObject.Reset();
             tcpClient.BeginConnect(hostname, port, new AsyncCallback(TcpConnectCallback), tcpClient);
             ar.BeginInvoke(() =>
             {
