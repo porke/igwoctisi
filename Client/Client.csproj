@@ -122,6 +122,7 @@
     <Compile Include="State\LobbyState.cs" />
     <Compile Include="State\MenuState.cs" />
     <Compile Include="State\PlayState.cs" />
+    <Compile Include="View\Lobby\CreateGameArgs.cs" />
     <Compile Include="View\Lobby\CreateGameView.cs" />
     <Compile Include="View\Lobby\JoinGameArgs.cs" />
     <Compile Include="View\Lobby\LobbyBackground.cs" />

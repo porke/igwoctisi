@@ -47,6 +47,7 @@
 
         private void CreateGame(EventArgs args)
         {
+            // TODO: Call network to create a game
             ViewMgr.PopLayer();     // pop main lobby window
             ViewMgr.PushLayer(new GameLobbyView(this));
         }
