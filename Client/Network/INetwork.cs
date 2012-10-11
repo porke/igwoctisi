@@ -18,13 +18,13 @@
         IAsyncResult BeginLogout(AsyncCallback asyncCallback, object asyncState);
         void EndLogout(IAsyncResult asyncResult);
         IAsyncResult BeginJoinGameLobby(int lobbyId, AsyncCallback asyncCallback, object asyncState);
-        GameInfo EndJoinGameLobby(IAsyncResult asyncResult);
+        SpecificGameLobbyInfo EndJoinGameLobby(IAsyncResult asyncResult);
         IAsyncResult BeginLeaveGame(AsyncCallback asyncCallback, object asyncState);
         void EndLeaveGame(IAsyncResult asyncResult);
         IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState);
         void EndDisconnect(IAsyncResult asyncResult);
         IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState);
-        List<LobbyInfo> EndGetGameList(IAsyncResult asyncResult);
+        List<LobbyListInfo> EndGetGameList(IAsyncResult asyncResult);
 
         IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState);
         GameState EndReceiveGameState(IAsyncResult asyncResult);
