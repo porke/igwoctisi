@@ -30,7 +30,7 @@
         public override void OnEnter()
         {
             Client.Network.OnDisconnected += new Action<string>(OnDisconnected_EventHandler);
-            this.RefreshGameList(new SenderEventArgs(ViewMgr.PeekLayer()));
+            //this.RefreshGameList(new SenderEventArgs(ViewMgr.PeekLayer()));
         }
 
         public override void OnExit()
