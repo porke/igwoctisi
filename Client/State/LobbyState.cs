@@ -42,6 +42,8 @@
 
         private void LeaveGameLobby(EventArgs args)
         {
+            //TODO Client.Network.BeginLeaveGame();
+
             ViewMgr.PopLayer(); // pop game lobby
             ViewMgr.PushLayer(new MainLobbyView(this));
         }
@@ -66,7 +68,8 @@
 
         private void Logout(EventArgs args)
         {
-            Client.Network.BeginDisconnect(OnLogout, null);
+            var ar = Client.Network.BeginLogout(OnLogout, null);
+            ar.AsyncWaitHandle.WaitOne();
         }
 
         private void JoinGame(EventArgs args)
@@ -107,8 +110,15 @@
 
         private void OnLogout(IAsyncResult result)
         {
-            Client.Network.EndDisconnect(result);
-            Client.ChangeState(new MenuState(Game));
+            try
+            {
+                Client.Network.EndLogout(result);
+            }
+            catch { }
+            finally
+            {
+                Client.Network.BeginDisconnect(OnDisconnect, null);
+            }
         }
                 
         private void OnGetGameList(IAsyncResult result)
@@ -137,6 +147,19 @@
                 messageBox.Buttons = MessageBoxButtons.OK;
                 messageBox.Message = exc.Message;
                 messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
+            }
+        }
+
+        private void OnDisconnect(IAsyncResult result)
+        {
+            try
+            {
+                Client.Network.EndDisconnect(result);
+            }
+            catch { }
+            finally
+            {
+                Client.ChangeState(new MenuState(Game));
             }
         }
 
