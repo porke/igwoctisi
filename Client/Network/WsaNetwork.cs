@@ -263,15 +263,51 @@
             networkStreamWriter.Flush();
         }
 
+        private int GenerateMessageId()
+        {
+            return Interlocked.Increment(ref lastGeneratedId);
+        }
+
+        /// <summary>
+        /// Sends request for response of given type. It calls responseCallback when response come.
+        /// </summary>
+        /// <param name="messageContentType"></param>
+        /// <param name="jsonRequestContent"></param>
+        /// <param name="responseCallback"></param>
         private void SendRequest(MessageContentType messageContentType, string jsonRequestContent,
             Func<string, PacketType, MessageContentType, bool> responseCallback)
         {
             // Generate id of message
-            int id = Interlocked.Increment(ref lastGeneratedId);
+            int id = GenerateMessageId();
 
             // Save callback awaiting for response
             messageResponses.Add(id, responseCallback);
 
+            // Send header and content of message
+            SendHeaderAndContent(id, messageContentType, jsonRequestContent);
+        }
+
+        /// <summary>
+        /// Sends some information to the server and doesn't care about response.
+        /// </summary>
+        /// <param name="messageContentType"></param>
+        /// <param name="jsonInfoContent"></param>
+        private void SendInfo(MessageContentType messageContentType, string jsonInfoContent)
+        {
+            // Generate id of message
+            int id = GenerateMessageId();
+
+            SendHeaderAndContent(id, messageContentType, jsonInfoContent);
+        }
+
+        /// <summary>
+        /// Function used by SendInfo() and SendRequest().
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="messageContentType"></param>
+        /// <param name="jsonInfoContent"></param>
+        private void SendHeaderAndContent(int id, MessageContentType messageContentType, string jsonInfoContent)
+        {
             // Send header
             string messageContentTypeStr = char.ToLower(messageContentType.ToString()[0]) + messageContentType.ToString().Substring(1);
             var header = JsonLowercaseSerializer.SerializeObject(new
@@ -283,11 +319,12 @@
             SendJson(header);
 
             // Send message content if needed
-            if (jsonRequestContent != null)
+            if (jsonInfoContent != null)
             {
-                SendJson(jsonRequestContent);
+                SendJson(jsonInfoContent);
             }
         }
+
     
         #endregion
 
@@ -395,23 +432,9 @@
         {
             var ar = new AsyncResult<object>(asyncCallback, asyncState);
 
-            // TODO add some timeout because user interface waits for "ok" packet from server to change view.
-            SendRequest(MessageContentType.Logout, null, (jsonStr, packetType, messageContentType) =>
-            {
-                // It always should be Header
-                Debug.Assert(packetType == PacketType.Header);
-
-                ar.BeginInvoke(() =>
-                {
-                    if (messageContentType == MessageContentType.Ok)
-                        return null;
-                    else
-                        throw new Exception("Logout error: " + messageContentType.ToString());
-                });
-
-                // We don't want any Content packet.
-                return false;
-            });
+            // We're not interested what server would respond
+            SendInfo(MessageContentType.Logout, null);
+            ar.BeginInvoke(() => { return null; });
 
             return ar;
         }
@@ -472,6 +495,23 @@
             ar.EndInvoke();
 
             return res;
+        }
+
+        public IAsyncResult BeginLeaveGame(AsyncCallback asyncCallback, object asyncState)
+        {
+            var ar = new AsyncResult<object>(asyncCallback, asyncState);
+
+            // We're not interested what server would respond
+            SendInfo(MessageContentType.GameLeave, null);
+            ar.BeginInvoke(() => { return null; });
+
+            return ar;
+        }
+
+        public void EndLeaveGame(IAsyncResult asyncResult)
+        {
+            var ar = (AsyncResult<object>)asyncResult;
+            ar.EndInvoke();
         }
 
         public IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState)

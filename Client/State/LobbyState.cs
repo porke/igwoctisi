@@ -42,10 +42,7 @@
 
         private void LeaveGameLobby(EventArgs args)
         {
-            //TODO Client.Network.BeginLeaveGame();
-
-            ViewMgr.PopLayer(); // pop game lobby
-            ViewMgr.PushLayer(new MainLobbyView(this));
+            Client.Network.BeginLeaveGame(OnLeaveGame, null);
         }
 
         private void CreateGame(EventArgs args)
@@ -123,7 +120,7 @@
                 
         private void OnGetGameList(IAsyncResult result)
         {            
-            var gameNames = Game.Network.EndGetGameList(result);
+            var gameNames = Client.Network.EndGetGameList(result);
             var lobbyWindow = result.AsyncState as MainLobbyView;
             lobbyWindow.Invoke(lobbyWindow.RefreshGameList, gameNames);
 
@@ -136,7 +133,7 @@
 
             try
             {
-                var gameInfo = Game.Network.EndJoinGameLobby(result);
+                var gameInfo = Client.Network.EndJoinGameLobby(result);
 
                 ViewMgr.PopLayer(); // MessageBox
                 ViewMgr.PopLayer(); // MainLobbyView
@@ -150,6 +147,20 @@
             }
         }
 
+        private void OnLeaveGame(IAsyncResult result)
+        {
+            try
+            {
+                Client.Network.EndLeaveGame(result);
+            }
+            catch { }
+            finally
+            {
+                ViewMgr.PopLayer(); // pop game lobby
+                ViewMgr.PushLayer(new MainLobbyView(this));
+            }
+        }
+
         private void OnDisconnect(IAsyncResult result)
         {
             try
@@ -159,7 +170,6 @@
             catch { }
             finally
             {
-                Client.ChangeState(new MenuState(Game));
             }
         }
 
@@ -167,7 +177,7 @@
         {
             var menuState = new MenuState(Game);
             Client.ChangeState(menuState);
-            menuState.HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were forcefully kicked out by the server."));
+            menuState.HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were disconnected from the server."));
         }
 
         #endregion
