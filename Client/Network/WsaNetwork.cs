@@ -315,7 +315,6 @@
                 SendJson(jsonInfoContent);
             }
         }
-
     
         #endregion
 
