@@ -1,16 +1,15 @@
 ﻿namespace Client.Network
 {
     using System;
-    using System.Net;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Net.Sockets;
     using System.Threading;
     using Common;
     using Model;
-    using System.Net.Sockets;
-    using System.IO;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-    using System.Collections.Generic;
-    using System.Diagnostics;
 
     public class WsaNetwork : INetwork
     {
@@ -271,9 +270,6 @@
         /// <summary>
         /// Sends request for response of given type. It calls responseCallback when response come.
         /// </summary>
-        /// <param name="messageContentType"></param>
-        /// <param name="jsonRequestContent"></param>
-        /// <param name="responseCallback"></param>
         private void SendRequest(MessageContentType messageContentType, string jsonRequestContent,
             Func<string, PacketType, MessageContentType, bool> responseCallback)
         {
@@ -290,8 +286,6 @@
         /// <summary>
         /// Sends some information to the server and doesn't care about response.
         /// </summary>
-        /// <param name="messageContentType"></param>
-        /// <param name="jsonInfoContent"></param>
         private void SendInfo(MessageContentType messageContentType, string jsonInfoContent)
         {
             // Generate id of message
@@ -303,9 +297,6 @@
         /// <summary>
         /// Function used by SendInfo() and SendRequest().
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="messageContentType"></param>
-        /// <param name="jsonInfoContent"></param>
         private void SendHeaderAndContent(int id, MessageContentType messageContentType, string jsonInfoContent)
         {
             // Send header
@@ -447,7 +438,7 @@
 
         public IAsyncResult BeginJoinGameLobby(int lobbyId, AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<GameInfo>(asyncCallback, asyncState);
+            var ar = new AsyncResult<SpecificGameLobbyInfo>(asyncCallback, asyncState);
 
             string requestContent = JsonLowercaseSerializer.SerializeObject(new
             {
@@ -478,7 +469,7 @@
                 {
                     ar.BeginInvoke(() =>
                     {
-                        return JsonLowercaseSerializer.DeserializeObject<GameInfo>(jsonStr);
+                        return JsonLowercaseSerializer.DeserializeObject<SpecificGameLobbyInfo>(jsonStr);
                     });
                 }
                 
@@ -488,9 +479,9 @@
             return ar;
         }
 
-        public GameInfo EndJoinGameLobby(IAsyncResult asyncResult)
+        public SpecificGameLobbyInfo EndJoinGameLobby(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<GameInfo>)asyncResult;
+            var ar = (AsyncResult<SpecificGameLobbyInfo>)asyncResult;
             var res = ar.Result;
             ar.EndInvoke();
 
@@ -537,7 +528,7 @@
 
         public IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<List<LobbyInfo>>(asyncCallback, asyncState);
+            var ar = new AsyncResult<List<LobbyListInfo>>(asyncCallback, asyncState);
 
             SendRequest(MessageContentType.GameList, null, (jsonStr, packetType, messageContentType) =>
             {
@@ -560,7 +551,7 @@
                 {
                     ar.BeginInvoke(() =>
                     {
-                        return JsonLowercaseSerializer.DeserializeObject<List<LobbyInfo>>(jsonStr);
+                        return JsonLowercaseSerializer.DeserializeObject<List<LobbyListInfo>>(jsonStr);
                     });
                 }
 
@@ -569,9 +560,9 @@
             
             return ar;
         }
-        public List<LobbyInfo> EndGetGameList(IAsyncResult asyncResult)
+        public List<LobbyListInfo> EndGetGameList(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<List<LobbyInfo>>)asyncResult;
+            var ar = (AsyncResult<List<LobbyListInfo>>)asyncResult;
             ar.EndInvoke();
 
             return ar.Result;

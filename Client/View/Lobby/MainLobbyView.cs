@@ -14,7 +14,7 @@
     {
         #region Protected members
 
-        private List<LobbyInfo> _gameInfoList = new List<LobbyInfo>();
+        private List<LobbyListInfo> _gameInfoList = new List<LobbyListInfo>();
         private ListControl _gameList;
 
         protected void CreateChildControls()
@@ -97,7 +97,7 @@
 
         public void RefreshGameList(object gameInfoList)
         {
-            _gameInfoList = gameInfoList as List<LobbyInfo>;
+            _gameInfoList = gameInfoList as List<LobbyListInfo>;
             _gameList.Items.Clear();
 
             foreach (var info in _gameInfoList)

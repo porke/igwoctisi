@@ -11,7 +11,7 @@ namespace Client
         {
             base.Initialize();
 
-            ChangeState(new MenuState(this));
+            ChangeState(new PlayState(this));
         }
 
         #endregion
