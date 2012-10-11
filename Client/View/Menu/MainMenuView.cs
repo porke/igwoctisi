@@ -19,11 +19,13 @@
         {
             tbLogin = new InputControl
             {
+                Text = "infinite",
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.4f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))
             };
 
             tbPassword = new InputControl
             {
+                Text = "pswd",
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.5f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))
             };
 

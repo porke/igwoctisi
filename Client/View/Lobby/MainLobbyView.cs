@@ -14,6 +14,7 @@
     {
         #region Protected members
 
+        private List<LobbyInfo> _gameInfoList = new List<LobbyInfo>();
         private ListControl _gameList;
 
         protected void CreateChildControls()
@@ -67,7 +68,13 @@
 
         protected void JoinGame_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("JoinGame", new JoinGameArgs(string.Empty));
+            try
+            {
+                int lobbyIndex = _gameList.SelectedItems[0];
+                int lobbyId = _gameInfoList[lobbyIndex].LobbyId;
+                state.HandleViewEvent("JoinGame", new JoinGameArgs(lobbyId));
+            }
+            catch (IndexOutOfRangeException) { }
         }
 
         protected void CreateGame_Pressed(object sender, EventArgs e)
@@ -90,13 +97,17 @@
 
         public void RefreshGameList(object gameInfoList)
         {
-            var gameInfo = gameInfoList as List<GameInfo>;
+            _gameInfoList = gameInfoList as List<LobbyInfo>;
             _gameList.Items.Clear();
 
-            foreach (var info in gameInfo)
+            foreach (var info in _gameInfoList)
             {
                 _gameList.Items.Add(info.Name);
             }
+
+            // Only first element should be selected
+            _gameList.SelectedItems.Clear();
+            _gameList.SelectedItems.Add(0);
         }
     }
 }

@@ -15,10 +15,12 @@
         bool EndConnect(IAsyncResult asyncResult);
         IAsyncResult BeginLogin(string login, string password, AsyncCallback asyncCallback, object asyncState);
         bool EndLogin(IAsyncResult asyncResult);
+        IAsyncResult BeginJoinGameLobby(int lobbyId, AsyncCallback asyncCallback, object asyncState);
+        GameInfo EndJoinGameLobby(IAsyncResult asyncResult);
         IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState);
         void EndDisconnect(IAsyncResult asyncResult);
         IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState);
-        List<GameInfo> EndGetGameList(IAsyncResult asyncResult);
+        List<LobbyInfo> EndGetGameList(IAsyncResult asyncResult);
 
         IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState);
         GameState EndReceiveGameState(IAsyncResult asyncResult);
