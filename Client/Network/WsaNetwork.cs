@@ -276,8 +276,8 @@
             string messageContentTypeStr = char.ToLower(messageContentType.ToString()[0]) + messageContentType.ToString().Substring(1);
             var header = JsonLowercaseSerializer.SerializeObject(new
             {
-                id = id,
-                type = messageContentTypeStr
+                Id = id,
+                Type = messageContentTypeStr
             });
 
             SendJson(header);
@@ -360,8 +360,8 @@
 
             string requestContent = JsonLowercaseSerializer.SerializeObject(new
             {
-                login = login,
-                password = password
+                Login = login,
+                Password = password
             });
 
             SendRequest(MessageContentType.Login, requestContent, (jsonStr, packetType, messageContentType) =>
@@ -389,6 +389,37 @@
             var ar = (AsyncResult<bool>)asyncResult;
             ar.EndInvoke();
             return (bool)ar.Result;
+        }
+
+        public IAsyncResult BeginLogout(AsyncCallback asyncCallback, object asyncState)
+        {
+            var ar = new AsyncResult<object>(asyncCallback, asyncState);
+
+            // TODO add some timeout because user interface waits for "ok" packet from server to change view.
+            SendRequest(MessageContentType.Logout, null, (jsonStr, packetType, messageContentType) =>
+            {
+                // It always should be Header
+                Debug.Assert(packetType == PacketType.Header);
+
+                ar.BeginInvoke(() =>
+                {
+                    if (messageContentType == MessageContentType.Ok)
+                        return null;
+                    else
+                        throw new Exception("Logout error: " + messageContentType.ToString());
+                });
+
+                // We don't want any Content packet.
+                return false;
+            });
+
+            return ar;
+        }
+        
+        public void EndLogout(IAsyncResult asyncResult)
+        {
+            var ar = (AsyncResult<object>)asyncResult;
+            ar.EndInvoke();
         }
 
         public IAsyncResult BeginJoinGameLobby(int lobbyId, AsyncCallback asyncCallback, object asyncState)

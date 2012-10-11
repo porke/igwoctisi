@@ -15,6 +15,8 @@
         bool EndConnect(IAsyncResult asyncResult);
         IAsyncResult BeginLogin(string login, string password, AsyncCallback asyncCallback, object asyncState);
         bool EndLogin(IAsyncResult asyncResult);
+        IAsyncResult BeginLogout(AsyncCallback asyncCallback, object asyncState);
+        void EndLogout(IAsyncResult asyncResult);
         IAsyncResult BeginJoinGameLobby(int lobbyId, AsyncCallback asyncCallback, object asyncState);
         GameInfo EndJoinGameLobby(IAsyncResult asyncResult);
         IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState);
