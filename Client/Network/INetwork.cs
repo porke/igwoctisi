@@ -19,6 +19,8 @@
         void EndLogout(IAsyncResult asyncResult);
         IAsyncResult BeginJoinGameLobby(int lobbyId, AsyncCallback asyncCallback, object asyncState);
         GameInfo EndJoinGameLobby(IAsyncResult asyncResult);
+        IAsyncResult BeginLeaveGame(AsyncCallback asyncCallback, object asyncState);
+        void EndLeaveGame(IAsyncResult asyncResult);
         IAsyncResult BeginDisconnect(AsyncCallback asyncCallback, object asyncState);
         void EndDisconnect(IAsyncResult asyncResult);
         IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState);
