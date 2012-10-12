@@ -525,6 +525,24 @@
             ar.EndInvoke();
         }
 
+        public IAsyncResult BeginCreateGame(string gameName, string mapJsonContent, AsyncCallback asyncCallback, object asyncState)
+        {
+            var ar = new AsyncResult<object>(asyncCallback, asyncState);
+
+            ar.BeginInvoke(() =>
+            {
+                // TODO: parse GameSTate into Json here or elsewhere...? (and implement the time consuming operation)
+                Thread.Sleep(500);
+                return null;
+            });
+            return ar;
+        }
+        public void EndCreateGame(IAsyncResult asyncResult)
+        {
+            var ar = (AsyncResult<object>)asyncResult;
+            ar.EndInvoke();
+        }
+
         public IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<List<LobbyListInfo>>(asyncCallback, asyncState);
