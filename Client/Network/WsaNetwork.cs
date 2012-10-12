@@ -587,14 +587,14 @@
 
         public IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<GameState>(asyncCallback, asyncState);
+            var ar = new AsyncResult<WorldState>(asyncCallback, asyncState);
             // simulate time consuming task
             ar.BeginInvoke(() => { Thread.Sleep(500); return null; });
             return ar;
         }
-        public GameState EndReceiveGameState(IAsyncResult asyncResult)
+        public WorldState EndReceiveGameState(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<GameState>)asyncResult;
+            var ar = (AsyncResult<WorldState>)asyncResult;
             return ar.EndInvoke();
         }
         public IAsyncResult BeginSendCommands(UserCommands commands, AsyncCallback asyncCallback, object asyncState)

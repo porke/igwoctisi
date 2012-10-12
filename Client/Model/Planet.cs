@@ -1,12 +1,28 @@
 ﻿namespace Client.Model
 {
     using Microsoft.Xna.Framework;
+    using System;
+    using System.Xml.Serialization;
 
-    class Planet
+    [Serializable]
+    public class Planet
     {
+        [XmlAttribute]
         public string Name { get; set; }
-        public int BaseFleetCountPerTurn { get; set; }
+
+        [XmlAttribute]
+        public int BaseUnitsPerTurn { get; set; }
+
+        [XmlAttribute]
         public int Id { get; set; }
-        public Vector3 Position { get; set; }
+
+        [XmlAttribute]
+        public float X { get; set; }
+
+        [XmlAttribute]
+        public float Y { get; set; }
+
+        [XmlAttribute]
+        public float Z { get; set; }
     }
 }
