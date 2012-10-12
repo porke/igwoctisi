@@ -10,27 +10,31 @@
 	</Planets>
 	
 	<Links>
-		<Link SourceId="1" TargetId="2"/>
-		<Link SourceId="1" TargetId="3"/>
-		<Link SourceId="2" TargetId="7"/>
-		<Link SourceId="3" TargetId="7"/>
-		<Link SourceId="7" TargetId="5"/>
-		<Link SourceId="7" TargetId="6"/>
-		<Link SourceId="4" TargetId="5"/>
-		<Link SourceId="4" TargetId="6"/>
+		<PlanetLink SourceId="1" TargetId="2"/>
+		<PlanetLink SourceId="1" TargetId="3"/>
+		<PlanetLink SourceId="2" TargetId="7"/>
+		<PlanetLink SourceId="3" TargetId="7"/>
+		<PlanetLink SourceId="7" TargetId="5"/>
+		<PlanetLink SourceId="7" TargetId="6"/>
+		<PlanetLink SourceId="4" TargetId="5"/>
+		<PlanetLink SourceId="4" TargetId="6"/>
 	</Links>
 	
 	<Systems>
-		<System Name="Southern Sector" FleetBonusPerTurn="4">
-			<PlanetId>1</PlanetId>
-			<PlanetId>2</PlanetId>
-			<PlanetId>3</PlanetId>			
-		</System>
-		<System Name="Northern Sector" FleetBonusPerTurn="4">
-			<PlanetId>4</PlanetId>
-			<PlanetId>5</PlanetId>
-			<PlanetId>6</PlanetId>			
-		</System>
+		<PlanetarySystem Name="Southern Sector" FleetBonusPerTurn="4">
+			<Planets>
+				<PlanetId>1</PlanetId>
+				<PlanetId>2</PlanetId>
+				<PlanetId>3</PlanetId>			
+			</Planets>
+		</PlanetarySystem>
+		<PlanetarySystem Name="Northern Sector" FleetBonusPerTurn="4">
+			<Planets>
+				<PlanetId>4</PlanetId>
+				<PlanetId>5</PlanetId>
+				<PlanetId>6</PlanetId>
+			</Planets>
+		</PlanetarySystem>		
 	</Systems>
 	
 	<PlayerStartingData>

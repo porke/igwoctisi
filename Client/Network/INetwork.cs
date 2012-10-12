@@ -1,9 +1,8 @@
 ﻿namespace Client.Network
 {
     using System;
-    using System.Net;
-    using Model;
     using System.Collections.Generic;
+    using Model;
 
     public interface INetwork
     {
@@ -29,7 +28,7 @@
         void EndCreateGame(IAsyncResult asyncResult);
 
         IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState);
-        GameState EndReceiveGameState(IAsyncResult asyncResult);
+        WorldState EndReceiveGameState(IAsyncResult asyncResult);
         IAsyncResult BeginSendCommands(UserCommands commands, AsyncCallback asyncCallback, object asyncState);
         void EndSendCommands(IAsyncResult asyncResult);
 
