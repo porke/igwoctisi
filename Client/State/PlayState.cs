@@ -13,7 +13,7 @@
         {
             Scene = new Scene();
 
-            var gameViewport = new GameViewport(this);
+            var gameViewport = new GameViewport(this, Scene);
             var gameHud = new GameHud(this);
 
             ViewMgr.PushLayer(gameViewport);

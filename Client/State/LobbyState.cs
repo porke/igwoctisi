@@ -48,8 +48,8 @@
         private void CreateGame(EventArgs args)
         {
             // TODO: Call network to create a game
-            ViewMgr.PopLayer();     // pop main lobby window
-            ViewMgr.PushLayer(new GameLobbyView(this));
+            var newGameParameters = args as CreateGameArgs;
+            Client.Network.BeginCreateGame(newGameParameters.GameName, string.Empty, OnCreateGame, null);
         }
 
         private void CancelCreateGame(EventArgs args)
@@ -162,6 +162,12 @@
             }
         }
 
+        private void OnCreateGame(IAsyncResult result)
+        {
+            ViewMgr.PopLayer();     // pop main lobby window
+            ViewMgr.PushLayer(new GameLobbyView(this));
+        }
+
         private void OnDisconnect(IAsyncResult result)
         {
             try
@@ -179,7 +185,7 @@
             var menuState = new MenuState(Game);
             Client.ChangeState(menuState);
             menuState.HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were disconnected from the server."));
-        }
+        }        
 
         #endregion
     }

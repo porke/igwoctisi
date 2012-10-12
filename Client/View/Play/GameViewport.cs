@@ -1,7 +1,6 @@
 ﻿namespace Client.View.Play
 {
     using Input;
-    using State;
     using Model;
 
     class GameViewport : BaseView
@@ -19,12 +18,12 @@
 
         private Scene scene;
 
-        public GameViewport(State.GameState state) : base(state)
+        public GameViewport(State.GameState state, Scene scene) : base(state)
         {
             IsLoaded = true;
             IsTransparent = false;
             InputReceiver = new InputReceiver(false);
-            scene = (state as PlayState).Scene;
+            this.scene = scene;
         }
     }
 }
