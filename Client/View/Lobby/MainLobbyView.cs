@@ -95,9 +95,9 @@
             CreateChildControls();
         }
 
-        public void RefreshGameList(object gameInfoList)
+        public void RefreshGameList(List<LobbyListInfo> gameInfoList)
         {
-            _gameInfoList = gameInfoList as List<LobbyListInfo>;
+            _gameInfoList = gameInfoList;
             _gameList.Items.Clear();
 
             foreach (var info in _gameInfoList)

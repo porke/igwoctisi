@@ -23,7 +23,7 @@
             eventHandlers.Add("SendOrders", SendOrders);
         }
 
-        #region Event handlers
+        #region View event handlers
 
         private void LeaveGame(EventArgs args)
         {

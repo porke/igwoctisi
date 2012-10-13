@@ -30,7 +30,7 @@
             Client.Network.OnDisconnected -= new Action<string>(OnDisconnected_EventHandler);
         }
 
-        #region Event handlers
+        #region View event handlers
 
         private void QuitGame(EventArgs args)
         {
@@ -107,9 +107,6 @@
             {
                 if (network.EndLogin(ar))
                 {
-                    //ViewMgr.PopLayer(); // MessageBox
-                    //ViewMgr.PopLayer(); // login input
-
                     Client.ChangeState(new LobbyState(Game));
                 }
                 else

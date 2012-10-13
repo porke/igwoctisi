@@ -1,6 +1,7 @@
 ﻿namespace Client.State
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using Microsoft.Xna.Framework;
     using View;
@@ -13,6 +14,9 @@
 
         protected delegate void EventHandler(EventArgs args);
         protected Dictionary<string, EventHandler> eventHandlers = new Dictionary<string, EventHandler>();
+
+        public delegate void MessageQueueFunc(object args);
+        private ConcurrentQueue<Tuple<MessageQueueFunc, object>> _messageQueue = new ConcurrentQueue<Tuple<MessageQueueFunc, object>>();
 
         public GameState(GameClient client)
         {
@@ -31,9 +35,27 @@
             
         }
 
+        /// <summary>
+        /// The function is to be called from the async callback thread. 
+        /// It will invoke the given delegate in the main update thread.
+        /// </summary>        
+        public void Invoke(MessageQueueFunc functionToInvoke, object arg)
+        {
+            _messageQueue.Enqueue(new Tuple<MessageQueueFunc, object>(functionToInvoke, arg));
+        }
+
         public virtual void OnUpdate(double delta, double time)
         {
             ViewMgr.Update(delta, time);
+
+            if (!_messageQueue.IsEmpty)
+            {
+                Tuple<MessageQueueFunc, object> front;
+                if (_messageQueue.TryDequeue(out front))
+                {
+                    front.Item1(front.Item2);
+                }
+            }
         }
 
         public virtual void OnDraw(double delta, double time)

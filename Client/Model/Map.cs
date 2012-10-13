@@ -3,11 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Runtime.Serialization;
     using System.Xml;
     using System.Xml.Serialization;
-    using System.Linq;
-    using Newtonsoft.Json;
 
     [DataContract]
     public class Map
@@ -46,9 +45,8 @@
 
 
         /// <summary>
-        /// </summary>
         /// Reads world map from XML file. 
-        /// <param name="mapFileName"></param>
+        /// </summary>
         public Map(string mapFileName) : this()
         {
             string path = string.Format(Map.MapsPath, mapFileName);
