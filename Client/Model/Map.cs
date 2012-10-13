@@ -6,7 +6,7 @@
     using System.Xml;
     using System.Xml.Serialization;
 
-    public class WorldState
+    public class Map
     {
         private List<Planet> Planets = new List<Planet>();
         private List<PlanetLink> Links = new List<PlanetLink>();
@@ -15,9 +15,9 @@
 
         private const string MapsPath = "Content/Maps/{0}.xml";
 
-        public WorldState(string mapName)
+        public Map(string mapName)
         {
-            string path = string.Format(WorldState.MapsPath, mapName);
+            string path = string.Format(Map.MapsPath, mapName);
             using (FileStream fileStream = File.OpenRead(path))
             {
                 var reader = XmlReader.Create(fileStream);
