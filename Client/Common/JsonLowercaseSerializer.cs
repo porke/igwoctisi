@@ -28,7 +28,7 @@ namespace Client.Common
         {
             protected override string ResolvePropertyName(string propertyName)
             {
-                return char.ToLower(propertyName[0]) + propertyName.Substring(1);
+                return Utils.lowerFirstLetter(propertyName);
             }
         }
     }

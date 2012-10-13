@@ -300,7 +300,7 @@
         private void SendHeaderAndContent(int id, MessageContentType messageContentType, string jsonInfoContent)
         {
             // Send header
-            string messageContentTypeStr = char.ToLower(messageContentType.ToString()[0]) + messageContentType.ToString().Substring(1);
+            string messageContentTypeStr = Utils.lowerFirstLetter(messageContentType.ToString());
             var header = JsonLowercaseSerializer.SerializeObject(new
             {
                 Id = id,
