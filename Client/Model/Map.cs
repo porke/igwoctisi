@@ -37,6 +37,7 @@
         private static string PlanetIdAttribute = "PlanetId";
 
         // Elements names
+        private static string MapElement = "Map";
         private static string PlanetsElement = "Planets";
         private static string LinksElement = "Links";
         private static string SystemsElement = "Systems";
@@ -56,6 +57,7 @@
                 var reader = XmlReader.Create(fileStream);
                 
                 // Read map name
+                reader.ReadToFollowing(MapElement);
                 this.Name = reader.GetAttribute(NameAttribute);
 
                 // Read planets
@@ -99,7 +101,7 @@
             }
         }
 
-        private Map()
+        public Map()
         {            
             Planets = new List<Planet>();
             Links = new List<PlanetLink>();
