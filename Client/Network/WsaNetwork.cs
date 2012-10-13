@@ -122,7 +122,7 @@
             int messageId = 0;
             Func<string, PacketType, MessageContentType, bool> responseCallback = null;
 
-            messageResponses.Clear();
+            //messageResponses.Clear();
             try
             {
                 while ((jsonLine = sr.ReadLine()) != null)
@@ -270,7 +270,7 @@
         /// <summary>
         /// Sends request for response of given type. It calls responseCallback when response come.
         /// </summary>
-        private void SendRequest(MessageContentType messageContentType, string jsonRequestContent,
+        private void SendRequest(MessageContentType messageContentType, object obj,
             Func<string, PacketType, MessageContentType, bool> responseCallback)
         {
             // Generate id of message
@@ -280,40 +280,35 @@
             messageResponses.Add(id, responseCallback);
 
             // Send header and content of message
-            SendHeaderAndContent(id, messageContentType, jsonRequestContent);
+            SendMessage(id, messageContentType, obj);
         }
 
         /// <summary>
         /// Sends some information to the server and doesn't care about response.
         /// </summary>
-        private void SendInfo(MessageContentType messageContentType, string jsonInfoContent)
+        private void SendInfo(MessageContentType messageContentType, object obj)
         {
             // Generate id of message
             int id = GenerateMessageId();
 
-            SendHeaderAndContent(id, messageContentType, jsonInfoContent);
+            SendMessage(id, messageContentType, obj);
         }
 
         /// <summary>
         /// Function used by SendInfo() and SendRequest().
         /// </summary>
-        private void SendHeaderAndContent(int id, MessageContentType messageContentType, string jsonInfoContent)
+        private void SendMessage(int id, MessageContentType messageContentType, object obj)
         {
             // Send header
             string messageContentTypeStr = Utils.lowerFirstLetter(messageContentType.ToString());
-            var header = JsonLowercaseSerializer.SerializeObject(new
+            var message = JsonLowercaseSerializer.SerializeObject(new
             {
                 Id = id,
-                Type = messageContentTypeStr
+                Type = messageContentTypeStr,
+                Object = obj
             });
 
-            SendJson(header);
-
-            // Send message content if needed
-            if (jsonInfoContent != null)
-            {
-                SendJson(jsonInfoContent);
-            }
+            SendJson(message);
         }
     
         #endregion
@@ -381,15 +376,15 @@
 
             return ar.Result;
         }
-        public IAsyncResult BeginLogin(string login, string password, AsyncCallback asyncCallback, object asyncState)
+        public IAsyncResult BeginLogin(string username, string password, AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<bool>(asyncCallback, asyncState);
 
-            string requestContent = JsonLowercaseSerializer.SerializeObject(new
+            object requestContent = new
             {
-                Login = login,
+                Username = username,
                 Password = password
-            });
+            };
 
             SendRequest(MessageContentType.Login, requestContent, (jsonStr, packetType, messageContentType) =>
             {
@@ -439,10 +434,10 @@
         {
             var ar = new AsyncResult<SpecificGameLobbyInfo>(asyncCallback, asyncState);
 
-            string requestContent = JsonLowercaseSerializer.SerializeObject(new
+            object requestContent = new
             {
                 LobbyId = lobbyId
-            });
+            };
 
             SendRequest(MessageContentType.GameJoin, requestContent, (jsonStr, packetType, messageContentType) =>
             {
