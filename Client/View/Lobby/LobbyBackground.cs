@@ -60,7 +60,7 @@
             IsTransparent = false;
             var graphicsDevice = state.Client.GraphicsDevice;
             var contentMgr = state.Client.Content;
-            InputReceiver = new InputReceiver(false);
+            InputReceiver = new NullInputReceiver(false);
 
             contentMgr.BeginLoad<Effect>("Effects\\Menu", OnEffectLoad, contentMgr);
 

@@ -5,7 +5,7 @@
     using Nuclex.Input;
     using Nuclex.UserInterface.Input;
 
-    public class InputReceiver : IInputReceiver
+    public class NullInputReceiver : IInputReceiver
     {
         #region IInputReceiver members
 
@@ -62,7 +62,7 @@
 
         public bool InputPassThrough { get; protected set; }
 
-        public InputReceiver(bool inputPassThrough)
+        public NullInputReceiver(bool inputPassThrough)
         {
             InputPassThrough = inputPassThrough;
         }

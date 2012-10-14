@@ -14,59 +14,66 @@
         public virtual bool OnCommand(Command command)
         {
             Screen.InjectCommand(command);
-            return UseModalBehavior;
+            return IsInputHandled;
         }
 
         // keyboard
         public virtual bool OnKeyPressed(Keys key)
         {
             Screen.InjectKeyPress(key);
-            return UseModalBehavior;
+            return IsInputHandled;
         }
         public virtual bool OnKeyReleased(Keys key)
         {
             Screen.InjectKeyRelease(key);
-            return UseModalBehavior;
+            return IsInputHandled;
         }
 
         // mouse
         public virtual bool OnMouseMoved(Vector2 position)
         {
             Screen.InjectMouseMove(position.X, position.Y);
-            return UseModalBehavior;
+            return IsInputHandled;
         }
         public virtual bool OnMousePressed(MouseButtons button)
         {
             Screen.InjectMousePress(button);
-            return UseModalBehavior;
+            return IsInputHandled;
         }
         public virtual bool OnMouseReleased(MouseButtons button)
         {
             Screen.InjectMouseRelease(button);
-            return UseModalBehavior;
+            return IsInputHandled;
         }
         public virtual bool OnMouseWheel(float ticks)
         {
             Screen.InjectMouseWheel(ticks);
-            return UseModalBehavior;
+            return IsInputHandled;
         }
 
         // gamepad
         public virtual bool OnButtonPressed(Buttons button)
         {
             Screen.InjectButtonPress(button);
-            return UseModalBehavior;
+            return IsInputHandled;
         }
         public virtual bool OnButtonReleased(Buttons button)
         {
             Screen.InjectButtonRelease(button);
-            return UseModalBehavior;
+            return IsInputHandled;
         }
 
         #endregion
 
         public Screen Screen { get; protected set; }
         public bool UseModalBehavior { get; protected set; }
+        private bool IsInputHandled
+        {
+            get
+            {
+                return Screen.IsInputCaptured || UseModalBehavior;
+            }
+        }
 
         public NuclexScreenInputReceiver(Screen screen, bool useModalBehavior)
         {

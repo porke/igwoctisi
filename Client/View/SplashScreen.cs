@@ -81,7 +81,7 @@
             IsLoaded = false;
             var graphicsDevice = state.Client.GraphicsDevice;
             var contentMgr = state.Client.Content;
-            InputReceiver = new InputReceiver(false);
+            InputReceiver = new NullInputReceiver(false);
             SwitchTime = switchTime;
             Thread.MemoryBarrier();
 

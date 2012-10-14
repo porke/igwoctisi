@@ -1,6 +1,6 @@
 ﻿namespace Client.Model
 {
-    public class UserCommands
+    public class UserCommand
     {
 
     }
