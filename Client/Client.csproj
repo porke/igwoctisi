@@ -102,7 +102,7 @@
     <Compile Include="Common\XnaExtensions.cs" />
     <Compile Include="Input\IInput.cs" />
     <Compile Include="Input\IInputReceiver.cs" />
-    <Compile Include="Input\InputReceiver.cs" />
+    <Compile Include="Input\NullInputReceiver.cs" />
     <Compile Include="Input\NuclexScreenInputReceiver.cs" />
     <Compile Include="Input\XnaInput.cs" />
     <Compile Include="Model\ChatMessage.cs" />
