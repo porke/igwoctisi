@@ -55,17 +55,21 @@
             screen.Desktop.Children.AddRange(new Control[] { btnJoinGame, btnCreateGame, btnLogout, btnRefresh, _gameList });
         }
 
-        protected void Logout_Pressed(object sender, EventArgs e)
+        #endregion
+
+        #region Event handlers
+
+        private void Logout_Pressed(object sender, EventArgs e)
         {
             state.HandleViewEvent("Logout", e);
         }
 
-        protected void Refresh_Pressed(object sender, EventArgs e)
+        private void Refresh_Pressed(object sender, EventArgs e)
         {
             state.HandleViewEvent("RefreshGameList", new SenderEventArgs(this));
         }
 
-        protected void JoinGame_Pressed(object sender, EventArgs e)
+        private void JoinGame_Pressed(object sender, EventArgs e)
         {
             if (_gameList.SelectedItems.Count == 0) return;
 
@@ -74,7 +78,7 @@
             state.HandleViewEvent("JoinGame", new JoinGameArgs(lobbyId));
         }
 
-        protected void CreateGame_Pressed(object sender, EventArgs e)
+        private void CreateGame_Pressed(object sender, EventArgs e)
         {
             state.HandleViewEvent("EnterCreateGameView", e);
         }

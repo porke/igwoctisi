@@ -63,6 +63,10 @@
             screen.Desktop.Children.AddRange(new Control[] { btnBeginGame, btnLeaveGame, _messageList, _currentMessage, _playerList, btnKickPlayer });
         }
 
+        #endregion        
+
+        #region Event handlers
+
         private void BeginGame_Pressed(object sender, EventArgs e)
         {
             state.HandleViewEvent("BeginGame", e);
@@ -78,7 +82,7 @@
             // TODO: Remove player - available only for the host
         }
 
-        #endregion        
+        #endregion
 
         public GameLobbyView(GameState state)
             : base(state)

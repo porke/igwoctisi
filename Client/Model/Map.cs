@@ -35,7 +35,7 @@
         private static string NameAttribute = "Name";
         private static string PlanetIdAttribute = "PlanetId";
 
-        // Elements names
+        // Element names
         private static string MapElement = "Map";
         private static string PlanetsElement = "Planets";
         private static string LinksElement = "Links";
@@ -43,9 +43,8 @@
         private static string PlayerStartingDataElement = "PlayerStartingData";
         private static string StartingDataElement = "StartingData";
 
-
         /// <summary>
-        /// Reads world map from XML file. 
+        /// Reads world map from XML file (no extension required). 
         /// </summary>
         public Map(string mapFileName) : this()
         {

@@ -1,7 +1,5 @@
 ﻿namespace Client.View
 {
-    using System;
-    using System.Collections.Concurrent;
     using Input;
     using Nuclex.UserInterface;
     using State;

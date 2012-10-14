@@ -46,6 +46,10 @@
             screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit });
         }
 
+        #endregion
+
+        #region Event handlers
+
         protected void Login_Pressed(object sender, EventArgs e)
         {
             state.HandleViewEvent("RequestLogin", new LoginEventArgs(tbLogin.Text, tbPassword.Text));

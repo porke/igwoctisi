@@ -592,7 +592,7 @@
             var ar = (AsyncResult<Map>)asyncResult;
             return ar.EndInvoke();
         }
-        public IAsyncResult BeginSendCommands(UserCommands commands, AsyncCallback asyncCallback, object asyncState)
+        public IAsyncResult BeginSendCommands(UserCommand commands, AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<object>(asyncCallback, asyncState);
             // simulate time consuming task

@@ -2,6 +2,7 @@ namespace Client
 {
     using View;
     using State;
+    using Client.Model;
 
     public class IGWOCTISI : GameClient
     {
@@ -10,8 +11,8 @@ namespace Client
         protected override void Initialize()
         {
             base.Initialize();
-
-            ChangeState(new LobbyState(this));
+            
+            ChangeState(new MenuState(this));
         }
 
         #endregion
