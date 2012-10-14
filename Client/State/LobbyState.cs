@@ -114,7 +114,7 @@
             catch { }
             finally
             {
-                Invoke(
+                InvokeOnMainThread(
                     delegate(object arg)
                     {
                         Client.Network.BeginDisconnect(OnDisconnect, null);
@@ -127,7 +127,7 @@
             var gameNames = Client.Network.EndGetGameList(result);
             var lobbyWindow = result.AsyncState as MainLobbyView;
             
-            Invoke(
+            InvokeOnMainThread(
                 delegate(object gameList)
                 {
                     lobbyWindow.RefreshGameList(gameList as List<LobbyListInfo>);
@@ -140,7 +140,7 @@
             var messageBox = result.AsyncState as MessageBox;
             var gameInfo = Client.Network.EndJoinGameLobby(result);
 
-            Invoke(
+            InvokeOnMainThread(
                 delegate(object arg)
                 {
                     try
@@ -167,7 +167,7 @@
             catch { }
             finally
             {
-                Invoke(
+                InvokeOnMainThread(
                     delegate(object arg)
                     {
                         ViewMgr.PopLayer(); // pop game lobby
@@ -178,7 +178,7 @@
 
         private void OnCreateGame(IAsyncResult result)
         {
-            Invoke(
+            InvokeOnMainThread(
                 delegate(object arg)
                 {
                     ViewMgr.PopLayer();     // pop main lobby window
@@ -198,7 +198,7 @@
 
         private void OnDisconnected_EventHandler(string reason)
         {
-            Invoke(
+            InvokeOnMainThread(
                 delegate(object arg)
                 {
                     var menuState = new MenuState(Game);
