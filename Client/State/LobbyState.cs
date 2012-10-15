@@ -59,7 +59,8 @@
             };
             ViewMgr.PushLayer(messageBox);
 
-            Client.Network.BeginCreateGame(newGameParameters.GameName, string.Empty, OnCreateGame, Tuple.Create(messageBox, newGameParameters.MapName));
+            var map = new Map(newGameParameters.MapName);
+            Client.Network.BeginCreateGame(newGameParameters.GameName, map, OnCreateGame, Tuple.Create(messageBox, newGameParameters.MapName));
         }
 
         private void CancelCreateGame(EventArgs args)

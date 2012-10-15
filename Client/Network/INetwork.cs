@@ -24,7 +24,7 @@
         void EndDisconnect(IAsyncResult asyncResult);
         IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState);
         List<LobbyListInfo> EndGetGameList(IAsyncResult asyncResult);
-        IAsyncResult BeginCreateGame(string gameName, string mapJsonContent, AsyncCallback asyncCallback, object asyncState);
+        IAsyncResult BeginCreateGame(string gameName, Map map, AsyncCallback asyncCallback, object asyncState);
         void EndCreateGame(IAsyncResult asyncResult);
 
         IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState);
