@@ -73,56 +73,54 @@
 
         private void OnConnect(IAsyncResult ar)
         {                        
-            InvokeOnMainThread(
-                delegate(object arg)
-                {
-                    var network = ViewMgr.Client.Network;
-                    var connectData = (Tuple<MessageBox, LoginEventArgs>)ar.AsyncState;
-                    var messageBox = connectData.Item1;
-                    var loginData = connectData.Item2;
+            InvokeOnMainThread(arg =>
+            {
+                var network = ViewMgr.Client.Network;
+                var connectData = (Tuple<MessageBox, LoginEventArgs>)ar.AsyncState;
+                var messageBox = connectData.Item1;
+                var loginData = connectData.Item2;
 
-                    try
+                try
+                {
+                    if (network.EndConnect(ar))
                     {
-                        if (network.EndConnect(ar))
-                        {
-                            network.BeginLogin(loginData.Login, loginData.Password, OnLogin, messageBox);
-                            messageBox.Message = "Logging in as " + loginData.Login + "...";
-                        }
-                        else
-                        {
-                            throw new Exception("Couldn't connect to the server.");
-                        }
+                        network.BeginLogin(loginData.Login, loginData.Password, OnLogin, messageBox);
+                        messageBox.Message = "Logging in as " + loginData.Login + "...";
                     }
-                    catch (Exception exc)
+                    else
                     {
-                        messageBox.Message = exc.Message;
-                        messageBox.Buttons = MessageBoxButtons.OK;
-                        messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
+                        throw new Exception("Couldn't connect to the server.");
                     }
-                }, ar.AsyncState);            
+                }
+                catch (Exception exc)
+                {
+                    messageBox.Message = exc.Message;
+                    messageBox.Buttons = MessageBoxButtons.OK;
+                    messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
+                }
+            }, ar.AsyncState);
         }
 
         private void OnLogin(IAsyncResult ar)
         {
-            InvokeOnMainThread(
-                delegate(object arg)
-                {
-                    var network = ViewMgr.Client.Network;
-                    var messageBox = (MessageBox)ar.AsyncState;
+            InvokeOnMainThread(arg =>
+            {
+                var network = ViewMgr.Client.Network;
+                var messageBox = (MessageBox)ar.AsyncState;
 
-                    try
-                    {
-                        network.EndLogin(ar);
-                        Client.ChangeState(new LobbyState(Game));
-                    }
-                    catch (Exception exc)
-                    {
-                        network.BeginDisconnect(OnDisconnect, null);
-                        messageBox.Message = exc.Message;
-                        messageBox.Buttons = MessageBoxButtons.OK;
-                        messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
-                    }
-                }, null);            
+                try
+                {
+                    var player = network.EndLogin(ar);
+                    Client.ChangeState(new LobbyState(Game, player));
+                }
+                catch (Exception exc)
+                {
+                    network.BeginDisconnect(OnDisconnect, null);
+                    messageBox.Message = exc.Message;
+                    messageBox.Buttons = MessageBoxButtons.OK;
+                    messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
+                }
+            });
         }
 
         private void OnDisconnect(IAsyncResult ar)
@@ -133,12 +131,11 @@
 
         private void OnDisconnected_EventHandler(string reason)
         {
-            InvokeOnMainThread(
-                delegate(object arg)
-                {
-                    ViewMgr.PopLayer(); // Probably "Logging in..." MessageBox
-                    HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were forcefully kicked out by the server."));
-                }, reason);            
+            InvokeOnMainThread(arg =>
+            {
+                ViewMgr.PopLayer(); // Probably "Logging in..." MessageBox
+                HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were forcefully kicked out by the server."));
+            }, reason);
         }
 
         #endregion

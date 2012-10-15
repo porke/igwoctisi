@@ -417,7 +417,7 @@
         }
         public IAsyncResult BeginLogin(string username, string password, AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<bool>(asyncCallback, asyncState);
+            var ar = new AsyncResult<Player>(asyncCallback, asyncState);
 
             object requestContent = new
             {
@@ -431,7 +431,7 @@
                 ar.BeginInvoke(() =>
                 {
                     if (loggedIn)
-                        return true;
+                        return new Player(username);
                     else
                         throw new Exception("Login failed due to the error: " + messageContentType.ToString());
                 });
@@ -439,10 +439,12 @@
 
             return ar;
         }
-        public void EndLogin(IAsyncResult asyncResult)
+        public Player EndLogin(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<bool>)asyncResult;
+            var ar = (AsyncResult<Player>)asyncResult;
             ar.EndInvoke();
+
+            return ar.Result as Player;
         }
 
         public IAsyncResult BeginLogout(AsyncCallback asyncCallback, object asyncState)

@@ -1,17 +1,19 @@
 ﻿namespace Client.State
 {
     using System;
+    using Client.Model;
     using View;
     using View.Lobby;
-    using Client.Model;
-    using System.Collections.Generic;
 
     class LobbyState : GameState
     {
         private Map _map;
+        private Player _player;
 
-        public LobbyState(IGWOCTISI game) : base(game)
+        public LobbyState(IGWOCTISI game, Player player) : base(game)
         {
+            _player = player;
+
             var menuBackground = new LobbyBackground(this);
             var lobbyMenu = new MainLobbyView(this);
 
@@ -93,7 +95,7 @@
 
         private void BeginGame(EventArgs args)
         {            
-            Game.ChangeState(new PlayState(Game, _map));
+            Game.ChangeState(new PlayState(Game, _map, _player));
         }
 
         private void RefreshGameList(EventArgs args)
@@ -185,12 +187,11 @@
             catch { }
             finally
             {
-                InvokeOnMainThread(
-                    delegate(object arg)
-                    {
-                        ViewMgr.PopLayer(); // pop game lobby
-                        ViewMgr.PushLayer(new MainLobbyView(this));
-                    }, null);
+                InvokeOnMainThread(arg =>
+                {
+                    ViewMgr.PopLayer(); // pop game lobby
+                    ViewMgr.PushLayer(new MainLobbyView(this));
+                });
             }
         }
 

@@ -1,8 +1,8 @@
 ﻿namespace Client.Model
 {
     using System;
-    using System.Xml.Serialization;
     using System.Runtime.Serialization;
+    using System.Xml.Serialization;
 
     [Serializable] //XML
     [DataContract] //Json

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-
-namespace Client.Common
+﻿namespace Client.Common
 {
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
+
     public class JsonLowercaseSerializer
     {
         private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings

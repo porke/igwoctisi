@@ -1,6 +1,5 @@
 ﻿namespace Client.Model
 {
-    using Microsoft.Xna.Framework;
     using System;
     using System.Xml.Serialization;
 

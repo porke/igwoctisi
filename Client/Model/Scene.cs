@@ -7,9 +7,9 @@
     public class Scene
     {
         private Map _map;
-        private List<string> _players;
+        private List<Player> _players;
 
-        public Scene(Map map, List<string> playerList)
+        public Scene(Map map, List<Player> playerList)
         {
             _map = map;
             _players = playerList;

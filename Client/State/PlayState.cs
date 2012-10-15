@@ -13,11 +13,13 @@
         private GameHud _gameHud;
 
         private List<UserCommand> _commands = new List<UserCommand>();
+        private Player _clientPlayer;
 
-        public PlayState(IGWOCTISI game, Map loadedMap)
+        public PlayState(IGWOCTISI game, Map loadedMap, Player player)
             : base(game)
         {
-            Scene = new Scene(loadedMap, new List<string>());
+            Scene = new Scene(loadedMap, new List<Player> { _clientPlayer});
+            _clientPlayer = player;
 
             _gameViewport = new GameViewport(this, Scene);
             _gameHud = new GameHud(this);
@@ -34,7 +36,7 @@
 
         private void LeaveGame(EventArgs args)
         {
-            Client.ChangeState(new LobbyState(Game));
+            Client.ChangeState(new LobbyState(Game, _clientPlayer));
         }
 
         private void SendOrders(EventArgs args)
