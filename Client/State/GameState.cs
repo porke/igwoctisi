@@ -68,10 +68,13 @@
 
         public void HandleViewEvent(string eventId, EventArgs args)
         {
-            if (eventHandlers.ContainsKey(eventId))
+            InvokeOnMainThread((obj) =>
             {
-                eventHandlers[eventId](args);
-            }
+                if (eventHandlers.ContainsKey(eventId))
+                {
+                    eventHandlers[eventId](args);
+                }
+            });
         }
     }
 }
