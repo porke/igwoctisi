@@ -67,14 +67,11 @@
         }
 
         public void HandleViewEvent(string eventId, EventArgs args)
-        {
-            InvokeOnMainThread((obj) =>
+        {            
+            if (eventHandlers.ContainsKey(eventId))
             {
-                if (eventHandlers.ContainsKey(eventId))
-                {
-                    eventHandlers[eventId](args);
-                }
-            });
+                eventHandlers[eventId](args);
+            }
         }
     }
 }
