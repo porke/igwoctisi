@@ -1,9 +1,9 @@
 ﻿namespace Client.State
 {
     using System;
+    using System.Collections.Generic;
     using Model;
     using View.Play;
-    using System.Collections.Generic;
 
     class PlayState : GameState
     {
@@ -15,11 +15,11 @@
         private List<UserCommand> _commands = new List<UserCommand>();
         private Player _clientPlayer;
 
-        public PlayState(IGWOCTISI game, Map loadedMap, Player player)
+        public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer)
             : base(game)
         {
             Scene = new Scene(loadedMap, new List<Player> { _clientPlayer});
-            _clientPlayer = player;
+            _clientPlayer = clientPlayer;
 
             _gameViewport = new GameViewport(this, Scene);
             _gameHud = new GameHud(this);
@@ -53,7 +53,7 @@
 
         #endregion
 
-        #region Async netowrk callbacks
+        #region Async network callbacks
 
         #endregion
     }
