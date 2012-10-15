@@ -1,8 +1,6 @@
 namespace Client
 {
-    using View;
     using State;
-    using Client.Model;
 
     public class IGWOCTISI : GameClient
     {
@@ -18,7 +16,7 @@ namespace Client
         #endregion
 
         public IGWOCTISI()
-        {
+        {            
             Content.RootDirectory = "Content";
             GraphicsManager.PreferredBackBufferWidth = 800;
             GraphicsManager.PreferredBackBufferHeight = 600;

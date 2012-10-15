@@ -4,9 +4,13 @@
     using View.Menu;
     using System;
     using Client.View.Lobby;
+    using System.Configuration;
 
     public class MenuState : GameState
     {
+        private const string DefaultHost = "localhost";
+        private const int DefaultPort = 23456;
+
         public MenuState(IGWOCTISI game) : base(game)
         {
             var menuBackground = new MenuBackground(this);
@@ -40,18 +44,27 @@
 
         private void RequestLogin(EventArgs args)
         {
-            var network = Client.Network;
-            string hostname = "localhost";// "178.32.225.209";// "v.zloichuj.eu";
-            int port = 23456;
-            var loginData = args as LoginEventArgs;
+            int port = DefaultPort;
+            string hostname = DefaultHost;
 
+            try
+            {
+                hostname = ConfigurationManager.AppSettings["hostname"] ?? DefaultHost;
+                port = Convert.ToInt32(ConfigurationManager.AppSettings["port"] ?? DefaultPort.ToString());
+            }
+            catch
+            {
+                // TODO: Log any error messages
+            }
+            
+            var loginData = args as LoginEventArgs;
             var messageBox = new MessageBox(MessageBoxButtons.None)
             {
                 Title = "Log in",
                 Message = string.Format("Connecting... {0}@{1}", loginData.Login, loginData.Password)
             };
 
-            network.BeginConnect(hostname, port, OnConnect, Tuple.Create<MessageBox, LoginEventArgs>(messageBox, loginData));
+            Client.Network.BeginConnect(hostname, port, OnConnect, Tuple.Create<MessageBox, LoginEventArgs>(messageBox, loginData));
             ViewMgr.PushLayer(messageBox);
         }
 
