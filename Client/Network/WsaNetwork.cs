@@ -149,8 +149,19 @@
                             continue;
                         }
 
-                        string typeStr = jObject["type"].Value<string>();
-                        messageId = jObject["id"].Value<int>();
+                        string typeStr = "";
+
+                        try
+                        {
+                            typeStr = jObject["type"].Value<string>();
+                            messageId = jObject["id"].Value<int>();
+                        }
+                        catch (ArgumentNullException)
+                        {
+                            // Ignore that packet and continue listening.
+                            Debug.WriteLine("It isn't Header packet: " + jsonLine, "Network");
+                            continue;
+                        }
 
                         // Make first letter be an upper letter (for e.g. change gameStart to GameStart).
                         typeStr = Utils.UpperFirstLetter(typeStr);
