@@ -551,7 +551,7 @@
 
             ar.BeginInvoke(() =>
             {
-                // TODO: parse GameSTate into Json here or elsewhere...? (and implement the time consuming operation)
+                // TODO: parse GameState into Json here or elsewhere...? (and implement the time consuming operation)
                 Thread.Sleep(500);
                 return true;
             });

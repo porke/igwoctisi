@@ -206,6 +206,12 @@
             _selectedPlanetBaseIncome.Text = Convert.ToString(planet.BaseUnitsPerTurn);
         }
 
+        public void UpdateClientPlayerFleetData(Player player)
+        {
+            _fleetCountValue.Text = Convert.ToString(player.DeployableFleets);
+            _fleetIncomeValue.Text = Convert.ToString(player.FleetIncomePerTurn);
+        }
+
         #endregion
 
         public GameHud(PlayState state) : base(state)
