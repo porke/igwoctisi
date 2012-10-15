@@ -132,6 +132,8 @@
             {
                 while ((jsonLine = sr.ReadLine()) != null)
                 {
+                    Debug.WriteLine("S: " + jsonLine);
+
                     if (nextPacketType == PacketType.Header)
                     {
                         // Handle situation when jsonLine isn't actually Json
@@ -242,11 +244,11 @@
                     }
                     else if (nextPacketType == PacketType.ContentAsResponse)
                     {
-                        var jObject = JObject.Parse(jsonLine);
                         ErrorType errorType = ErrorType.None;
 
                         if (nextContentType == MessageContentType.Error)
                         {
+                            var jObject = JObject.Parse(jsonLine);
                             string typeStr = Utils.UpperFirstLetter(jObject["errorType"].Value<string>());
 
                             try
@@ -299,6 +301,8 @@
         {
             networkStreamWriter.WriteLine(message);
             networkStreamWriter.Flush();
+
+            Debug.WriteLine("C: " + message);
         }
 
         private int GenerateMessageId()
@@ -543,16 +547,26 @@
             ar.EndInvoke();
         }
 
-        public IAsyncResult BeginCreateGame(string gameName, string mapJsonContent, AsyncCallback asyncCallback, object asyncState)
+        public IAsyncResult BeginCreateGame(string gameName, Map map, AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<bool>(asyncCallback, asyncState);
 
-            ar.BeginInvoke(() =>
+            var requestContent = new
             {
-                // TODO: parse GameSTate into Json here or elsewhere...? (and implement the time consuming operation)
-                Thread.Sleep(500);
-                return true;
+                Name = gameName,
+                Map = map
+            };
+
+            SendRequest(MessageContentType.GameCreate, false, requestContent, (jsonStr, messageContentType, errorType) =>
+            {
+                ar.BeginInvoke(() =>
+                {                // TODO: parse GameSTate into Json here or elsewhere...? (and implement the time consuming operation)
+
+                    Thread.Sleep(500);
+                    return true;
+                });
             });
+            
             return ar;
         }
         public void EndCreateGame(IAsyncResult asyncResult)
