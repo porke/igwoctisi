@@ -39,7 +39,7 @@
         /// The function is to be called from the async callback thread. 
         /// It will invoke the given delegate in the main update thread.
         /// </summary>        
-        public void InvokeOnMainThread(MessageQueueFunc functionToInvoke, object arg)
+        public void InvokeOnMainThread(MessageQueueFunc functionToInvoke, object arg = null)
         {
             _messageQueue.Enqueue(new Tuple<MessageQueueFunc, object>(functionToInvoke, arg));
         }

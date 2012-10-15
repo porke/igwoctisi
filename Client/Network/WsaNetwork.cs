@@ -65,6 +65,9 @@
         enum ErrorType
         {
             None,
+            Unknown,
+            
+            //Packet type:    Source:
 
             LoginFailed,    //Server
             GameListEmpty,  //Server
@@ -148,7 +151,7 @@
                         messageId = jObject["id"].Value<int>();
 
                         // Make first letter be an upper letter (for e.g. change gameStart to GameStart).
-                        typeStr = char.ToUpper(typeStr[0]) + typeStr.Substring(1);
+                        typeStr = Utils.UpperFirstLetter(typeStr);
                         MessageContentType type = (MessageContentType)Enum.Parse(typeof(MessageContentType), typeStr);
 
                         // Incoming message may be a response to previous request
@@ -180,7 +183,7 @@
 
                         else if (type == MessageContentType.Error)
                         {
-                            // TODO implement errors sent not as a response for a request
+                            nextPacketType = PacketType.Content;
                         }
 
                         // If this message isn't a response to the client's request then check what it is, actually.
@@ -223,9 +226,9 @@
                     {
                         if (nextContentType == MessageContentType.Error)
                         {
-
+                            // TODO implement behaviour for incoming errors. Incoming from nowhere. omg.
                         }
-                        if (nextContentType == MessageContentType.Chat)
+                        else if (nextContentType == MessageContentType.Chat)
                         {
                             if (OnChatMessageReceived != null)
                             {
@@ -240,7 +243,22 @@
                     else if (nextPacketType == PacketType.ContentAsResponse)
                     {
                         var jObject = JObject.Parse(jsonLine);
-                        var errorType = (ErrorType)Enum.Parse(typeof(ErrorType), jObject["errorType"].Value<string>());
+                        ErrorType errorType = ErrorType.None;
+
+                        if (nextContentType == MessageContentType.Error)
+                        {
+                            string typeStr = Utils.UpperFirstLetter(jObject["errorType"].Value<string>());
+
+                            try
+                            {
+                                errorType = (ErrorType)Enum.Parse(typeof(ErrorType), typeStr);
+                            }
+                            catch
+                            {
+                                errorType = ErrorType.Unknown;
+                            }
+                        }
+
                         responseCallback.Invoke(jsonLine, nextContentType, errorType);
 
                         // Next packet will be a header for some another message.
@@ -321,7 +339,7 @@
         private void SendMessage(int id, MessageContentType messageContentType, object obj)
         {
             // Send header
-            string messageContentTypeStr = Utils.lowerFirstLetter(messageContentType.ToString());
+            string messageContentTypeStr = Utils.LowerFirstLetter(messageContentType.ToString());
             var message = JsonLowercaseSerializer.SerializeObject(new
             {
                 Id = id,
@@ -421,11 +439,10 @@
 
             return ar;
         }
-        public bool EndLogin(IAsyncResult asyncResult)
+        public void EndLogin(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<bool>)asyncResult;
             ar.EndInvoke();
-            return (bool)ar.Result;
         }
 
         public IAsyncResult BeginLogout(AsyncCallback asyncCallback, object asyncState)
@@ -528,19 +545,19 @@
 
         public IAsyncResult BeginCreateGame(string gameName, string mapJsonContent, AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<object>(asyncCallback, asyncState);
+            var ar = new AsyncResult<bool>(asyncCallback, asyncState);
 
             ar.BeginInvoke(() =>
             {
                 // TODO: parse GameSTate into Json here or elsewhere...? (and implement the time consuming operation)
                 Thread.Sleep(500);
-                return null;
+                return true;
             });
             return ar;
         }
         public void EndCreateGame(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<object>)asyncResult;
+            var ar = (AsyncResult<bool>)asyncResult;
             ar.EndInvoke();
         }
 
@@ -559,7 +576,12 @@
                 }
                 else if (messageContentType == MessageContentType.Error)
                 {
-                    throw new ArgumentOutOfRangeException("Waiting for game list and received " + messageContentType + '.');
+                    string message = "Waiting for game list received: " + errorType + '.';
+
+                    if (errorType == ErrorType.GameListEmpty)
+                        message = "There are currently no games.";
+
+                    ar.HandleException(new Exception(message), false);
                 }                
             });
             
