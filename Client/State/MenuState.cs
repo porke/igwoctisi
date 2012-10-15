@@ -41,7 +41,7 @@
         private void RequestLogin(EventArgs args)
         {
             var network = Client.Network;
-            string hostname = "localhost"; // "v.zloichuj.eu";
+            string hostname = "178.32.225.209";// "v.zloichuj.eu";
             int port = 23456;
             var loginData = args as LoginEventArgs;
 
