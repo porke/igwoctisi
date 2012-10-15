@@ -13,7 +13,7 @@
         IAsyncResult BeginConnect(string hostname, int port, AsyncCallback asyncCallback, object asyncState);
         bool EndConnect(IAsyncResult asyncResult);
         IAsyncResult BeginLogin(string login, string password, AsyncCallback asyncCallback, object asyncState);
-        bool EndLogin(IAsyncResult asyncResult);
+        void EndLogin(IAsyncResult asyncResult);
         IAsyncResult BeginLogout(AsyncCallback asyncCallback, object asyncState);
         void EndLogout(IAsyncResult asyncResult);
         IAsyncResult BeginJoinGameLobby(int lobbyId, AsyncCallback asyncCallback, object asyncState);
