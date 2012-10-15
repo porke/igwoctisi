@@ -1,10 +1,9 @@
 ﻿namespace Client.State
 {
+    using System;
+    using System.Configuration;
     using View;
     using View.Menu;
-    using System;
-    using Client.View.Lobby;
-    using System.Configuration;
 
     public class MenuState : GameState
     {
