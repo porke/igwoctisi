@@ -50,6 +50,26 @@
         event Action<string, DateTime> OnOtherPlayerLeft;
 
         /// <summary>
+        /// Argument: map.
+        /// </summary>
+        event Action<Map> OnGameStarted;
+
+        /// <summary>
+        /// Arguments: currently none.
+        /// </summary>
+        event Action OnRoundStarted;
+
+        /// <summary>
+        /// Arguments: currently none.
+        /// </summary>
+        event Action OnRoundEnded;
+
+        /// <summary>
+        /// Arguments: currently none.
+        /// </summary>
+        event Action OnGameEnded;
+
+        /// <summary>
         /// Argument: disconnection reason (may be empty)
         /// </summary>
         event Action<string> OnDisconnected;
