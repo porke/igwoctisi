@@ -15,14 +15,9 @@
     {
         #region Public members
 
-        /// <summary>
-        /// Arguments: username, chat message, time
-        /// </summary>
-        public event Action<ChatMessage> OnChatMessageReceived;
-        
-        /// <summary>
-        /// Argument: disconnection reason (may be empty)
-        /// </summary>
+        public event Action<ChatMessage> OnChatMessageReceived;        
+        public event Action<string, DateTime> OnOtherPlayerJoined;
+        public event Action<string, DateTime> OnOtherPlayerLeft;
         public event Action<string> OnDisconnected;
         
         #endregion
@@ -53,6 +48,8 @@
             GameKick,       //Server
             GameStart,      //Client
             GameStarted,    //Server
+            GamePlayerJoined,//Server
+            GamePlayerLeft, //Server
             RoundStart,     //Server
             Moves,          //Client
             RoundEnd,       //Server
@@ -149,8 +146,18 @@
                             continue;
                         }
 
-                        string typeStr = jObject["type"].Value<string>();
-                        messageId = jObject["id"].Value<int>();
+                        string typeStr = null;
+                        try
+                        {
+                            typeStr = jObject["type"].Value<string>();
+                            messageId = jObject["id"].Value<int>();
+                        }
+                        catch (JsonReaderException)
+                        {
+                            // Ignore that packet and continue listening.
+                            Debug.WriteLine("Bad Message Header format: " + jsonLine, "Network");
+                            continue;
+                        }
 
                         // Make first letter be an upper letter (for e.g. change gameStart to GameStart).
                         typeStr = Utils.UpperFirstLetter(typeStr);
@@ -207,6 +214,16 @@
                         {
                             // TODO implement!
                         }
+                        else if (type == MessageContentType.GamePlayerJoined)
+                        {
+                            // Next packet should contain {username, time}
+                            nextPacketType = PacketType.Content;
+                        }
+                        else if (type == MessageContentType.GamePlayerLeft)
+                        {
+                            // Next packet should contain {username, time}
+                            nextPacketType = PacketType.Content;
+                        }
                         else if (type == MessageContentType.RoundStart)
                         {
                             // TODO implement!
@@ -237,6 +254,24 @@
                                 var msg = JsonLowercaseSerializer.DeserializeObject<ChatMessage>(jsonLine);
                                 OnChatMessageReceived.Invoke(msg);
                             }
+                        }
+                        else if (nextContentType == MessageContentType.GamePlayerJoined)
+                        {
+                            var msg = JObject.Parse(jsonLine);
+                            string username = msg.Value<string>("username");
+                            string datetimeStr = msg.Value<string>("time");
+
+                            if (OnOtherPlayerJoined != null)
+                                OnOtherPlayerJoined.Invoke(username, new DateTime());//TODO convert datetimeStr to DateTime
+                        }
+                        else if (nextContentType == MessageContentType.GamePlayerLeft)
+                        {
+                            var msg = JObject.Parse(jsonLine);
+                            string username = msg.Value<string>("username");
+                            string datetimeStr = msg.Value<string>("time");
+
+                            if (OnOtherPlayerLeft != null)
+                                OnOtherPlayerLeft.Invoke(username, new DateTime());//TODO convert datetimeStr to DateTime
                         }
 
                         // Next packet will be a header for some another message.

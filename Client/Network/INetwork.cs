@@ -32,14 +32,28 @@
         IAsyncResult BeginSendCommands(UserCommand commands, AsyncCallback asyncCallback, object asyncState);
         void EndSendCommands(IAsyncResult asyncResult);
 
+        #region Events
+
         /// <summary>
         /// Arguments: username, chat message, time
         /// </summary>
         event Action<ChatMessage> OnChatMessageReceived;
 
         /// <summary>
+        /// Arguments: username, time.
+        /// </summary>
+        event Action<string, DateTime> OnOtherPlayerJoined;
+
+        /// <summary>
+        /// Arguments: username, time.
+        /// </summary>
+        event Action<string, DateTime> OnOtherPlayerLeft;
+
+        /// <summary>
         /// Argument: disconnection reason (may be empty)
         /// </summary>
         event Action<string> OnDisconnected;
+
+        #endregion
     }
 }
