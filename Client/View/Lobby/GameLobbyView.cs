@@ -83,10 +83,10 @@
 
         #region UpdateRequests
 
-        public void RefreshPlayerList(List<Player> newPlayerList)
+        public void RefreshPlayerList(List<string> newPlayerList)
         {
             _playerList.Items.Clear();            
-            _playerList.Items.AddRange(newPlayerList.Select(player => player.Username));            
+            _playerList.Items.AddRange(newPlayerList);
         }
 
         public void ChatMessageReceived(ChatMessage message)

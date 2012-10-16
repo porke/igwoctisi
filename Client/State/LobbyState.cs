@@ -76,7 +76,7 @@ using System.Collections.Generic;
             ViewMgr.PushLayer(messageBox);
 
             var map = new Map(newGameParameters.MapName);
-            Client.Network.BeginCreateGame(newGameParameters.GameName, map, OnCreateGame, Tuple.Create(messageBox, newGameParameters.MapName));
+            Client.Network.BeginCreateGame(newGameParameters.GameName, map, OnCreateGame, Tuple.Create(messageBox, newGameParameters.MapName, newGameParameters.GameName));
         }
 
         private void CancelCreateGame(EventArgs args)
@@ -225,19 +225,24 @@ using System.Collections.Generic;
 
             InvokeOnMainThread(obj =>
             {
-                var data = result.AsyncState as Tuple<MessageBox, String>;
+                var data = result.AsyncState as Tuple<MessageBox, string, string>;
                 var messageBox = data.Item1;
                 string mapName = data.Item2;
+                string gameName = data.Item3;
 
                 try
                 {
                     Client.Network.EndCreateGame(result);
 
                     _map = new Map(mapName);
+                    _gameLobby = new SpecificGameLobbyInfo(gameName, _clientPlayer);
 
                     ViewMgr.PopLayer();     // pop MessageBox
                     ViewMgr.PopLayer();     // pop main lobby window
-                    ViewMgr.PushLayer(new GameLobbyView(this));
+
+                    var gameLobbyView = new GameLobbyView(this);
+                    gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                    ViewMgr.PushLayer(gameLobbyView);
                 }
                 catch (Exception exc)
                 {
