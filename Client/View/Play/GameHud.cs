@@ -20,6 +20,8 @@
         private LabelControl _selectedPlanetName;
         private LabelControl _selectedPlanetBaseIncome;
 
+        private LabelControl _timer;
+
         protected void CreateChildControls()
         {
             #region Orders section
@@ -131,6 +133,15 @@
 
             #endregion
 
+            #region Timer
+
+            _timer = new LabelControl("0:00")
+            {
+                Bounds = new UniRectangle(new UniScalar(0.89f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0), new UniScalar(0.07f, 0))               
+            };
+
+            #endregion
+
             screen.Desktop.Children.AddRange(
                 new Control[] 
                 {
@@ -151,7 +162,9 @@
                     _selectedPlanetName,
                     _selectedPlanetBaseIncome,
                     planetFleetIncomeDesc,
-                    selectedPlanetDesc
+                    selectedPlanetDesc,
+
+                    _timer
                 });
         }        
 
@@ -210,6 +223,15 @@
         {
             _fleetCountValue.Text = Convert.ToString(player.DeployableFleets);
             _fleetIncomeValue.Text = Convert.ToString(player.FleetIncomePerTurn);
+        }
+
+        public void UpdateTimer(int secondsLeft)
+        {
+            int mins = secondsLeft / 60;
+            int secs = secondsLeft % 60;
+
+            // Display Timer in format 0:00
+            _timer.Text = mins.ToString() + (secs < 10 ? ":0" : ":") + secs.ToString();
         }
 
         #endregion

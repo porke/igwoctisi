@@ -55,9 +55,9 @@
         event Action<Map> OnGameStarted;
 
         /// <summary>
-        /// Arguments: currently none.
+        /// Arguments: roundSeconds.
         /// </summary>
-        event Action OnRoundStarted;
+        event Action<int> OnRoundStarted;
 
         /// <summary>
         /// Arguments: currently none.

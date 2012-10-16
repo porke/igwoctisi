@@ -20,7 +20,7 @@
         public event Action<string, DateTime> OnOtherPlayerJoined;
         public event Action<string, DateTime> OnOtherPlayerLeft;
         public event Action<Map> OnGameStarted;
-        public event Action OnRoundStarted;
+        public event Action<int> OnRoundStarted;
         public event Action OnRoundEnded;
         public event Action OnGameEnded;
         public event Action<string> OnDisconnected;
@@ -296,8 +296,13 @@
                         {
                             if (OnRoundStarted != null)
                             {
-                                // TODO read optional parameters
-                                OnRoundStarted.Invoke();
+                                var jObject = JObject.Parse(jsonLine);
+
+                                //  TODO parse gamestate/map/moves or w/e
+                                //var gamestate = jObject.Value<GameState>();
+
+                                int roundTime = jObject.Value<int>("roundTime");
+                                OnRoundStarted.Invoke(roundTime);
                             }
                         }
                         else if (nextContentType == MessageContentType.RoundEnd)

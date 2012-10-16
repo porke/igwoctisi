@@ -15,6 +15,7 @@
 
         private List<UserCommand> _commands = new List<UserCommand>();
         private Player _clientPlayer;
+        private double _secondsLeft = 0;
 
         public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer)
             : base(game)
@@ -32,11 +33,23 @@
             eventHandlers.Add("SendOrders", SendOrders);
             eventHandlers.Add("SelectPlanet", SelectPlanet);
 
-            Client.Network.OnRoundStarted += new Action(Network_OnRoundStarted);
+            Client.Network.OnRoundStarted += new Action<int>(Network_OnRoundStarted);
             Client.Network.OnRoundEnded += new Action(Network_OnRoundEnded);
             Client.Network.OnGameEnded += new Action(Network_OnGameEnded);
             Client.Network.OnOtherPlayerLeft += new Action<string, DateTime>(Network_OnOtherPlayerLeft);
             Client.Network.OnDisconnected += new Action<string>(Network_OnDisconnected);
+        }
+
+        public override void OnUpdate(double delta, double time)
+        {
+            base.OnUpdate(delta, time);
+            
+            // Update timer
+            if (_secondsLeft-delta <= 0)
+                _secondsLeft = 0;
+
+            _secondsLeft -= delta;
+            _gameHud.UpdateTimer((int)_secondsLeft);
         }
 
         #region View event handlers
@@ -61,19 +74,24 @@
         #endregion
 
         #region Async network callbacks
-        
-        void Network_OnRoundStarted()
+
+        void Network_OnRoundStarted(int roundTime)
         {
+            _secondsLeft = roundTime;
+            _gameHud.UpdateTimer((int)_secondsLeft);
+
+            // TODO update gui to enable it for making new moves
+        }
+
+        void Network_OnRoundEnded(/*moves here!*/)
+        {
+            // TODO collect info about moves and animate them
             throw new NotImplementedException();
         }
 
-        void Network_OnRoundEnded()
+        void Network_OnGameEnded(/*game result here!*/)
         {
-            throw new NotImplementedException();
-        }
-
-        void Network_OnGameEnded()
-        {
+            // TODO show game result and statistics
             throw new NotImplementedException();
         }
 
