@@ -67,6 +67,10 @@
             }
         }
 
+        #endregion
+
+        #region Event handlers
+
         private void Cancel_Pressed(object sender, EventArgs args)
         {
             state.HandleViewEvent("CancelCreateGame", args);
@@ -76,17 +80,6 @@
         {
             var mapName = _mapList.Items[_mapList.SelectedItems[0]];
             state.HandleViewEvent("CreateGame", new CreateGameArgs(_gameName.Text, mapName));
-        }
-
-        private void LoadMapNames()
-        {
-            var applicationDir = AppDomain.CurrentDomain.BaseDirectory;
-            var mapNames = Directory.EnumerateFiles(applicationDir + "/Content/Maps");
-            foreach (var mapName in mapNames)
-            {
-                var filename = Path.GetFileNameWithoutExtension(mapName);
-                _mapList.Items.Add(filename);
-            }
         }
 
         #endregion
@@ -100,6 +93,17 @@
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();            
+        }
+
+        private void LoadMapNames()
+        {
+            var applicationDir = AppDomain.CurrentDomain.BaseDirectory;
+            var mapNames = Directory.EnumerateFiles(applicationDir + "/Content/Maps");
+            foreach (var mapName in mapNames)
+            {
+                var filename = Path.GetFileNameWithoutExtension(mapName);
+                _mapList.Items.Add(filename);
+            }
         }
     }
 }

@@ -8,6 +8,8 @@
 
     class LobbyState : GameState
     {
+        private Map _map;
+
         public LobbyState(IGWOCTISI game) : base(game)
         {
             var menuBackground = new LobbyBackground(this);
@@ -46,7 +48,6 @@
 
         private void CreateGame(EventArgs args)
         {
-            // TODO: Call network to create a game
             var newGameParameters = args as CreateGameArgs;
             Client.Network.BeginCreateGame(newGameParameters.GameName, string.Empty, OnCreateGame, null);
         }
@@ -83,8 +84,8 @@
         }
 
         private void BeginGame(EventArgs args)
-        {
-            Game.ChangeState(new PlayState(Game));
+        {            
+            Game.ChangeState(new PlayState(Game, _map));
         }
 
         private void RefreshGameList(EventArgs args)
@@ -181,6 +182,9 @@
             InvokeOnMainThread(
                 delegate(object arg)
                 {
+                    string mapName = arg as string;
+                    _map = new Map(mapName);
+
                     ViewMgr.PopLayer();     // pop main lobby window
                     ViewMgr.PushLayer(new GameLobbyView(this));
                 }, null);            

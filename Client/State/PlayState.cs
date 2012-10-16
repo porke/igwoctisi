@@ -3,25 +3,32 @@
     using System;
     using Model;
     using View.Play;
+    using System.Collections.Generic;
 
     class PlayState : GameState
     {
         public Scene Scene { get; protected set; }
 
-        public PlayState(IGWOCTISI game)
+        private GameViewport _gameViewport;
+        private GameHud _gameHud;
+
+        private List<UserCommand> _commands = new List<UserCommand>();
+
+        public PlayState(IGWOCTISI game, Map loadedMap)
             : base(game)
         {
-            Scene = new Scene();
+            Scene = new Scene(loadedMap, new List<string>());
             Scene.Map = new Map("TestMap");
 
             var gameViewport = new GameViewport(this);
-            var gameHud = new GameHud(this);
+            _gameHud = new GameHud(this);
 
-            ViewMgr.PushLayer(gameViewport);
-            //ViewMgr.PushLayer(gameHud);
+            ViewMgr.PushLayer(_gameViewport);
+            ViewMgr.PushLayer(_gameHud);
 
             eventHandlers.Add("LeaveGame", LeaveGame);
             eventHandlers.Add("SendOrders", SendOrders);
+            eventHandlers.Add("SelectPlanet", SelectPlanet);
         }
 
         #region View event handlers
@@ -34,6 +41,13 @@
         private void SendOrders(EventArgs args)
         {
             // TODO: Send orders
+            _commands.Clear();
+        }
+
+        private void SelectPlanet(EventArgs args)
+        {
+            var selectedPlanetArg = args as SelectPlanetArgs;
+            _gameHud.UpdateSelectedPlanet(selectedPlanetArg.Planet);
         }
 
         #endregion
