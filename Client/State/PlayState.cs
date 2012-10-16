@@ -21,7 +21,7 @@
             Scene = new Scene(loadedMap, new List<Player> { _clientPlayer});
             _clientPlayer = clientPlayer;
 
-            _gameViewport = new GameViewport(this, Scene);
+            _gameViewport = new GameViewport(this);
             _gameHud = new GameHud(this);
 
             ViewMgr.PushLayer(_gameViewport);

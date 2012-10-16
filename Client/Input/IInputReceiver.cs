@@ -13,6 +13,7 @@
         // keyboard
         bool OnKeyPressed(Keys key);
         bool OnKeyReleased(Keys key);
+        bool OnCharacter(char character);
 
         // mouse
         bool OnMouseMoved(Vector2 position);
