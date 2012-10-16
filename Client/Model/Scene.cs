@@ -6,19 +6,19 @@
 
     public class Scene
     {
-        private Map _map;
+        public Map Map { get; private set; }
         private List<string> _players;
 
         public Scene(Map map, List<string> playerList)
         {
-            _map = map;
+            Map = map;
             _players = playerList;
         }
         public Planet PickPlanet(Vector2 clickPosition)
         {
             // TODO: Mocked picking
             Random rand = new Random();
-            return _map.Planets[rand.Next(_map.Planets.Count)];
+            return Map.Planets[rand.Next(Map.Planets.Count)];
         }
     }
 }
