@@ -62,7 +62,7 @@
         {
             var graphicsDevice = Client.GraphicsDevice;
 
-            graphicsDevice.Clear(Color.White);
+            graphicsDevice.Clear(Color.Black);
             ViewMgr.Draw(delta, time);
         }
 

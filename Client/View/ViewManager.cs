@@ -38,6 +38,10 @@
             {
                 return ProcessEvent((receiver) => receiver.OnKeyReleased(key));
             }
+            public bool OnCharacter(char character)
+            {
+                return ProcessEvent((receiver) => receiver.OnCharacter(character));
+            }
 
             // mouse
             public bool OnMouseMoved(Vector2 position)
