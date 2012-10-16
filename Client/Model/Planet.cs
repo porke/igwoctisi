@@ -3,6 +3,7 @@
     using System;
     using System.Xml.Serialization;
     using Client.Renderer;
+    using Newtonsoft.Json;
 
     [Serializable]
     public class Planet
@@ -37,6 +38,7 @@
         [XmlAttribute]
         public string CloudsAlpha { get; set; }
 
+        [JsonIgnore]
         public PlanetVisual Visual { get; set; }
     }
 }
