@@ -4,8 +4,8 @@
 		<Planet Id="2" Name="Beta"        BaseUnitsPerTurn="3" X="-300" Y="100"  Z="0" Radius="45" Diffuse="Textures\\VenusDiffuse" />
 		<Planet Id="3" Name="Gamma"       BaseUnitsPerTurn="3" X="0"    Y="-200" Z="0" Radius="55" Diffuse="Textures\\JupiterDiffuse" />
 		<Planet Id="4" Name="A"           BaseUnitsPerTurn="5" X="200"  Y="300"  Z="0" Radius="25" Diffuse="Textures\\MoonDiffuse" />
-		<Planet Id="5" Name="B" 		      BaseUnitsPerTurn="3" X="0"    Y="300"  Z="0" Radius="40" Diffuse="Textures\\EarthDiffuse" Clouds="Textures\\EarthClouds" CloudsAlpha="Textures\\EarthCloudsAlpha" />
-		<Planet Id="6" Name="C" 		      BaseUnitsPerTurn="3" X="200"  Y="100"  Z="0" Radius="30" Diffuse="Textures\\PlutonDiffuse" />
+		<Planet Id="5" Name="B"		      BaseUnitsPerTurn="3" X="0"    Y="300"  Z="0" Radius="40" Diffuse="Textures\\EarthDiffuse" Clouds="Textures\\EarthClouds" CloudsAlpha="Textures\\EarthCloudsAlpha" />
+		<Planet Id="6" Name="C" 		  BaseUnitsPerTurn="3" X="200"  Y="100"  Z="0" Radius="30" Diffuse="Textures\\PlutonDiffuse" />
 		<Planet Id="7" Name="Core Prime"  BaseUnitsPerTurn="6" X="0"    Y="100"  Z="0" Radius="50" Diffuse="Textures\\PlanetDiffuse1" />
 	</Planets>
 	

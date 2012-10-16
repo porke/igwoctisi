@@ -70,6 +70,10 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>References\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Nuclex.Input">
       <HintPath>References\Nuclex.Input.dll</HintPath>
     </Reference>
@@ -98,7 +102,6 @@
     <Compile Include="Common\Utils.cs" />
     <Compile Include="GameClient.cs" />
     <Compile Include="Common\AsyncResult.cs" />
-    <Compile Include="Common\Logger.cs" />
     <Compile Include="Common\SystemExtensions.cs" />
     <Compile Include="Common\XnaExtensions.cs" />
     <Compile Include="Input\IInput.cs" />
@@ -154,6 +157,8 @@
     <Content Include="GameThumbnail.png">
       <XnaPlatformSpecific>true</XnaPlatformSpecific>
     </Content>
+    <Content Include="References\Newtonsoft.Json.dll" />
+    <Content Include="References\NLog.dll" />
     <Content Include="References\Nuclex.Fonts.Content.TrueTypeImporter.dll" />
     <Content Include="References\Nuclex.Input.dll" />
     <Content Include="References\Nuclex.Support.dll" />
@@ -197,7 +202,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

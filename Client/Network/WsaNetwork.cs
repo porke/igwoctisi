@@ -10,6 +10,7 @@
     using Model;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using NLog;
 
     public class WsaNetwork : INetwork
     {
@@ -424,6 +425,8 @@
             tcpClient.BeginConnect(hostname, port, new AsyncCallback(TcpConnectCallback), tcpClient);
             ar.BeginInvoke(() =>
             {
+                logger.Info("Beginning connection to {0}:{1}", hostname, port);
+
                 if (TimeoutObject.WaitOne(TIMEOUT_MILLISECONDS, false))
                 {
                     if (IsConnectionSuccessful)
@@ -674,5 +677,7 @@
         #endregion
 
         public GameClient Client { get; protected set; }
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
     }
 }
