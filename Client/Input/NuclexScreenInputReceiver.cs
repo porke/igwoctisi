@@ -31,7 +31,7 @@
         public virtual bool OnCharacter(char character)
         {
             Screen.InjectCharacter(character);
-            return UseModalBehavior;
+            return IsInputHandled;
         }
 
         // mouse

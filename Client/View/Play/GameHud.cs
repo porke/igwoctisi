@@ -202,7 +202,12 @@
 
                 if (_orderList.Items.Count > 0)
                 {
-                    _orderList.SelectedItems.Add(firstItem - 1);
+                    if (firstItem - 1 > 0) 
+                    {
+                        firstItem--;
+                    }
+
+                    _orderList.SelectedItems.Add(firstItem);
                 }
 
                 // TODO update the logic (fleet count, etc.)
