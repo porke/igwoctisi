@@ -7,7 +7,7 @@
     using System.Runtime.Serialization;
     using System.Xml;
     using System.Xml.Serialization;
-using Client.Renderer;
+    using Client.Renderer;
 
     [DataContract]
     public class Map
