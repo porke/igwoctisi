@@ -9,8 +9,8 @@ namespace Client
         protected override void Initialize()
         {
             base.Initialize();
-            
-            ChangeState(new PlayState(this, new Model.Map("TestMap"), new Model.Player("dsd")));
+
+            ChangeState(new MenuState(this));
         }
 
         #endregion
