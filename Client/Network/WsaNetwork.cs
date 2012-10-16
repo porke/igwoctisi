@@ -19,6 +19,10 @@
         public event Action<ChatMessage> OnChatMessageReceived;        
         public event Action<string, DateTime> OnOtherPlayerJoined;
         public event Action<string, DateTime> OnOtherPlayerLeft;
+        public event Action<Map> OnGameStarted;
+        public event Action OnRoundStarted;
+        public event Action OnRoundEnded;
+        public event Action OnGameEnded;
         public event Action<string> OnDisconnected;
         
         #endregion
@@ -211,10 +215,6 @@
 
                             throw new SocketException((int)SocketError.ConnectionAborted);
                         }
-                        else if (type == MessageContentType.GameStart)
-                        {
-                            // TODO implement!
-                        }
                         else if (type == MessageContentType.GamePlayerJoined)
                         {
                             // Next packet should contain {username, time}
@@ -225,9 +225,15 @@
                             // Next packet should contain {username, time}
                             nextPacketType = PacketType.Content;
                         }
+                        else if (type == MessageContentType.GameStart)
+                        {
+                            // Next packet should contain map
+                            nextPacketType = PacketType.Content;
+                        }
                         else if (type == MessageContentType.RoundStart)
                         {
-                            // TODO implement!
+                            // Next packet should contain gamestate
+                            nextPacketType = PacketType.Content;
                         }
                         else if (type == MessageContentType.RoundEnd)
                         {
@@ -235,7 +241,7 @@
                         }
                         else if (type == MessageContentType.GameEnd)
                         {
-                            // TODO implement!
+                            nextPacketType = PacketType.Content;
                         }
 
                         // This variable is going to be used only when
@@ -258,21 +264,57 @@
                         }
                         else if (nextContentType == MessageContentType.GamePlayerJoined)
                         {
-                            var msg = JObject.Parse(jsonLine);
-                            string username = msg.Value<string>("username");
-                            string datetimeStr = msg.Value<string>("time");
-
                             if (OnOtherPlayerJoined != null)
+                            {
+                                var msg = JObject.Parse(jsonLine);
+                                string username = msg.Value<string>("username");
+                                string datetimeStr = msg.Value<string>("time");
+
                                 OnOtherPlayerJoined.Invoke(username, new DateTime());//TODO convert datetimeStr to DateTime
+                            }
                         }
                         else if (nextContentType == MessageContentType.GamePlayerLeft)
                         {
-                            var msg = JObject.Parse(jsonLine);
-                            string username = msg.Value<string>("username");
-                            string datetimeStr = msg.Value<string>("time");
-
                             if (OnOtherPlayerLeft != null)
+                            {
+                                var msg = JObject.Parse(jsonLine);
+                                string username = msg.Value<string>("username");
+                                string datetimeStr = msg.Value<string>("time");
+
                                 OnOtherPlayerLeft.Invoke(username, new DateTime());//TODO convert datetimeStr to DateTime
+                            }
+                        }
+                        else if (nextContentType == MessageContentType.GameStart)
+                        {
+                            if (OnGameStarted != null)
+                            {
+                                var map = JObject.Parse(jsonLine).Value<Map>("map");
+                                OnGameStarted.Invoke(map);
+                            }
+                        }
+                        else if (nextContentType == MessageContentType.RoundStart)
+                        {
+                            if (OnRoundStarted != null)
+                            {
+                                // TODO read optional parameters
+                                OnRoundStarted.Invoke();
+                            }
+                        }
+                        else if (nextContentType == MessageContentType.RoundEnd)
+                        {
+                            if (OnRoundEnded != null)
+                            {
+                                // TODO implement end of round
+                                OnRoundEnded.Invoke();
+                            }
+                        }
+                        else if (nextContentType == MessageContentType.GameEnd)
+                        {
+                            if (OnGameEnded != null)
+                            {
+                                // TODO implement end of game!
+                                OnGameEnded.Invoke();
+                            }
                         }
 
                         // Next packet will be a header for some another message.
