@@ -8,6 +8,7 @@
     using System.Xml.Serialization;
     using System.Linq;
     using Newtonsoft.Json;
+using Client.Renderer;
 
     [DataContract]
     public class Map
@@ -26,6 +27,8 @@
 
         [DataMember]
         public List<StartingData> PlayerStartingData { get; private set; }
+
+        public MapVisual Visual { get; set; }
 
         public List<Planet> StartingPositions { get { return PlayerStartingData.Select(data => GetPlanetById(data.PlanetId)).ToList(); } }
         public int MaxPlayersCount { get { return StartingPositions.Count; } }

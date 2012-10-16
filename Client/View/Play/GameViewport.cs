@@ -2,6 +2,7 @@
 {
     using Input;
     using Model;
+    using Client.State;
 
     class GameViewport : BaseView
     {
@@ -11,19 +12,20 @@
         {
             var renderer = state.Client.Renderer;
 
-            renderer.Draw(scene, delta, time);
+            renderer.Draw(State.Scene, delta, time);
         }
 
         #endregion
 
-        private Scene scene;
+        public PlayState State { get; protected set; }
 
-        public GameViewport(State.GameState state, Scene scene) : base(state)
+        public GameViewport(PlayState state) : base(state)
         {
             IsLoaded = true;
             IsTransparent = false;
             InputReceiver = new InputReceiver(false);
-            this.scene = scene;
+
+            State = state;
         }
     }
 }

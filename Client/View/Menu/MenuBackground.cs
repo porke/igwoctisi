@@ -13,13 +13,13 @@
     {
         #region Protected members
 
-        protected Effect _effect;
+        protected Effect _planetEffect;
         protected VertexBuffer _vb;
 
         protected void OnEffectLoad(IAsyncResult ar)
         {
             var contentMgr = (ContentManager)ar.AsyncState;
-            _effect = contentMgr.EndLoad<Effect>(ar);
+            _planetEffect = contentMgr.EndLoad<Effect>(ar);
 
             IsLoaded = true;
         }
@@ -43,10 +43,10 @@
                 (float) graphicsDevice.Viewport.Width / graphicsDevice.Viewport.Height,
                 0.1f, 1000.0f);
 
-            _effect.Parameters["World"].SetValue(world);
-            _effect.Parameters["View"].SetValue(view);
-            _effect.Parameters["Projection"].SetValue(projection);
-            foreach (var pass in _effect.CurrentTechnique.Passes)
+            _planetEffect.Parameters["World"].SetValue(world);
+            _planetEffect.Parameters["View"].SetValue(view);
+            _planetEffect.Parameters["Projection"].SetValue(projection);
+            foreach (var pass in _planetEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 graphicsDevice.SetVertexBuffer(_vb);

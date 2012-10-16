@@ -29,6 +29,10 @@
         {
             return !InputPassThrough;
         }
+        public virtual bool OnCharacter(char character)
+        {
+            return !InputPassThrough;
+        }
 
         // mouse
         public virtual bool OnMouseMoved(Vector2 position)

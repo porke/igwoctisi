@@ -12,12 +12,13 @@
             : base(game)
         {
             Scene = new Scene();
+            Scene.Map = new Map("TestMap");
 
-            var gameViewport = new GameViewport(this, Scene);
+            var gameViewport = new GameViewport(this);
             var gameHud = new GameHud(this);
 
             ViewMgr.PushLayer(gameViewport);
-            ViewMgr.PushLayer(gameHud);
+            //ViewMgr.PushLayer(gameHud);
 
             eventHandlers.Add("LeaveGame", LeaveGame);
             eventHandlers.Add("SendOrders", SendOrders);
