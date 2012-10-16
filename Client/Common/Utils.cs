@@ -69,11 +69,7 @@ namespace Client.Common
                     
                     var a = new VertexPositionNormalTexture();
                     a.Position = (v0.Position + v1.Position) / 2.0f;
-                    a.TextureCoordinate = (v0.TextureCo        public static string UpperFirstLetter(string str)
-        {
-            return char.ToUpper(str[0]) + str.Substring(1);
-        }
-ordinate + v1.TextureCoordinate) / 2.0f;
+                    a.TextureCoordinate = (v0.TextureCoordinate + v1.TextureCoordinate) / 2.0f;
 
                     var b = new VertexPositionNormalTexture();
                     b.Position = (v1.Position + v2.Position) / 2.0f;
