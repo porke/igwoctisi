@@ -30,7 +30,7 @@
             Client.Network.OnDisconnected -= new Action<string>(OnDisconnected_EventHandler);
         }
 
-        #region Event handlers
+        #region View event handlers
 
         private void QuitGame(EventArgs args)
         {
@@ -72,58 +72,63 @@
         #region Async network callbacks
 
         private void OnConnect(IAsyncResult ar)
-        {
-            var network = ViewMgr.Client.Network;
-            var data = (Tuple<MessageBox, LoginEventArgs>)ar.AsyncState;
-            var messageBox = data.Item1;
-            var loginData = data.Item2;
+        {                        
+            InvokeOnMainThread(
+                delegate(object arg)
+                {
+                    var network = ViewMgr.Client.Network;
+                    var connectData = (Tuple<MessageBox, LoginEventArgs>)ar.AsyncState;
+                    var messageBox = connectData.Item1;
+                    var loginData = connectData.Item2;
 
-            try
-            {
-                if (network.EndConnect(ar))
-                {
-                    network.BeginLogin(loginData.Login, loginData.Password, OnLogin, messageBox);
-                    messageBox.Message = "Logging in as " + loginData.Login + "...";
-                }
-                else
-                {
-                    throw new Exception("Couldn't connect to the server.");
-                }
-            }
-            catch (Exception exc)
-            {
-                messageBox.Message = exc.Message;
-                messageBox.Buttons = MessageBoxButtons.OK;
-                messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
-            }
+                    try
+                    {
+                        if (network.EndConnect(ar))
+                        {
+                            network.BeginLogin(loginData.Login, loginData.Password, OnLogin, messageBox);
+                            messageBox.Message = "Logging in as " + loginData.Login + "...";
+                        }
+                        else
+                        {
+                            throw new Exception("Couldn't connect to the server.");
+                        }
+                    }
+                    catch (Exception exc)
+                    {
+                        messageBox.Message = exc.Message;
+                        messageBox.Buttons = MessageBoxButtons.OK;
+                        messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
+                    }
+                }, ar.AsyncState);            
         }
 
         private void OnLogin(IAsyncResult ar)
         {
-            var network = ViewMgr.Client.Network;
-            var messageBox = (MessageBox)ar.AsyncState;
-
-            try
-            {
-                if (network.EndLogin(ar))
+            InvokeOnMainThread(
+                delegate(object arg)
                 {
-                    //ViewMgr.PopLayer(); // MessageBox
-                    //ViewMgr.PopLayer(); // login input
+                    var network = ViewMgr.Client.Network;
+                    var messageBox = (MessageBox)ar.AsyncState;
 
-                    Client.ChangeState(new LobbyState(Game));
-                }
-                else
-                {
-                    throw new Exception("Login failed!");
-                }
-            }
-            catch (Exception exc)
-            {
-                network.BeginDisconnect(OnDisconnect, null);
-                messageBox.Message = exc.Message;
-                messageBox.Buttons = MessageBoxButtons.OK;
-                messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
-            }
+                    try
+                    {
+                        if (network.EndLogin(ar))
+                        {
+                            Client.ChangeState(new LobbyState(Game));
+                        }
+                        else
+                        {
+                            throw new Exception("Login failed!");
+                        }
+                    }
+                    catch (Exception exc)
+                    {
+                        network.BeginDisconnect(OnDisconnect, null);
+                        messageBox.Message = exc.Message;
+                        messageBox.Buttons = MessageBoxButtons.OK;
+                        messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
+                    }
+                }, null);            
         }
 
         private void OnDisconnect(IAsyncResult ar)
@@ -134,8 +139,12 @@
 
         private void OnDisconnected_EventHandler(string reason)
         {
-            ViewMgr.PopLayer(); // Probably "Logging in..." MessageBox
-            HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were forcefully kicked out by the server."));
+            InvokeOnMainThread(
+                delegate(object arg)
+                {
+                    ViewMgr.PopLayer(); // Probably "Logging in..." MessageBox
+                    HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were forcefully kicked out by the server."));
+                }, reason);            
         }
 
         #endregion

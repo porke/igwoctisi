@@ -24,7 +24,7 @@
             eventHandlers.Add("SendOrders", SendOrders);
         }
 
-        #region Event handlers
+        #region View event handlers
 
         private void LeaveGame(EventArgs args)
         {
@@ -35,6 +35,10 @@
         {
             // TODO: Send orders
         }
+
+        #endregion
+
+        #region Async netowrk callbacks
 
         #endregion
     }

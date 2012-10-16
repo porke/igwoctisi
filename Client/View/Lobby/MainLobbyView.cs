@@ -1,14 +1,13 @@
 ﻿namespace Client.View.Lobby
 {
     using System;
+    using System.Collections.Generic;
+    using Client.Model;
     using Common;
     using Input;
     using Nuclex.UserInterface;
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
-    using State;
-    using System.Collections.Generic;
-    using Client.Model;
 
     class MainLobbyView : BaseView
     {
@@ -68,13 +67,11 @@
 
         protected void JoinGame_Pressed(object sender, EventArgs e)
         {
-            try
-            {
-                int lobbyIndex = _gameList.SelectedItems[0];
-                int lobbyId = _gameInfoList[lobbyIndex].LobbyId;
-                state.HandleViewEvent("JoinGame", new JoinGameArgs(lobbyId));
-            }
-            catch (IndexOutOfRangeException) { }
+            if (_gameList.SelectedItems.Count == 0) return;
+
+            int lobbyIndex = _gameList.SelectedItems[0];
+            int lobbyId = _gameInfoList[lobbyIndex].LobbyId;
+            state.HandleViewEvent("JoinGame", new JoinGameArgs(lobbyId));
         }
 
         protected void CreateGame_Pressed(object sender, EventArgs e)
@@ -95,9 +92,9 @@
             CreateChildControls();
         }
 
-        public void RefreshGameList(object gameInfoList)
+        public void RefreshGameList(List<LobbyListInfo> gameInfoList)
         {
-            _gameInfoList = gameInfoList as List<LobbyListInfo>;
+            _gameInfoList = gameInfoList;
             _gameList.Items.Clear();
 
             foreach (var info in _gameInfoList)
@@ -106,8 +103,11 @@
             }
 
             // Only first element should be selected
-            _gameList.SelectedItems.Clear();
-            _gameList.SelectedItems.Add(0);
+            if (_gameList.Items.Count > 0)
+            {
+                _gameList.SelectedItems.Clear();
+                _gameList.SelectedItems.Add(0);
+            }
         }
     }
 }

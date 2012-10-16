@@ -1,11 +1,10 @@
 ﻿namespace Client.State
 {
+    using System;
     using View;
     using View.Lobby;
-    using System;
-    using Common;
-    using System.Collections.Generic;
     using Client.Model;
+    using System.Collections.Generic;
 
     class LobbyState : GameState
     {
@@ -30,7 +29,7 @@
         public override void OnEnter()
         {
             Client.Network.OnDisconnected += new Action<string>(OnDisconnected_EventHandler);
-            this.RefreshGameList(new SenderEventArgs(ViewMgr.PeekLayer()));
+            //this.RefreshGameList(new SenderEventArgs(ViewMgr.PeekLayer()));
         }
 
         public override void OnExit()
@@ -38,7 +37,7 @@
             Client.Network.OnDisconnected -= new Action<string>(OnDisconnected_EventHandler);
         }
 
-        #region Event handlers
+        #region View event handlers
 
         private void LeaveGameLobby(EventArgs args)
         {
@@ -115,7 +114,11 @@
             catch { }
             finally
             {
-                Client.Network.BeginDisconnect(OnDisconnect, null);
+                InvokeOnMainThread(
+                    delegate(object arg)
+                    {
+                        Client.Network.BeginDisconnect(OnDisconnect, null);
+                    }, null);
             }
         }
                 
@@ -123,29 +126,36 @@
         {            
             var gameNames = Client.Network.EndGetGameList(result);
             var lobbyWindow = result.AsyncState as MainLobbyView;
-            lobbyWindow.Invoke(lobbyWindow.RefreshGameList, gameNames);
-
-            ViewMgr.PopLayer(); // MessageBox            
+            
+            InvokeOnMainThread(
+                delegate(object gameList)
+                {
+                    lobbyWindow.RefreshGameList(gameList as List<LobbyListInfo>);
+                    ViewMgr.PopLayer(); // MessageBox   
+                }, gameNames);
         }
 
         private void OnJoinLobby(IAsyncResult result)
         {
             var messageBox = result.AsyncState as MessageBox;
+            var gameInfo = Client.Network.EndJoinGameLobby(result);
 
-            try
-            {
-                var gameInfo = Client.Network.EndJoinGameLobby(result);
-
-                ViewMgr.PopLayer(); // MessageBox
-                ViewMgr.PopLayer(); // MainLobbyView
-                ViewMgr.PushLayer(new GameLobbyView(this));
-            }
-            catch (Exception exc)
-            {
-                messageBox.Buttons = MessageBoxButtons.OK;
-                messageBox.Message = exc.Message;
-                messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
-            }
+            InvokeOnMainThread(
+                delegate(object arg)
+                {
+                    try
+                    {
+                        ViewMgr.PopLayer(); // MessageBox
+                        ViewMgr.PopLayer(); // MainLobbyView
+                        ViewMgr.PushLayer(new GameLobbyView(this));
+                    }
+                    catch (Exception exc)
+                    {
+                        messageBox.Buttons = MessageBoxButtons.OK;
+                        messageBox.Message = exc.Message;
+                        messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
+                    }
+                }, gameInfo);
         }
 
         private void OnLeaveGame(IAsyncResult result)
@@ -157,15 +167,23 @@
             catch { }
             finally
             {
-                ViewMgr.PopLayer(); // pop game lobby
-                ViewMgr.PushLayer(new MainLobbyView(this));
+                InvokeOnMainThread(
+                    delegate(object arg)
+                    {
+                        ViewMgr.PopLayer(); // pop game lobby
+                        ViewMgr.PushLayer(new MainLobbyView(this));
+                    }, null);
             }
         }
 
         private void OnCreateGame(IAsyncResult result)
         {
-            ViewMgr.PopLayer();     // pop main lobby window
-            ViewMgr.PushLayer(new GameLobbyView(this));
+            InvokeOnMainThread(
+                delegate(object arg)
+                {
+                    ViewMgr.PopLayer();     // pop main lobby window
+                    ViewMgr.PushLayer(new GameLobbyView(this));
+                }, null);            
         }
 
         private void OnDisconnect(IAsyncResult result)
@@ -175,16 +193,18 @@
                 Client.Network.EndDisconnect(result);
             }
             catch { }
-            finally
-            {
-            }
+            finally { }
         }
 
         private void OnDisconnected_EventHandler(string reason)
         {
-            var menuState = new MenuState(Game);
-            Client.ChangeState(menuState);
-            menuState.HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were disconnected from the server."));
+            InvokeOnMainThread(
+                delegate(object arg)
+                {
+                    var menuState = new MenuState(Game);
+                    Client.ChangeState(menuState);
+                    menuState.HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were disconnected from the server."));
+                }, reason);            
         }        
 
         #endregion
