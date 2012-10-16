@@ -59,6 +59,16 @@
             GameEnd,        //Server
 
             Ok,             //Client,Server
+            Error           //Server
+        }
+
+        enum ErrorType
+        {
+            None,
+            Unknown,
+            
+            //Packet type:    Source:
+
             LoginFailed,    //Server
             GameListEmpty,  //Server
             GameInvalidId,  //Server
@@ -73,15 +83,11 @@
         NetworkStream networkStream;
         StreamWriter networkStreamWriter;
         int lastGeneratedId = 0;
+        
+        Dictionary<int, Tuple<bool, Action<string, MessageContentType, ErrorType>>> messageResponses
+            = new Dictionary<int, Tuple<bool, Action<string, MessageContentType, ErrorType>>>();
 
-        /// <summary>
-        /// Given Func should return true if listener is waiting for Content packet type.
-        /// This is only considered when, given by argument, PacketType is Header.
-        /// </summary> 
-        Dictionary<int, Func<string, PacketType, MessageContentType, bool>> messageResponses
-            = new Dictionary<int, Func<string, PacketType, MessageContentType, bool>>();
-
-        private const int TIMEOUT_MILLISECONDS = 3000;
+        private const int TIMEOUT_MILLISECONDS = 15000;
 
         private void TcpConnectCallback(IAsyncResult tcpAsyncResult)
         {
@@ -120,9 +126,8 @@
             PacketType nextPacketType = PacketType.Header;
             MessageContentType nextContentType = MessageContentType.None;
             int messageId = 0;
-            Func<string, PacketType, MessageContentType, bool> responseCallback = null;
+            Action<string, MessageContentType, ErrorType> responseCallback = null;
 
-            //messageResponses.Clear();
             try
             {
                 while ((jsonLine = sr.ReadLine()) != null)
@@ -146,16 +151,22 @@
                         messageId = jObject["id"].Value<int>();
 
                         // Make first letter be an upper letter (for e.g. change gameStart to GameStart).
-                        typeStr = char.ToUpper(typeStr[0]) + typeStr.Substring(1);
+                        typeStr = Utils.UpperFirstLetter(typeStr);
                         MessageContentType type = (MessageContentType)Enum.Parse(typeof(MessageContentType), typeStr);
 
                         // Incoming message may be a response to previous request
                         if (messageResponses.ContainsKey(messageId))
                         {
-                            responseCallback = messageResponses[messageId];
+                            bool waitingForContent = messageResponses[messageId].Item1;
+                            responseCallback = messageResponses[messageId].Item2;
                             messageResponses.Remove(messageId);
 
-                            if (responseCallback.Invoke(jsonLine, PacketType.Header, type))
+                            if (type == MessageContentType.Error)
+                            {
+                                // Next packet will contain ErrorType.
+                                nextPacketType = PacketType.ContentAsResponse;
+                            }
+                            else if (waitingForContent)
                             {
                                 // Next packet will be content and then we will call callback,
                                 // for e.g. callback given to BeginLogin.
@@ -163,9 +174,16 @@
                             }
                             else
                             {
+                                responseCallback.Invoke(jsonLine, type, ErrorType.None);
+
                                 // Don't listen for Content. It will not come.
                                 nextPacketType = PacketType.Header;
                             }
+                        }
+
+                        else if (type == MessageContentType.Error)
+                        {
+                            nextPacketType = PacketType.Content;
                         }
 
                         // If this message isn't a response to the client's request then check what it is, actually.
@@ -206,7 +224,11 @@
                     }
                     else if (nextPacketType == PacketType.Content)
                     {
-                        if (nextContentType == MessageContentType.Chat)
+                        if (nextContentType == MessageContentType.Error)
+                        {
+                            // TODO implement behaviour for incoming errors. Incoming from nowhere. omg.
+                        }
+                        else if (nextContentType == MessageContentType.Chat)
                         {
                             if (OnChatMessageReceived != null)
                             {
@@ -220,7 +242,24 @@
                     }
                     else if (nextPacketType == PacketType.ContentAsResponse)
                     {
-                        responseCallback.Invoke(jsonLine, PacketType.Content, nextContentType);
+                        var jObject = JObject.Parse(jsonLine);
+                        ErrorType errorType = ErrorType.None;
+
+                        if (nextContentType == MessageContentType.Error)
+                        {
+                            string typeStr = Utils.UpperFirstLetter(jObject["errorType"].Value<string>());
+
+                            try
+                            {
+                                errorType = (ErrorType)Enum.Parse(typeof(ErrorType), typeStr);
+                            }
+                            catch
+                            {
+                                errorType = ErrorType.Unknown;
+                            }
+                        }
+
+                        responseCallback.Invoke(jsonLine, nextContentType, errorType);
 
                         // Next packet will be a header for some another message.
                         nextPacketType = PacketType.Header;
@@ -270,14 +309,14 @@
         /// <summary>
         /// Sends request for response of given type. It calls responseCallback when response come.
         /// </summary>
-        private void SendRequest(MessageContentType messageContentType, object obj,
-            Func<string, PacketType, MessageContentType, bool> responseCallback)
+        private void SendRequest(MessageContentType messageContentType, bool waitingForContent, object obj,
+            Action<string, MessageContentType, ErrorType> responseCallback)
         {
             // Generate id of message
             int id = GenerateMessageId();
 
             // Save callback awaiting for response
-            messageResponses.Add(id, responseCallback);
+            messageResponses.Add(id, Tuple.Create(waitingForContent, responseCallback));
 
             // Send header and content of message
             SendMessage(id, messageContentType, obj);
@@ -300,7 +339,7 @@
         private void SendMessage(int id, MessageContentType messageContentType, object obj)
         {
             // Send header
-            string messageContentTypeStr = Utils.lowerFirstLetter(messageContentType.ToString());
+            string messageContentTypeStr = Utils.LowerFirstLetter(messageContentType.ToString());
             var message = JsonLowercaseSerializer.SerializeObject(new
             {
                 Id = id,
@@ -386,11 +425,8 @@
                 Password = password
             };
 
-            SendRequest(MessageContentType.Login, requestContent, (jsonStr, packetType, messageContentType) =>
+            SendRequest(MessageContentType.Login, false, requestContent, (jsonStr, messageContentType, errorType) =>
             {
-                // It always should should be Header.
-                Debug.Assert(packetType == PacketType.Header);
-
                 bool loggedIn = messageContentType == MessageContentType.Ok;
                 ar.BeginInvoke(() =>
                 {
@@ -399,18 +435,14 @@
                     else
                         throw new Exception("Login failed due to the error: " + messageContentType.ToString());
                 });
-
-                // We don't want any Content packet.
-                return false;
             });
 
             return ar;
         }
-        public bool EndLogin(IAsyncResult asyncResult)
+        public void EndLogin(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<bool>)asyncResult;
             ar.EndInvoke();
-            return (bool)ar.Result;
         }
 
         public IAsyncResult BeginLogout(AsyncCallback asyncCallback, object asyncState)
@@ -439,35 +471,26 @@
                 LobbyId = lobbyId
             };
 
-            SendRequest(MessageContentType.GameJoin, requestContent, (jsonStr, packetType, messageContentType) =>
+            SendRequest(MessageContentType.GameJoin, true, requestContent, (jsonStr, messageContentType, errorType) =>
             {
-                if (packetType == PacketType.Header)
-                {
-                    if (messageContentType == MessageContentType.GameInfo)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        string errorMessage = "Couldn't join game: " + messageContentType.ToString();
-
-                        if (messageContentType == MessageContentType.GameFull)
-                        {
-                            errorMessage = "Couldn't join game. Lobby is full.";
-                        }
-
-                        ar.HandleException(new Exception(errorMessage), false);
-                    }
-                }
-                else if (packetType == PacketType.Content)
+                if (messageContentType == MessageContentType.GameInfo)
                 {
                     ar.BeginInvoke(() =>
                     {
                         return JsonLowercaseSerializer.DeserializeObject<SpecificGameLobbyInfo>(jsonStr);
                     });
                 }
-                
-                return false;
+                else
+                {
+                    string errorMessage = "Couldn't join game: " + messageContentType.ToString();
+
+                    if (errorType == ErrorType.GameFull)
+                        errorMessage = "Couldn't join game. Lobby is full.";
+                    else if (errorType == ErrorType.GameInvalidId)
+                        errorMessage = "Selected game have been closed.";
+
+                    ar.HandleException(new Exception(errorMessage), false);
+                }
             });
 
             return ar;
@@ -522,19 +545,19 @@
 
         public IAsyncResult BeginCreateGame(string gameName, string mapJsonContent, AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<object>(asyncCallback, asyncState);
+            var ar = new AsyncResult<bool>(asyncCallback, asyncState);
 
             ar.BeginInvoke(() =>
             {
                 // TODO: parse GameSTate into Json here or elsewhere...? (and implement the time consuming operation)
                 Thread.Sleep(500);
-                return null;
+                return true;
             });
             return ar;
         }
         public void EndCreateGame(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<object>)asyncResult;
+            var ar = (AsyncResult<bool>)asyncResult;
             ar.EndInvoke();
         }
 
@@ -542,32 +565,24 @@
         {
             var ar = new AsyncResult<List<LobbyListInfo>>(asyncCallback, asyncState);
 
-            SendRequest(MessageContentType.GameList, null, (jsonStr, packetType, messageContentType) =>
+            SendRequest(MessageContentType.GameList, true, null, (jsonStr, messageContentType, errorType) =>
             {
-                if (packetType == PacketType.Header)
-                {
-                    if (messageContentType == MessageContentType.GameList)
-                    {
-                        return true;
-                    }
-                    else if (messageContentType == MessageContentType.GameListEmpty)
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        throw new ArgumentOutOfRangeException("Waiting for game list and received " + messageContentType + '.');
-                    }
-                }
-                else if (packetType == PacketType.Content)
+                if (messageContentType == MessageContentType.GameList)
                 {
                     ar.BeginInvoke(() =>
                     {
                         return JsonLowercaseSerializer.DeserializeObject<List<LobbyListInfo>>(jsonStr);
                     });
                 }
+                else if (messageContentType == MessageContentType.Error)
+                {
+                    string message = "Waiting for game list received: " + errorType + '.';
 
-                return false;
+                    if (errorType == ErrorType.GameListEmpty)
+                        message = "There are currently no games.";
+
+                    ar.HandleException(new Exception(message), false);
+                }                
             });
             
             return ar;

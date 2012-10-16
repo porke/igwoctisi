@@ -41,7 +41,7 @@
         private void RequestLogin(EventArgs args)
         {
             var network = Client.Network;
-            string hostname = "localhost"; // "v.zloichuj.eu";
+            string hostname = "localhost";// "178.32.225.209";// "v.zloichuj.eu";
             int port = 23456;
             var loginData = args as LoginEventArgs;
 
@@ -112,14 +112,8 @@
 
                     try
                     {
-                        if (network.EndLogin(ar))
-                        {
-                            Client.ChangeState(new LobbyState(Game));
-                        }
-                        else
-                        {
-                            throw new Exception("Login failed!");
-                        }
+                        network.EndLogin(ar);
+                        Client.ChangeState(new LobbyState(Game));
                     }
                     catch (Exception exc)
                     {
