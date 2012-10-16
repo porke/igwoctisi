@@ -18,8 +18,9 @@
             : base(game)
         {
             Scene = new Scene(loadedMap, new List<string>());
+            Scene.Map = new Map("TestMap");
 
-            _gameViewport = new GameViewport(this, Scene);
+            var gameViewport = new GameViewport(this);
             _gameHud = new GameHud(this);
 
             ViewMgr.PushLayer(_gameViewport);

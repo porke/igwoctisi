@@ -14,7 +14,6 @@
             _map = map;
             _players = playerList;
         }
-
         public Planet PickPlanet(Vector2 clickPosition)
         {
             // TODO: Mocked picking

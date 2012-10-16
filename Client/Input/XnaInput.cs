@@ -61,6 +61,18 @@
                     if (newKeyboardState.IsKeyDown(key))
                     {
                         receiver.OnKeyPressed(key);
+
+                        char character = (char)key;
+                        if (character >= 65 && character <= 90)
+                        {
+                            if (!newKeyboardState.IsKeyDown(Keys.LeftShift) &&
+                            !newKeyboardState.IsKeyDown(Keys.RightShift))
+                            {
+                                character += (char)32;
+                            }
+
+                            receiver.OnCharacter(character);
+                        }
                     }
                     else
                     {
