@@ -19,6 +19,7 @@
         public event Action<ChatMessage> OnChatMessageReceived;        
         public event Action<string, DateTime> OnOtherPlayerJoined;
         public event Action<string, DateTime> OnOtherPlayerLeft;
+        public event Action OnPlayerKicked;
         public event Action<Map> OnGameStarted;
         public event Action<int> OnRoundStarted;
         public event Action OnRoundEnded;
@@ -208,12 +209,10 @@
                         }
                         else if (type == MessageContentType.GameKick)
                         {
-                            if (OnDisconnected != null)
+                            if (OnPlayerKicked != null)
                             {
-                                OnDisconnected.Invoke("You were kicked from the server.");
+                                OnPlayerKicked.Invoke();
                             }
-
-                            throw new SocketException((int)SocketError.ConnectionAborted);
                         }
                         else if (type == MessageContentType.GamePlayerJoined)
                         {

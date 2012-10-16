@@ -48,6 +48,7 @@ using System.Collections.Generic;
             Client.Network.OnOtherPlayerJoined += OnPlayerListChanged;
             Client.Network.OnOtherPlayerLeft += OnPlayerListChanged;
             Client.Network.OnChatMessageReceived += OnChatMessageReceived;
+            Client.Network.OnPlayerKicked += new Action(OnPlayerKicked);
         }
 
         private void UnbindNetworkEvents()
@@ -55,6 +56,7 @@ using System.Collections.Generic;
             Client.Network.OnOtherPlayerJoined -= OnPlayerListChanged;
             Client.Network.OnOtherPlayerLeft -= OnPlayerListChanged;
             Client.Network.OnChatMessageReceived -= OnChatMessageReceived;
+            Client.Network.OnPlayerKicked -= new Action(OnPlayerKicked);
         }
 
         #region View event handlers
@@ -294,6 +296,23 @@ using System.Collections.Generic;
                 var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 gameLobbyView.ChatMessageReceived(obj as ChatMessage);
             }, message);
+        }
+        
+        void OnPlayerKicked()
+        {
+            InvokeOnMainThread(obj =>
+            {
+                ViewMgr.PopLayer(); // GameLobbyView
+                ViewMgr.PushLayer(new MainLobbyView(this));
+
+                var messageBox = new MessageBox(MessageBoxButtons.OK)
+                {
+                    Title = "Out of Game",
+                    Message = "You were kicked out from Game Lobby."
+                };
+                messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
+                ViewMgr.PushLayer(messageBox);
+            });
         }
 
         #endregion

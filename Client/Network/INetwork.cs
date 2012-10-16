@@ -50,6 +50,11 @@
         event Action<string, DateTime> OnOtherPlayerLeft;
 
         /// <summary>
+        /// Arguments: currently none.
+        /// </summary>
+        event Action OnPlayerKicked;
+
+        /// <summary>
         /// Argument: map.
         /// </summary>
         event Action<Map> OnGameStarted;
