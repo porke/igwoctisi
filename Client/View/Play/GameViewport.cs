@@ -17,7 +17,7 @@
         {
             var renderer = state.Client.Renderer;
 
-            renderer.Draw(_scene, delta, time);
+            renderer.Draw(State.Scene, delta, time);
         }
 
         #endregion
@@ -115,6 +115,7 @@
             IsTransparent = false;
             InputReceiver = new GameInputReceiver(this);
             _scene = scene;
+            State = state;
         }
     }
 }
