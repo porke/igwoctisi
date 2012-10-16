@@ -1,11 +1,11 @@
 ﻿namespace Client.Renderer
 {
-    using Model;
-    using Microsoft.Xna.Framework.Graphics;
-    using Microsoft.Xna.Framework;
-    using Client.Common;
     using System;
     using System.Linq;
+    using Client.Common;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using Model;
 
     public class XnaRenderer : IRenderer
     {
