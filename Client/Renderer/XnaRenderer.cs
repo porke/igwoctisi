@@ -1,11 +1,11 @@
 ﻿namespace Client.Renderer
 {
-    using Model;
-    using Microsoft.Xna.Framework.Graphics;
-    using Microsoft.Xna.Framework;
-    using Client.Common;
     using System;
     using System.Linq;
+    using Client.Common;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using Model;
 
     public class XnaRenderer : IRenderer
     {
@@ -13,6 +13,10 @@
 
         protected Effect _fxLinks, _fxPlanet;
         protected VertexBuffer _sphereVB;
+
+        private Matrix _world = Matrix.Identity;
+        private Matrix _view = Matrix.CreateLookAt(Vector3.Backward * -1000, Vector3.Zero, Vector3.Up);
+        private Matrix _projection = Matrix.CreateOrthographic(1000.0f, 1000.0f, 1.0f, 1000.0f);
 
         protected void InitializeMapVisual(Map map)
         {
@@ -66,6 +70,18 @@
 
         #region IRenderer members
 
+        public bool RaySphereIntersection(Vector2 screenPosition, Vector3 position, float radius)
+        {         
+            var pointNear = new Vector3(screenPosition.X, screenPosition.Y, 0);
+            var pointFar = new Vector3(screenPosition.X, screenPosition.Y, 1);
+            var pointNearUnproj = GraphicsDevice.Viewport.Unproject(pointNear, _projection, _view, _world);
+            var pointFarUnproj = GraphicsDevice.Viewport.Unproject(pointFar, _projection, _view, _world);
+            var dir = Vector3.Normalize(pointFarUnproj - pointNearUnproj);
+            var ray = new Ray(pointNearUnproj, dir);
+
+            return ray.Intersects(new BoundingSphere(position, radius)) != null;
+        }
+
         public void Initialize(GameClient client)
         {
             Client = client;
@@ -86,17 +102,14 @@
         public void Draw(Scene scene, double delta, double time)
         {
             var map = scene.Map;
-
-            var view = Matrix.CreateLookAt(Vector3.Backward * -1000, Vector3.Zero, Vector3.Up);
-            var projection = Matrix.CreateOrthographic(1000.0f, 1000.0f, 1.0f, 1000.0f);
-
+            
             #region Links
 
             //GraphicsDevice.BlendState = BlendState.Opaque;
 
-            _fxLinks.Parameters["World"].SetValue(Matrix.Identity);
-            _fxLinks.Parameters["View"].SetValue(view);
-            _fxLinks.Parameters["Projection"].SetValue(projection);
+            _fxLinks.Parameters["World"].SetValue(_world);
+            _fxLinks.Parameters["View"].SetValue(_view);
+            _fxLinks.Parameters["Projection"].SetValue(_projection);
 
             if (map.Visual == null)
             {
@@ -133,8 +146,8 @@
                             Matrix.CreateTranslation(planet.X, planet.Y, planet.Z);
 
                 _fxPlanet.Parameters["World"].SetValue(world);
-                _fxPlanet.Parameters["View"].SetValue(view);
-                _fxPlanet.Parameters["Projection"].SetValue(projection);
+                _fxPlanet.Parameters["View"].SetValue(_view);
+                _fxPlanet.Parameters["Projection"].SetValue(_projection);
                 foreach (var pass in _fxPlanet.CurrentTechnique.Passes)
                 {
                     pass.Apply();
