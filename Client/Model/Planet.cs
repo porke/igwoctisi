@@ -4,6 +4,7 @@
     using System.ComponentModel;
     using System.Xml.Serialization;
     using Client.Renderer;
+    using Newtonsoft.Json;
 
     [Serializable]
     public class Planet
@@ -42,6 +43,7 @@
         [DefaultValue(PlanetSelection.NotSelected)]
         public PlanetSelection IsSelected { get; set; }
 
+        [JsonIgnore]
         public PlanetVisual Visual { get; set; }
     }
 }
