@@ -4,15 +4,17 @@
     using Client.Model;
     using View;
     using View.Lobby;
+using System.Collections.Generic;
 
     class LobbyState : GameState
     {
         private Map _map;
-        private Player _player;
+        private Player _clientPlayer;
+        private SpecificGameLobbyInfo _gameLobby;
 
         public LobbyState(IGWOCTISI game, Player player) : base(game)
         {
-            _player = player;
+            _clientPlayer = player;
 
             var menuBackground = new LobbyBackground(this);
             var lobbyMenu = new MainLobbyView(this);
@@ -33,12 +35,26 @@
         public override void OnEnter()
         {
             Client.Network.OnDisconnected += new Action<string>(OnDisconnected_EventHandler);
-            //this.RefreshGameList(new SenderEventArgs(ViewMgr.PeekLayer()));
+            this.RefreshGameList(new SenderEventArgs(ViewMgr.PeekLayer()));
         }
 
         public override void OnExit()
         {
             Client.Network.OnDisconnected -= new Action<string>(OnDisconnected_EventHandler);
+        }
+
+        private void BindNetworkEvents()
+        {
+            Client.Network.OnOtherPlayerJoined += OnPlayerListChanged;
+            Client.Network.OnOtherPlayerLeft += OnPlayerListChanged;
+            Client.Network.OnChatMessageReceived += OnChatMessageReceived;
+        }
+
+        private void UnbindNetworkEvents()
+        {
+            Client.Network.OnOtherPlayerJoined -= OnPlayerListChanged;
+            Client.Network.OnOtherPlayerLeft -= OnPlayerListChanged;
+            Client.Network.OnChatMessageReceived -= OnChatMessageReceived;
         }
 
         #region View event handlers
@@ -96,7 +112,7 @@
 
         private void BeginGame(EventArgs args)
         {            
-            Game.ChangeState(new PlayState(Game, _map, _player));
+            Game.ChangeState(new PlayState(Game, _map, _clientPlayer));
         }
 
         private void RefreshGameList(EventArgs args)
@@ -159,16 +175,20 @@
         private void OnJoinLobby(IAsyncResult result)
         {
             var messageBox = result.AsyncState as MessageBox;
-
+            BindNetworkEvents();
+            
             InvokeOnMainThread(obj =>
             {
                 try
                 {
-                    var gameInfo = Client.Network.EndJoinGameLobby(result);
+                    _gameLobby = Client.Network.EndJoinGameLobby(result);                     
 
                     ViewMgr.PopLayer(); // MessageBox
                     ViewMgr.PopLayer(); // MainLobbyView
-                    ViewMgr.PushLayer(new GameLobbyView(this));
+
+                    var gameLobbyView = new GameLobbyView(this);
+                    gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                    ViewMgr.PushLayer(gameLobbyView);
                 }
                 catch (Exception exc)
                 {
@@ -184,6 +204,9 @@
             try
             {
                 Client.Network.EndLeaveGame(result);
+                _gameLobby = null;
+
+                UnbindNetworkEvents();
             }
             catch { }
             finally
@@ -197,7 +220,9 @@
         }
 
         private void OnCreateGame(IAsyncResult result)
-        {            
+        {
+            BindNetworkEvents();
+
             InvokeOnMainThread(obj =>
             {
                 var data = result.AsyncState as Tuple<MessageBox, String>;
@@ -241,7 +266,30 @@
                 Client.ChangeState(menuState);
                 menuState.HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were disconnected from the server."));
             });
-        }        
+        }
+
+        #endregion
+
+        #region Network event handlers
+
+        private void OnPlayerListChanged(string username, DateTime time)
+        {
+            InvokeOnMainThread(obj =>
+            {
+                var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
+                _gameLobby.AddPlayer(username);
+                gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+            }, new Tuple<string, DateTime>(username, time));
+        }
+
+        private void OnChatMessageReceived(ChatMessage message)
+        {
+            InvokeOnMainThread(obj =>
+            {
+                var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
+                gameLobbyView.ChatMessageReceived(obj as ChatMessage);
+            }, message);
+        }
 
         #endregion
     }

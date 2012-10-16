@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Microsoft.Xna.Framework;
+    using Client.Renderer;
 
     public class Scene
     {
@@ -14,11 +15,18 @@
             Map = map;
             _players = playerList;
         }
-        public Planet PickPlanet(Vector2 clickPosition)
+        public Planet PickPlanet(Vector2 clickPosition, IRenderer renderer)
         {
             // TODO: Mocked picking
-            Random rand = new Random();
-            return Map.Planets[rand.Next(Map.Planets.Count)];
+            foreach (var item in Map.Planets)
+            {
+                if (renderer.RaySphereIntersection(clickPosition, new Vector3(item.X, item.Y, item.Z), item.Radius))
+                {
+                    return item;
+                }
+            }
+
+            return null;
         }
     }
 }

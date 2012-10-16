@@ -1,9 +1,7 @@
-﻿
-using Microsoft.Xna.Framework.Graphics;
-
-
-namespace Client.Renderer
+﻿namespace Client.Renderer
 {
+    using Microsoft.Xna.Framework.Graphics;
+
     public class PlanetVisual
     {
         public float Period { get; set; }

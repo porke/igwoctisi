@@ -2,10 +2,8 @@
 {
     using Client.State;
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Input;
     using Model;
     using Nuclex.Input;
-    using Nuclex.UserInterface.Input;
 
     class GameViewport : BaseView
     {
@@ -44,8 +42,12 @@
             {
                 if (button.HasFlag(MouseButtons.Left) || button.HasFlag(MouseButtons.Right))
                 {
-                    var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition);
-                    _receiverView.PlanetSelected(planet);
+                    var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition, _receiverView.state.Client.Renderer);
+
+                    if (planet != null)
+                    {
+                        _receiverView.PlanetSelected(planet);
+                    }
                 }
 
                 return true;

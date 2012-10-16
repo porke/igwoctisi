@@ -10,7 +10,7 @@ namespace Client
         {
             base.Initialize();
             
-            ChangeState(new MenuState(this));
+            ChangeState(new PlayState(this, new Model.Map("TestMap"), new Model.Player("dsd")));
         }
 
         #endregion

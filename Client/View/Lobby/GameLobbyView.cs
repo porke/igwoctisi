@@ -1,6 +1,9 @@
 ﻿namespace Client.View.Lobby
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Client.Model;
     using Common;
     using Input;
     using Nuclex.UserInterface;
@@ -43,8 +46,6 @@
             {
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.5f, 0), new UniScalar(0.9f, 0), new UniScalar(0.4f, 0))
             };
-            _messageList.Items.Add("Gratrz 1: Klaniam sie Szanownemu Panu.");
-            _messageList.Items.Add("Gratrz 2: Uszanowanie.");
 
             _currentMessage = new InputControl()
             {
@@ -57,8 +58,6 @@
                 SelectionMode = ListSelectionMode.Single,
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.6f, 0), new UniScalar(0.4f, 0))
             };
-            _playerList.Items.Add("Gratrz 1 [Host]");
-            _playerList.Items.Add("Gratrz 2");
 
             screen.Desktop.Children.AddRange(new Control[] { btnBeginGame, btnLeaveGame, _messageList, _currentMessage, _playerList, btnKickPlayer });
         }
@@ -81,6 +80,21 @@
         {
             // TODO: Remove player - available only for the host
         }
+
+        #region UpdateRequests
+
+        public void RefreshPlayerList(List<Player> newPlayerList)
+        {
+            _playerList.Items.Clear();            
+            _playerList.Items.AddRange(newPlayerList.Select(player => player.Username));            
+        }
+
+        public void ChatMessageReceived(ChatMessage message)
+        {
+            _messageList.Items.Add(string.Format("<{0}>: {1}", message.Username, message.Message));
+        }
+
+        #endregion
 
         #endregion
 
