@@ -14,9 +14,7 @@
         protected Effect _fxLinks, _fxPlanet;
         protected VertexBuffer _sphereVB;
 
-        private Matrix _world = Matrix.Identity;
-        private Matrix _view = Matrix.CreateLookAt(Vector3.Backward * -1000, Vector3.Zero, Vector3.Up);
-        private Matrix _projection = Matrix.CreateOrthographic(1000.0f, 1000.0f, 1.0f, 1000.0f);
+        private SimpleCamera _camera = new SimpleCamera();
 
         protected void InitializeMapVisual(Map map)
         {
@@ -71,14 +69,8 @@
         #region IRenderer members
 
         public bool RaySphereIntersection(Vector2 screenPosition, Vector3 position, float radius)
-        {         
-            var pointNear = new Vector3(screenPosition.X, screenPosition.Y, 0);
-            var pointFar = new Vector3(screenPosition.X, screenPosition.Y, 1);
-            var pointNearUnproj = GraphicsDevice.Viewport.Unproject(pointNear, _projection, _view, _world);
-            var pointFarUnproj = GraphicsDevice.Viewport.Unproject(pointFar, _projection, _view, _world);
-            var dir = Vector3.Normalize(pointFarUnproj - pointNearUnproj);
-            var ray = new Ray(pointNearUnproj, dir);
-
+        {
+            var ray = _camera.GetRay(GraphicsDevice.Viewport, new Vector3(screenPosition, 0));
             return ray.Intersects(new BoundingSphere(position, radius)) != null;
         }
 
@@ -101,15 +93,13 @@
         }
         public void Draw(Scene scene, double delta, double time)
         {
+            _camera.Update(delta);
+
             var map = scene.Map;
             
             #region Links
 
-            //GraphicsDevice.BlendState = BlendState.Opaque;
-
-            _fxLinks.Parameters["World"].SetValue(_world);
-            _fxLinks.Parameters["View"].SetValue(_view);
-            _fxLinks.Parameters["Projection"].SetValue(_projection);
+            _camera.Apply(_fxLinks, Matrix.Identity);
 
             if (map.Visual == null)
             {
@@ -127,7 +117,6 @@
 
             #region Planets
 
-            //GraphicsDevice.BlendState = BlendState.Opaque;
             foreach (var planet in map.Planets)
             {
                 if (planet.Visual == null)
@@ -140,14 +129,12 @@
                 _fxPlanet.Parameters["Clouds"].SetValue(visual.CloudsTexture);
                 _fxPlanet.Parameters["CloudsAlpha"].SetValue(visual.CloudsAlphaTexture);
 
-                var world = Matrix.CreateScale(planet.Radius) * 
+                var localWorld = Matrix.CreateScale(planet.Radius) * 
                             Matrix.CreateRotationY((float)time / visual.Period * MathHelper.TwoPi) *
                             Matrix.CreateFromYawPitchRoll(visual.Yaw, visual.Pitch, visual.Roll) *
                             Matrix.CreateTranslation(planet.X, planet.Y, planet.Z);
 
-                _fxPlanet.Parameters["World"].SetValue(world);
-                _fxPlanet.Parameters["View"].SetValue(_view);
-                _fxPlanet.Parameters["Projection"].SetValue(_projection);
+                _camera.Apply(_fxPlanet, localWorld);                
                 foreach (var pass in _fxPlanet.CurrentTechnique.Passes)
                 {
                     pass.Apply();
@@ -160,6 +147,8 @@
         }
 
         #endregion
+
+        public SimpleCamera GetCamera() { return _camera; }
 
         public GameClient Client { get; protected set; }
         public GraphicsDevice GraphicsDevice { get; protected set; }

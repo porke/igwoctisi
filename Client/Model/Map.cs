@@ -47,7 +47,7 @@
         private static string StartingDataElement = "StartingData";
 
         /// <summary>
-        /// Reads world map from XML file (no extension required). 
+        /// Reads localWorld map from XML file (no extension required). 
         /// </summary>
         public Map(string mapFileName) : this()
         {

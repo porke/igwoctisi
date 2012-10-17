@@ -52,7 +52,7 @@
             _gameHud.UpdateTimer((int)_secondsLeft);
         }
 
-        #region View event handlers
+        #region _view event handlers
 
         private void LeaveGame(EventArgs args)
         {

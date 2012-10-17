@@ -2,6 +2,7 @@
 {
     using Client.State;
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Input;
     using Model;
     using Nuclex.Input;
 
@@ -42,12 +43,50 @@
             {
                 if (button.HasFlag(MouseButtons.Left) || button.HasFlag(MouseButtons.Right))
                 {
-                    var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition, _receiverView.state.Client.Renderer);
+                    var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition, _receiverView.PlayState.Client.Renderer);
 
                     if (planet != null)
                     {
                         _receiverView.PlanetSelected(planet);
                     }
+                }
+
+                return true;
+            }
+
+            public override bool OnKeyPressed(Keys key)
+            {
+                var camera = _receiverView.PlayState.Client.Renderer.GetCamera();
+
+                switch (key)
+                {
+                    case Keys.Down:
+                        camera.TranslationDirection = -Vector3.UnitY;
+                        break;
+                    case Keys.Up:
+                        camera.TranslationDirection = Vector3.UnitY;
+                        break;
+                    case Keys.Left:
+                        camera.TranslationDirection = -Vector3.UnitX;
+                        break;
+                    case Keys.Right:
+                        camera.TranslationDirection = Vector3.UnitX;
+                        break;
+                }
+
+                return true;
+            }
+
+            public override bool OnKeyReleased(Keys key)
+            {
+                switch (key)
+                {
+                    case Keys.Down:
+                    case Keys.Up:
+                    case Keys.Left:
+                    case Keys.Right:
+                        _receiverView.PlayState.Client.Renderer.GetCamera().TranslationDirection = Vector3.Zero;
+                        break;
                 }
 
                 return true;
