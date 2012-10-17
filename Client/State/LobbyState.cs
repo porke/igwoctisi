@@ -59,7 +59,7 @@ using System.Collections.Generic;
             Client.Network.OnPlayerKicked -= new Action(OnPlayerKicked);
         }
 
-        #region View event handlers
+        #region _view event handlers
 
         private void LeaveGameLobby(EventArgs args)
         {

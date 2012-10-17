@@ -5,6 +5,8 @@
 
     public interface IRenderer
     {
+        SimpleCamera GetCamera();
+
         void Initialize(GameClient client);
         void Release();
         void Draw(Scene scene, double delta, double time);

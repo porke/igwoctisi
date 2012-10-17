@@ -125,6 +125,7 @@
     <Compile Include="Renderer\IRenderer.cs" />
     <Compile Include="Renderer\MapVisual.cs" />
     <Compile Include="Renderer\PlanetVisual.cs" />
+    <Compile Include="Renderer\SimpleCamera.cs" />
     <Compile Include="Renderer\XnaRenderer.cs" />
     <Compile Include="State\GameState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
