@@ -646,10 +646,13 @@
             SendRequest(MessageContentType.GameCreate, false, requestContent, (jsonStr, messageContentType, errorType) =>
             {
                 ar.BeginInvoke(() =>
-                {                // TODO: parse GameSTate into Json here or elsewhere...? (and implement the time consuming operation)
-
-                    Thread.Sleep(500);
-                    return true;
+                {
+                    if (messageContentType == MessageContentType.Ok)
+                        return true;
+                    else if (messageContentType == MessageContentType.Error)
+                        throw new Exception("Server Error occured: " + Utils.SplitWordsByCapitals(errorType.ToString()));
+                    else
+                        throw new Exception("Unknown error!");
                 });
             });
             
