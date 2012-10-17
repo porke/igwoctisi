@@ -39,6 +39,9 @@
         public string CloudsAlpha { get; set; }
 
         [JsonIgnore]
+        public PlanetSelection SelectionState { get; set; }
+
+        [JsonIgnore]
         public PlanetVisual Visual { get; set; }
     }
 }

@@ -36,16 +36,26 @@
             public override bool OnMouseMoved(Vector2 position)
             {
                 _currentMousePosition = position;
+                
+                var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition, _receiverView.PlayState.Client.Renderer);
+                if (planet != null)
+                {
+                    _receiverView.OnHoverPlanet(planet);
+                }
+                else
+                {
+                    _receiverView.UnhoverPlanets();
+                }
+
                 return true;
             }
 
-            public override bool OnMouseReleased(MouseButtons button)
+            public override bool OnMousePressed(MouseButtons button)
             {
                 if (button.HasFlag(MouseButtons.Left) || button.HasFlag(MouseButtons.Right))
                 {
                     var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition, _receiverView.PlayState.Client.Renderer);
-
-                    if (planet != null)
+                    if (planet != null && planet.SelectionState != PlanetSelection.Selected)
                     {
                         _receiverView.PlanetSelected(planet);
                     }
@@ -102,6 +112,16 @@
         private void PlanetSelected(Planet planetSelected)
         {
             state.HandleViewEvent("SelectPlanet", new SelectPlanetArgs(planetSelected));
+        }
+
+        private void OnHoverPlanet(Planet planetSelected)
+        {
+            state.HandleViewEvent("OnHoverPlanet", new SelectPlanetArgs(planetSelected));
+        }
+
+        private void UnhoverPlanets()
+        {
+            state.HandleViewEvent("UnhoverPlanets", null);
         }
 
         #endregion

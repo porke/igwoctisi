@@ -113,6 +113,7 @@
     <Compile Include="Model\Map.cs" />
     <Compile Include="Model\PlanetarySystem.cs" />
     <Compile Include="Model\PlanetLink.cs" />
+    <Compile Include="Model\PlanetSelection.cs" />
     <Compile Include="Model\Player.cs" />
     <Compile Include="Model\SpecificGameLobbyInfo.cs" />
     <Compile Include="Model\Planet.cs" />
