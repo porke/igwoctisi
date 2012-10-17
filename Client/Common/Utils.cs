@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -7,6 +8,8 @@ namespace Client.Common
 {
     public static class Utils
     {
+        #region Text methods
+
         public static string LowerFirstLetter(string str)
         {
             return char.ToLower(str[0]) + str.Substring(1);
@@ -16,6 +19,13 @@ namespace Client.Common
         {
             return char.ToUpper(str[0]) + str.Substring(1);
         }
+
+        public static string SplitWordsByCapitals(string str)
+        {
+            return string.Concat(str.Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
+        }
+
+        #endregion
 
         public static VertexPositionNormalTexture[] SphereVertices(int subdivisions)
         {
