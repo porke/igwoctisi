@@ -32,6 +32,8 @@
             eventHandlers.Add("LeaveGame", LeaveGame);
             eventHandlers.Add("SendOrders", SendOrders);
             eventHandlers.Add("SelectPlanet", SelectPlanet);
+            eventHandlers.Add("OnHoverPlanet", OnHoverPlanet);
+            eventHandlers.Add("UnhoverPlanets", UnhoverPlanets);
 
             Client.Network.OnRoundStarted += new Action<int>(Network_OnRoundStarted);
             Client.Network.OnRoundEnded += new Action(Network_OnRoundEnded);
@@ -52,7 +54,7 @@
             _gameHud.UpdateTimer((int)_secondsLeft);
         }
 
-        #region _view event handlers
+        #region View event handlers
 
         private void LeaveGame(EventArgs args)
         {
@@ -67,8 +69,47 @@
 
         private void SelectPlanet(EventArgs args)
         {
-            var selectedPlanetArg = args as SelectPlanetArgs;
-            _gameHud.UpdateSelectedPlanet(selectedPlanetArg.Planet);
+            var selectedPlanet = (args as SelectPlanetArgs).Planet;
+            _gameHud.UpdateSelectedPlanet(selectedPlanet);
+            selectedPlanet.SelectionState = PlanetSelection.Selected;
+            
+            foreach (var deselectedPlanet in Scene.Map.Planets)
+            {
+                if (deselectedPlanet != selectedPlanet)
+                {
+                    deselectedPlanet.SelectionState = PlanetSelection.NotSelected;
+                }
+            }
+        }
+
+        private void OnHoverPlanet(EventArgs args)
+        {
+            var hoverPlanet = (args as SelectPlanetArgs).Planet;
+            if (hoverPlanet.SelectionState != PlanetSelection.Selected)
+            {
+                hoverPlanet.SelectionState = PlanetSelection.Hover;
+            }
+
+            foreach (var deselectedPlanet in Scene.Map.Planets)
+            {
+                if (deselectedPlanet != hoverPlanet 
+                    && deselectedPlanet.SelectionState != PlanetSelection.Selected)
+                {
+                    deselectedPlanet.SelectionState = PlanetSelection.NotSelected;
+                }
+            }
+        }
+
+        private void UnhoverPlanets(EventArgs args)
+        {
+            foreach (var deselectedPlanet in Scene.Map.Planets)
+            {
+                if (deselectedPlanet.SelectionState != PlanetSelection.Selected)
+                {
+                    deselectedPlanet.SelectionState = PlanetSelection.NotSelected;
+                    deselectedPlanet.Visual.Period = 2.0f;
+                }
+            }
         }
 
         #endregion

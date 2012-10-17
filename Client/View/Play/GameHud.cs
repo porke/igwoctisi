@@ -109,7 +109,7 @@
 
             #endregion
 
-            #region Selected planet data
+            #region Selected selectedPlanet data
 
             var selectedPlanetDesc = new LabelControl("Selected planet:")
             {
