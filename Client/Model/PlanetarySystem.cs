@@ -5,7 +5,10 @@
 
     [Serializable]
     public class PlanetarySystem
-    {        
+    {
+        [XmlAttribute]
+        public int Id { get; set; }
+
         [XmlAttribute]
         public int FleetBonusPerTurn { get; set; }
         
