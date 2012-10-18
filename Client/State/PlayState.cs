@@ -47,10 +47,29 @@
             base.OnUpdate(delta, time);
             
             // Update timer
-            if (_secondsLeft-delta <= 0)
-                _secondsLeft = 0;
+            if (_secondsLeft > 0)
+            {
+                if (_secondsLeft - delta <= 0)
+                {
+                    _secondsLeft = 0;
 
-            _secondsLeft -= delta;
+                    // Create message box that will be shown until server's roundEnd or gameEnd message arrives.
+                    var messageBox = new MessageBox(MessageBoxButtons.OK)
+                    {
+                        Title = "Round simulating",
+                        Message = "Waiting for server to simulate the turn."
+                            + Environment.NewLine + Environment.NewLine
+                            + "(This OK button will disappear)"
+                    };
+                    messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };//TODO to be removed (no OK button!!)
+                    ViewMgr.PushLayer(messageBox);
+                }
+                else
+                {
+                    _secondsLeft -= delta;
+                }
+            }
+
             _gameHud.UpdateTimer((int)_secondsLeft);
         }
 
@@ -64,6 +83,8 @@
         private void SendOrders(EventArgs args)
         {
             // TODO: Send orders
+            //Client.Network.BeginSendCommands
+
             _commands.Clear();
         }
 
