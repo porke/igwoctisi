@@ -2,25 +2,25 @@
 {
     public class UserCommand
     {
-        private Player _player;
-        private Planet _source;
-        private Planet _target;
-        private int _unitCount;
+        public Player Player {get; private set;}
+        public Planet Source { get; private set; }
+        public Planet Target { get; private set; }
+        public int UnitCount { get; private set; }
 
         public UserCommand(Player player, Planet source, Planet target)
         {
-            _player = player;
-            _source = source;
-            _target = target;
-            _unitCount = 1;
+            Player = player;
+            Source = source;
+            Target = target;
+            UnitCount = 1;
         }
 
         public void SubtractUnit()
         {
-            if (_unitCount == 0) return;
+            if (UnitCount == 0) return;
 
             // TODO: temp unit subtraction implementation
-            --_unitCount;
+            --UnitCount;
         }
     }
 }
