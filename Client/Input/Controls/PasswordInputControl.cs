@@ -2,18 +2,19 @@
 {
     using System;
     using Microsoft.Xna.Framework.Input;
+    using Nuclex.UserInterface.Controls.Desktop;
+    using Nuclex.UserInterface.Input;
 
-    public class PasswordInputControl : Nuclex.UserInterface.Controls.Desktop.InputControl
+    public class PasswordInputControl : CommandInputControl
     {
         private String _value;
         public event EventHandler Activated;
-
 
         public PasswordInputControl()
         {
         }
 
-        public String GetPassword()
+        public string GetPassword()
         {
             return _value;
         }
@@ -79,7 +80,6 @@
             return new string(newIndicesArray);
         }
 
-
         /// <summary>
         /// Call our delegate and clear text
         /// </summary>
@@ -90,6 +90,6 @@
                 Activated(this, EventArgs.Empty);
                 Text = string.Empty;
             }
-        }
+        }        
     }
 }
