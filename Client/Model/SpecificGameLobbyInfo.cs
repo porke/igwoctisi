@@ -6,6 +6,10 @@
     [DataContract]
     public class SpecificGameLobbyInfo
     {
+        public SpecificGameLobbyInfo() 
+        {
+        }
+
         public SpecificGameLobbyInfo(string name, Player host)
         {
             Name = name;
