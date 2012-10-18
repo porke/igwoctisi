@@ -24,8 +24,12 @@
         void EndDisconnect(IAsyncResult asyncResult);
         IAsyncResult BeginGetGameList(AsyncCallback asyncCallback, object asyncState);
         List<LobbyListInfo> EndGetGameList(IAsyncResult asyncResult);
+        IAsyncResult BeginSendChatMessage(string message, AsyncCallback asyncCallback, object asyncState);
+        void EndSendChatMessage(IAsyncResult asyncResult);
         IAsyncResult BeginCreateGame(string gameName, Map map, AsyncCallback asyncCallback, object asyncState);
         void EndCreateGame(IAsyncResult asyncResult);
+        IAsyncResult BeginStartGame(AsyncCallback asyncCallback, object asyncState);
+        void EndStartGame(IAsyncResult asyncResult);
 
         IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState);
         Map EndReceiveGameState(IAsyncResult asyncResult);
@@ -55,6 +59,7 @@
         event Action OnPlayerKicked;
 
         /// <summary>
+        /// Event for non-hosting players.
         /// Argument: map.
         /// </summary>
         event Action<Map> OnGameStarted;
@@ -62,7 +67,7 @@
         /// <summary>
         /// Arguments: roundSeconds.
         /// </summary>
-        event Action<int> OnRoundStarted;
+        event Action<SimulationResult> OnRoundStarted;
 
         /// <summary>
         /// Arguments: currently none.

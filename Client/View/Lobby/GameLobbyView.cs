@@ -42,6 +42,13 @@
             };
             btnKickPlayer.Pressed += KickPlayer_Pressed;
 
+            var btnSendChatMessage = new ButtonControl()
+            {
+                Text = "Send",
+                Bounds = new UniRectangle(new UniScalar(0.85f, 0), new UniScalar(0.925f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
+            };
+            btnSendChatMessage.Pressed += SendChatMessage_Pressed;
+
             _messageList = new ListControl()
             {
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.5f, 0), new UniScalar(0.9f, 0), new UniScalar(0.4f, 0))
@@ -49,9 +56,9 @@
 
             _currentMessage = new InputControl()
             {
-                Text = "Test test Test",
-                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.925f, 0), new UniScalar(0.9f, 0), new UniScalar(0.1f, 0))
-            };            
+                Text = "",
+                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.925f, 0), new UniScalar(0.8f, 0), new UniScalar(0.1f, 0))
+            };
 
             _playerList = new ListControl()
             {
@@ -59,7 +66,9 @@
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.6f, 0), new UniScalar(0.4f, 0))
             };
 
-            screen.Desktop.Children.AddRange(new Control[] { btnBeginGame, btnLeaveGame, _messageList, _currentMessage, _playerList, btnKickPlayer });
+            screen.Desktop.Children.AddRange(new Control[] {
+                btnBeginGame, btnLeaveGame, btnKickPlayer, btnSendChatMessage, _messageList, _currentMessage, _playerList
+            });
         }
 
         #endregion        
@@ -81,6 +90,15 @@
             // TODO: Remove player - available only for the host
         }
 
+        private void SendChatMessage_Pressed(object sender, EventArgs e)
+        {
+            var msgArgs = new ChatMessageArgs(_currentMessage.Text);
+            _currentMessage.Text = "";
+            state.HandleViewEvent("SendChatMessage", msgArgs);
+        }
+
+        #endregion
+
         #region UpdateRequests
 
         public void RefreshPlayerList(List<string> newPlayerList)
@@ -91,13 +109,11 @@
 
         public void ChatMessageReceived(ChatMessage message)
         {
-            _messageList.Items.Add(string.Format("<{0}>: {1}", message.Username, message.Message));
+            _messageList.Items.Add(string.Format("<{0}/{1}>: {2}", message.Username, message.Time, message.Message));
         }
 
         #endregion
-
-        #endregion
-
+        
         public GameLobbyView(GameState state)
             : base(state)
         {            

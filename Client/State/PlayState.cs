@@ -38,7 +38,7 @@
             eventHandlers.Add("DeployFleet", DeployFleet);
             eventHandlers.Add("UndeployFleet", UndeployFleet);
 
-            Client.Network.OnRoundStarted += new Action<int>(Network_OnRoundStarted);
+            Client.Network.OnRoundStarted += new Action<SimulationResult>(Network_OnRoundStarted);
             Client.Network.OnRoundEnded += new Action(Network_OnRoundEnded);
             Client.Network.OnGameEnded += new Action(Network_OnGameEnded);
             Client.Network.OnOtherPlayerLeft += new Action<string, DateTime>(Network_OnOtherPlayerLeft);
@@ -50,12 +50,30 @@
             base.OnUpdate(delta, time);
             
             // Update timer
-            if (_secondsLeft - delta <= 0)
+            if (_secondsLeft > 0)
             {
-                _secondsLeft = 0;
+                if (_secondsLeft - delta <= 0)
+                {
+                    _secondsLeft = 0;
             }
 
-            _secondsLeft -= delta;
+                    // Create message box that will be shown until server's roundEnd or gameEnd message arrives.
+                    var messageBox = new MessageBox(MessageBoxButtons.OK)
+                    {
+                        Title = "Round simulating",
+                        Message = "Waiting for server to simulate the turn."
+                            + Environment.NewLine + Environment.NewLine
+                            + "(This OK button will disappear)"
+                    };
+                    messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };//TODO to be removed (no OK button!!)
+                    ViewMgr.PushLayer(messageBox);
+                }
+                else
+                {
+                    _secondsLeft -= delta;
+                }
+            }
+
             _gameHud.UpdateTimer((int)_secondsLeft);
         }
 
@@ -63,12 +81,20 @@
 
         private void LeaveGame(EventArgs args)
         {
-            Client.ChangeState(new LobbyState(Game, _clientPlayer));
+            var messageBox = new MessageBox(MessageBoxButtons.None)
+            {
+                Message = "Leaving game..."
+            };
+            ViewMgr.PushLayer(messageBox);
+
+            Client.Network.BeginLeaveGame(OnLeaveGame, messageBox);
         }
 
         private void SendOrders(EventArgs args)
         {
             // TODO: Send orders
+            //Client.Network.BeginSendCommands
+
             _commands.Clear();
         }
 
@@ -137,9 +163,34 @@
 
         #region Async network callbacks
 
-        void Network_OnRoundStarted(int roundTime)
+        void OnLeaveGame(IAsyncResult result)
         {
-            _secondsLeft = roundTime;
+            InvokeOnMainThread(obj =>
+            {
+                var messageBox = result.AsyncState as MessageBox;
+
+                try
+                {
+                    Client.Network.EndLeaveGame(result);
+                    ViewMgr.PopLayer(); // MessageBox
+                    Client.ChangeState(new LobbyState(Game, _clientPlayer));
+                }
+                catch (Exception exc)
+                {
+                    messageBox.Buttons = MessageBoxButtons.OK;
+                    messageBox.Message = exc.Message;
+                    messageBox.OkPressed += (sender, e) =>
+                    {
+                        ViewMgr.PopLayer();
+                        Client.ChangeState(new LobbyState(Game, _clientPlayer));
+                    };
+                }
+            });
+        }
+
+        void Network_OnRoundStarted(SimulationResult simRes)
+        {
+            _secondsLeft = simRes.RoundTime;
             _gameHud.UpdateTimer((int)_secondsLeft);
 
             // TODO update gui to enable it for making new moves
