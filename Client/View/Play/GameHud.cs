@@ -8,17 +8,20 @@
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
+    using System.Collections.Generic;
 
     class GameHud : BaseView
     {
         #region Protected members
 
         private ListControl _orderList;
+        private LabelControl _playerNameValue;
         private LabelControl _fleetCountValue;
         private LabelControl _fleetIncomeValue;
         
         private LabelControl _selectedPlanetName;
         private LabelControl _selectedPlanetBaseIncome;
+        private LabelControl _selectedPlanetFleetCount;
 
         private LabelControl _timer;
 
@@ -36,32 +39,39 @@
                 SelectionMode = ListSelectionMode.Single,
                 Bounds = new UniRectangle(new UniScalar(0.65f, 0), new UniScalar(0.3f, 0), new UniScalar(0.34f, 0), new UniScalar(0.45f, 0))
             };
-            _orderList.Items.Add("Move 2 fleets from Alpha to Beta");
-            _orderList.Items.Add("Deploy 2 fleets on Gamma");
-            _orderList.SelectedItems.Add(0);
 
             #endregion
 
             #region Fleet values
 
-            var fleetCountDesc = new LabelControl("Deployable fleets:")
+            var playerNameDesc = new LabelControl("Player:")
             {
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.0f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
             };
 
-            _fleetCountValue = new LabelControl("4")
+            _playerNameValue = new LabelControl("")
             {
                 Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.0f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
             };
 
-            var fleetIncomeDesc = new LabelControl("Fleets per turn:")
+            var fleetCountDesc = new LabelControl("Deployable fleets:")
             {
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.05f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
             };
 
-            _fleetIncomeValue = new LabelControl("5")
-            {                
+            _fleetCountValue = new LabelControl("0")
+            {
                 Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.05f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
+            };
+
+            var fleetIncomeDesc = new LabelControl("Fleets per turn:")
+            {
+                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.1f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
+            };
+
+            _fleetIncomeValue = new LabelControl("0")
+            {                
+                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.1f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
             };
 
             #endregion
@@ -109,26 +119,36 @@
 
             #endregion
 
-            #region Selected selectedPlanet data
+            #region Selected planet data
 
             var selectedPlanetDesc = new LabelControl("Selected planet:")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.15f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
-            };
-
-            _selectedPlanetName = new LabelControl("None")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.15f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
-            };
-
-            var planetFleetIncomeDesc = new LabelControl("Fleet income:")
             {
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.2f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
             };
 
-            _selectedPlanetBaseIncome = new LabelControl("-")
+            _selectedPlanetName = new LabelControl("None")
             {
                 Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.2f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
+            };
+
+            var planetFleetIncomeDesc = new LabelControl("Fleet income:")
+            {
+                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.25f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
+            };
+
+            _selectedPlanetBaseIncome = new LabelControl("-")
+            {
+                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.25f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
+            };
+
+            var planetStationedFleets = new LabelControl("Fleet count:")
+            {
+                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.3f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
+            };
+
+            _selectedPlanetFleetCount = new LabelControl("-")
+            {
+                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.3f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0))
             };
 
             #endregion
@@ -148,6 +168,8 @@
                     ordersHeader, 
                     _orderList, 
                     
+                    _playerNameValue,
+                    playerNameDesc,
                     _fleetIncomeValue, 
                     _fleetCountValue, 
                     fleetCountDesc,
@@ -161,8 +183,10 @@
                     
                     _selectedPlanetName,
                     _selectedPlanetBaseIncome,
+                    _selectedPlanetFleetCount,
                     planetFleetIncomeDesc,
                     selectedPlanetDesc,
+                    planetStationedFleets,
 
                     _timer
                 });
@@ -222,10 +246,12 @@
         {
             _selectedPlanetName.Text = planet.Name;
             _selectedPlanetBaseIncome.Text = Convert.ToString(planet.BaseUnitsPerTurn);
+            _selectedPlanetFleetCount.Text = Convert.ToString(planet.NumFleetsPresent);
         }
 
         public void UpdateClientPlayerFleetData(Player player)
         {
+            _playerNameValue.Text = player.Username;
             _fleetCountValue.Text = Convert.ToString(player.DeployableFleets);
             _fleetIncomeValue.Text = Convert.ToString(player.FleetIncomePerTurn);
         }
@@ -237,6 +263,15 @@
 
             // Display Timer in format 0:00
             _timer.Text = mins.ToString() + (secs < 10 ? ":0" : ":") + secs.ToString();
+        }
+
+        public void UpdateOrders(List<UserCommand> commands)
+        {
+            _orderList.Items.Clear();
+            foreach (var cmd in commands)
+            {
+                _orderList.Items.Add(string.Format("Deploy {0} fleets to planet {1}", cmd.UnitCount, cmd.Source.Name));   
+            }            
         }
 
         #endregion

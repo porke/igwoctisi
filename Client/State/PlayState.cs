@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using Client.View;
     using Model;
     using View.Play;
-    using Client.View;
 
     class PlayState : GameState
     {
@@ -25,6 +25,7 @@
 
             _gameViewport = new GameViewport(this);
             _gameHud = new GameHud(this);
+            _gameHud.UpdateClientPlayerFleetData(clientPlayer);
 
             ViewMgr.PushLayer(_gameViewport);
             ViewMgr.PushLayer(_gameHud);
@@ -34,6 +35,8 @@
             eventHandlers.Add("SelectPlanet", SelectPlanet);
             eventHandlers.Add("OnHoverPlanet", OnHoverPlanet);
             eventHandlers.Add("UnhoverPlanets", UnhoverPlanets);
+            eventHandlers.Add("DeployFleet", DeployFleet);
+            eventHandlers.Add("UndeployFleet", UndeployFleet);
 
             Client.Network.OnRoundStarted += new Action<int>(Network_OnRoundStarted);
             Client.Network.OnRoundEnded += new Action(Network_OnRoundEnded);
@@ -47,8 +50,10 @@
             base.OnUpdate(delta, time);
             
             // Update timer
-            if (_secondsLeft-delta <= 0)
+            if (_secondsLeft - delta <= 0)
+            {
                 _secondsLeft = 0;
+            }
 
             _secondsLeft -= delta;
             _gameHud.UpdateTimer((int)_secondsLeft);
@@ -110,6 +115,22 @@
                     deselectedPlanet.Visual.Period = 2.0f;
                 }
             }
+        }
+
+        private void DeployFleet(EventArgs args)
+        {
+            var planet = (args as SelectPlanetArgs).Planet;
+            var gameHud = ViewMgr.PeekLayer() as GameHud;
+            planet.NumFleetsPresent++;
+            gameHud.UpdateSelectedPlanet(planet);
+        }
+
+        private void UndeployFleet(EventArgs args)
+        {
+            var planet = (args as SelectPlanetArgs).Planet;
+            var gameHud = ViewMgr.PeekLayer() as GameHud;
+            planet.NumFleetsPresent--;
+            gameHud.UpdateSelectedPlanet(planet);
         }
 
         #endregion

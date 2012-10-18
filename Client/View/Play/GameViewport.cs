@@ -52,10 +52,23 @@
 
             public override bool OnMousePressed(MouseButtons button)
             {
-                if (button.HasFlag(MouseButtons.Left) || button.HasFlag(MouseButtons.Right))
+                if (button.HasFlag(MouseButtons.Middle)) return true;
+                
+                var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition, _receiverView.PlayState.Client.Renderer);
+                if (planet != null)
                 {
-                    var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition, _receiverView.PlayState.Client.Renderer);
-                    if (planet != null && planet.SelectionState != PlanetSelection.Selected)
+                    if (planet.SelectionState == PlanetSelection.Selected)
+                    {
+                        if (button.HasFlag(MouseButtons.Left))
+                        {
+                            _receiverView.DeployFleet(planet);
+                        }
+                        else if (button.HasFlag(MouseButtons.Right))
+                        {
+                            _receiverView.UndeployFleet(planet);
+                        }
+                    }
+                    else
                     {
                         _receiverView.PlanetSelected(planet);
                     }
@@ -108,6 +121,16 @@
         #endregion
 
         #region Event handlers
+
+        private void DeployFleet(Planet destinationPlanet)
+        {
+            state.HandleViewEvent("DeployFleet", new SelectPlanetArgs(destinationPlanet));
+        }
+
+        private void UndeployFleet(Planet destinationPlanet)
+        {
+            state.HandleViewEvent("UndeployFleet", new SelectPlanetArgs(destinationPlanet));
+        }
 
         private void PlanetSelected(Planet planetSelected)
         {
