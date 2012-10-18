@@ -29,6 +29,7 @@
             eventHandlers.Add("JoinGame", JoinGame);
             eventHandlers.Add("BeginGame", BeginGame);
             eventHandlers.Add("RefreshGameList", RefreshGameList);
+            eventHandlers.Add("SendChatMessage", SendChatMessage);
         }
 
         public override void OnEnter()
@@ -136,6 +137,12 @@
 
             var mainLobbyView = (args as SenderEventArgs).Sender;
             Client.Network.BeginGetGameList(OnGetGameList, Tuple.Create(mainLobbyView as MainLobbyView, messageBox));
+        }
+
+        private void SendChatMessage(EventArgs args)
+        {
+            var msgArgs = args as ChatMessageArgs;
+            Client.Network.BeginSendChatMessage(msgArgs.Message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
         }
 
         #endregion
