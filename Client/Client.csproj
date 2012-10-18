@@ -108,6 +108,7 @@
     <Compile Include="Input\IInputReceiver.cs" />
     <Compile Include="Input\NullInputReceiver.cs" />
     <Compile Include="Input\NuclexScreenInputReceiver.cs" />
+    <Compile Include="Input\Controls\PasswordInputControl.cs" />
     <Compile Include="Input\XnaInput.cs" />
     <Compile Include="Model\ChatMessage.cs" />
     <Compile Include="Model\Map.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Model\PlanetLink.cs" />
     <Compile Include="Model\PlanetSelection.cs" />
     <Compile Include="Model\Player.cs" />
+    <Compile Include="Model\SimulationResult.cs" />
     <Compile Include="Model\SpecificGameLobbyInfo.cs" />
     <Compile Include="Model\Planet.cs" />
     <Compile Include="Model\Scene.cs" />

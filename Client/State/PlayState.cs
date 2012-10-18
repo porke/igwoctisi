@@ -35,7 +35,7 @@
             eventHandlers.Add("OnHoverPlanet", OnHoverPlanet);
             eventHandlers.Add("UnhoverPlanets", UnhoverPlanets);
 
-            Client.Network.OnRoundStarted += new Action<int>(Network_OnRoundStarted);
+            Client.Network.OnRoundStarted += new Action<SimulationResult>(Network_OnRoundStarted);
             Client.Network.OnRoundEnded += new Action(Network_OnRoundEnded);
             Client.Network.OnGameEnded += new Action(Network_OnGameEnded);
             Client.Network.OnOtherPlayerLeft += new Action<string, DateTime>(Network_OnOtherPlayerLeft);
@@ -77,6 +77,8 @@
 
         private void LeaveGame(EventArgs args)
         {
+            // TODO!!!!111
+            //Client.Network.BeginLeaveGame(Network_OnLeaveGame(IAsyncResult result), null)
             Client.ChangeState(new LobbyState(Game, _clientPlayer));
         }
 
@@ -137,9 +139,9 @@
 
         #region Async network callbacks
 
-        void Network_OnRoundStarted(int roundTime)
+        void Network_OnRoundStarted(SimulationResult simRes)
         {
-            _secondsLeft = roundTime;
+            _secondsLeft = simRes.RoundTime;
             _gameHud.UpdateTimer((int)_secondsLeft);
 
             // TODO update gui to enable it for making new moves
