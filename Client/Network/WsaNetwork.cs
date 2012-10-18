@@ -21,7 +21,7 @@
         public event Action<string, DateTime> OnOtherPlayerLeft;
         public event Action OnPlayerKicked;
         public event Action<Map> OnGameStarted;
-        public event Action<int> OnRoundStarted;
+        public event Action<SimulationResult> OnRoundStarted;
         public event Action OnRoundEnded;
         public event Action OnGameEnded;
         public event Action<string> OnDisconnected;
@@ -295,13 +295,8 @@
                         {
                             if (OnRoundStarted != null)
                             {
-                                var jObject = JObject.Parse(jsonLine);
-
-                                //  TODO parse gamestate/map/moves or w/e
-                                //var gamestate = jObject.Value<GameState>();
-
-                                int roundTime = jObject.Value<int>("roundTime");
-                                OnRoundStarted.Invoke(roundTime);
+                                var simRes = JsonLowercaseSerializer.DeserializeObject<SimulationResult>(jsonLine);
+                                OnRoundStarted.Invoke(simRes);
                             }
                         }
                         else if (nextContentType == MessageContentType.RoundEnd)
@@ -633,6 +628,27 @@
             ar.EndInvoke();
         }
 
+        public IAsyncResult BeginSendChatMessage(string message, AsyncCallback asyncCallback, object asyncState)
+        {
+            var ar = new AsyncResult<object>(asyncCallback, asyncState);
+
+            var infoContent = new
+            {
+                Message = message
+            };
+
+            SendInfo(MessageContentType.Chat, infoContent);
+            ar.Complete(null, false);
+
+            return ar;
+        }
+
+        public void EndSendChatMessage(IAsyncResult asyncResult)
+        {
+            var ar = (AsyncResult<object>)asyncResult;
+            ar.EndInvoke();
+        }
+
         public IAsyncResult BeginCreateGame(string gameName, Map map, AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<bool>(asyncCallback, asyncState);
@@ -659,6 +675,32 @@
             return ar;
         }
         public void EndCreateGame(IAsyncResult asyncResult)
+        {
+            var ar = (AsyncResult<bool>)asyncResult;
+            ar.EndInvoke();
+        }
+
+        public IAsyncResult BeginStartGame(AsyncCallback asyncCallback, object asyncState)
+        {
+            var ar = new AsyncResult<bool>(asyncCallback, asyncState);
+
+            SendRequest(MessageContentType.GameStart, false, null, (jsonStr, messageContentType, errorType) =>
+            {
+                ar.BeginInvoke(() =>
+                {
+                    if (messageContentType == MessageContentType.GameStarted)
+                        return true;
+                    else if (messageContentType == MessageContentType.Error)
+                        throw new Exception("Couldn't start the game. Error: " + errorType);
+                    else
+                        throw new Exception("Sorry, we couldn't start the game. The reason is unknown. Please try again.");
+                });
+            });
+
+            return ar;
+        }
+        
+        public void EndStartGame(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<bool>)asyncResult;
             ar.EndInvoke();

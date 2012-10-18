@@ -3,6 +3,7 @@
     using System;
     using Common;
     using Input;
+    using Input.Controls;
     using Nuclex.UserInterface;
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
@@ -13,7 +14,7 @@
         #region Protected members
 
         protected InputControl tbLogin;
-        protected InputControl tbPassword;
+        protected PasswordInputControl tbPassword;
 
         protected void CreateChildControls()
         {
@@ -23,11 +24,11 @@
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.4f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))
             };
 
-            tbPassword = new InputControl
+            tbPassword = new PasswordInputControl
             {
-                Text = "pswd",
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.5f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))
             };
+            tbPassword.SetPassword("pswd");
 
             var btnLogin = new ButtonControl
             {
@@ -52,7 +53,7 @@
 
         protected void Login_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("RequestLogin", new LoginEventArgs(tbLogin.Text, tbPassword.Text));
+            state.HandleViewEvent("RequestLogin", new LoginEventArgs(tbLogin.Text, tbPassword.GetPassword()));
         }
 
         protected void Quit_Pressed(object sender, EventArgs e)
