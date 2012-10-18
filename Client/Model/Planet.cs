@@ -42,6 +42,9 @@
         public PlanetSelection SelectionState { get; set; }
 
         [JsonIgnore]
+        public int NumFleetsPresent { get; set; }
+
+        [JsonIgnore]
         public PlanetVisual Visual { get; set; }
     }
 }

@@ -1,9 +1,8 @@
 ﻿namespace Client.Model
 {
-    using System;
     using System.Collections.Generic;
-    using Microsoft.Xna.Framework;
     using Client.Renderer;
+    using Microsoft.Xna.Framework;
 
     public class Scene
     {
@@ -17,7 +16,6 @@
         }
         public Planet PickPlanet(Vector2 clickPosition, IRenderer renderer)
         {
-            // TODO: Mocked picking
             foreach (var item in Map.Planets)
             {
                 if (renderer.RaySphereIntersection(clickPosition, new Vector3(item.X, item.Y, item.Z), item.Radius))
