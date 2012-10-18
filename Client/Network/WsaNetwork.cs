@@ -628,6 +628,27 @@
             ar.EndInvoke();
         }
 
+        public IAsyncResult BeginSendChatMessage(string message, AsyncCallback asyncCallback, object asyncState)
+        {
+            var ar = new AsyncResult<object>(asyncCallback, asyncState);
+
+            var infoContent = new
+            {
+                Message = message
+            };
+
+            SendInfo(MessageContentType.Chat, infoContent);
+            ar.Complete(null, false);
+
+            return ar;
+        }
+
+        public void EndSendChatMessage(IAsyncResult asyncResult)
+        {
+            var ar = (AsyncResult<object>)asyncResult;
+            ar.EndInvoke();
+        }
+
         public IAsyncResult BeginCreateGame(string gameName, Map map, AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<bool>(asyncCallback, asyncState);
