@@ -54,8 +54,7 @@
             {
                 if (_secondsLeft - delta <= 0)
                 {
-                    _secondsLeft = 0;
-            }
+                    _secondsLeft = 0;            
 
                     // Create message box that will be shown until server's roundEnd or gameEnd message arrives.
                     var messageBox = new MessageBox(MessageBoxButtons.OK)
