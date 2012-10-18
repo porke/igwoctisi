@@ -77,9 +77,13 @@
 
         private void LeaveGame(EventArgs args)
         {
-            // TODO!!!!111
-            //Client.Network.BeginLeaveGame(Network_OnLeaveGame(IAsyncResult result), null)
-            Client.ChangeState(new LobbyState(Game, _clientPlayer));
+            var messageBox = new MessageBox(MessageBoxButtons.None)
+            {
+                Message = "Leaving game..."
+            };
+            ViewMgr.PushLayer(messageBox);
+
+            Client.Network.BeginLeaveGame(OnLeaveGame, messageBox);
         }
 
         private void SendOrders(EventArgs args)
@@ -138,6 +142,31 @@
         #endregion
 
         #region Async network callbacks
+
+        void OnLeaveGame(IAsyncResult result)
+        {
+            InvokeOnMainThread(obj =>
+            {
+                var messageBox = result.AsyncState as MessageBox;
+
+                try
+                {
+                    Client.Network.EndLeaveGame(result);
+                    ViewMgr.PopLayer(); // MessageBox
+                    Client.ChangeState(new LobbyState(Game, _clientPlayer));
+                }
+                catch (Exception exc)
+                {
+                    messageBox.Buttons = MessageBoxButtons.OK;
+                    messageBox.Message = exc.Message;
+                    messageBox.OkPressed += (sender, e) =>
+                    {
+                        ViewMgr.PopLayer();
+                        Client.ChangeState(new LobbyState(Game, _clientPlayer));
+                    };
+                }
+            });
+        }
 
         void Network_OnRoundStarted(SimulationResult simRes)
         {
