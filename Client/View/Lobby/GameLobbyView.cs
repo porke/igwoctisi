@@ -49,9 +49,9 @@
 
             _currentMessage = new InputControl()
             {
-                Text = "Test test Test",
+                Text = "",
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.925f, 0), new UniScalar(0.9f, 0), new UniScalar(0.1f, 0))
-            };            
+            };
 
             _playerList = new ListControl()
             {
@@ -81,6 +81,8 @@
             // TODO: Remove player - available only for the host
         }
 
+        #endregion
+
         #region UpdateRequests
 
         public void RefreshPlayerList(List<string> newPlayerList)
@@ -95,9 +97,7 @@
         }
 
         #endregion
-
-        #endregion
-
+        
         public GameLobbyView(GameState state)
             : base(state)
         {            

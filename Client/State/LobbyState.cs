@@ -4,7 +4,6 @@
     using Client.Model;
     using View;
     using View.Lobby;
-using System.Collections.Generic;
 
     class LobbyState : GameState
     {
@@ -113,7 +112,15 @@ using System.Collections.Generic;
         }
 
         private void BeginGame(EventArgs args)
-        {            
+        {
+            var messageBox = new MessageBox(MessageBoxButtons.None)
+            {
+                Title = "Begin Game",
+                Message = "Starting game, please wait..."
+            };
+            ViewMgr.PushLayer(messageBox);
+
+            Client.Network.BeginStartGame(OnGameStarted, messageBox);
             Game.ChangeState(new PlayState(Game, _map, _clientPlayer));
         }
 
@@ -252,7 +259,26 @@ using System.Collections.Generic;
                     messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
                     messageBox.Message = exc.Message;
                 }
-            }, null);            
+            });            
+        }
+
+        private void OnGameStarted(IAsyncResult result)
+        {
+            InvokeOnMainThread(obj =>
+            {
+                var messageBox = result.AsyncState as MessageBox;
+
+                try
+                {
+                    Client.Network.EndStartGame(result);
+                }
+                catch (Exception exc)
+                {
+                    messageBox.Buttons = MessageBoxButtons.OK;
+                    messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); ViewMgr.PopLayer(); };
+                    messageBox.Message = exc.Message;
+                }
+            });
         }
 
         private void OnDisconnect(IAsyncResult result)
