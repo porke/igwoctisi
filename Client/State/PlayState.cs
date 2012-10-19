@@ -91,9 +91,7 @@
 
         private void SendOrders(EventArgs args)
         {
-            // TODO: Send orders
-            //Client.Network.BeginSendCommands
-
+            Client.Network.BeginSendCommands(_commands, OnSendOrders, null);
             _commands.Clear();
         }
 
@@ -184,6 +182,15 @@
                         Client.ChangeState(new LobbyState(Game, _clientPlayer));
                     };
                 }
+            });
+        }
+
+        void OnSendOrders(IAsyncResult result)
+        {
+            InvokeOnMainThread(obj =>
+            {
+                Client.Network.EndSendCommands(result);
+                _secondsLeft = 0.001;
             });
         }
 

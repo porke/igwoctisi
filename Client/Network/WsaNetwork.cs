@@ -60,7 +60,7 @@
             GamePlayerLeft, //Server
             GamePlayerKicked,//Server
             RoundStart,     //Server
-            Moves,          //Client
+            Commands,          //Client
             RoundEnd,       //Server
             GameEnd,        //Server
 
@@ -787,16 +787,27 @@
             var ar = (AsyncResult<Map>)asyncResult;
             return ar.EndInvoke();
         }
-        public IAsyncResult BeginSendCommands(UserCommand commands, AsyncCallback asyncCallback, object asyncState)
+        public IAsyncResult BeginSendCommands(List<UserCommand> commands, AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<object>(asyncCallback, asyncState);
-            // simulate time consuming task
-            ar.BeginInvoke(() => { Thread.Sleep(500); return null; });
+            var ar = new AsyncResult<bool>(asyncCallback, asyncState);
+
+            var infoContent = JsonLowercaseSerializer.SerializeObject(commands);
+            SendRequest(MessageContentType.Commands, false, infoContent, (jsonStr, messageContentType, errorType) =>
+            {
+                ar.BeginInvoke(() =>
+                {
+                    if (messageContentType == MessageContentType.Ok)
+                        return true;
+                    else
+                        throw new Exception("OMG!");
+                });
+            });
+
             return ar;
         }
         public void EndSendCommands(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<object>)asyncResult;
+            var ar = (AsyncResult<bool>)asyncResult;
             ar.EndInvoke();
         }
 
