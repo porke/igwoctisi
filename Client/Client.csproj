@@ -142,6 +142,7 @@
     <Compile Include="View\Lobby\CreateGameArgs.cs" />
     <Compile Include="View\Lobby\CreateGameView.cs" />
     <Compile Include="View\Lobby\JoinGameArgs.cs" />
+    <Compile Include="View\Lobby\KickPlayerArgs.cs" />
     <Compile Include="View\Lobby\LobbyBackground.cs" />
     <Compile Include="View\Lobby\MainLobbyView.cs" />
     <Compile Include="View\Menu\LoginEventArgs.cs" />

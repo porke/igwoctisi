@@ -30,6 +30,7 @@
             eventHandlers.Add("BeginGame", BeginGame);
             eventHandlers.Add("RefreshGameList", RefreshGameList);
             eventHandlers.Add("SendChatMessage", SendChatMessage);
+            eventHandlers.Add("KickOtherPlayer", KickOtherPlayer);
         }
 
         public override void OnEnter()
@@ -45,18 +46,18 @@
 
         private void BindNetworkEvents()
         {
-            Client.Network.OnOtherPlayerJoined += OnPlayerListChanged;
-            Client.Network.OnOtherPlayerLeft += OnPlayerListChanged;
+            Client.Network.OnOtherPlayerJoined += OnOtherPlayerJoined;
+            Client.Network.OnOtherPlayerLeft += OnOtherPlayerLeft;
             Client.Network.OnChatMessageReceived += OnChatMessageReceived;
-            Client.Network.OnPlayerKicked += new Action(OnPlayerKicked);
+            Client.Network.OnPlayerKicked += OnPlayerKicked;
         }
 
         private void UnbindNetworkEvents()
         {
-            Client.Network.OnOtherPlayerJoined -= OnPlayerListChanged;
-            Client.Network.OnOtherPlayerLeft -= OnPlayerListChanged;
+            Client.Network.OnOtherPlayerJoined -= OnOtherPlayerJoined;
+            Client.Network.OnOtherPlayerLeft -= OnOtherPlayerLeft;
             Client.Network.OnChatMessageReceived -= OnChatMessageReceived;
-            Client.Network.OnPlayerKicked -= new Action(OnPlayerKicked);
+            Client.Network.OnPlayerKicked -= OnPlayerKicked;
         }
 
         #region _view event handlers
@@ -143,6 +144,12 @@
         {
             var msgArgs = args as ChatMessageArgs;
             Client.Network.BeginSendChatMessage(msgArgs.Message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
+        }
+
+        private void KickOtherPlayer(EventArgs args)
+        {
+            var kickArgs = args as KickPlayerArgs;
+            Client.Network.BeginKickPlayer(kickArgs.Username, OnKickPlayer, kickArgs.Username);
         }
 
         #endregion
@@ -235,6 +242,19 @@
             }
         }
 
+        private void OnKickPlayer(IAsyncResult result)
+        {
+            try
+            {
+                Client.Network.EndKickPlayer(result);
+                // Don't remove the player manually from lists.
+                // Server should send GamePlayerLeft message to anyone.
+            }
+            catch
+            {
+            }
+        }
+
         private void OnCreateGame(IAsyncResult result)
         {
             BindNetworkEvents();
@@ -312,14 +332,24 @@
 
         #region Network event handlers
 
-        private void OnPlayerListChanged(string username, DateTime time)
+        private void OnOtherPlayerJoined(string username, DateTime time)
         {
             InvokeOnMainThread(obj =>
             {
                 var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.AddPlayer(username);
                 gameLobbyView.RefreshPlayerList(_gameLobby.Players);
-            }, new Tuple<string, DateTime>(username, time));
+            });
+        }
+
+        private void OnOtherPlayerLeft(string username, DateTime time)
+        {
+            InvokeOnMainThread(obj =>
+            {
+                var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
+                _gameLobby.RemovePlayer(username);
+                gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+            });
         }
 
         private void OnChatMessageReceived(ChatMessage message)

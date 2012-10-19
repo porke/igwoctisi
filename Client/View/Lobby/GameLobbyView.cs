@@ -88,7 +88,11 @@
 
         private void KickPlayer_Pressed(object sender, EventArgs e)
         {
-            // TODO: Remove player - available only for the host
+            if (_playerList.SelectedItems.Count == 1)
+            {
+                string username = _playerList.Items[_playerList.SelectedItems[0]];
+                state.HandleViewEvent("KickOtherPlayer", new KickPlayerArgs(username));
+            }
         }
 
         private void SendChatMessage_Pressed(object sender, EventArgs e)

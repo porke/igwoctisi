@@ -51,6 +51,7 @@
             Chat,           //Client,Server
             GameInfo,       //Server
             GameLeave,      //Client
+            GamePlayerKick, //Client(host)
             GameKick,       //Server
             GameStart,      //Client
             GameStarted,    //Server
@@ -677,6 +678,22 @@
         public void EndCreateGame(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<bool>)asyncResult;
+            ar.EndInvoke();
+        }
+
+        public IAsyncResult BeginKickPlayer(string username, AsyncCallback asyncCallback, object asyncState)
+        {
+            var ar = new AsyncResult<object>(asyncCallback, asyncState);
+
+            SendInfo(MessageContentType.GamePlayerKick, new { Username = username });
+            ar.Complete(null, false);
+
+            return ar;
+        }
+
+        public void EndKickPlayer(IAsyncResult asyncResult)
+        {
+            var ar = (AsyncResult<object>)asyncResult;
             ar.EndInvoke();
         }
 

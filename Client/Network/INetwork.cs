@@ -28,6 +28,8 @@
         void EndSendChatMessage(IAsyncResult asyncResult);
         IAsyncResult BeginCreateGame(string gameName, Map map, AsyncCallback asyncCallback, object asyncState);
         void EndCreateGame(IAsyncResult asyncResult);
+        IAsyncResult BeginKickPlayer(string username, AsyncCallback asyncCallback, object asyncState);
+        void EndKickPlayer(IAsyncResult asyncResult);
         IAsyncResult BeginStartGame(AsyncCallback asyncCallback, object asyncState);
         void EndStartGame(IAsyncResult asyncResult);
 
