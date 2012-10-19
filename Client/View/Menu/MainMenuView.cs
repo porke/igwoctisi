@@ -13,22 +13,24 @@
     {
         #region Protected members
 
-        protected InputControl tbLogin;
+        protected CommandInputControl tbLogin;
         protected PasswordInputControl tbPassword;
 
         protected void CreateChildControls()
         {
-            tbLogin = new InputControl
+            tbLogin = new CommandInputControl
             {
                 Text = "infinite",
-                Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.4f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.4f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))                
             };
+            tbLogin.OnCommandHandler += Login_Pressed;
 
             tbPassword = new PasswordInputControl
             {
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.5f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))
             };
             tbPassword.SetPassword("pswd");
+            tbPassword.OnCommandHandler += Login_Pressed;
 
             var btnLogin = new ButtonControl
             {
@@ -45,7 +47,7 @@
             btnQuit.Pressed += Quit_Pressed;
 
             screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit });
-        }
+        }        
 
         #endregion
 

@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using Client.Input.Controls;
     using Common;
     using Input;
     using Nuclex.UserInterface;
@@ -14,7 +15,7 @@
         #region Protected members
 
         private ListControl _mapList;
-        private InputControl _gameName;
+        private CommandInputControl _gameName;
 
         private void CreateChildControls()
         {
@@ -34,11 +35,12 @@
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.5f, 0), new UniScalar(1.0f, 0))
             };
 
-            _gameName = new InputControl()
+            _gameName = new CommandInputControl()
             {
                 Text = "My Game Name",
                 Bounds = new UniRectangle(new UniScalar(0.6f, 0), new UniScalar(0.05f, 0), new UniScalar(0.4f, 0), new UniScalar(0.1f, 0))
             };
+            _gameName.OnCommandHandler += CreateGame_Pressed;
 
             var btnCreateGame = new ButtonControl()
             {
