@@ -35,7 +35,7 @@
 
         IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState);
         Map EndReceiveGameState(IAsyncResult asyncResult);
-        IAsyncResult BeginSendCommands(UserCommand commands, AsyncCallback asyncCallback, object asyncState);
+        IAsyncResult BeginSendCommands(List<UserCommand> commands, AsyncCallback asyncCallback, object asyncState);
         void EndSendCommands(IAsyncResult asyncResult);
 
         #region Events
