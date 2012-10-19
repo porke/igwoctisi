@@ -9,6 +9,7 @@
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
     using System.Collections.Generic;
+    using System.Linq;
 
     class GameHud : BaseView
     {
@@ -18,7 +19,8 @@
         private LabelControl _playerNameValue;
         private LabelControl _fleetCountValue;
         private LabelControl _fleetIncomeValue;
-        
+
+        private ListControl _playerList;
         private LabelControl _selectedPlanetName;
         private LabelControl _selectedPlanetBaseIncome;
         private LabelControl _selectedPlanetFleetCount;
@@ -27,6 +29,21 @@
 
         protected void CreateChildControls()
         {
+            #region Player list section
+
+            var playerListHeader = new LabelControl("Players")
+            {
+                Bounds = new UniRectangle()
+            };
+
+            _playerList = new ListControl()
+            {
+                SelectionMode = ListSelectionMode.None,
+                Bounds = new UniRectangle()
+            };
+
+            #endregion
+
             #region Orders section
 
             var ordersHeader = new LabelControl("Orders")
@@ -39,6 +56,13 @@
                 SelectionMode = ListSelectionMode.Single,
                 Bounds = new UniRectangle(new UniScalar(0.65f, 0), new UniScalar(0.3f, 0), new UniScalar(0.34f, 0), new UniScalar(0.45f, 0))
             };
+
+            var btnDeleteOrder = new ButtonControl()
+            {
+                Text = "Delete",
+                Bounds = new UniRectangle(new UniScalar(0.89f, 0), new UniScalar(0.77f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
+            };
+            btnDeleteOrder.Pressed += DeleteOrder_Pressed;
 
             #endregion
 
@@ -94,31 +118,6 @@
 
             #endregion
 
-            #region Order buttons
-
-            var btnMoveOrderUp = new ButtonControl()
-            {
-                Text = "Up",
-                Bounds = new UniRectangle(new UniScalar(0.65f, 0), new UniScalar(0.77f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
-            };
-            btnMoveOrderUp.Pressed += MoveOrderUp_Pressed;
-
-            var btnMoveOrderDown = new ButtonControl()
-            {
-                Text = "Down",
-                Bounds = new UniRectangle(new UniScalar(0.77f, 0), new UniScalar(0.77f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
-            };
-            btnMoveOrderDown.Pressed += MoveOrderDown_Pressed;
-
-            var btnDeleteOrder = new ButtonControl()
-            {
-                Text = "Delete",
-                Bounds = new UniRectangle(new UniScalar(0.89f, 0), new UniScalar(0.77f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
-            };
-            btnDeleteOrder.Pressed += DeleteOrder_Pressed;
-
-            #endregion
-
             #region Selected planet data
 
             var selectedPlanetDesc = new LabelControl("Selected planet:")
@@ -168,6 +167,9 @@
                     ordersHeader, 
                     _orderList, 
                     
+                    playerListHeader,
+                    _playerList,
+
                     _playerNameValue,
                     playerNameDesc,
                     _fleetIncomeValue, 
@@ -178,8 +180,6 @@
                     btnDeleteOrder, 
                     btnLeaveGame, 
                     btnSendOrders,
-                    btnMoveOrderDown,
-                    btnMoveOrderUp,
                     
                     _selectedPlanetName,
                     _selectedPlanetBaseIncome,
@@ -204,16 +204,6 @@
         private void SendOrders_Pressed(object sender, EventArgs e)
         {
             state.HandleViewEvent("SendOrders", e);
-        }
-
-        private void MoveOrderUp_Pressed(object sender, EventArgs e)
-        {
-            // TODO: move order up the list
-        }
-
-        private void MoveOrderDown_Pressed(object sender, EventArgs e)
-        {
-            // TODO: move order down the list
         }
 
         private void DeleteOrder_Pressed(object sender, EventArgs e)
@@ -241,6 +231,12 @@
         #endregion
 
         #region Update requests
+
+        public void UpdatePlayerList(List<Player> players)
+        {
+            _playerList.Items.Clear();
+            _playerList.Items.AddRange(players.Select(player => player.Username));
+        }
 
         public void UpdateSelectedPlanet(Planet planet)
         {

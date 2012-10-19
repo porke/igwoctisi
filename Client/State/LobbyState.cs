@@ -4,6 +4,8 @@
     using Client.Model;
     using View;
     using View.Lobby;
+    using System.Collections.Generic;
+    using System.Linq;
 
     class LobbyState : GameState
     {
@@ -61,7 +63,7 @@
             Client.Network.OnPlayerKicked -= OnPlayerKicked;
         }
 
-        #region _view event handlers
+        #region View event handlers
 
         private void LeaveGameLobby(EventArgs args)
         {
@@ -124,7 +126,8 @@
             ViewMgr.PushLayer(messageBox);
 
             Client.Network.BeginStartGame(OnGameStarted, messageBox);
-            Game.ChangeState(new PlayState(Game, _map, _clientPlayer));
+            var playerList = new List<Player>(_gameLobby.Players.Select(username => new Player(username)));
+            Game.ChangeState(new PlayState(Game, _map, _clientPlayer, playerList));
         }
 
         private void RefreshGameList(EventArgs args)
