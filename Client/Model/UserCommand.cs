@@ -2,7 +2,7 @@
 {
     public class UserCommand
     {
-        public Player Player {get; private set;}
+        public Player Player { get; private set; }
         public Planet Source { get; private set; }
         public Planet Target { get; private set; }
         public int UnitCount { get; private set; }

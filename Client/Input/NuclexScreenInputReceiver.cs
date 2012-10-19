@@ -13,7 +13,7 @@
         // commands
         public virtual bool OnCommand(Command command)
         {
-            Screen.InjectCommand(command);
+            // Don't inject commands as they are recognized by Nuclex in KeyPressed
             return IsInputHandled;
         }
 

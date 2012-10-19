@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using Client.Input.Controls;
     using Client.Model;
     using Common;
     using Input;
@@ -17,7 +17,7 @@
 
         private ListControl _messageList;
         private ListControl _playerList;
-        private InputControl _currentMessage;
+        private CommandInputControl _currentMessage;
 
         protected void CreateChildControls()
         {
@@ -54,11 +54,12 @@
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.5f, 0), new UniScalar(0.9f, 0), new UniScalar(0.4f, 0))
             };
 
-            _currentMessage = new InputControl()
+            _currentMessage = new CommandInputControl()
             {
                 Text = "",
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.925f, 0), new UniScalar(0.8f, 0), new UniScalar(0.1f, 0))
             };
+            _currentMessage.OnCommandHandler += SendChatMessage_Pressed;
 
             _playerList = new ListControl()
             {
@@ -92,9 +93,12 @@
 
         private void SendChatMessage_Pressed(object sender, EventArgs e)
         {
-            var msgArgs = new ChatMessageArgs(_currentMessage.Text);
-            _currentMessage.Text = "";
-            state.HandleViewEvent("SendChatMessage", msgArgs);
+            if (_currentMessage.Text.Trim().Length > 0)
+            {
+                var msgArgs = new ChatMessageArgs(_currentMessage.Text);
+                _currentMessage.Text = "";
+                state.HandleViewEvent("SendChatMessage", msgArgs);
+            }
         }
 
         #endregion
