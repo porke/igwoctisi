@@ -19,6 +19,7 @@
         public event Action<ChatMessage> OnChatMessageReceived;        
         public event Action<string, DateTime> OnOtherPlayerJoined;
         public event Action<string, DateTime> OnOtherPlayerLeft;
+        public event Action<string, DateTime> OnOtherPlayerKicked;
         public event Action OnPlayerKicked;
         public event Action<Map> OnGameStarted;
         public event Action<SimulationResult> OnRoundStarted;
@@ -57,6 +58,7 @@
             GameStarted,    //Server
             GamePlayerJoined,//Server
             GamePlayerLeft, //Server
+            GamePlayerKicked,//Server
             RoundStart,     //Server
             Moves,          //Client
             RoundEnd,       //Server
@@ -225,6 +227,11 @@
                             // Next packet should contain {username, time}
                             nextPacketType = PacketType.Content;
                         }
+                        else if (type == MessageContentType.GamePlayerKicked)
+                        {
+                            // Next packet should contain {username, time}
+                            nextPacketType = PacketType.Content;
+                        }
                         else if (type == MessageContentType.GameStart)
                         {
                             // Next packet should contain map
@@ -276,6 +283,17 @@
                         else if (nextContentType == MessageContentType.GamePlayerLeft)
                         {
                             if (OnOtherPlayerLeft != null)
+                            {
+                                var msg = JObject.Parse(jsonLine);
+                                string username = msg.Value<string>("username");
+                                string datetimeStr = msg.Value<string>("time");
+
+                                OnOtherPlayerLeft.Invoke(username, new DateTime());//TODO convert datetimeStr to DateTime
+                            }
+                        }
+                        else if (nextContentType == MessageContentType.GamePlayerKicked)
+                        {
+                            if (OnOtherPlayerKicked != null)
                             {
                                 var msg = JObject.Parse(jsonLine);
                                 string username = msg.Value<string>("username");

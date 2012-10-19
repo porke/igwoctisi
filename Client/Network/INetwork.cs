@@ -56,6 +56,11 @@
         event Action<string, DateTime> OnOtherPlayerLeft;
 
         /// <summary>
+        /// Arguments: username, time.
+        /// </summary>
+        event Action<string, DateTime> OnOtherPlayerKicked;
+
+        /// <summary>
         /// Arguments: currently none.
         /// </summary>
         event Action OnPlayerKicked;

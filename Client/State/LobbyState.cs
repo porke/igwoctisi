@@ -56,6 +56,7 @@
         {
             Client.Network.OnOtherPlayerJoined -= OnOtherPlayerJoined;
             Client.Network.OnOtherPlayerLeft -= OnOtherPlayerLeft;
+            Client.Network.OnOtherPlayerKicked -= OnOtherPlayerKicked;
             Client.Network.OnChatMessageReceived -= OnChatMessageReceived;
             Client.Network.OnPlayerKicked -= OnPlayerKicked;
         }
@@ -343,6 +344,16 @@
         }
 
         private void OnOtherPlayerLeft(string username, DateTime time)
+        {
+            InvokeOnMainThread(obj =>
+            {
+                var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
+                _gameLobby.RemovePlayer(username);
+                gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+            });
+        }
+
+        private void OnOtherPlayerKicked(string username, DateTime time)
         {
             InvokeOnMainThread(obj =>
             {
