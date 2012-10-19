@@ -93,9 +93,12 @@
 
         private void SendChatMessage_Pressed(object sender, EventArgs e)
         {
-            var msgArgs = new ChatMessageArgs(_currentMessage.Text);
-            _currentMessage.Text = "";
-            state.HandleViewEvent("SendChatMessage", msgArgs);
+            if (_currentMessage.Text.Trim().Length > 0)
+            {
+                var msgArgs = new ChatMessageArgs(_currentMessage.Text);
+                _currentMessage.Text = "";
+                state.HandleViewEvent("SendChatMessage", msgArgs);
+            }
         }
 
         #endregion
