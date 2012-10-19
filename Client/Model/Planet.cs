@@ -1,7 +1,6 @@
 ﻿namespace Client.Model
 {
     using System;
-    using System.ComponentModel;
     using System.Xml.Serialization;
     using Client.Renderer;
     using Newtonsoft.Json;
@@ -38,10 +37,6 @@
 
         [XmlAttribute]
         public string CloudsAlpha { get; set; }
-
-        [XmlIgnore]
-        [DefaultValue(PlanetSelection.NotSelected)]
-        public PlanetSelection IsSelected { get; set; }
 
         [JsonIgnore]
         public PlanetVisual Visual { get; set; }
