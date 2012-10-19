@@ -9,6 +9,7 @@
     {
         private String _value;
         public event EventHandler Activated;
+        private object locker = new object();
 
         public PasswordInputControl()
         {
@@ -21,27 +22,32 @@
 
         public void SetPassword(String password)
         {
-            _value = password;
-            base.Text = new String('*', _value.Length);
+            lock (locker)
+            {
+                _value = password;
+                base.Text = new String('*', _value.Length);
+            }
         }
 
         protected override void OnCharacterEntered(char character)
         {
-            if (character == '\n' || character == '\r')
+            lock (locker)
             {
-                OnActivate();
-                return;
+                if (character == '\n' || character == '\r')
+                {
+                    OnActivate();
+                    return;
+                }
+                if (this.HasFocus &&
+                   (Char.IsLetter(character) || Char.IsNumber(character) || Char.IsPunctuation(character) || Char.IsSeparator(character)))
+                {
+                    _value += character;
+                    this.Text = String.Empty;
+                    for (int i = 0; i < _value.Length; i++)
+                        this.Text += "*";
+                    this.CaretPosition = this.Text.Length;
+                }
             }
-            if (this.HasFocus &&
-               (Char.IsLetter(character) || Char.IsNumber(character) || Char.IsPunctuation(character) || Char.IsSeparator(character)))
-            {
-                _value += character;
-                this.Text = String.Empty;
-                for (int i = 0; i < _value.Length; i++)
-                    this.Text += "*";
-                this.CaretPosition = this.Text.Length;
-            }
-
         }
 
         protected override void OnKeyReleased(Microsoft.Xna.Framework.Input.Keys key)
@@ -50,34 +56,47 @@
             if (!String.IsNullOrEmpty(_value)
                 && (Keys.Back == key || Keys.Delete == key))
             {
-                int oldIndex = this.CaretPosition;
-                _value = RemoveIndex(_value.ToCharArray(), this.CaretPosition);
-                this.Text = string.Empty;
-                for (int i = 0; i < _value.Length; i++)
-                    this.Text += "*";
-                this.CaretPosition = oldIndex;
-                return;
+                lock (locker)
+                {
+                    int oldIndex = this.CaretPosition;
+                    _value = RemoveIndex(_value.ToCharArray(), this.CaretPosition);
+                    this.Text = string.Empty;
+                    for (int i = 0; i < _value.Length; i++)
+                        this.Text += "*";
+                    this.CaretPosition = oldIndex;
+                    return;
+                }
             }
         }
 
         private String RemoveIndex(Char[] IndicesArray, int RemoveAt)
         {
-            Char[] newIndicesArray = new char[IndicesArray.Length - 1];
-
-            int i = 0;
-            int j = 0;
-            while (i < IndicesArray.Length)
+            Char[] newIndicesArray = null;
+            try
             {
-                if (i != RemoveAt)
+                newIndicesArray = new char[IndicesArray.Length - 1];
+
+                int i = 0;
+                int j = 0;
+                while (i < IndicesArray.Length)
                 {
-                    newIndicesArray[j] = IndicesArray[i];
-                    j++;
+                    if (i != RemoveAt)
+                    {
+                        newIndicesArray[j] = IndicesArray[i];
+                        j++;
+                    }
+
+                    i++;
                 }
 
-                i++;
+                return new string(newIndicesArray);
+            }
+            catch
+            {
+                newIndicesArray = IndicesArray;
             }
 
-            return new string(newIndicesArray);
+            return new string(newIndicesArray);            
         }
 
         /// <summary>
