@@ -1,21 +1,32 @@
-﻿using System.Runtime.Serialization;
-using System;
-namespace Client.Model
+﻿namespace Client.Model
 {
+    using System;
+    using System.Runtime.Serialization;
+
     [DataContract]
     public class UserCommand
     {
+        public enum CommandType
+        {
+            Move,   //Attack inside
+            Deploy,
+            Tech
+        }
+
         [DataMember]
         public string PlayerUsername { get; set; }
 
         [DataMember]
-        public int SourcePlanetId { get; set; }
+        public int SourceId { get; set; }
 
         [DataMember]
-        public int TargetPlanetId { get; set; }
+        public int TargetId { get; set; }
 
         [DataMember]
         public int UnitCount { get; set; }
+
+        [DataMember]
+        public CommandType Type { get; set; }
 
         public Planet SourcePlanet { get; private set; }
         public Planet TargetPlanet { get; private set; }
@@ -40,9 +51,10 @@ namespace Client.Model
             TargetPlanet = targetPlanet;
 
             PlayerUsername = player.Username;
-            SourcePlanetId = sourcePlanet.Id;
-            TargetPlanetId = targetPlanet.Id;
+            SourceId = sourcePlanet.Id;
+            TargetId = targetPlanet.Id;
             UnitCount = 1;
+            Type = CommandType.Move;
         }
 
         /// <summary>
@@ -55,9 +67,12 @@ namespace Client.Model
             TargetPlanet = planet;
 
             PlayerUsername = player.Username;
-            TargetPlanetId = planet.Id;
+            TargetId = planet.Id;
             UnitCount = deployUnitCount;
+            Type = CommandType.Deploy;
         }
+
+        // TODO Create constructor for Tech Command
 
         public void SubtractUnit()
         {
@@ -65,33 +80,6 @@ namespace Client.Model
 
             // TODO: temp unit subtraction implementation
             --UnitCount;
-        }
-
-        public enum CommandType
-        {
-            Move,   //Attack inside
-            Deploy,
-            Tech
-        }
-
-        public CommandType Type
-        {
-            get
-            {
-                if (SourcePlanetId > 0 && TargetPlanetId > 0)
-                {
-                    return CommandType.Move;
-                }
-                else if (TargetPlanetId > 0)
-                {
-                    return CommandType.Deploy;
-                }
-                // TODO
-                //else if ... 
-                // return CommandType.Tech
-                else
-                    throw new NotImplementedException();
-            }
-        }
+        }   
     }
 }
