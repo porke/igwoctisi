@@ -270,7 +270,7 @@
             _orderList.Items.Clear();
             foreach (var cmd in commands)
             {
-                _orderList.Items.Add(string.Format("Deploy {0} fleets to planet {1}", cmd.UnitCount, cmd.Source.Name));   
+                _orderList.Items.Add(string.Format("Deploy {0} fleets to planet {1}", cmd.UnitCount, cmd.TargetPlanet.Name));   
             }            
         }
 
