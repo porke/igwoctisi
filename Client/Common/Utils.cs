@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Client.Renderer;
 
 
 namespace Client.Common
@@ -29,7 +30,7 @@ namespace Client.Common
 
         public static VertexPositionNormalTexture[] SphereVertices(int subdivisions)
         {
-            var vertices = new VertexPositionNormalTexture[]
+			var vertices = new[]
             {
                 // 0
                 new VertexPositionNormalTexture(new Vector3( 0.0f, 1.0f, 0.0f), Vector3.Zero, new Vector2(0.125f, 0.0f)),
@@ -67,23 +68,23 @@ namespace Client.Common
 
             for (var i = 0; i < subdivisions; ++i)
             {
-                result = new VertexPositionNormalTexture[vertices.Length*4];
+				result = new VertexPositionNormalTexture[vertices.Length * 4];
 
                 for (var j = 0; j < vertices.Length; j += 3)
                 {
                     var v0 = vertices[j + 0];
                     var v1 = vertices[j + 1];
                     var v2 = vertices[j + 2];
-                    
-                    var a = new VertexPositionNormalTexture();
+
+					var a = new VertexPositionNormalTexture();
                     a.Position = (v0.Position + v1.Position) / 2.0f;
                     a.TextureCoordinate = (v0.TextureCoordinate + v1.TextureCoordinate) / 2.0f;
 
-                    var b = new VertexPositionNormalTexture();
+					var b = new VertexPositionNormalTexture();
                     b.Position = (v1.Position + v2.Position) / 2.0f;
                     b.TextureCoordinate = (v1.TextureCoordinate + v2.TextureCoordinate) / 2.0f;
 
-                    var c = new VertexPositionNormalTexture();
+					var c = new VertexPositionNormalTexture();
                     c.Position = (v2.Position + v0.Position) / 2.0f;
                     c.TextureCoordinate = (v2.TextureCoordinate + v0.TextureCoordinate) / 2.0f;
 

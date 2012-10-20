@@ -11,6 +11,8 @@
     {
         #region Protected members
 
+		protected const float HoverAmbient = 1.0f;
+		protected const float LinkJointSize = 15.0f;
         protected Effect _fxLinks, _fxPlanet;
         protected VertexBuffer _sphereVB;
 
@@ -73,6 +75,11 @@
             var ray = _camera.GetRay(GraphicsDevice.Viewport, new Vector3(screenPosition, 0));
             return ray.Intersects(new BoundingSphere(position, radius)) != null;
         }
+		public bool RayLinkIntersection(Vector2 screenPosition, Vector3 linkSource, Vector3 linkTarget)
+		{
+			var ray = _camera.GetRay(GraphicsDevice.Viewport, new Vector3(screenPosition, 0));
+			return ray.Intersects(new BoundingSphere((linkSource + linkTarget) / 2.0f, LinkJointSize)) != null;
+		}
 
         public void Initialize(GameClient client)
         {
@@ -83,8 +90,8 @@
             _fxLinks = contentMgr.Load<Effect>("Effects\\Links");
             _fxPlanet = contentMgr.Load<Effect>("Effects\\Planet");
 
-            var vertices = Utils.SphereVertices(3);
-            _sphereVB = new VertexBuffer(GraphicsDevice, VertexPositionNormalTexture.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
+            var vertices = Utils.SphereVertices(3).Select(x => new Vertex(x.Position, x.Normal, Color.LightGreen, x.TextureCoordinate)).ToArray();
+			_sphereVB = new VertexBuffer(GraphicsDevice, Vertex.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
             _sphereVB.SetData(vertices);
         }
         public void Release()
@@ -106,6 +113,7 @@
                 InitializeMapVisual(map);
             }
 
+			_fxLinks.Parameters["Ambient"].SetValue(0.0f);
             foreach (var pass in _fxLinks.CurrentTechnique.Passes)
             {
                 pass.Apply();
@@ -125,6 +133,7 @@
                 }
                 var visual = planet.Visual;
 
+				_fxPlanet.Parameters["Ambient"].SetValue(scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f);
                 _fxPlanet.Parameters["Diffuse"].SetValue(visual.DiffuseTexture);
                 _fxPlanet.Parameters["Clouds"].SetValue(visual.CloudsTexture);
                 _fxPlanet.Parameters["CloudsAlpha"].SetValue(visual.CloudsAlphaTexture);
@@ -141,6 +150,30 @@
                     GraphicsDevice.SetVertexBuffer(_sphereVB);
                     GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
                 }
+
+				if (scene.SelectedPlanet == planet.Id)
+				{
+					foreach (var link in map.Links.Where(x => x.SourcePlanet == planet.Id || x.TargetPlanet == planet.Id))
+					{
+						var sourcePlanet = map.GetPlanetById(link.SourcePlanet);
+						var targetPlanet = map.GetPlanetById(link.TargetPlanet);
+
+						var linkWorld = Matrix.CreateScale(LinkJointSize) *
+							Matrix.CreateTranslation(
+							(sourcePlanet.X + targetPlanet.X)/2.0f,
+							(sourcePlanet.Y + targetPlanet.Y)/2.0f,
+							(sourcePlanet.Z + targetPlanet.Z)/2.0f);
+
+						_camera.Apply(_fxLinks, linkWorld);
+						_fxLinks.Parameters["Ambient"].SetValue(scene.HoveredLink == link ? HoverAmbient : 0.0f);
+						foreach (var pass in _fxLinks.CurrentTechnique.Passes)
+						{
+							pass.Apply();
+							GraphicsDevice.SetVertexBuffer(_sphereVB);
+							GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
+						}
+					}
+				}
             }
 
             #endregion

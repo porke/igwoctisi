@@ -39,9 +39,6 @@
         public string CloudsAlpha { get; set; }
 
         [JsonIgnore]
-        public PlanetSelection SelectionState { get; set; }
-
-        [JsonIgnore]
         public int NumFleetsPresent { get; set; }
 
         [JsonIgnore]
