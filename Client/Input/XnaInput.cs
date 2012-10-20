@@ -63,16 +63,61 @@
                         receiver.OnKeyPressed(key);
 
                         char character = (char)key;
+						bool shiftOn = newKeyboardState.IsKeyDown(Keys.LeftShift) || newKeyboardState.IsKeyDown(Keys.RightShift);
                         if (character >= 65 && character <= 90)
                         {
-                            if (!newKeyboardState.IsKeyDown(Keys.LeftShift) &&
-                            !newKeyboardState.IsKeyDown(Keys.RightShift))
+                            if (!shiftOn)
                             {
                                 character += (char)32;
                             }
 
                             receiver.OnCharacter(character);
                         }
+						else if (character >= 48 && character <= 57 && !shiftOn)
+						{
+							receiver.OnCharacter(character);
+						}
+
+						if (key == Keys.Space) receiver.OnCharacter(' ');					// 32
+						if (key == Keys.D1 && shiftOn) receiver.OnCharacter('!');			// 33
+						if (key == Keys.OemQuotes && shiftOn) receiver.OnCharacter('"');	// 34
+						if (key == Keys.D3 && shiftOn) receiver.OnCharacter('#');			// 35
+						if (key == Keys.D4 && shiftOn) receiver.OnCharacter('$');			// 36
+						if (key == Keys.D5 && shiftOn) receiver.OnCharacter('%');			// 37
+						if (key == Keys.D7 && shiftOn) receiver.OnCharacter('&');			// 38
+                        if (key == Keys.OemQuotes && !shiftOn) receiver.OnCharacter('\'');	// 39
+						if (key == Keys.D9 && shiftOn) receiver.OnCharacter('(');			// 40
+						if (key == Keys.D0 && shiftOn) receiver.OnCharacter(')');			// 41
+						if (key == Keys.D8 && shiftOn) receiver.OnCharacter('*');			// 42
+						if (key == Keys.Multiply) receiver.OnCharacter('*');
+						if (key == Keys.OemPlus && shiftOn) receiver.OnCharacter('+');		// 43
+						if (key == Keys.Add) receiver.OnCharacter('+');
+						if (key == Keys.OemComma && !shiftOn) receiver.OnCharacter(',');	// 44
+                        if (key == Keys.OemMinus && !shiftOn) receiver.OnCharacter('-');	// 45
+						if (key == Keys.Subtract) receiver.OnCharacter('-');
+						if (key == Keys.OemPeriod && !shiftOn) receiver.OnCharacter('.');	// 46
+						if (key == Keys.Decimal) receiver.OnCharacter('.');
+						if (key == Keys.OemQuestion && !shiftOn) receiver.OnCharacter('/');	// 47
+
+						if (key == Keys.OemSemicolon && shiftOn) receiver.OnCharacter(':');	// 58
+						if (key == Keys.OemSemicolon && !shiftOn) receiver.OnCharacter(';');// 59
+						if (key == Keys.OemComma && shiftOn) receiver.OnCharacter('<');		// 60
+						if (key == Keys.OemPlus && !shiftOn) receiver.OnCharacter('=');		// 61
+						if (key == Keys.OemPeriod && shiftOn) receiver.OnCharacter('>');	// 62
+                        if (key == Keys.OemQuestion && shiftOn) receiver.OnCharacter('?');	// 63
+						if (key == Keys.D2 && shiftOn) receiver.OnCharacter('@');			// 64
+
+						if (key == Keys.OemOpenBrackets && !shiftOn) receiver.OnCharacter('[');	// 91
+						if (key == Keys.OemPipe && !shiftOn) receiver.OnCharacter('\\');		// 92
+						if (key == Keys.OemCloseBrackets && !shiftOn) receiver.OnCharacter(']');// 93
+						if (key == Keys.D6 && shiftOn) receiver.OnCharacter('^');				// 94
+						if (key == Keys.OemMinus && shiftOn) receiver.OnCharacter('_');			// 95
+						if (key == Keys.OemTilde && !shiftOn) receiver.OnCharacter('`');		// 96
+
+						if (key == Keys.OemOpenBrackets && shiftOn) receiver.OnCharacter('{');	// 123
+						if (key == Keys.OemPipe && shiftOn) receiver.OnCharacter('|');			// 124
+						if (key == Keys.OemCloseBrackets && shiftOn) receiver.OnCharacter('}');	// 125
+                        if (key == Keys.OemTilde && shiftOn) receiver.OnCharacter('~');			// 126
                     }
                     else
                     {
