@@ -41,5 +41,9 @@
             var dir = Vector3.Normalize(pointFarUnproj - pointNearUnproj);
             return new Ray(pointNearUnproj, dir);
         }
+		public Vector3 Project(Viewport viewport, Vector3 worldVector)
+		{
+			return viewport.Project(worldVector, _projection, _view, _world);
+		}
     }
 }
