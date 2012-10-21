@@ -37,7 +37,10 @@
             eventHandlers.Add("UnhoverPlanets", UnhoverPlanets);
             eventHandlers.Add("DeployFleet", DeployFleet);
             eventHandlers.Add("UndeployFleet", UndeployFleet);
-
+			eventHandlers.Add("OnHoverLink", OnHoverLink);
+			eventHandlers.Add("UnhoverLinks", UnhoverLinks);
+			eventHandlers.Add("SelectLink", SelectLink);
+			
             Client.Network.OnRoundStarted += new Action<SimulationResult>(Network_OnRoundStarted);
             Client.Network.OnRoundEnded += new Action(Network_OnRoundEnded);
             Client.Network.OnGameEnded += new Action(Network_OnGameEnded);
@@ -99,45 +102,18 @@
         {
             var selectedPlanet = (args as SelectPlanetArgs).Planet;
             _gameHud.UpdateSelectedPlanet(selectedPlanet);
-            selectedPlanet.SelectionState = PlanetSelection.Selected;
-            
-            foreach (var deselectedPlanet in Scene.Map.Planets)
-            {
-                if (deselectedPlanet != selectedPlanet)
-                {
-                    deselectedPlanet.SelectionState = PlanetSelection.NotSelected;
-                }
-            }
+			Scene.SelectedPlanet = selectedPlanet.Id;
         }
 
         private void OnHoverPlanet(EventArgs args)
         {
             var hoverPlanet = (args as SelectPlanetArgs).Planet;
-            if (hoverPlanet.SelectionState != PlanetSelection.Selected)
-            {
-                hoverPlanet.SelectionState = PlanetSelection.Hover;
-            }
-
-            foreach (var deselectedPlanet in Scene.Map.Planets)
-            {
-                if (deselectedPlanet != hoverPlanet 
-                    && deselectedPlanet.SelectionState != PlanetSelection.Selected)
-                {
-                    deselectedPlanet.SelectionState = PlanetSelection.NotSelected;
-                }
-            }
+			Scene.HoveredPlanet = hoverPlanet.Id;
         }
 
         private void UnhoverPlanets(EventArgs args)
         {
-            foreach (var deselectedPlanet in Scene.Map.Planets)
-            {
-                if (deselectedPlanet.SelectionState != PlanetSelection.Selected)
-                {
-                    deselectedPlanet.SelectionState = PlanetSelection.NotSelected;
-                    deselectedPlanet.Visual.Period = 2.0f;
-                }
-            }
+			Scene.HoveredPlanet = 0;
         }
 
         private void DeployFleet(EventArgs args)
@@ -155,6 +131,21 @@
             planet.NumFleetsPresent--;
             gameHud.UpdateSelectedPlanet(planet);
         }
+
+		private void OnHoverLink(EventArgs args)
+		{
+			var hoverLink = (args as SelectLinkArgs).Link;
+			Scene.HoveredLink = hoverLink;
+		}
+
+		private void UnhoverLinks(EventArgs args)
+		{
+			Scene.HoveredLink = null;
+		}
+
+		private void SelectLink(EventArgs args)
+		{
+		}
 
         #endregion
 

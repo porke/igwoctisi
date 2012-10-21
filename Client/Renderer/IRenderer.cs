@@ -11,5 +11,6 @@
         void Release();
         void Draw(Scene scene, double delta, double time);
         bool RaySphereIntersection(Vector2 screenPosition, Vector3 position, float radius);
+		bool RayLinkIntersection(Vector2 screenPosition, Vector3 linkSource, Vector3 linkTarget);
     }
 }

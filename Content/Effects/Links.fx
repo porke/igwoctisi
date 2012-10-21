@@ -1,6 +1,7 @@
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
+float Ambient = 0.0f;
 
 // TODO: add effect parameters here.
 
@@ -40,14 +41,16 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
     // TODO: add your pixel shader code here.
 
-    return input.Color;
+    return input.Color*(1.0f + Ambient);
 }
 
 technique Links
 {
     pass Pass1
     {
-        // TODO: set renderstates here.
+		ZEnable = true;
+		ZWriteEnable = true;
+		AlphaBlendEnable = false;
 
         VertexShader = compile vs_2_0 VertexShaderFunction();
         PixelShader = compile ps_2_0 PixelShaderFunction();

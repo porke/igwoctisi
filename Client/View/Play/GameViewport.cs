@@ -47,32 +47,49 @@
                     _receiverView.UnhoverPlanets();
                 }
 
+				var link = _receiverView.PlayState.Scene.PickLink(_currentMousePosition, _receiverView.PlayState.Client.Renderer);
+				if (link != null)
+				{
+					_receiverView.OnHoverLink(link);
+				}
+				else
+				{
+					_receiverView.UnhoverLinks();
+				}
+
                 return true;
             }
 
             public override bool OnMousePressed(MouseButtons button)
             {
                 if (button.HasFlag(MouseButtons.Middle)) return true;
-                
+
+				var scene = this._receiverView.PlayState.Scene;
+				PlanetLink link = null;
+
                 var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition, _receiverView.PlayState.Client.Renderer);
-                if (planet != null)
-                {
-                    if (planet.SelectionState == PlanetSelection.Selected)
-                    {
-                        if (button.HasFlag(MouseButtons.Left))
-                        {
-                            _receiverView.DeployFleet(planet);
-                        }
-                        else if (button.HasFlag(MouseButtons.Right))
-                        {
-                            _receiverView.UndeployFleet(planet);
-                        }
-                    }
-                    else
-                    {
-                        _receiverView.PlanetSelected(planet);
-                    }
-                }
+				if (planet != null)
+				{
+					if (scene.SelectedPlanet == planet.Id)
+					{
+						if (button.HasFlag(MouseButtons.Left))
+						{
+							_receiverView.DeployFleet(planet);
+						}
+						else if (button.HasFlag(MouseButtons.Right))
+						{
+							_receiverView.UndeployFleet(planet);
+						}
+					}
+					else
+					{
+						_receiverView.PlanetSelected(planet);
+					}
+				}
+				else if ((link = _receiverView.PlayState.Scene.PickLink(_currentMousePosition, _receiverView.PlayState.Client.Renderer)) != null)
+				{
+					_receiverView.LinkSelected(link);
+				}
 
                 return true;
             }
@@ -146,6 +163,21 @@
         {
             state.HandleViewEvent("UnhoverPlanets", null);
         }
+
+		private void OnHoverLink(PlanetLink linkSelected)
+		{
+			state.HandleViewEvent("OnHoverLink", new SelectLinkArgs(linkSelected));
+		}
+
+		private void UnhoverLinks()
+		{
+			state.HandleViewEvent("UnhoverLinks", null);
+		}
+
+		private void LinkSelected(PlanetLink linkSelected)
+		{
+			state.HandleViewEvent("SelectLink", new SelectLinkArgs(linkSelected));
+		}
 
         #endregion
 
