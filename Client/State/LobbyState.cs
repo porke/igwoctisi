@@ -48,6 +48,7 @@
         {
             Client.Network.OnOtherPlayerJoined += OnOtherPlayerJoined;
             Client.Network.OnOtherPlayerLeft += OnOtherPlayerLeft;
+            Client.Network.OnOtherPlayerKicked += OnOtherPlayerKicked;
             Client.Network.OnChatMessageReceived += OnChatMessageReceived;
             Client.Network.OnPlayerKicked += OnPlayerKicked;
         }

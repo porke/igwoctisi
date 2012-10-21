@@ -299,7 +299,7 @@
                                 string username = msg.Value<string>("username");
                                 string datetimeStr = msg.Value<string>("time");
 
-                                OnOtherPlayerLeft.Invoke(username, new DateTime());//TODO convert datetimeStr to DateTime
+                                OnOtherPlayerKicked.Invoke(username, new DateTime());//TODO convert datetimeStr to DateTime
                             }
                         }
                         else if (nextContentType == MessageContentType.GameStart)
