@@ -69,6 +69,11 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
+    <Compile Include="Fonts\HUD.spritefont">
+      <Name>HUD</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
     <None Include="Skin\SuaveSkin.xml">
       <Name>SuaveSkin</Name>
       <Importer>XmlImporter</Importer>

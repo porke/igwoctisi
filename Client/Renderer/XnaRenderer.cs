@@ -11,6 +11,12 @@
     {
         #region Protected members
 
+		protected const float HoverAmbient = 1.0f;
+		protected const float LinkJointSize = 15.0f;
+		protected readonly Vector2 NameOffset = new Vector2(0.0f, 25.0f);
+		protected readonly Vector2 FleetsOffset = new Vector2(0.0f, 42.0f);
+		protected SpriteBatch _spriteBatch;
+		protected SpriteFont _fontHud;
         protected Effect _fxLinks, _fxPlanet;
         protected VertexBuffer _sphereVB;
 
@@ -73,6 +79,11 @@
             var ray = _camera.GetRay(GraphicsDevice.Viewport, new Vector3(screenPosition, 0));
             return ray.Intersects(new BoundingSphere(position, radius)) != null;
         }
+		public bool RayLinkIntersection(Vector2 screenPosition, Vector3 linkSource, Vector3 linkTarget)
+		{
+			var ray = _camera.GetRay(GraphicsDevice.Viewport, new Vector3(screenPosition, 0));
+			return ray.Intersects(new BoundingSphere((linkSource + linkTarget) / 2.0f, LinkJointSize)) != null;
+		}
 
         public void Initialize(GameClient client)
         {
@@ -80,11 +91,13 @@
             GraphicsDevice = Client.GraphicsDevice;
 
             var contentMgr = Client.Content;
+			_spriteBatch = new SpriteBatch(GraphicsDevice);
+			_fontHud = contentMgr.Load<SpriteFont>("Fonts\\HUD");
             _fxLinks = contentMgr.Load<Effect>("Effects\\Links");
             _fxPlanet = contentMgr.Load<Effect>("Effects\\Planet");
 
-            var vertices = Utils.SphereVertices(3);
-            _sphereVB = new VertexBuffer(GraphicsDevice, VertexPositionNormalTexture.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
+            var vertices = Utils.SphereVertices(3).Select(x => new Vertex(x.Position, x.Normal, Color.LightGreen, x.TextureCoordinate)).ToArray();
+			_sphereVB = new VertexBuffer(GraphicsDevice, Vertex.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
             _sphereVB.SetData(vertices);
         }
         public void Release()
@@ -106,6 +119,7 @@
                 InitializeMapVisual(map);
             }
 
+			_fxLinks.Parameters["Ambient"].SetValue(0.0f);
             foreach (var pass in _fxLinks.CurrentTechnique.Passes)
             {
                 pass.Apply();
@@ -125,6 +139,7 @@
                 }
                 var visual = planet.Visual;
 
+				_fxPlanet.Parameters["Ambient"].SetValue(scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f);
                 _fxPlanet.Parameters["Diffuse"].SetValue(visual.DiffuseTexture);
                 _fxPlanet.Parameters["Clouds"].SetValue(visual.CloudsTexture);
                 _fxPlanet.Parameters["CloudsAlpha"].SetValue(visual.CloudsAlphaTexture);
@@ -141,10 +156,56 @@
                     GraphicsDevice.SetVertexBuffer(_sphereVB);
                     GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
                 }
-            }
 
+				if (scene.SelectedPlanet == planet.Id)
+				{
+					foreach (var link in map.Links.Where(x => x.SourcePlanet == planet.Id || x.TargetPlanet == planet.Id))
+					{
+						var sourcePlanet = map.GetPlanetById(link.SourcePlanet);
+						var targetPlanet = map.GetPlanetById(link.TargetPlanet);
+
+						var linkWorld = Matrix.CreateScale(LinkJointSize) *
+							Matrix.CreateTranslation(
+							(sourcePlanet.X + targetPlanet.X)/2.0f,
+							(sourcePlanet.Y + targetPlanet.Y)/2.0f,
+							(sourcePlanet.Z + targetPlanet.Z)/2.0f);
+
+						_camera.Apply(_fxLinks, linkWorld);
+						_fxLinks.Parameters["Ambient"].SetValue(scene.HoveredLink == link ? HoverAmbient : 0.0f);
+						foreach (var pass in _fxLinks.CurrentTechnique.Passes)
+						{
+							pass.Apply();
+							GraphicsDevice.SetVertexBuffer(_sphereVB);
+							GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
+						}
+					}
+				}
+            }
+			
             #endregion
-        }
+
+			#region Planets info
+
+			_spriteBatch.Begin();
+
+			foreach (var planet in scene.Map.Planets)
+			{
+				var planetScreen = _camera.Project(GraphicsDevice.Viewport, new Vector3(planet.X, planet.Y, planet.Z));
+				var fleetText = planet.NumFleetsPresent.ToString();
+				var nameSize = _fontHud.MeasureString(planet.Name);
+				var fleetsSize = _fontHud.MeasureString(fleetText);
+
+				var nameScreen = new Vector2(planetScreen.X - nameSize.X / 2.0f, planetScreen.Y - nameSize.Y / 2.0f);
+				_spriteBatch.DrawString(_fontHud, planet.Name, nameScreen + NameOffset, Color.Yellow);
+
+				var fleetsScreen = new Vector2(planetScreen.X - fleetsSize.X / 2.0f, planetScreen.Y - fleetsSize.Y / 2.0f);
+				_spriteBatch.DrawString(_fontHud, fleetText, fleetsScreen + FleetsOffset, Color.Yellow);
+			}
+
+			_spriteBatch.End();
+
+			#endregion
+		}
 
         #endregion
 

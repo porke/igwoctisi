@@ -115,7 +115,6 @@
     <Compile Include="Model\Map.cs" />
     <Compile Include="Model\PlanetarySystem.cs" />
     <Compile Include="Model\PlanetLink.cs" />
-    <Compile Include="Model\PlanetSelection.cs" />
     <Compile Include="Model\Player.cs" />
     <Compile Include="Model\SimulationResult.cs" />
     <Compile Include="Model\SpecificGameLobbyInfo.cs" />
@@ -130,6 +129,7 @@
     <Compile Include="Renderer\MapVisual.cs" />
     <Compile Include="Renderer\PlanetVisual.cs" />
     <Compile Include="Renderer\SimpleCamera.cs" />
+    <Compile Include="Renderer\Vertex.cs" />
     <Compile Include="Renderer\XnaRenderer.cs" />
     <Compile Include="State\GameState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -153,6 +153,7 @@
     <Compile Include="View\Lobby\GameLobbyView.cs" />
     <Compile Include="View\Menu\MenuBackground.cs" />
     <Compile Include="View\MessageBox.cs" />
+    <Compile Include="View\Play\SelectLinkArgs.cs" />
     <Compile Include="View\Play\SelectPlanetArgs.cs" />
     <Compile Include="View\SenderEventArgs.cs" />
     <Compile Include="View\SplashScreen.cs" />

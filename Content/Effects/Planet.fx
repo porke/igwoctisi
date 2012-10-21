@@ -5,6 +5,7 @@ float4x4 Projection;
 Texture Diffuse;
 Texture Clouds;
 Texture CloudsAlpha;
+float Ambient = 0.0f;
 
 
 sampler DiffuseSampler = sampler_state
@@ -41,6 +42,7 @@ struct VertexShaderInput
     float4 Position : POSITION;
 	float3 Normal : NORMAL;
 	float2 UV : TEXCOORD0;
+	float4 Color : COLOR0;
 
     // TODO: add input channels such as texture
     // coordinates and vertex colors here.
@@ -78,7 +80,7 @@ float4 Surface_PixelShader(VertexShaderOutput input) : COLOR0
 
 	float4 diffuse = tex2D(DiffuseSampler, input.UV);
 
-	float4 color = diffuse;
+	float4 color = diffuse*(1.0f + Ambient);
 	color.w = 1.0;
 	return color;
 }
