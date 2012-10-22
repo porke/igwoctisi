@@ -58,17 +58,10 @@
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.5f, 0), new UniScalar(0.21f, 0), new UniScalar(0.3f, 0))
             };
 
-            /*var btnDeleteOrder = new ButtonControl()
-            {
-                Text = "Delete",
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.81f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
-            };
-            btnDeleteOrder.Pressed += DeleteOrder_Pressed;*/
-
             var btnDeleteOrder = new ButtonControl()
             {
                 Text = "Delete",
-                Bounds = new UniRectangle(new UniScalar(0.89f, 0), new UniScalar(0.77f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.81f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
             };
             btnDeleteOrder.Pressed += DeleteOrder_Pressed;
 
