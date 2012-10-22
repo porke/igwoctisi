@@ -52,7 +52,11 @@
             Client.Network.OnOtherPlayerKicked += Network_OnOtherPlayerKicked;
             Client.Network.OnChatMessageReceived += Network_OnChatMessageReceived;
             Client.Network.OnPlayerKicked += Network_OnPlayerKicked;
-            Client.Network.OnGameStarted += Network_OnGameStarted;
+
+            if (!_isHostingGame)
+            {
+                Client.Network.OnGameStarted += Network_OnGameStarted;
+            }
         }
 
         private void UnbindNetworkEvents()
@@ -62,7 +66,11 @@
             Client.Network.OnOtherPlayerKicked -= Network_OnOtherPlayerKicked;
             Client.Network.OnChatMessageReceived -= Network_OnChatMessageReceived;
             Client.Network.OnPlayerKicked -= Network_OnPlayerKicked;
-            Client.Network.OnGameStarted -= Network_OnGameStarted;
+
+            if (!_isHostingGame)
+            {
+                Client.Network.OnGameStarted -= Network_OnGameStarted;
+            }
         }
 
         #region _view event handlers
@@ -302,6 +310,9 @@
                 try
                 {
                     Client.Network.EndStartGame(result);
+
+                    UnbindNetworkEvents();
+                    Game.ChangeState(new PlayState(Game, _map, _clientPlayer));
                 }
                 catch (Exception exc)
                 {
