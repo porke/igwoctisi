@@ -25,6 +25,7 @@
 
         public override void OnEnter()
         {
+            Game.Window.Title = IGWOCTISI.DefaultMainWindowTitle;
             Client.Network.OnDisconnected += new Action<string>(OnDisconnected_EventHandler);
         }
 
@@ -123,6 +124,7 @@
                 try
                 {
                     var player = network.EndLogin(ar);
+                    Game.Window.Title = IGWOCTISI.DefaultMainWindowTitle + " @ " + player.Username ;
                     Client.ChangeState(new LobbyState(Game, player));
                 }
                 catch (Exception exc)
