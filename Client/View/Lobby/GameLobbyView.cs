@@ -19,7 +19,7 @@
         private ListControl _playerList;
         private CommandInputControl _currentMessage;
 
-        protected void CreateChildControls()
+        protected void CreateChildControls(bool showHostButtons)
         {
             var btnBeginGame = new ButtonControl()
             {
@@ -67,8 +67,19 @@
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.6f, 0), new UniScalar(0.4f, 0))
             };
 
+            if (showHostButtons)
+            {
+                screen.Desktop.Children.AddRange(new Control[] {
+                    btnBeginGame, btnKickPlayer
+                });
+            }
+            else
+            {
+                // TODO change position of "Leave Game" button.
+            }
+
             screen.Desktop.Children.AddRange(new Control[] {
-                btnBeginGame, btnLeaveGame, btnKickPlayer, btnSendChatMessage, _messageList, _currentMessage, _playerList
+                btnLeaveGame, btnSendChatMessage, _messageList, _currentMessage, _playerList
             });
         }
 
@@ -122,7 +133,7 @@
 
         #endregion
         
-        public GameLobbyView(GameState state)
+        public GameLobbyView(GameState state, bool showHostButtons)
             : base(state)
         {            
             IsLoaded = true;
@@ -130,7 +141,7 @@
             screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.25f, 0), new UniScalar(0.6f, 0), new UniScalar(0.5f, 0));
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
-            CreateChildControls();
+            CreateChildControls(showHostButtons);
         }
     }
 }
