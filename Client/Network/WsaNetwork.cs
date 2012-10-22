@@ -11,6 +11,7 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using NLog;
+    using System.Globalization;
 
     public class WsaNetwork : INetwork
     {
@@ -277,7 +278,7 @@
                                 string username = msg.Value<string>("username");
                                 string datetimeStr = msg.Value<string>("time");
 
-                                OnOtherPlayerJoined.Invoke(username, new DateTime());//TODO convert datetimeStr to DateTime
+                                OnOtherPlayerJoined.Invoke(username, DateTime.ParseExact(datetimeStr, "H:mm", CultureInfo.InvariantCulture));
                             }
                         }
                         else if (nextContentType == MessageContentType.GamePlayerLeft)
@@ -288,7 +289,7 @@
                                 string username = msg.Value<string>("username");
                                 string datetimeStr = msg.Value<string>("time");
 
-                                OnOtherPlayerLeft.Invoke(username, new DateTime());//TODO convert datetimeStr to DateTime
+                                OnOtherPlayerLeft.Invoke(username, DateTime.ParseExact(datetimeStr, "H:mm", CultureInfo.InvariantCulture));
                             }
                         }
                         else if (nextContentType == MessageContentType.GamePlayerKicked)
@@ -299,7 +300,7 @@
                                 string username = msg.Value<string>("username");
                                 string datetimeStr = msg.Value<string>("time");
 
-                                OnOtherPlayerKicked.Invoke(username, new DateTime());//TODO convert datetimeStr to DateTime
+                                OnOtherPlayerKicked.Invoke(username, DateTime.ParseExact(datetimeStr, "H:mm", CultureInfo.InvariantCulture));
                             }
                         }
                         else if (nextContentType == MessageContentType.GameStart)
