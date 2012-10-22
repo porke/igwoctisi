@@ -791,7 +791,11 @@
         {
             var ar = new AsyncResult<bool>(asyncCallback, asyncState);
 
-            var infoContent = JsonLowercaseSerializer.SerializeObject(commands);
+            var infoContent = new
+            {
+                Commands = JsonLowercaseSerializer.SerializeObject(commands)
+            };
+
             SendRequest(MessageContentType.Commands, false, infoContent, (jsonStr, messageContentType, errorType) =>
             {
                 ar.BeginInvoke(() =>
