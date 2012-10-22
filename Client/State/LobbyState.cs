@@ -4,6 +4,8 @@
     using Client.Model;
     using View;
     using View.Lobby;
+    using System.Collections.Generic;
+    using System.Linq;
 
     class LobbyState : GameState
     {
@@ -65,7 +67,7 @@
             Client.Network.OnGameStarted -= Network_OnGameStarted;
         }
 
-        #region _view event handlers
+        #region View event handlers
 
         private void LeaveGameLobby(EventArgs args)
         {
