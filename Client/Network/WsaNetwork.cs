@@ -376,6 +376,7 @@
                 else
                 {
                     // Throw unknown exceptions.
+                    NLog.LogManager.GetCurrentClassLogger().Fatal(ex);
                     throw;
                 }
             }
