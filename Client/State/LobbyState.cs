@@ -312,6 +312,9 @@
                 try
                 {
                     Client.Network.EndStartGame(result);
+                    
+                    var playerList = new List<Player>(_gameLobby.Players.Select(username => new Player(username)));
+                    Game.ChangeState(new PlayState(Game, _map, _clientPlayer, playerList));
                 }
                 catch (Exception exc)
                 {
