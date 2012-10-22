@@ -68,7 +68,7 @@
             };
 
             screen.Desktop.Children.AddRange(new Control[] {
-                btnBeginGame, btnLeaveGame, btnKickPlayer, btnSendChatMessage, _messageList, _currentMessage, _playerList
+                btnLeaveGame, btnSendChatMessage, _messageList, _currentMessage, _playerList
                 });
 
             if (isHost)
