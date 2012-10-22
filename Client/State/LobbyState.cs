@@ -312,9 +312,6 @@
                 try
                 {
                     Client.Network.EndStartGame(result);
-
-                    UnbindNetworkEvents();
-                    Game.ChangeState(new PlayState(Game, _map, _clientPlayer));
                 }
                 catch (Exception exc)
                 {
