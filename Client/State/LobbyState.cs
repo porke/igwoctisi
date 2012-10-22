@@ -211,7 +211,7 @@
                     ViewMgr.PopLayer(); // MessageBox
                     ViewMgr.PopLayer(); // MainLobbyView
 
-                    var gameLobbyView = new GameLobbyView(this);
+                    var gameLobbyView = new GameLobbyView(this, false);
                     gameLobbyView.RefreshPlayerList(_gameLobby.Players);
                     ViewMgr.PushLayer(gameLobbyView);
                 }
@@ -278,7 +278,7 @@
                     ViewMgr.PopLayer();     // pop MessageBox
                     ViewMgr.PopLayer();     // pop main lobby window
 
-                    var gameLobbyView = new GameLobbyView(this);
+                    var gameLobbyView = new GameLobbyView(this, true);
                     gameLobbyView.RefreshPlayerList(_gameLobby.Players);
                     ViewMgr.PushLayer(gameLobbyView);
                 }
@@ -324,6 +324,8 @@
         {
             InvokeOnMainThread(obj =>
             {
+                UnbindNetworkEvents();
+
                 var menuState = new MenuState(Game);
                 Client.ChangeState(menuState);
                 menuState.HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were disconnected from the server."));
@@ -377,6 +379,8 @@
         {
             InvokeOnMainThread(obj =>
             {
+                UnbindNetworkEvents();
+
                 ViewMgr.PopLayer(); // GameLobbyView
                 ViewMgr.PushLayer(new MainLobbyView(this));
 
