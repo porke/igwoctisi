@@ -138,6 +138,7 @@
             ViewMgr.PushLayer(messageBox);
 
             Client.Network.BeginStartGame(OnGameStarted, messageBox);
+            Game.ChangeState(new PlayState(Game, _map, _clientPlayer, playerList));
         }
 
         private void RefreshGameList(EventArgs args)
@@ -224,7 +225,7 @@
                     ViewMgr.PopLayer(); // MainLobbyView
 
                     var gameLobbyView = new GameLobbyView(this, false);
-                    gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                    gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
                     ViewMgr.PushLayer(gameLobbyView);
                 }
                 catch (Exception exc)
@@ -291,7 +292,7 @@
                     ViewMgr.PopLayer();     // pop main lobby window
 
                     var gameLobbyView = new GameLobbyView(this, true);
-                    gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                    gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
                     ViewMgr.PushLayer(gameLobbyView);
                 }
                 catch (Exception exc)
@@ -354,7 +355,7 @@
             {
                 var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.AddPlayer(username);
-                gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
                 gameLobbyView.AddHostMessage(username + " joined.", time.ToString("H:mm"));
             });
         }
@@ -365,7 +366,7 @@
             {
                 var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.RemovePlayer(username);
-                gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
                 gameLobbyView.AddHostMessage(username + " left.", time.ToString("H:mm"));
             });
         }
@@ -376,7 +377,7 @@
             {
                 var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.RemovePlayer(username);
-                gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
                 gameLobbyView.AddHostMessage(username + " have been kicked by host.", time.ToString("H:mm"));
             });
         }

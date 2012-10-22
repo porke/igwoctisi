@@ -15,6 +15,7 @@
             Name = name;
             Players = new List<string>();
             Players.Add(host.Username);
+            HostName = host.Username;
         }
 
         [DataMember]
