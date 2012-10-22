@@ -4,7 +4,6 @@
     using Microsoft.Xna.Framework.Input;
     using Nuclex.UserInterface.Controls.Desktop;
     using Nuclex.UserInterface.Input;
-    using Microsoft.Xna.Framework.Input;
 
     public class PasswordInputControl : CommandInputControl
     {

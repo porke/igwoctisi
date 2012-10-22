@@ -19,7 +19,7 @@
         private ListControl _playerList;
         private CommandInputControl _currentMessage;
 
-        protected void CreateChildControls()
+        protected void CreateChildControls(bool isHost)
         {
             var btnBeginGame = new ButtonControl()
             {
@@ -31,14 +31,14 @@
             var btnLeaveGame = new ButtonControl()
             {
                 Text = "Leave Game",
-                Bounds = new UniRectangle(new UniScalar(0.7f, 0), new UniScalar(0.2f, 0), new UniScalar(0.25f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.7f, 0), new UniScalar(0.35f, 0), new UniScalar(0.25f, 0), new UniScalar(0.1f, 0))
             };
             btnLeaveGame.Pressed += LeaveGame_Pressed;
 
             var btnKickPlayer = new ButtonControl()
             {
                 Text = "Kick player",
-                Bounds = new UniRectangle(new UniScalar(0.7f, 0), new UniScalar(0.35f, 0), new UniScalar(0.25f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.7f, 0), new UniScalar(0.2f, 0), new UniScalar(0.25f, 0), new UniScalar(0.1f, 0))
             };
             btnKickPlayer.Pressed += KickPlayer_Pressed;
 
@@ -67,9 +67,20 @@
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.6f, 0), new UniScalar(0.4f, 0))
             };
 
-            screen.Desktop.Children.AddRange(new Control[] {
-                btnBeginGame, btnLeaveGame, btnKickPlayer, btnSendChatMessage, _messageList, _currentMessage, _playerList
-            });
+            screen.Desktop.Children.AddRange(
+                new Control[] 
+                {
+                    btnLeaveGame,  
+                    btnSendChatMessage, 
+                    _messageList, 
+                    _currentMessage, 
+                    _playerList
+                });
+
+            if (isHost)
+            {
+                screen.Desktop.Children.AddRange(new ButtonControl[] {btnBeginGame, btnKickPlayer});
+            }
         }
 
         #endregion        
@@ -109,10 +120,22 @@
 
         #region UpdateRequests
 
-        public void RefreshPlayerList(List<string> newPlayerList)
+        public void RefreshPlayerList(List<string> newPlayerList, string hostName, string clientName)
         {
-            _playerList.Items.Clear();            
-            _playerList.Items.AddRange(newPlayerList);
+            var usernameList = _playerList.Items;
+
+            usernameList.Clear();
+            usernameList.AddRange(newPlayerList);
+
+            int hostIndex = newPlayerList.IndexOf(hostName);
+            int clientIndex = newPlayerList.IndexOf(clientName);
+
+            if (hostIndex != -1)
+            {
+                usernameList[hostIndex] = "[Host] " + usernameList[hostIndex];
+            }
+
+            usernameList[clientIndex] = "[+] " + usernameList[clientIndex];
         }
 
         public void ChatMessageReceived(ChatMessage message)
@@ -122,7 +145,7 @@
 
         #endregion
         
-        public GameLobbyView(GameState state)
+        public GameLobbyView(GameState state, bool isHost)
             : base(state)
         {            
             IsLoaded = true;
@@ -130,7 +153,7 @@
             screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.25f, 0), new UniScalar(0.6f, 0), new UniScalar(0.5f, 0));
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
-            CreateChildControls();
+            CreateChildControls(isHost);
         }
     }
 }

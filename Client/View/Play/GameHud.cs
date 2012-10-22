@@ -1,6 +1,8 @@
 ﻿namespace Client.View.Play
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Client.Model;
     using Common;
     using Input;
@@ -8,8 +10,6 @@
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
-    using System.Collections.Generic;
-    using System.Linq;
 
     class GameHud : BaseView
     {

@@ -213,8 +213,8 @@
                     ViewMgr.PopLayer(); // MessageBox
                     ViewMgr.PopLayer(); // MainLobbyView
 
-                    var gameLobbyView = new GameLobbyView(this);
-                    gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                    var gameLobbyView = new GameLobbyView(this, false);
+                    gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
                     ViewMgr.PushLayer(gameLobbyView);
                 }
                 catch (Exception exc)
@@ -280,8 +280,8 @@
                     ViewMgr.PopLayer();     // pop MessageBox
                     ViewMgr.PopLayer();     // pop main lobby window
 
-                    var gameLobbyView = new GameLobbyView(this);
-                    gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                    var gameLobbyView = new GameLobbyView(this, true);
+                    gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
                     ViewMgr.PushLayer(gameLobbyView);
                 }
                 catch (Exception exc)
@@ -342,7 +342,7 @@
             {
                 var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.AddPlayer(username);
-                gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
             });
         }
 
@@ -352,7 +352,7 @@
             {
                 var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.RemovePlayer(username);
-                gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
             });
         }
 
@@ -362,7 +362,7 @@
             {
                 var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.RemovePlayer(username);
-                gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
             });
         }
 
