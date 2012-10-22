@@ -1,0 +1,6 @@
+syntax: glob
+Client\obj*
+Client/bin/*
+Content/obj/*
+*.suo
+Client/*.cachefile
