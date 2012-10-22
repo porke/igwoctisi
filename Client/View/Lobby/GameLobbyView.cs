@@ -131,6 +131,11 @@
             _messageList.Items.Add(string.Format("<{0}/{1}>: {2}", message.Username, message.Time, message.Message));
         }
 
+        public void AddHostMessage(string message, string time)
+        {
+            _messageList.Items.Add(string.Format("({0}): {1}", time, message));
+        }
+
         #endregion
         
         public GameLobbyView(GameState state, bool showHostButtons)

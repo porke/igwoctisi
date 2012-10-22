@@ -343,6 +343,7 @@
                 var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.AddPlayer(username);
                 gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                gameLobbyView.AddHostMessage(username + " joined.", time.ToString("H:mm"));
             });
         }
 
@@ -353,6 +354,7 @@
                 var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.RemovePlayer(username);
                 gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                gameLobbyView.AddHostMessage(username + " left.", time.ToString("H:mm"));
             });
         }
 
@@ -363,6 +365,7 @@
                 var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.RemovePlayer(username);
                 gameLobbyView.RefreshPlayerList(_gameLobby.Players);
+                gameLobbyView.AddHostMessage(username + " have been kicked by host.", time.ToString("H:mm"));
             });
         }
 
