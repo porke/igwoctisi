@@ -307,7 +307,7 @@
                         {
                             if (OnGameStarted != null)
                             {
-                                var map = JObject.Parse(jsonLine).Value<Map>("map");
+                                var map = JObject.Parse(jsonLine).GetValue("map").ToObject<Map>();
                                 OnGameStarted.Invoke(map);
                             }
                         }

@@ -13,19 +13,19 @@
     public class Map
     {
         [DataMember]
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         [DataMember]
-        public List<Planet> Planets { get; private set; }
+        public List<Planet> Planets { get; set; }
 
         [DataMember]
-        public List<PlanetLink> Links { get; private set; }
+        public List<PlanetLink> Links { get; set; }
 
         [DataMember]
-        public List<PlanetarySystem> PlanetarySystems { get; private set; }
+        public List<PlanetarySystem> PlanetarySystems { get; set; }
 
         [DataMember]
-        public List<StartingData> PlayerStartingData { get; private set; }
+        public List<StartingData> PlayerStartingData { get; set; }
 
         public MapVisual Visual { get; set; }
 

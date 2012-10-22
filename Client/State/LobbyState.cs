@@ -10,6 +10,7 @@
         private Map _map;
         private Player _clientPlayer;
         private SpecificGameLobbyInfo _gameLobby;
+        private bool _isHostingGame { get { return _map != null; } }
 
         public LobbyState(IGWOCTISI game, Player player) : base(game)
         {
@@ -46,20 +47,22 @@
 
         private void BindNetworkEvents()
         {
-            Client.Network.OnOtherPlayerJoined += OnOtherPlayerJoined;
-            Client.Network.OnOtherPlayerLeft += OnOtherPlayerLeft;
-            Client.Network.OnOtherPlayerKicked += OnOtherPlayerKicked;
-            Client.Network.OnChatMessageReceived += OnChatMessageReceived;
-            Client.Network.OnPlayerKicked += OnPlayerKicked;
+            Client.Network.OnOtherPlayerJoined += Network_OnOtherPlayerJoined;
+            Client.Network.OnOtherPlayerLeft += Network_OnOtherPlayerLeft;
+            Client.Network.OnOtherPlayerKicked += Network_OnOtherPlayerKicked;
+            Client.Network.OnChatMessageReceived += Network_OnChatMessageReceived;
+            Client.Network.OnPlayerKicked += Network_OnPlayerKicked;
+            Client.Network.OnGameStarted += Network_OnGameStarted;
         }
 
         private void UnbindNetworkEvents()
         {
-            Client.Network.OnOtherPlayerJoined -= OnOtherPlayerJoined;
-            Client.Network.OnOtherPlayerLeft -= OnOtherPlayerLeft;
-            Client.Network.OnOtherPlayerKicked -= OnOtherPlayerKicked;
-            Client.Network.OnChatMessageReceived -= OnChatMessageReceived;
-            Client.Network.OnPlayerKicked -= OnPlayerKicked;
+            Client.Network.OnOtherPlayerJoined -= Network_OnOtherPlayerJoined;
+            Client.Network.OnOtherPlayerLeft -= Network_OnOtherPlayerLeft;
+            Client.Network.OnOtherPlayerKicked -= Network_OnOtherPlayerKicked;
+            Client.Network.OnChatMessageReceived -= Network_OnChatMessageReceived;
+            Client.Network.OnPlayerKicked -= Network_OnPlayerKicked;
+            Client.Network.OnGameStarted -= Network_OnGameStarted;
         }
 
         #region _view event handlers
@@ -125,7 +128,6 @@
             ViewMgr.PushLayer(messageBox);
 
             Client.Network.BeginStartGame(OnGameStarted, messageBox);
-            Game.ChangeState(new PlayState(Game, _map, _clientPlayer));
         }
 
         private void RefreshGameList(EventArgs args)
@@ -336,7 +338,7 @@
 
         #region Network event handlers
 
-        private void OnOtherPlayerJoined(string username, DateTime time)
+        private void Network_OnOtherPlayerJoined(string username, DateTime time)
         {
             InvokeOnMainThread(obj =>
             {
@@ -347,7 +349,7 @@
             });
         }
 
-        private void OnOtherPlayerLeft(string username, DateTime time)
+        private void Network_OnOtherPlayerLeft(string username, DateTime time)
         {
             InvokeOnMainThread(obj =>
             {
@@ -358,7 +360,7 @@
             });
         }
 
-        private void OnOtherPlayerKicked(string username, DateTime time)
+        private void Network_OnOtherPlayerKicked(string username, DateTime time)
         {
             InvokeOnMainThread(obj =>
             {
@@ -369,7 +371,7 @@
             });
         }
 
-        private void OnChatMessageReceived(ChatMessage message)
+        private void Network_OnChatMessageReceived(ChatMessage message)
         {
             InvokeOnMainThread(obj =>
             {
@@ -378,7 +380,7 @@
             }, message);
         }
         
-        void OnPlayerKicked()
+        void Network_OnPlayerKicked()
         {
             InvokeOnMainThread(obj =>
             {
@@ -394,6 +396,15 @@
                 };
                 messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
                 ViewMgr.PushLayer(messageBox);
+            });
+        }
+
+        void Network_OnGameStarted(Map map)
+        {
+            InvokeOnMainThread(obj =>
+            {
+                UnbindNetworkEvents();
+                Game.ChangeState(new PlayState(Game, _map, _clientPlayer));
             });
         }
 
