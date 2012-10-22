@@ -138,7 +138,6 @@
             ViewMgr.PushLayer(messageBox);
 
             Client.Network.BeginStartGame(OnGameStarted, messageBox);
-            Game.ChangeState(new PlayState(Game, _map, _clientPlayer, playerList));
         }
 
         private void RefreshGameList(EventArgs args)
@@ -415,7 +414,9 @@
             InvokeOnMainThread(obj =>
             {
                 UnbindNetworkEvents();
-                Game.ChangeState(new PlayState(Game, _map, _clientPlayer));
+
+                var playerList = new List<Player>(_gameLobby.Players.Select(username => new Player(username)));
+                Game.ChangeState(new PlayState(Game, _map, _clientPlayer, playerList));
             });
         }
 
