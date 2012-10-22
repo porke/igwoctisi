@@ -5,7 +5,6 @@
 	using Client.View;
 	using Model;
 	using View.Play;
-    using System.Linq;
 
 	class PlayState : GameState
 	{
@@ -16,21 +15,23 @@
 
 		private List<UserCommand> _commands = new List<UserCommand>();
 		private Player _clientPlayer;
+		private List<Player> _players;
 		private double _secondsLeft = 0;
 
-        public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer, List<Player> players)
-            : base(game)
-        {
-            Scene = new Scene(loadedMap, new List<Player> { _clientPlayer});
-            _clientPlayer = clientPlayer;
+		public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer, List<Player> players)
+			: base(game)
+		{
+			Scene = new Scene(loadedMap, new List<Player> { _clientPlayer});
+			_clientPlayer = clientPlayer;
+			_players = players;
 
-            _gameViewport = new GameViewport(this);
-            _gameHud = new GameHud(this);
-            _gameHud.UpdateClientPlayerFleetData(clientPlayer);
-            _gameHud.UpdatePlayerList(players);
+			_gameViewport = new GameViewport(this);
+			_gameHud = new GameHud(this);
+			_gameHud.UpdateClientPlayerFleetData(clientPlayer);
+			_gameHud.UpdatePlayerList(players);
 
-            ViewMgr.PushLayer(_gameViewport);
-            ViewMgr.PushLayer(_gameHud);
+			ViewMgr.PushLayer(_gameViewport);
+			ViewMgr.PushLayer(_gameHud);
 
 			eventHandlers.Add("LeaveGame", LeaveGame);
 			eventHandlers.Add("SendOrders", SendOrders);
@@ -42,12 +43,12 @@
 			eventHandlers.Add("OnHoverLink", OnHoverLink);
 			eventHandlers.Add("UnhoverLinks", UnhoverLinks);
 			eventHandlers.Add("SelectLink", SelectLink);
-			
-			Client.Network.OnRoundStarted += new Action<SimulationResult>(Network_OnRoundStarted);
-			Client.Network.OnRoundEnded += new Action(Network_OnRoundEnded);
-			Client.Network.OnGameEnded += new Action(Network_OnGameEnded);
-			Client.Network.OnOtherPlayerLeft += new Action<string, DateTime>(Network_OnOtherPlayerLeft);
-			Client.Network.OnDisconnected += new Action<string>(Network_OnDisconnected);
+
+			Client.Network.OnRoundStarted += Network_OnRoundStarted;
+			Client.Network.OnRoundEnded += Network_OnRoundEnded;
+			Client.Network.OnGameEnded += Network_OnGameEnded;
+			Client.Network.OnOtherPlayerLeft += Network_OnOtherPlayerLeft;
+			Client.Network.OnDisconnected += Network_OnDisconnected;
 		}
 
 		public override void OnUpdate(double delta, double time)
@@ -209,7 +210,10 @@
 
 		void Network_OnOtherPlayerLeft(string username, DateTime time)
 		{
-			throw new NotImplementedException();
+			_players.RemoveAll(player => player.Username.Equals(username));
+			_gameHud.UpdatePlayerList(_players);
+
+			// TODO print info (somewhere) about it!
 		}
 
 		void Network_OnDisconnected(string reason)
