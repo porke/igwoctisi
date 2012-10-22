@@ -5,6 +5,7 @@
 	using Client.View;
 	using Model;
 	using View.Play;
+    using System.Linq;
 
 	class PlayState : GameState
 	{
@@ -17,7 +18,7 @@
 		private Player _clientPlayer;
 		private double _secondsLeft = 0;
 
-		public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer)
+        public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer, List<Player> players)
 			: base(game)
 		{
 			Scene = new Scene(loadedMap, new List<Player> { _clientPlayer});
@@ -26,6 +27,7 @@
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
 			_gameHud.UpdateClientPlayerFleetData(clientPlayer);
+            _gameHud.UpdatePlayerList(players);
 
 			ViewMgr.PushLayer(_gameViewport);
 			ViewMgr.PushLayer(_gameHud);
