@@ -24,7 +24,7 @@
         public event Action OnPlayerKicked;
         public event Action<Map> OnGameStarted;
         public event Action<NewRoundInfo> OnRoundStarted;
-        public event Action<SimulationResult> OnRoundEnded;
+        public event Action<List<SimulationResult>> OnRoundEnded;
         public event Action OnGameEnded;
         public event Action<string> OnDisconnected;
         
@@ -323,7 +323,7 @@
                         {
                             if (OnRoundEnded != null)
                             {
-                                var simRes = JsonLowercaseSerializer.DeserializeObject<SimulationResult>(jsonLine);
+                                var simRes = JsonLowercaseSerializer.DeserializeObject<List<SimulationResult>>(jsonLine);
                                 OnRoundEnded.Invoke(simRes);
                             }
                         }
