@@ -27,6 +27,11 @@
             Username = username;
         }
 
+        public void AddPlanet(Planet planet)
+        {
+            _ownedPlanets.Add(planet);
+        }
+
         public bool CanDeployFleets()
         {
             return DeployableFleets > 0;

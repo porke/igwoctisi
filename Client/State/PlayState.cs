@@ -21,10 +21,10 @@
 		public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer, List<Player> players)
 			: base(game)
 		{
-			Scene = new Scene(loadedMap, new List<Player> { _clientPlayer});
 			_clientPlayer = clientPlayer;
 			_players = players;
 
+            Scene = new Scene(loadedMap, new List<Player> { _clientPlayer });
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
 			_gameHud.UpdateClientPlayerFleetData(clientPlayer);
@@ -104,7 +104,6 @@
 		private void SelectPlanet(EventArgs args)
 		{
 			var selectedPlanet = (args as SelectPlanetArgs).Planet;
-			_gameHud.UpdateSelectedPlanet(selectedPlanet);
 			Scene.SelectedPlanet = selectedPlanet.Id;
 		}
 
@@ -124,7 +123,6 @@
 			var planet = (args as SelectPlanetArgs).Planet;
 			var gameHud = ViewMgr.PeekLayer() as GameHud;
 			planet.NumFleetsPresent++;
-			gameHud.UpdateSelectedPlanet(planet);
 		}
 
 		private void UndeployFleet(EventArgs args)
@@ -132,7 +130,6 @@
 			var planet = (args as SelectPlanetArgs).Planet;
 			var gameHud = ViewMgr.PeekLayer() as GameHud;
 			planet.NumFleetsPresent--;
-			gameHud.UpdateSelectedPlanet(planet);
 		}
 
 		private void OnHoverLink(EventArgs args)

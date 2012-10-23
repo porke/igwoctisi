@@ -21,6 +21,14 @@ namespace Client.Model
 			HoveredPlanet = SelectedPlanet = 0;
 			HoveredLink = null;
             _players = playerList;
+
+            // Assign planets
+            for (int i = 0; i < _players.Count; i++)
+            {
+                var startingPlanet = Map.StartingPositions[i];
+                startingPlanet.Owner = _players[i];
+                _players[i].AddPlanet(startingPlanet);
+            }
         }
         public Planet PickPlanet(Vector2 clickPosition, IRenderer renderer)
         {

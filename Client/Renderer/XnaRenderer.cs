@@ -15,6 +15,8 @@
 		protected const float LinkJointSize = 15.0f;
 		protected readonly Vector2 NameOffset = new Vector2(0.0f, 25.0f);
 		protected readonly Vector2 FleetsOffset = new Vector2(0.0f, 42.0f);
+        protected readonly Vector2 FleetIncomeOffset = new Vector2(21.0f, 42.0f);
+        protected readonly Vector2 OwnerNameOffset = new Vector2(0.0f, 59.0f);
 		protected SpriteBatch _spriteBatch;
 		protected SpriteFont _fontHud;
         protected Effect _fxLinks, _fxPlanet;
@@ -192,6 +194,8 @@
 			{
 				var planetScreen = _camera.Project(GraphicsDevice.Viewport, new Vector3(planet.X, planet.Y, planet.Z));
 				var fleetText = planet.NumFleetsPresent.ToString();
+                var fleetIncome = string.Format("+{0}", planet.BaseUnitsPerTurn);
+                var ownerName = planet.Owner != null ? planet.Owner.Username : string.Empty;
 				var nameSize = _fontHud.MeasureString(planet.Name);
 				var fleetsSize = _fontHud.MeasureString(fleetText);
 
@@ -200,6 +204,10 @@
 
 				var fleetsScreen = new Vector2(planetScreen.X - fleetsSize.X / 2.0f, planetScreen.Y - fleetsSize.Y / 2.0f);
 				_spriteBatch.DrawString(_fontHud, fleetText, fleetsScreen + FleetsOffset, Color.Yellow);
+
+                _spriteBatch.DrawString(_fontHud, fleetIncome, fleetsScreen + FleetIncomeOffset, Color.Yellow);
+
+                _spriteBatch.DrawString(_fontHud, ownerName, nameScreen + OwnerNameOffset, Color.Yellow);
 			}
 
 			_spriteBatch.End();

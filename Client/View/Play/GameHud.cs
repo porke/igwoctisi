@@ -22,9 +22,6 @@
         private LabelControl _fleetIncomeValue;
 
         private ListControl _playerList;
-        private LabelControl _selectedPlanetName;
-        private LabelControl _selectedPlanetBaseIncome;
-        private LabelControl _selectedPlanetFleetCount;
 
         private LabelControl _timer;
 
@@ -49,19 +46,19 @@
 
             var ordersHeader = new LabelControl("Orders")
             {                
-                Bounds = new UniRectangle(new UniScalar(0.075f, 0), new UniScalar(0.42f, 0), new UniScalar(0.34f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.075f, 0), new UniScalar(0.2f, 0), new UniScalar(0.34f, 0), new UniScalar(0.1f, 0))
             };
 
             _orderList = new ListControl()
             {
                 SelectionMode = ListSelectionMode.Single,
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.5f, 0), new UniScalar(0.21f, 0), new UniScalar(0.3f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.28f, 0), new UniScalar(0.21f, 0), new UniScalar(0.3f, 0))
             };
 
             var btnDeleteOrder = new ButtonControl()
             {
                 Text = "Delete",
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.81f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.59f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
             };
             btnDeleteOrder.Pressed += DeleteOrder_Pressed;
 
@@ -119,40 +116,6 @@
 
             #endregion
 
-            #region Selected planet data
-
-            var selectedPlanetDesc = new LabelControl("Selected planet:")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.2f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
-            };
-
-            _selectedPlanetName = new LabelControl("None")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            var planetFleetIncomeDesc = new LabelControl("Fleet income:")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.25f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
-            };
-
-            _selectedPlanetBaseIncome = new LabelControl("-")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.25f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            var planetStationedFleets = new LabelControl("Fleet count:")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.3f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
-            };
-
-            _selectedPlanetFleetCount = new LabelControl("-")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.3f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            #endregion
-
             #region Timer
 
             _timer = new LabelControl("0:00")
@@ -182,13 +145,6 @@
                     btnLeaveGame, 
                     btnSendOrders,
                     
-                    _selectedPlanetName,
-                    _selectedPlanetBaseIncome,
-                    _selectedPlanetFleetCount,
-                    planetFleetIncomeDesc,
-                    selectedPlanetDesc,
-                    planetStationedFleets,
-
                     _timer
                 });
         }        
@@ -237,13 +193,6 @@
         {
             _playerList.Items.Clear();
             _playerList.Items.AddRange(players.Select(player => player.Username));
-        }
-
-        public void UpdateSelectedPlanet(Planet planet)
-        {
-            _selectedPlanetName.Text = planet.Name;
-            _selectedPlanetBaseIncome.Text = Convert.ToString(planet.BaseUnitsPerTurn);
-            _selectedPlanetFleetCount.Text = Convert.ToString(planet.NumFleetsPresent);
         }
 
         public void UpdateClientPlayerFleetData(Player player)

@@ -43,5 +43,9 @@
 
         [JsonIgnore]
         public PlanetVisual Visual { get; set; }
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public Player Owner { get; set; }
     }
 }
