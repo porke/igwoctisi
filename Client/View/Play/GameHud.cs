@@ -154,12 +154,12 @@
 
         private void LeaveGame_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("LeaveGame", e);
+			PlayState.LeaveGame();
         }
 
         private void SendCommands_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("SendCommands", e);
+			PlayState.SendCommands();
         }
 
         private void DeleteCommand_Pressed(object sender, EventArgs e)
@@ -167,7 +167,7 @@
             if (_commandList.SelectedItems.Count > 0)
             {
                 var selectedOrderIndex = _commandList.SelectedItems[0];
-                state.HandleViewEvent("DeleteCommand", new DeleteCommandArgs(selectedOrderIndex));
+				PlayState.DeleteCommand(selectedOrderIndex);
             }
         }
 
@@ -208,8 +208,11 @@
 
         #endregion
 
+		public PlayState PlayState { get; protected set; }
+
         public GameHud(PlayState state) : base(state)
         {
+			PlayState = state;
             IsLoaded = true;
             IsTransparent = true;            
             InputReceiver = new NuclexScreenInputReceiver(screen, false);            

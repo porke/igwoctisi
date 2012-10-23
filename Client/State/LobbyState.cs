@@ -23,23 +23,12 @@
 
             ViewMgr.PushLayer(menuBackground);
             ViewMgr.PushLayer(lobbyMenu);
-
-            eventHandlers.Add("LeaveGameLobby", LeaveGameLobby);
-            eventHandlers.Add("CreateGame", CreateGame);
-            eventHandlers.Add("CancelCreateGame", CancelCreateGame);
-            eventHandlers.Add("EnterCreateGameView", EnterCreateGameView);
-            eventHandlers.Add("Logout", Logout);
-            eventHandlers.Add("JoinGame", JoinGame);
-            eventHandlers.Add("BeginGame", BeginGame);
-            eventHandlers.Add("RefreshGameList", RefreshGameList);
-            eventHandlers.Add("SendChatMessage", SendChatMessage);
-            eventHandlers.Add("KickOtherPlayer", KickOtherPlayer);
         }
 
         public override void OnEnter()
         {
             Client.Network.OnDisconnected += new Action<string>(OnDisconnected_EventHandler);
-            this.RefreshGameList(new SenderEventArgs(ViewMgr.PeekLayer()));
+			RefreshGameList(ViewMgr.PeekLayer());
         }
 
         public override void OnExit()
@@ -75,17 +64,14 @@
             }
         }
 
-        #region View event handlers
+		#region View event handlers
 
-        private void LeaveGameLobby(EventArgs args)
+        internal void LeaveGameLobby()
         {
             Client.Network.BeginLeaveGame(OnLeaveGame, null);
         }
-
-        private void CreateGame(EventArgs args)
+		internal void CreateGame(string gameName, string mapName)
         {
-            var newGameParameters = args as CreateGameArgs;
-
             var messageBox = new MessageBox(MessageBoxButtons.None)
             {
                 Title = "Join Game",
@@ -93,42 +79,35 @@
             };
             ViewMgr.PushLayer(messageBox);
 
-            var map = new Map(newGameParameters.MapName);
-            Client.Network.BeginCreateGame(newGameParameters.GameName, map, OnCreateGame, Tuple.Create(messageBox, newGameParameters.MapName, newGameParameters.GameName));
+            var map = new Map(mapName);
+            Client.Network.BeginCreateGame(gameName, map, OnCreateGame, Tuple.Create(messageBox, mapName, gameName));
         }
-
-        private void CancelCreateGame(EventArgs args)
+		internal void CancelCreateGame()
         {
             ViewMgr.PopLayer();     // pop create game view
             ViewMgr.PushLayer(new MainLobbyView(this));
         }
-
-        private void EnterCreateGameView(EventArgs args)
+		internal void EnterCreateGameView()
         {
             ViewMgr.PopLayer();     // pop main lobby view
             ViewMgr.PushLayer(new CreateGameView(this));
         }
-
-        private void Logout(EventArgs args)
+		internal void Logout()
         {
             var ar = Client.Network.BeginLogout(OnLogout, null);
             ar.AsyncWaitHandle.WaitOne();
         }
-
-        private void JoinGame(EventArgs args)
+		internal void JoinGame(int lobbyId)
         {
-            var joinGameArgs = args as JoinGameArgs;
-
             var messageBox = new MessageBox(MessageBoxButtons.None)
             {
                 Title = "Join Game",
                 Message = "Joining in..."
             };
             ViewMgr.PushLayer(messageBox);
-            Client.Network.BeginJoinGameLobby(joinGameArgs.LobbyId, OnJoinLobby, messageBox);
+            Client.Network.BeginJoinGameLobby(lobbyId, OnJoinLobby, messageBox);
         }
-
-        private void BeginGame(EventArgs args)
+		internal void BeginGame()
         {
             var messageBox = new MessageBox(MessageBoxButtons.None)
             {
@@ -140,8 +119,7 @@
             Client.Network.BeginStartGame(OnGameStarted, messageBox);
             var playerList = _gameLobby.Players.Select(username => new Player(username)).ToList();
         }
-
-        private void RefreshGameList(EventArgs args)
+		internal void RefreshGameList(BaseView sender)
         {
             var messageBox = new MessageBox(MessageBoxButtons.None)
             {
@@ -151,20 +129,16 @@
 
             ViewMgr.PushLayer(messageBox);
 
-            var mainLobbyView = (args as SenderEventArgs).Sender;
+            var mainLobbyView = sender;
             Client.Network.BeginGetGameList(OnGetGameList, Tuple.Create(mainLobbyView as MainLobbyView, messageBox));
         }
-
-        private void SendChatMessage(EventArgs args)
+		internal void SendChatMessage(string message)
         {
-            var msgArgs = args as ChatMessageArgs;
-            Client.Network.BeginSendChatMessage(msgArgs.Message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
+			Client.Network.BeginSendChatMessage(message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
         }
-
-        private void KickOtherPlayer(EventArgs args)
+		internal void KickOtherPlayer(string username)
         {
-            var kickArgs = args as KickPlayerArgs;
-            Client.Network.BeginKickPlayer(kickArgs.Username, OnKickPlayer, kickArgs.Username);
+            Client.Network.BeginKickPlayer(username, OnKickPlayer, username);
         }
 
         #endregion
@@ -344,7 +318,7 @@
 
                 var menuState = new MenuState(Game);
                 Client.ChangeState(menuState);
-                menuState.HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were disconnected from the server."));
+				menuState.OnDisconnected("Disconnection", "You were disconnected from the server.");
             });
         }
 

@@ -17,10 +17,6 @@
 
             ViewMgr.PushLayer(menuBackground);
             ViewMgr.PushLayer(mainMenu);
-
-            eventHandlers.Add("QuitGame", QuitGame);
-            eventHandlers.Add("RequestLogin", RequestLogin);
-            eventHandlers.Add("OnDisconnected", OnDisconnected);
         }
 
         public override void OnEnter()
@@ -36,13 +32,12 @@
 
         #region _view event handlers
 
-        private void QuitGame(EventArgs args)
+        internal void QuitGame()
         {
             Client.Network.BeginDisconnect(null, null);
             Client.Exit();
         }
-
-        private void RequestLogin(EventArgs args)
+		internal void RequestLogin(string login, string password)
         {
             int port = DefaultPort;
             string hostname = DefaultHost;
@@ -57,24 +52,21 @@
                 // TODO: Log any error messages
             }
             
-            var loginData = args as LoginEventArgs;
             var messageBox = new MessageBox(MessageBoxButtons.None)
             {
                 Title = "Log in",
-                Message = string.Format("Connecting... {0}@{1}", loginData.Login, loginData.Password)
+                Message = string.Format("Connecting... {0}@{1}", login, password)
             };
 
-            Client.Network.BeginConnect(hostname, port, OnConnect, Tuple.Create<MessageBox, LoginEventArgs>(messageBox, loginData));
+            Client.Network.BeginConnect(hostname, port, OnConnect, Tuple.Create<MessageBox, string, string>(messageBox, login, password));
             ViewMgr.PushLayer(messageBox);
         }
-
-        private void OnDisconnected(EventArgs args)
+		internal void OnDisconnected(string title, string message)
         {
-            var msgBoxArgs = args as MessageBoxArgs;
             var messageBox = new MessageBox(MessageBoxButtons.OK)
             {
-                Title = msgBoxArgs.Title,
-                Message = msgBoxArgs.Message
+                Title = title,
+                Message = message
             };
             messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
             ViewMgr.PushLayer(messageBox);
@@ -89,16 +81,17 @@
             InvokeOnMainThread(arg =>
             {
                 var network = ViewMgr.Client.Network;
-                var connectData = (Tuple<MessageBox, LoginEventArgs>)ar.AsyncState;
+                var connectData = (Tuple<MessageBox, string, string>)ar.AsyncState;
                 var messageBox = connectData.Item1;
-                var loginData = connectData.Item2;
+				var username = connectData.Item2;
+				var password = connectData.Item3;
 
                 try
                 {
                     if (network.EndConnect(ar))
                     {
-                        network.BeginLogin(loginData.Login, loginData.Password, OnLogin, messageBox);
-                        messageBox.Message = "Logging in as " + loginData.Login + "...";
+						network.BeginLogin(username, password, OnLogin, messageBox);
+						messageBox.Message = "Logging in as " + username + "...";
                     }
                     else
                     {
@@ -148,7 +141,7 @@
             InvokeOnMainThread(arg =>
             {
                 ViewMgr.PopLayer(); // Probably "Logging in..." MessageBox
-                HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were forcefully kicked out by the server."));
+				OnDisconnected("Disconnection", "You were forcefully kicked out by the server.");
             }, reason);
         }
 
