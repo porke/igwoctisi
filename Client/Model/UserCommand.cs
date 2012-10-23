@@ -1,6 +1,5 @@
 ﻿namespace Client.Model
 {
-    using System;
     using System.Runtime.Serialization;
 
     [DataContract]

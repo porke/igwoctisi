@@ -1,6 +1,5 @@
 ﻿namespace Client.Model
 {
-    using System.Collections.Generic;
     using System.Runtime.Serialization;
 
     /// <summary>
