@@ -419,7 +419,6 @@
             {
                 UnbindNetworkEvents();
                 var playerList = _gameLobby.Players.Select(username => new Player(username)).ToList();
-                Game.ChangeState(new PlayState(Game, _map, _clientPlayer, playerList));
                 Game.ChangeState(new PlayState(Game, map, _clientPlayer, playerList));
             });
         }
