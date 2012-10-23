@@ -75,20 +75,23 @@
 
         private void Cancel_Pressed(object sender, EventArgs args)
         {
-            state.HandleViewEvent("CancelCreateGame", args);
+			LobbyState.CancelCreateGame();
         }
 
         private void CreateGame_Pressed(object sender, EventArgs args)
         {
             var mapName = _mapList.Items[_mapList.SelectedItems[0]];
-            state.HandleViewEvent("CreateGame", new CreateGameArgs(_gameName.Text, mapName));
+			LobbyState.CreateGame(_gameName.Text, mapName);
         }
 
         #endregion
 
-        public CreateGameView(GameState state)
+		public LobbyState LobbyState { get; protected set; }
+
+		public CreateGameView(LobbyState state)
             : base(state)
         {
+			LobbyState = state;
             IsLoaded = true;
             IsTransparent = true;
             screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.25f, 0), new UniScalar(0.4f, 0), new UniScalar(0.5f, 0));

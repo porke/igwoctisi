@@ -55,18 +55,22 @@
 
         protected void Login_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("RequestLogin", new LoginEventArgs(tbLogin.Text, tbPassword.GetPassword()));
+			MenuState.RequestLogin(tbLogin.Text, tbPassword.GetPassword());
         }
 
         protected void Quit_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("QuitGame", e);
+			MenuState.QuitGame();
         }
 
         #endregion
 
-        public MainMenuView(GameState state) : base(state)
+		public MenuState MenuState { get; protected set; }
+
+		public MainMenuView(MenuState state)
+			: base(state)
         {
+			MenuState = state;
             IsLoaded = true;
             IsTransparent = true;
             InputReceiver = new NuclexScreenInputReceiver(screen, false);

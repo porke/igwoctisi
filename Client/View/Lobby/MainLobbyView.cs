@@ -1,14 +1,16 @@
-﻿namespace Client.View.Lobby
-{
-    using System;
-    using System.Collections.Generic;
-    using Client.Model;
-    using Common;
-    using Input;
-    using Nuclex.UserInterface;
-    using Nuclex.UserInterface.Controls;
-    using Nuclex.UserInterface.Controls.Desktop;
+﻿using System;
+using System.Collections.Generic;
+using Client.Model;
+using Client.Common;
+using Client.Input;
+using Nuclex.UserInterface;
+using Nuclex.UserInterface.Controls;
+using Nuclex.UserInterface.Controls.Desktop;
+using Client.State;
 
+
+namespace Client.View.Lobby
+{
     class MainLobbyView : BaseView
     {
         #region Protected members
@@ -61,33 +63,34 @@
 
         private void Logout_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("Logout", e);
+			LobbyState.Logout();
         }
-
         private void Refresh_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("RefreshGameList", new SenderEventArgs(this));
+			LobbyState.RefreshGameList(this);
         }
-
         private void JoinGame_Pressed(object sender, EventArgs e)
         {
             if (_gameList.SelectedItems.Count == 0) return;
 
             int lobbyIndex = _gameList.SelectedItems[0];
             int lobbyId = _gameInfoList[lobbyIndex].LobbyId;
-            state.HandleViewEvent("JoinGame", new JoinGameArgs(lobbyId));
-        }
 
+			LobbyState.JoinGame(lobbyId);
+        }
         private void CreateGame_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("EnterCreateGameView", e);
+			LobbyState.EnterCreateGameView();
         }
 
         #endregion
 
-        public MainLobbyView(State.GameState state)
+		public LobbyState LobbyState { get; protected set; }
+
+		public MainLobbyView(LobbyState state)
             : base(state)
         {
+			LobbyState = state;
             IsLoaded = true;
             IsTransparent = true;
             screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.2f, 0), new UniScalar(0.6f, 0), new UniScalar(0.6f, 0));

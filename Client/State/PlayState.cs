@@ -33,18 +33,6 @@
 			ViewMgr.PushLayer(_gameViewport);
 			ViewMgr.PushLayer(_gameHud);
 
-			eventHandlers.Add("LeaveGame", LeaveGame);
-            eventHandlers.Add("DeleteCommand", DeleteCommand);
-			eventHandlers.Add("SendCommands", SendCommands);
-			eventHandlers.Add("SelectPlanet", SelectPlanet);
-			eventHandlers.Add("OnHoverPlanet", OnHoverPlanet);
-			eventHandlers.Add("UnhoverPlanets", UnhoverPlanets);
-			eventHandlers.Add("DeployFleet", DeployFleet);
-			eventHandlers.Add("UndeployFleet", UndeployFleet);
-			eventHandlers.Add("OnHoverLink", OnHoverLink);
-			eventHandlers.Add("UnhoverLinks", UnhoverLinks);
-			eventHandlers.Add("SelectLink", SelectLink);
-
 			Client.Network.OnRoundStarted += Network_OnRoundStarted;
 			Client.Network.OnRoundEnded += Network_OnRoundEnded;
 			Client.Network.OnGameEnded += Network_OnGameEnded;
@@ -85,14 +73,12 @@
 
 		#region View event handlers
 
-        private void DeleteCommand(EventArgs args)
+        internal void DeleteCommand(int orderIndex)
         {
-            var orderIndex = (args as DeleteCommandArgs).OrderListIndex;
             _commands.RemoveAt(orderIndex);
             (ViewMgr.PeekLayer() as GameHud).UpdateCommandList(_commands);
         }
-
-		private void LeaveGame(EventArgs args)
+		internal void LeaveGame()
 		{
 			var messageBox = new MessageBox(MessageBoxButtons.None)
 			{
@@ -102,33 +88,25 @@
 
 			Client.Network.BeginLeaveGame(OnLeaveGame, messageBox);
 		}
-
-		private void SendCommands(EventArgs args)
+		internal void SendCommands()
 		{
 			Client.Network.BeginSendCommands(_commands, OnSendOrders, null);
 			_commands.Clear();
 		}
-
-		private void SelectPlanet(EventArgs args)
+		internal void SelectPlanet(Planet selectedPlanet)
 		{
-			var selectedPlanet = (args as SelectPlanetArgs).Planet;
 			Scene.SelectedPlanet = selectedPlanet.Id;
 		}
-
-		private void OnHoverPlanet(EventArgs args)
+		internal void OnHoverPlanet(Planet hoverPlanet)
 		{
-			var hoverPlanet = (args as SelectPlanetArgs).Planet;
 			Scene.HoveredPlanet = hoverPlanet.Id;
 		}
-
-		private void UnhoverPlanets(EventArgs args)
+		internal void UnhoverPlanets()
 		{
 			Scene.HoveredPlanet = 0;
 		}
-
-		private void DeployFleet(EventArgs args)
+		internal void DeployFleet(Planet planet)
 		{
-			var planet = (args as SelectPlanetArgs).Planet;
 			var gameHud = ViewMgr.PeekLayer() as GameHud;
 
             // Deploment is only possible on clients own planet
@@ -150,10 +128,8 @@
             _gameHud.UpdateCommandList(_commands);
             _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
 		}
-
-		private void UndeployFleet(EventArgs args)
+		internal void UndeployFleet(Planet planet)
 		{
-			var planet = (args as SelectPlanetArgs).Planet;
 			var gameHud = ViewMgr.PeekLayer() as GameHud;
 
             var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
@@ -172,19 +148,15 @@
                 _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
             }
 		}
-
-		private void OnHoverLink(EventArgs args)
+		internal void OnHoverLink(PlanetLink hoverLink)
 		{
-			var hoverLink = (args as SelectLinkArgs).Link;
 			Scene.HoveredLink = hoverLink;
 		}
-
-		private void UnhoverLinks(EventArgs args)
+		internal void UnhoverLinks()
 		{
 			Scene.HoveredLink = null;
 		}
-
-		private void SelectLink(EventArgs args)
+		internal void SelectLink()
 		{
             // TODO: Implement deployment command
 		}
@@ -261,7 +233,7 @@
 			{
 				var menuState = new MenuState(Game);
 				Client.ChangeState(menuState);
-				menuState.HandleViewEvent("OnDisconnected", new MessageBoxArgs("Disconnection", "You were disconnected from the server."));
+				menuState.OnDisconnected("Disconnection", "You were disconnected from the server.");
 			});
 		}
 
