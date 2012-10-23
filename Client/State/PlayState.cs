@@ -17,6 +17,16 @@
 		private Player _clientPlayer;
 		private List<Player> _players;
 		private double _secondsLeft = 0;
+        private HudState _hudState = HudState.Initializing;
+        private object _hudStateLocker = new object();
+
+        private enum HudState
+        {
+            Initializing,
+            WaitingForRoundStart,
+            WaitingForRoundEnd,
+            AnimatingSimulationResult
+        }
 
 		public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer, List<Player> players)
 			: base(game)
@@ -38,6 +48,8 @@
 			Client.Network.OnGameEnded += Network_OnGameEnded;
 			Client.Network.OnOtherPlayerLeft += Network_OnOtherPlayerLeft;
 			Client.Network.OnDisconnected += Network_OnDisconnected;
+
+            InvokeOnMainThread((obj) => { _hudState = HudState.WaitingForRoundStart; });
 		}
 
 		public override void OnUpdate(double delta, double time)
@@ -49,18 +61,30 @@
 			{
 				if (_secondsLeft - delta <= 0)
 				{
-					_secondsLeft = 0;            
+					_secondsLeft = 0;
 
-					// Create message box that will be shown until server's roundEnd or gameEnd message arrives.
-					var messageBox = new MessageBox(MessageBoxButtons.OK)
-					{
-						Title = "Round simulating",
-						Message = "Waiting for server to simulate the turn."
-							+ Environment.NewLine + Environment.NewLine
-							+ "(This OK button will disappear)"
-					};
-					messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };//TODO to be removed (no OK button!!)
-					ViewMgr.PushLayer(messageBox);
+                    lock (_hudStateLocker)
+                    {
+                        if (_hudState == HudState.WaitingForRoundEnd)
+                        {
+                            _hudState = HudState.WaitingForRoundStart;
+                        }
+                        else if (_hudState == HudState.WaitingForRoundStart)
+                        {
+                            _hudState = HudState.WaitingForRoundEnd;
+
+                            // Create message box that will be shown until server's roundEnd or gameEnd message arrives.
+                            var messageBox = new MessageBox(MessageBoxButtons.OK)
+                            {
+                                Title = "Round simulating",
+                                Message = "Waiting for server to simulate the turn."
+                                    + Environment.NewLine + Environment.NewLine
+                                    + "(This OK button will disappear)"
+                            };
+                            messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };//TODO to be removed (no OK button!!)
+                            ViewMgr.PushLayer(messageBox);
+                        }
+                    }
 				}
 				else
 				{
@@ -199,18 +223,44 @@
 			});
 		}
 
-		void Network_OnRoundStarted(NewRoundInfo roundInfo)
+		bool Network_OnRoundStarted(NewRoundInfo roundInfo)
 		{
-			_secondsLeft = roundInfo.RoundTime;
-			_gameHud.UpdateTimer((int)_secondsLeft);
+            lock (_hudStateLocker)
+            {
+                if (_hudState == HudState.WaitingForRoundStart)
+                {
+                    _secondsLeft = roundInfo.RoundTime;
+                    _gameHud.UpdateTimer((int)_secondsLeft);
+                    _hudState = HudState.WaitingForRoundEnd;
 
-			// TODO update gui to enable it for making new moves
+                    // We have consumed that packet.
+                    return true;
+                }
+
+                return false;
+            }
 		}
 
-        void Network_OnRoundEnded(List<SimulationResult> simRes)
+        bool Network_OnRoundEnded(List<SimulationResult> simRes)
 		{
-			// TODO collect info about moves and animate them
-			throw new NotImplementedException("Handle simulation result.");
+            lock (_hudStateLocker)
+            {
+                if (_hudState == HudState.WaitingForRoundEnd)
+                {
+                    // TODO change map situation
+
+                    if (ViewMgr.PeekLayer() is MessageBox)
+                    {
+                        // Pop MessageBox "Waiting for server to simulate the turn."
+                        ViewMgr.PopLayer();
+                    }
+                    
+                    // We have consumed that packet.
+                    return true;
+                }
+
+                return false;
+            }
 		}
 
 		void Network_OnGameEnded(/*game result here!*/)
