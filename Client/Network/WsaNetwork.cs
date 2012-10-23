@@ -367,7 +367,7 @@
             }
             catch (Exception ex)
             {
-                if (ex is IOException || ex is SocketException)
+                if (ex is IOException || ex is SocketException|| ex is ObjectDisposedException)
                 {
                     // Connection may be forcibly closed while waiting for message.
                     // It also could be a kick from the server.
