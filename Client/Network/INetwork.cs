@@ -79,7 +79,7 @@
         /// <summary>
         /// Arguments: currently none.
         /// </summary>
-        event Action<SimulationResult> OnRoundEnded;
+        event Action<List<SimulationResult>> OnRoundEnded;
 
         /// <summary>
         /// Arguments: currently none.

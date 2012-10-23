@@ -207,7 +207,7 @@
 			// TODO update gui to enable it for making new moves
 		}
 
-        void Network_OnRoundEnded(SimulationResult simRes)
+        void Network_OnRoundEnded(List<SimulationResult> simRes)
 		{
 			// TODO collect info about moves and animate them
 			throw new NotImplementedException("Handle simulation result.");
