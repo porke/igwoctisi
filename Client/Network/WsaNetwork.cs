@@ -23,8 +23,8 @@
         public event Action<string, DateTime> OnOtherPlayerKicked;
         public event Action OnPlayerKicked;
         public event Action<Map> OnGameStarted;
-        public event Action<NewRoundInfo> OnRoundStarted;
-        public event Action<List<SimulationResult>> OnRoundEnded;
+        public event Func<NewRoundInfo, bool> OnRoundStarted;
+        public event Func<List<SimulationResult>, bool> OnRoundEnded;
         public event Action OnGameEnded;
         public event Action<string> OnDisconnected;
         
@@ -93,6 +93,9 @@
         Dictionary<int, Tuple<bool, Action<string, MessageContentType, ErrorType>>> messageResponses
             = new Dictionary<int, Tuple<bool, Action<string, MessageContentType, ErrorType>>>();
 
+        List<Func<bool>> _incomingWaitingMessages = new List<Func<bool>>();
+        List<Func<bool>> _incomingWaitingMessagesToBeRemoved = new List<Func<bool>>();
+
         private const int TIMEOUT_MILLISECONDS = 15000;
 
         private void TcpConnectCallback(IAsyncResult tcpAsyncResult)
@@ -140,6 +143,7 @@
                 {
                     Debug.WriteLine("S: " + jsonLine);
 
+                    #region Header part
                     if (nextPacketType == PacketType.Header)
                     {
                         // Handle situation when jsonLine isn't actually Json
@@ -256,6 +260,9 @@
                         // nextPacketType is PacketType.Content or PacketType.ContentAsResponse.
                         nextContentType = type;
                     }
+                    #endregion
+
+                    #region Content part
                     else if (nextPacketType == PacketType.Content)
                     {
                         if (nextContentType == MessageContentType.Error)
@@ -313,18 +320,26 @@
                         }
                         else if (nextContentType == MessageContentType.RoundStart)
                         {
-                            if (OnRoundStarted != null)
+                            var roundInfo = JsonLowercaseSerializer.DeserializeObject<NewRoundInfo>(jsonLine);
+
+                            if (OnRoundStarted == null || !OnRoundStarted.Invoke(roundInfo))
                             {
-                                var roundInfo = JsonLowercaseSerializer.DeserializeObject<NewRoundInfo>(jsonLine);
-                                OnRoundStarted.Invoke(roundInfo);
+                                EnqueueIncomingMessage(() =>
+                                {
+                                    return OnRoundStarted != null && OnRoundStarted.Invoke(roundInfo);
+                                });                                
                             }
                         }
                         else if (nextContentType == MessageContentType.RoundEnd)
                         {
-                            if (OnRoundEnded != null)
+                            var simRes = JsonLowercaseSerializer.DeserializeObject<List<SimulationResult>>(jsonLine);
+
+                            if (OnRoundEnded == null || !OnRoundEnded.Invoke(simRes))
                             {
-                                var simRes = JsonLowercaseSerializer.DeserializeObject<List<SimulationResult>>(jsonLine);
-                                OnRoundEnded.Invoke(simRes);
+                                EnqueueIncomingMessage(() =>
+                                {
+                                    return OnRoundEnded != null && OnRoundEnded.Invoke(simRes);
+                                });
                             }
                         }
                         else if (nextContentType == MessageContentType.GameEnd)
@@ -362,7 +377,8 @@
 
                         // Next packet will be a header for some another message.
                         nextPacketType = PacketType.Header;
-                    }                    
+                    }
+                    #endregion
                 }
             }
             catch (Exception ex)
@@ -392,6 +408,14 @@
                     TimeoutObject.Reset();
                 }
                 catch { }
+            }
+        }
+
+        private void EnqueueIncomingMessage(Func<bool> messageDispatcherFunc)
+        {
+            lock (_incomingWaitingMessages)
+            {
+                _incomingWaitingMessages.Add(messageDispatcherFunc);
             }
         }
 
@@ -460,6 +484,7 @@
         {
             Client = client;
         }
+
         public void Release()
         {
             Client = null;
@@ -470,8 +495,26 @@
             catch { }
             tcpClient = null;
         }
+
         public void Update(double delta, double time)
         {
+            lock (_incomingWaitingMessages)
+            {
+                _incomingWaitingMessagesToBeRemoved.Clear();
+
+                foreach (var message in _incomingWaitingMessages)
+                {
+                    if (message.Invoke())
+                    {
+                        _incomingWaitingMessagesToBeRemoved.Add(message);
+                    }
+                }
+
+                foreach (var message in _incomingWaitingMessagesToBeRemoved)
+                {
+                    _incomingWaitingMessages.Remove(message);
+                }
+            }
         }
 
         /// <summary>
