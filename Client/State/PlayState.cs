@@ -130,14 +130,47 @@
 		{
 			var planet = (args as SelectPlanetArgs).Planet;
 			var gameHud = ViewMgr.PeekLayer() as GameHud;
-			planet.NumFleetsPresent++;
+
+            // Deploment is only possible on clients own planet
+            if (planet.Owner == null || !planet.Owner.Username.Equals(_clientPlayer.Username)) return;
+
+            var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
+            if (command == null)
+            {
+                command = new UserCommand(_clientPlayer, planet, 1);
+                _commands.Add(command);
+            }
+            else
+            {
+                command.UnitCount++;
+            }
+
+            planet.NumFleetsPresent++;
+            _clientPlayer.DeployableFleets--;
+            _gameHud.UpdateCommandList(_commands);
+            _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
 		}
 
 		private void UndeployFleet(EventArgs args)
 		{
 			var planet = (args as SelectPlanetArgs).Planet;
 			var gameHud = ViewMgr.PeekLayer() as GameHud;
-			planet.NumFleetsPresent--;
+
+            var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
+            if (command != null)
+            {
+                command.UnitCount--;
+                planet.NumFleetsPresent--;
+                _clientPlayer.DeployableFleets++;
+
+                if (command.UnitCount == 0)
+                {
+                    _commands.Remove(command);
+                }
+
+                _gameHud.UpdateCommandList(_commands);
+                _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+            }
 		}
 
 		private void OnHoverLink(EventArgs args)
@@ -153,6 +186,7 @@
 
 		private void SelectLink(EventArgs args)
 		{
+            // TODO: Implement deployment command
 		}
 
 		#endregion

@@ -202,7 +202,7 @@
             _commandList.Items.Clear();
             foreach (var cmd in commands)
             {
-                _commandList.Items.Add(string.Format("Deploy {0} fleets to {1}", cmd.UnitCount, cmd.TargetPlanet.Name));   
+                _commandList.Items.Add(string.Format("D: {0} to {1}", cmd.UnitCount, cmd.TargetPlanet.Name));   
             }            
         }
 

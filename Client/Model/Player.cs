@@ -5,7 +5,7 @@
     public class Player
     {
         public string Username { get; private set; }
-        public int DeployableFleets { get; private set; }
+        public int DeployableFleets { get; set; }
         public int FleetIncomePerTurn
         {
             get
