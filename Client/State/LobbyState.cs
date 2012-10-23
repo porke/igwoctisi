@@ -138,6 +138,7 @@
             ViewMgr.PushLayer(messageBox);
 
             Client.Network.BeginStartGame(OnGameStarted, messageBox);
+            var playerList = _gameLobby.Players.Select(username => new Player(username)).ToList();
         }
 
         private void RefreshGameList(EventArgs args)
@@ -417,8 +418,8 @@
             InvokeOnMainThread(obj =>
             {
                 UnbindNetworkEvents();
-
-                var playerList = new List<Player>(_gameLobby.Players.Select(username => new Player(username)));
+                var playerList = _gameLobby.Players.Select(username => new Player(username)).ToList();
+                Game.ChangeState(new PlayState(Game, _map, _clientPlayer, playerList));
                 Game.ChangeState(new PlayState(Game, map, _clientPlayer, playerList));
             });
         }
