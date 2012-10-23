@@ -12,9 +12,6 @@
         public IGWOCTISI Game { get; protected set; }
         public ViewManager ViewMgr { get; protected set; }
 
-        protected delegate void EventHandler(EventArgs args);
-        protected Dictionary<string, EventHandler> eventHandlers = new Dictionary<string, EventHandler>();
-
         public delegate void MessageQueueFunc(object args);
         private ConcurrentQueue<Tuple<MessageQueueFunc, object>> _messageQueue = new ConcurrentQueue<Tuple<MessageQueueFunc, object>>();
 
@@ -64,14 +61,6 @@
 
             graphicsDevice.Clear(Color.Black);
             ViewMgr.Draw(delta, time);
-        }
-
-        public void HandleViewEvent(string eventId, EventArgs args)
-        {            
-            if (eventHandlers.ContainsKey(eventId))
-            {
-                eventHandlers[eventId](args);
-            }
         }
     }
 }
