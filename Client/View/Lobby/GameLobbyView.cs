@@ -85,30 +85,26 @@
 
         private void BeginGame_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("BeginGame", e);
+			LobbyState.BeginGame();
         }
-
         private void LeaveGame_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("LeaveGameLobby", e);
+			LobbyState.LeaveGameLobby();
         }
-
         private void KickPlayer_Pressed(object sender, EventArgs e)
         {
             if (_playerList.SelectedItems.Count == 1)
             {
                 string username = _playerList.Items[_playerList.SelectedItems[0]];
-                state.HandleViewEvent("KickOtherPlayer", new KickPlayerArgs(username));
+				LobbyState.KickOtherPlayer(username);
             }
         }
-
         private void SendChatMessage_Pressed(object sender, EventArgs e)
         {
             if (_currentMessage.Text.Trim().Length > 0)
             {
-                var msgArgs = new ChatMessageArgs(_currentMessage.Text);
+				LobbyState.SendChatMessage(_currentMessage.Text);
                 _currentMessage.Text = "";
-                state.HandleViewEvent("SendChatMessage", msgArgs);
             }
         }
 
@@ -145,10 +141,13 @@
         }
 
         #endregion
-        
-        public GameLobbyView(GameState state, bool showHostButtons)
+
+		public LobbyState LobbyState { get; protected set; }
+
+		public GameLobbyView(LobbyState state, bool showHostButtons)
             : base(state)
-        {            
+        {
+			LobbyState = state;
             IsLoaded = true;
             IsTransparent = true;
             screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.25f, 0), new UniScalar(0.6f, 0), new UniScalar(0.5f, 0));

@@ -141,54 +141,48 @@
 
         private void DeployFleet(Planet destinationPlanet)
         {
-            state.HandleViewEvent("DeployFleet", new SelectPlanetArgs(destinationPlanet));
+			PlayState.DeployFleet(destinationPlanet);
         }
-
         private void UndeployFleet(Planet destinationPlanet)
         {
-            state.HandleViewEvent("UndeployFleet", new SelectPlanetArgs(destinationPlanet));
+			PlayState.UndeployFleet(destinationPlanet);
         }
-
         private void PlanetSelected(Planet planetSelected)
         {
-            state.HandleViewEvent("SelectPlanet", new SelectPlanetArgs(planetSelected));
+			PlayState.SelectPlanet(planetSelected);
         }
-
         private void OnHoverPlanet(Planet planetSelected)
         {
-            state.HandleViewEvent("OnHoverPlanet", new SelectPlanetArgs(planetSelected));
+			PlayState.OnHoverPlanet(planetSelected);
         }
-
         private void UnhoverPlanets()
         {
-            state.HandleViewEvent("UnhoverPlanets", null);
+			PlayState.UnhoverPlanets();
         }
-
 		private void OnHoverLink(PlanetLink linkSelected)
 		{
-			state.HandleViewEvent("OnHoverLink", new SelectLinkArgs(linkSelected));
+			PlayState.OnHoverLink(linkSelected);
 		}
-
 		private void UnhoverLinks()
 		{
-			state.HandleViewEvent("UnhoverLinks", null);
+			PlayState.UnhoverLinks();
 		}
-
 		private void LinkSelected(PlanetLink linkSelected)
 		{
-			state.HandleViewEvent("SelectLink", new SelectLinkArgs(linkSelected));
+			PlayState.SelectLink();
 		}
 
         #endregion
 
         public PlayState PlayState { get; protected set; }
 
-        public GameViewport(GameState state) : base(state)
+		public GameViewport(PlayState state)
+			: base(state)
         {
             IsLoaded = true;
             IsTransparent = false;
             InputReceiver = new GameInputReceiver(this);
-            PlayState = (PlayState)state;
+            PlayState = state;
         }
     }
 }
