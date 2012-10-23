@@ -111,11 +111,11 @@
 			Client.Network.BeginSendCommands(_commands, OnSendOrders, null);
 			_commands.Clear();
 
-            InvokeOnMainThread((obj) =>
-            {
-                if (_secondsLeft > 0)
-                    _secondsLeft = 0.001;
-            });
+			InvokeOnMainThread((obj) =>
+			{
+				if (_secondsLeft > 0)
+					_secondsLeft = 0.001;
+			});
 		}
 		internal void SelectPlanet(Planet selectedPlanet)
 		{
@@ -240,23 +240,28 @@
 			}
 		}
 
-		bool Network_OnRoundEnded(List<SimulationResult> simRes)
+		bool Network_OnRoundEnded(List<SimulationResult> simResults)
 		{
 			lock (_hudStateLocker)
 			{
 				if (_hudState == HudState.WaitingForRoundEnd)
 				{
-					// TODO change map situation
-
 					if (ViewMgr.PeekLayer() is MessageBox)
 					{
 						// Pop MessageBox "Waiting for server to simulate the turn."
 						ViewMgr.PopLayer();
 					}
 
-                    _hudState = HudState.AnimatingSimulationResult;
-                    // TODO do some animations using simulation results and then set _hudState to WaitingForRoundStart.
-                    _hudState = HudState.WaitingForRoundStart;
+					_hudState = HudState.AnimatingSimulationResult;
+					// TODO do some animations using simulation results and then set _hudState to WaitingForRoundStart.
+
+					foreach (var simResult in simResults)
+					{
+						Scene.ImplementChange(simResult);
+					}
+					
+					// TODO when animation is done that line should be moved to the end of animation.
+					_hudState = HudState.WaitingForRoundStart;
 					
 					// We have consumed that packet.
 					return true;
