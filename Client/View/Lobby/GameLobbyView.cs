@@ -103,8 +103,8 @@
         {
             if (_currentMessage.Text.Trim().Length > 0)
             {
-                _currentMessage.Text = "";
 				LobbyState.SendChatMessage(_currentMessage.Text);
+                _currentMessage.Text = "";
             }
         }
 
