@@ -24,7 +24,7 @@
 			_clientPlayer = clientPlayer;
 			_players = players;
 
-            Scene = new Scene(loadedMap, new List<Player> { _clientPlayer });
+            Scene = new Scene(loadedMap, players);
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
 			_gameHud.UpdateClientPlayerFleetData(clientPlayer);

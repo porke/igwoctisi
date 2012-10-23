@@ -1,10 +1,14 @@
 ﻿namespace Client.Model
 {
     using System.Collections.Generic;
+    using System.Runtime.Serialization;
 
+    [DataContract]
     public class Player
     {
+        [DataMember]
         public string Username { get; private set; }
+        
         public int DeployableFleets { get; set; }
         public int FleetIncomePerTurn
         {
