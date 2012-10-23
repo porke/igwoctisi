@@ -156,10 +156,39 @@
 		{
 			Scene.HoveredLink = null;
 		}
-		internal void SelectLink()
+		internal void MoveFleet(PlanetLink link)
 		{
-            // TODO: Implement deployment command
+            var source = Scene.Map.GetPlanetById(link.SourcePlanet);
+            var target = Scene.Map.GetPlanetById(link.TargetPlanet);
+
+            // Defensive coding
+            if (source.Owner == null) return;
+            if (source.NumFleetsPresent < 2) return;
+            if (!_clientPlayer.Username.Equals(source.Owner.Username)) return;
+            if (_clientPlayer.DeployableFleets == 0) return;
+
+            var command = _commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
+            if (command == null)
+            {
+                command = new UserCommand(_clientPlayer, source, target);
+                command.UnitCount = 1;
+                _commands.Add(command);
+            }
+            else
+            {
+                command.UnitCount++;
+            }
+
+            source.NumFleetsPresent--;
+            target.NumFleetsPresent++;
+            _gameHud.UpdateCommandList(_commands);
 		}
+        internal void RevertMoveFleet(PlanetLink link)
+        {
+            // TODO: Implement deployment command
+            var source = Scene.Map.GetPlanetById(link.SourcePlanet);
+            var target = Scene.Map.GetPlanetById(link.TargetPlanet);
+        }
 
 		#endregion
 

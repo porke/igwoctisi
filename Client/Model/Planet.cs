@@ -1,6 +1,7 @@
 ﻿namespace Client.Model
 {
     using System;
+    using System.ComponentModel;
     using System.Xml.Serialization;
     using Client.Renderer;
     using Newtonsoft.Json;

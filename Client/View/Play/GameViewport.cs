@@ -88,7 +88,14 @@
 				}
 				else if ((link = _receiverView.PlayState.Scene.PickLink(_currentMousePosition, _receiverView.PlayState.Client.Renderer)) != null)
 				{
-					_receiverView.LinkSelected(link);
+                    if (button.HasFlag(MouseButtons.Left))
+                    {
+                        _receiverView.MoveFleet(link);
+                    }
+                    else if (button.HasFlag(MouseButtons.Right))
+                    {
+                        _receiverView.RevertMoveFleet(link);
+                    }
 				}
 
                 return true;
@@ -167,10 +174,14 @@
 		{
 			PlayState.UnhoverLinks();
 		}
-		private void LinkSelected(PlanetLink linkSelected)
+		private void RevertMoveFleet(PlanetLink linkSelected)
 		{
-			PlayState.SelectLink();
+            PlayState.RevertMoveFleet(linkSelected);
 		}
+        private void MoveFleet(PlanetLink linkSelected)
+        {
+            PlayState.MoveFleet(linkSelected);
+        }
 
         #endregion
 

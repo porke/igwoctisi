@@ -67,6 +67,7 @@
                 do
                 {
                     var planet = (Planet) planetSerializer.Deserialize(reader);
+                    planet.NumFleetsPresent = 1;
                     Planets.Add(planet);
                 } while (reader.ReadToNextSibling(typeof(Planet).Name));
 
