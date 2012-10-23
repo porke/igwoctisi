@@ -512,6 +512,7 @@
 
             return ar;
         }
+
         public bool EndConnect(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<bool>)asyncResult;
@@ -519,6 +520,7 @@
 
             return ar.Result;
         }
+
         public IAsyncResult BeginLogin(string username, string password, AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<Player>(asyncCallback, asyncState);
@@ -543,6 +545,7 @@
 
             return ar;
         }
+
         public Player EndLogin(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<Player>)asyncResult;
@@ -643,6 +646,7 @@
             });
             return ar;
         }
+
         public void EndDisconnect(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<object>)asyncResult;
@@ -765,6 +769,7 @@
             
             return ar;
         }
+
         public List<LobbyListInfo> EndGetGameList(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<List<LobbyListInfo>>)asyncResult;
@@ -780,21 +785,18 @@
             ar.BeginInvoke(() => { Thread.Sleep(500); return null; });
             return ar;
         }
+
         public Map EndReceiveGameState(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<Map>)asyncResult;
             return ar.EndInvoke();
         }
+
         public IAsyncResult BeginSendCommands(List<UserCommand> commands, AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<bool>(asyncCallback, asyncState);
-
-            var infoContent = new
-            {
-                Commands = commands
-            };
-
-            SendRequest(MessageContentType.Commands, false, infoContent, (jsonStr, messageContentType, errorType) =>
+            
+            SendRequest(MessageContentType.Commands, false, commands, (jsonStr, messageContentType, errorType) =>
             {
                 ar.BeginInvoke(() =>
                 {
@@ -807,6 +809,7 @@
 
             return ar;
         }
+
         public void EndSendCommands(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<bool>)asyncResult;
