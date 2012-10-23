@@ -31,7 +31,6 @@
         public Planet SourcePlanet { get; private set; }
         public Planet TargetPlanet { get; private set; }
 
-
         /// <summary>
         /// Constructor needed by Json deserialization.
         /// </summary>
@@ -42,9 +41,6 @@
         /// <summary>
         /// Creates Move Command.
         /// </summary>
-        /// <param name="player"></param>
-        /// <param name="sourcePlanet"></param>
-        /// <param name="targetPlanet"></param>
         public UserCommand(Player player, Planet sourcePlanet, Planet targetPlanet)
         {
             SourcePlanet = sourcePlanet;
@@ -60,8 +56,6 @@
         /// <summary>
         /// Creates Deploy Command.
         /// </summary>
-        /// <param name="player"></param>
-        /// <param name="deployUnitCount">units to deploy</param>
         public UserCommand(Player player, Planet planet, int deployUnitCount)
         {
             TargetPlanet = planet;

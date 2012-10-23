@@ -34,7 +34,8 @@
 			ViewMgr.PushLayer(_gameHud);
 
 			eventHandlers.Add("LeaveGame", LeaveGame);
-			eventHandlers.Add("SendOrders", SendOrders);
+            eventHandlers.Add("DeleteCommand", DeleteCommand);
+			eventHandlers.Add("SendCommands", SendCommands);
 			eventHandlers.Add("SelectPlanet", SelectPlanet);
 			eventHandlers.Add("OnHoverPlanet", OnHoverPlanet);
 			eventHandlers.Add("UnhoverPlanets", UnhoverPlanets);
@@ -84,6 +85,13 @@
 
 		#region View event handlers
 
+        private void DeleteCommand(EventArgs args)
+        {
+            var orderIndex = (args as DeleteCommandArgs).OrderListIndex;
+            _commands.RemoveAt(orderIndex);
+            (ViewMgr.PeekLayer() as GameHud).UpdateCommandList(_commands);
+        }
+
 		private void LeaveGame(EventArgs args)
 		{
 			var messageBox = new MessageBox(MessageBoxButtons.None)
@@ -95,7 +103,7 @@
 			Client.Network.BeginLeaveGame(OnLeaveGame, messageBox);
 		}
 
-		private void SendOrders(EventArgs args)
+		private void SendCommands(EventArgs args)
 		{
 			Client.Network.BeginSendCommands(_commands, OnSendOrders, null);
 			_commands.Clear();

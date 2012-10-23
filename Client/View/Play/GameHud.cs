@@ -10,13 +10,12 @@
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
-    using System.Linq;
 
     class GameHud : BaseView
     {
         #region Protected members
 
-        private ListControl _orderList;
+        private ListControl _commandList;
         private LabelControl _playerNameValue;
         private LabelControl _fleetCountValue;
         private LabelControl _fleetIncomeValue;
@@ -49,7 +48,7 @@
                 Bounds = new UniRectangle(new UniScalar(0.075f, 0), new UniScalar(0.2f, 0), new UniScalar(0.34f, 0), new UniScalar(0.1f, 0))
             };
 
-            _orderList = new ListControl()
+            _commandList = new ListControl()
             {
                 SelectionMode = ListSelectionMode.Single,
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.28f, 0), new UniScalar(0.21f, 0), new UniScalar(0.3f, 0))
@@ -60,7 +59,7 @@
                 Text = "Delete",
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.59f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
             };
-            btnDeleteOrder.Pressed += DeleteOrder_Pressed;
+            btnDeleteOrder.Pressed += DeleteCommand_Pressed;
 
             #endregion
 
@@ -112,7 +111,7 @@
                 Text = "End turn",
                 Bounds = new UniRectangle(new UniScalar(0.12f, 0), new UniScalar(0.93f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
             };
-            btnSendOrders.Pressed += SendOrders_Pressed;
+            btnSendOrders.Pressed += SendCommands_Pressed;
 
             #endregion
 
@@ -129,7 +128,7 @@
                 new Control[] 
                 {
                     ordersHeader, 
-                    _orderList, 
+                    _commandList, 
                     
                     playerListHeader,
                     _playerList,
@@ -158,30 +157,17 @@
             state.HandleViewEvent("LeaveGame", e);
         }
 
-        private void SendOrders_Pressed(object sender, EventArgs e)
+        private void SendCommands_Pressed(object sender, EventArgs e)
         {
-            state.HandleViewEvent("SendOrders", e);
+            state.HandleViewEvent("SendCommands", e);
         }
 
-        private void DeleteOrder_Pressed(object sender, EventArgs e)
+        private void DeleteCommand_Pressed(object sender, EventArgs e)
         {
-            if (_orderList.SelectedItems.Count > 0)
+            if (_commandList.SelectedItems.Count > 0)
             {
-                var firstItem = _orderList.SelectedItems[0];
-                _orderList.Items.RemoveAt(firstItem);
-                _orderList.SelectedItems.RemoveAt(0);
-
-                if (_orderList.Items.Count > 0)
-                {
-                    if (firstItem - 1 > 0) 
-                    {
-                        firstItem--;
-                    }
-
-                    _orderList.SelectedItems.Add(firstItem);
-                }
-
-                // TODO update the logic (fleet count, etc.)
+                var selectedOrderIndex = _commandList.SelectedItems[0];
+                state.HandleViewEvent("DeleteCommand", new DeleteCommandArgs(selectedOrderIndex));
             }
         }
 
@@ -211,12 +197,12 @@
             _timer.Text = mins.ToString() + (secs < 10 ? ":0" : ":") + secs.ToString();
         }
 
-        public void UpdateOrders(List<UserCommand> commands)
+        public void UpdateCommandList(List<UserCommand> commands)
         {
-            _orderList.Items.Clear();
+            _commandList.Items.Clear();
             foreach (var cmd in commands)
             {
-                _orderList.Items.Add(string.Format("Deploy {0} fleets to planet {1}", cmd.UnitCount, cmd.TargetPlanet.Name));   
+                _commandList.Items.Add(string.Format("Deploy {0} fleets to {1}", cmd.UnitCount, cmd.TargetPlanet.Name));   
             }            
         }
 
