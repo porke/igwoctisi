@@ -791,7 +791,7 @@
 
             var infoContent = new
             {
-                Commands = JsonLowercaseSerializer.SerializeObject(commands)
+                Commands = commands
             };
 
             SendRequest(MessageContentType.Commands, false, infoContent, (jsonStr, messageContentType, errorType) =>
