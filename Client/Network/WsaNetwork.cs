@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Globalization;
     using System.IO;
     using System.Net.Sockets;
     using System.Threading;
@@ -11,7 +12,6 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using NLog;
-    using System.Globalization;
 
     public class WsaNetwork : INetwork
     {
@@ -23,8 +23,8 @@
         public event Action<string, DateTime> OnOtherPlayerKicked;
         public event Action OnPlayerKicked;
         public event Action<Map> OnGameStarted;
-        public event Action<SimulationResult> OnRoundStarted;
-        public event Action OnRoundEnded;
+        public event Action<NewRoundInfo> OnRoundStarted;
+        public event Action<SimulationResult> OnRoundEnded;
         public event Action OnGameEnded;
         public event Action<string> OnDisconnected;
         
@@ -77,7 +77,6 @@
             //Packet type:    Source:
 
             LoginFailed,    //Server
-            GameListEmpty,  //Server
             GameInvalidId,  //Server
             GameFull,       //Server
             GameCreateFailed//Server
@@ -245,7 +244,8 @@
                         }
                         else if (type == MessageContentType.RoundEnd)
                         {
-                            // TODO implement!
+                            // Next packet should contain battle simulation results.
+                            nextPacketType = PacketType.Content;
                         }
                         else if (type == MessageContentType.GameEnd)
                         {
@@ -315,16 +315,16 @@
                         {
                             if (OnRoundStarted != null)
                             {
-                                var simRes = JsonLowercaseSerializer.DeserializeObject<SimulationResult>(jsonLine);
-                                OnRoundStarted.Invoke(simRes);
+                                var roundInfo = JsonLowercaseSerializer.DeserializeObject<NewRoundInfo>(jsonLine);
+                                OnRoundStarted.Invoke(roundInfo);
                             }
                         }
                         else if (nextContentType == MessageContentType.RoundEnd)
                         {
                             if (OnRoundEnded != null)
                             {
-                                // TODO implement end of round
-                                OnRoundEnded.Invoke();
+                                var simRes = JsonLowercaseSerializer.DeserializeObject<SimulationResult>(jsonLine);
+                                OnRoundEnded.Invoke(simRes);
                             }
                         }
                         else if (nextContentType == MessageContentType.GameEnd)
@@ -759,10 +759,6 @@
                 else if (messageContentType == MessageContentType.Error)
                 {
                     string message = "Waiting for game list received: " + errorType + '.';
-
-                    if (errorType == ErrorType.GameListEmpty)
-                        message = "There are currently no games.";
-
                     ar.HandleException(new Exception(message), false);
                 }                
             });
