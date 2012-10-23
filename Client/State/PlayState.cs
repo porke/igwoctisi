@@ -67,12 +67,6 @@
 					{
 						if (_hudState == HudState.WaitingForRoundEnd)
 						{
-							_hudState = HudState.WaitingForRoundStart;
-						}
-						else if (_hudState == HudState.WaitingForRoundStart)
-						{
-							_hudState = HudState.WaitingForRoundEnd;
-
 							// Create message box that will be shown until server's roundEnd or gameEnd message arrives.
 							var messageBox = new MessageBox(MessageBoxButtons.OK)
 							{
@@ -116,6 +110,12 @@
 		{
 			Client.Network.BeginSendCommands(_commands, OnSendOrders, null);
 			_commands.Clear();
+
+            InvokeOnMainThread((obj) =>
+            {
+                if (_secondsLeft > 0)
+                    _secondsLeft = 0.001;
+            });
 		}
 		internal void SelectPlanet(Planet selectedPlanet)
 		{
@@ -219,7 +219,6 @@
 			InvokeOnMainThread(obj =>
 			{
 				Client.Network.EndSendCommands(result);
-				_secondsLeft = 0.001;
 			});
 		}
 
@@ -254,6 +253,10 @@
 						// Pop MessageBox "Waiting for server to simulate the turn."
 						ViewMgr.PopLayer();
 					}
+
+                    _hudState = HudState.AnimatingSimulationResult;
+                    // TODO do some animations using simulation results and then set _hudState to WaitingForRoundStart.
+                    _hudState = HudState.WaitingForRoundStart;
 					
 					// We have consumed that packet.
 					return true;
