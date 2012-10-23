@@ -9,30 +9,62 @@
     [DataContract]
     public class SimulationResult
     {
-        //{players:[], map:[{planetId, playerIndex, fleets}], tech:[], fleetsToDeploy, roundTime}
+        /// <summary>
+        /// Owner of move.
+        /// </summary>
+        public string Player;
+
+        /// <summary>
+        /// Planet id.
+        /// </summary>
         [DataMember]
-        public List<string> Players { get; set; }
+        public int SourceId;
+
+        /// <summary>
+        /// Planet id.
+        /// </summary>
+        [DataMember]
+        public int TargetId;
 
         [DataMember]
-        public List<FleetSizeChange> Map { get; set; }
+        public int FleetCount;
 
         [DataMember]
-        public List<int> Tech { get; set; }
+        public MoveType Type;
 
         [DataMember]
-        public int FleetsToDeploy { get; set; }
+        public int SourceLeft;
 
         [DataMember]
-        public int RoundTime { get; set; }
+        public int TargetLeft;
 
+        [DataMember]
+        public bool TargetOwnerChanged;
 
-        private SimulationResult() { }
+        /// <summary>
+        /// Player username.
+        /// </summary>
+        [DataMember]
+        public string TargetOwner;
 
-        public class FleetSizeChange
+        [DataMember]
+        public int AttackerLosses;
+
+        [DataMember]
+        public int DefenderLosses;
+
+        
+        public int AttackerFleetsBack
         {
-            public int PlanetId { get; set; }
-            public int PlayerIndex { get; set; }
-            public int Fleets { get; set; }
+            get { return FleetCount - AttackerLosses; }
+        }
+
+
+        public enum MoveType
+        {
+            Attack,
+            Move,
+            Deploy
         }
     }
 }

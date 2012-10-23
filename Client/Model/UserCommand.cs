@@ -14,16 +14,13 @@
         }
 
         [DataMember]
-        public string PlayerUsername { get; set; }
-
-        [DataMember]
         public int SourceId { get; set; }
 
         [DataMember]
         public int TargetId { get; set; }
 
         [DataMember]
-        public int UnitCount { get; set; }
+        public int FleetCount { get; set; }
 
         [DataMember]
         public CommandType Type { get; set; }
@@ -41,28 +38,26 @@
         /// <summary>
         /// Creates Move Command.
         /// </summary>
-        public UserCommand(Player player, Planet sourcePlanet, Planet targetPlanet)
+        public UserCommand(Planet sourcePlanet, Planet targetPlanet)
         {
             SourcePlanet = sourcePlanet;
             TargetPlanet = targetPlanet;
 
-            PlayerUsername = player.Username;
             SourceId = sourcePlanet.Id;
             TargetId = targetPlanet.Id;
-            UnitCount = 1;
+            FleetCount = 1;
             Type = CommandType.Move;
         }
 
         /// <summary>
         /// Creates Deploy Command.
         /// </summary>
-        public UserCommand(Player player, Planet planet, int deployUnitCount)
+        public UserCommand(Planet planet, int deployUnitCount)
         {
             TargetPlanet = planet;
 
-            PlayerUsername = player.Username;
             TargetId = planet.Id;
-            UnitCount = deployUnitCount;
+            FleetCount = deployUnitCount;
             Type = CommandType.Deploy;
         }
 
@@ -70,10 +65,10 @@
 
         public void SubtractUnit()
         {
-            if (UnitCount == 0) return;
+            if (FleetCount == 0) return;
 
             // TODO: temp unit subtraction implementation
-            --UnitCount;
+            --FleetCount;
         }   
     }
 }

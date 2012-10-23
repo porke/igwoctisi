@@ -137,12 +137,12 @@
             var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
             if (command == null)
             {
-                command = new UserCommand(_clientPlayer, planet, 1);
+                command = new UserCommand(planet, 1);
                 _commands.Add(command);
             }
             else
             {
-                command.UnitCount++;
+                command.FleetCount++;
             }
 
             planet.NumFleetsPresent++;
@@ -159,11 +159,11 @@
             var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
             if (command != null)
             {
-                command.UnitCount--;
+                command.FleetCount--;
                 planet.NumFleetsPresent--;
                 _clientPlayer.DeployableFleets++;
 
-                if (command.UnitCount == 0)
+                if (command.FleetCount == 0)
                 {
                     _commands.Remove(command);
                 }
@@ -227,18 +227,18 @@
 			});
 		}
 
-		void Network_OnRoundStarted(SimulationResult simRes)
+		void Network_OnRoundStarted(NewRoundInfo roundInfo)
 		{
-			_secondsLeft = simRes.RoundTime;
+			_secondsLeft = roundInfo.RoundTime;
 			_gameHud.UpdateTimer((int)_secondsLeft);
 
 			// TODO update gui to enable it for making new moves
 		}
 
-		void Network_OnRoundEnded(/*moves here!*/)
+        void Network_OnRoundEnded(SimulationResult simRes)
 		{
 			// TODO collect info about moves and animate them
-			throw new NotImplementedException();
+			throw new NotImplementedException("Handle simulation result.");
 		}
 
 		void Network_OnGameEnded(/*game result here!*/)

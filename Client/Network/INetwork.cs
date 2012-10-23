@@ -74,12 +74,12 @@
         /// <summary>
         /// Arguments: roundSeconds.
         /// </summary>
-        event Action<SimulationResult> OnRoundStarted;
+        event Action<NewRoundInfo> OnRoundStarted;
 
         /// <summary>
         /// Arguments: currently none.
         /// </summary>
-        event Action OnRoundEnded;
+        event Action<SimulationResult> OnRoundEnded;
 
         /// <summary>
         /// Arguments: currently none.
