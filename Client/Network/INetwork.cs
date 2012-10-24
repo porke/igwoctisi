@@ -73,13 +73,15 @@
 
         /// <summary>
         /// Arguments: roundSeconds.
+        /// Return true if message was consumed.
         /// </summary>
-        event Action<SimulationResult> OnRoundStarted;
+        event Func<NewRoundInfo, bool> OnRoundStarted;
 
         /// <summary>
         /// Arguments: currently none.
+        /// Return true if message was consumed.
         /// </summary>
-        event Action OnRoundEnded;
+        event Func<List<SimulationResult>, bool> OnRoundEnded;
 
         /// <summary>
         /// Arguments: currently none.
