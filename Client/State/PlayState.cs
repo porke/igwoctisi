@@ -13,7 +13,6 @@
 		private GameViewport _gameViewport;
 		private GameHud _gameHud;
 
-		private List<UserCommand> _commands = new List<UserCommand>();
 		private Player _clientPlayer;
 		private List<Player> _players;
 		private double _secondsLeft = 0;
@@ -93,24 +92,8 @@
 
 		internal void DeleteCommand(int orderIndex)
 		{
-            var deletedCommand = _commands[orderIndex];
-
-            // Remove dependant commands
-            // ex. a move dependant on an earlier deploy
-            if (!deletedCommand.CanRevert())
-            {
-                var dependantCommands = _commands.FindAll(cmd => cmd.Type == UserCommand.CommandType.Move && cmd.SourceId == deletedCommand.TargetId);
-
-                foreach (var item in dependantCommands)
-                {
-                    item.Revert();
-                    _commands.Remove(item);
-                }
-                deletedCommand.Revert();
-            }
-
-			_commands.RemoveAt(orderIndex);
-			_gameHud.UpdateCommandList(_commands);
+            _clientPlayer.DeleteCommand(orderIndex);
+            _gameHud.UpdateCommandList(_clientPlayer.Commands);
             _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
 		}
 		internal void LeaveGame()
@@ -125,8 +108,8 @@
 		}
 		internal void SendCommands()
 		{
-			Client.Network.BeginSendCommands(_commands, OnSendOrders, null);
-			_commands.Clear();
+			Client.Network.BeginSendCommands(_clientPlayer.Commands, OnSendOrders, null);
+            _clientPlayer.ClearCommandList();
 
 			InvokeOnMainThread((obj) =>
 			{
@@ -150,48 +133,39 @@
 		}
 		internal void DeployFleet(Planet planet)
 		{
-			var gameHud = ViewMgr.PeekLayer() as GameHud;
-
 			// Deploment is only possible on clients own planet
-			if (planet.Owner == null) return;
-            if (!planet.Owner.Username.Equals(_clientPlayer.Username)) return;
-            if (_clientPlayer.DeployableFleets == 0) return;
+            if (planet.Owner == null)
+            {
+                _gameHud.AddMessage("Cannot deploy fleet: you have to own the target planet.");
+                return;
+            }
+            if (!planet.Owner.Username.Equals(_clientPlayer.Username))
+            {
+                _gameHud.AddMessage("Cannot deploy fleet: you have to own the target planet.");
+                return;
+            }
+            if (_clientPlayer.DeployableFleets == 0)
+            {
+                _gameHud.AddMessage("Cannot deploy fleet: Not enough deployable fleets.");
+                return;
+            }
 
-			var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
-			if (command == null)
-			{
-				command = new UserCommand(planet, 1);
-				_commands.Add(command);
-			}
-			else
-			{
-				command.FleetCount++;
-			}
-
-			planet.NumFleetsPresent++;
-			_clientPlayer.DeployableFleets--;
-			_gameHud.UpdateCommandList(_commands);
+            _clientPlayer.DeployFleet(planet);
+            _gameHud.UpdateCommandList(_clientPlayer.Commands);
 			_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
 		}
 		internal void UndeployFleet(Planet planet)
 		{
-			var gameHud = ViewMgr.PeekLayer() as GameHud;
+			var command = _clientPlayer.Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
+            if (command == null)
+            {
+                _gameHud.AddMessage("Cannot revert deploy: no fleets deployed to selected planet.");
+                return;
+            }
 
-			var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
-			if (command != null)
-			{
-				command.FleetCount--;
-				planet.NumFleetsPresent--;
-				_clientPlayer.DeployableFleets++;
-
-				if (command.FleetCount == 0)
-				{
-					_commands.Remove(command);
-				}
-
-				_gameHud.UpdateCommandList(_commands);
-				_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
-			}
+            _clientPlayer.UndeployFleet(planet);
+            _gameHud.UpdateCommandList(_clientPlayer.Commands);
+            _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
 		}
 		internal void OnHoverLink(PlanetLink hoverLink)
 		{
@@ -206,46 +180,34 @@
             var source = Scene.Map.GetPlanetById(link.SourcePlanet);
             var target = Scene.Map.GetPlanetById(link.TargetPlanet);
 
-            // Defensive coding
-            if (source.Owner == null) return;
-            if (source.NumFleetsPresent < 2) return;
-            if (!_clientPlayer.Username.Equals(source.Owner.Username)) return;
-            if (_clientPlayer.DeployableFleets == 0) return;
-
-            var command = _commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
-            if (command == null)
+            if (source.Owner == null || !_clientPlayer.Username.Equals(source.Owner.Username))
             {
-                command = new UserCommand(source, target);
-                command.FleetCount = 1;
-                _commands.Add(command);
+                _gameHud.AddMessage("Cannot move fleet: fleets can be sent only from owned planets.");
+                return;
             }
-            else
+            if (source.NumFleetsPresent < 2)
             {
-                command.FleetCount++;
+                _gameHud.AddMessage("Cannot move fleet: there must be at least one fleet remaining.");
+                return;
             }
 
-            source.NumFleetsPresent--;
-            target.NumFleetsPresent++;
-            _gameHud.UpdateCommandList(_commands);
+            _clientPlayer.MoveFleet(source, target);
+            _gameHud.UpdateCommandList(_clientPlayer.Commands);
 		}
         internal void RevertMoveFleet(PlanetLink link)
         {
             var source = Scene.Map.GetPlanetById(link.SourcePlanet);
             var target = Scene.Map.GetPlanetById(link.TargetPlanet);
 
-            var targetCommand = _commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
-            if (targetCommand != null)
+            var targetCommand = _clientPlayer.Commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
+            if (targetCommand == null)
             {
-                targetCommand.FleetCount--;
-                source.NumFleetsPresent++;
-                target.NumFleetsPresent--;
-
-                if (targetCommand.FleetCount == 0)
-                {
-                    _commands.Remove(targetCommand);
-                }
-                _gameHud.UpdateCommandList(_commands);
+                _gameHud.AddMessage("Cannot revert fleet move: no fleets moving.");
+                return;
             }
+
+            _clientPlayer.RevertFleetMove(source, target);
+            _gameHud.UpdateCommandList(_clientPlayer.Commands);
         }
 
 		#endregion
@@ -291,9 +253,12 @@
 			{
 				if (_hudState == HudState.WaitingForRoundStart)
 				{
-					_secondsLeft = roundInfo.RoundTime;
-					_gameHud.UpdateTimer((int)_secondsLeft);
-					_hudState = HudState.WaitingForRoundEnd;
+                    InvokeOnMainThread(obj =>
+                    {
+                        _secondsLeft = roundInfo.RoundTime;
+                        _gameHud.UpdateTimer((int)_secondsLeft);
+                        _hudState = HudState.WaitingForRoundEnd;
+                    });
 
 					// We have consumed that packet.
 					return true;
@@ -309,23 +274,26 @@
 			{
 				if (_hudState == HudState.WaitingForRoundEnd)
 				{
-					if (ViewMgr.PeekLayer() is MessageBox)
-					{
-						// Pop MessageBox "Waiting for server to simulate the turn."
-						ViewMgr.PopLayer();
-					}
+                    InvokeOnMainThread(obj =>
+                    {
+                        if (ViewMgr.PeekLayer() is MessageBox)
+                        {
+                            // Pop MessageBox "Waiting for server to simulate the turn."
+                            ViewMgr.PopLayer();
+                        }
 
-					_hudState = HudState.AnimatingSimulationResult;
-					// TODO do some animations using simulation results and then set _hudState to WaitingForRoundStart.
+                        _hudState = HudState.AnimatingSimulationResult;
+                        // TODO do some animations using simulation results and then set _hudState to WaitingForRoundStart.
 
-					foreach (var simResult in simResults)
-					{
-						Scene.ImplementChange(simResult);
-					}
-					
-					// TODO when animation is done that line should be moved to the end of animation.
-					_hudState = HudState.WaitingForRoundStart;
-					
+                        foreach (var simResult in simResults)
+                        {
+                            Scene.ImplementChange(simResult);
+                        }
+
+                        // TODO when animation is done that line should be moved to the end of animation.
+                        _hudState = HudState.WaitingForRoundStart;
+                    });
+
 					// We have consumed that packet.
 					return true;
 				}
@@ -342,9 +310,11 @@
 
 		void Network_OnOtherPlayerLeft(string username, DateTime time)
 		{
-			_players.RemoveAll(player => player.Username.Equals(username));
-			_gameHud.UpdatePlayerList(_players);
-
+            InvokeOnMainThread(obj =>
+            {
+                _players.RemoveAll(player => player.Username.Equals(username));
+                _gameHud.UpdatePlayerList(_players);
+            });
 			// TODO print info (somewhere) about it!
 		}
 

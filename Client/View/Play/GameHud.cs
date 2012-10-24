@@ -19,10 +19,9 @@
         private LabelControl _playerNameValue;
         private LabelControl _fleetCountValue;
         private LabelControl _fleetIncomeValue;
-
         private ListControl _playerList;
-
         private LabelControl _timer;
+        private ListControl _messageList;
 
         protected void CreateChildControls()
         {
@@ -124,6 +123,23 @@
             
             #endregion
 
+            #region Message box
+
+            _messageList = new ListControl
+            {
+                SelectionMode = ListSelectionMode.None,
+                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.85f, 0), new UniScalar(0.65f, 0), new UniScalar(0.13f, 0))
+            };
+
+            var btnClearMessage = new ButtonControl
+            {
+                Text = "C",
+                Bounds = new UniRectangle(new UniScalar(0.96f, 0), new UniScalar(0.94f, 0), new UniScalar(0.03f, 0), new UniScalar(0.03f, 0))
+            };
+            btnClearMessage.Pressed += ClearMessageList;
+
+            #endregion
+
             screen.Desktop.Children.AddRange(
                 new Control[] 
                 {
@@ -144,6 +160,9 @@
                     btnLeaveGame, 
                     btnSendOrders,
                     
+                    _messageList,
+                    btnClearMessage,
+
                     _timer
                 });
         }        
@@ -211,6 +230,16 @@
                     _commandList.Items.Add(string.Format("M: {0} from {1} to {2}", cmd.FleetCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
                 }
             }            
+        }
+
+        public void ClearMessageList(object sender, EventArgs args)
+        {
+            _messageList.Items.Clear();
+        }
+
+        public void AddMessage(string message)
+        {
+            _messageList.Items.Add(message);
         }
 
         #endregion
