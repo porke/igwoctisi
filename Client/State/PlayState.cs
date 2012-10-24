@@ -93,6 +93,18 @@
 
 		internal void DeleteCommand(int orderIndex)
 		{
+            var deletedCommand = _commands[orderIndex];
+
+            if (deletedCommand.Type == UserCommand.CommandType.Deploy)
+            {
+                deletedCommand.TargetPlanet.NumFleetsPresent -= deletedCommand.FleetCount;
+            }
+            else if (deletedCommand.Type == UserCommand.CommandType.Move)
+            {
+                deletedCommand.SourcePlanet.NumFleetsPresent += deletedCommand.FleetCount;
+                deletedCommand.TargetPlanet.NumFleetsPresent -= deletedCommand.FleetCount;
+            }
+
 			_commands.RemoveAt(orderIndex);
 			(ViewMgr.PeekLayer() as GameHud).UpdateCommandList(_commands);
 		}
@@ -194,13 +206,13 @@
             var command = _commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
             if (command == null)
             {
-                command = new UserCommand(_clientPlayer, source, target);
-                command.UnitCount = 1;
+                command = new UserCommand(source, target);
+                command.FleetCount = 1;
                 _commands.Add(command);
             }
             else
             {
-                command.UnitCount++;
+                command.FleetCount++;
             }
 
             source.NumFleetsPresent--;
@@ -209,9 +221,22 @@
 		}
         internal void RevertMoveFleet(PlanetLink link)
         {
-			// TODO: Implement deployment command
             var source = Scene.Map.GetPlanetById(link.SourcePlanet);
             var target = Scene.Map.GetPlanetById(link.TargetPlanet);
+
+            var targetCommand = _commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
+            if (targetCommand != null)
+            {
+                targetCommand.FleetCount--;
+                source.NumFleetsPresent++;
+                target.NumFleetsPresent--;
+
+                if (targetCommand.FleetCount == 0)
+                {
+                    _commands.Remove(targetCommand);
+                }
+                _gameHud.UpdateCommandList(_commands);
+            }
         }
 
 		#endregion
