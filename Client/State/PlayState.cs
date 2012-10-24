@@ -17,6 +17,16 @@
 		private Player _clientPlayer;
 		private List<Player> _players;
 		private double _secondsLeft = 0;
+		private HudState _hudState = HudState.Initializing;
+		private object _hudStateLocker = new object();
+
+		private enum HudState
+		{
+			Initializing,
+			WaitingForRoundStart,
+			WaitingForRoundEnd,
+			AnimatingSimulationResult
+		}
 
 		public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer, List<Player> players)
 			: base(game)
@@ -24,7 +34,7 @@
 			_clientPlayer = clientPlayer;
 			_players = players;
 
-            Scene = new Scene(loadedMap, players);
+			Scene = new Scene(loadedMap, players);
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
 			_gameHud.UpdateClientPlayerFleetData(clientPlayer);
@@ -38,6 +48,8 @@
 			Client.Network.OnGameEnded += Network_OnGameEnded;
 			Client.Network.OnOtherPlayerLeft += Network_OnOtherPlayerLeft;
 			Client.Network.OnDisconnected += Network_OnDisconnected;
+
+			InvokeOnMainThread((obj) => { _hudState = HudState.WaitingForRoundStart; });
 		}
 
 		public override void OnUpdate(double delta, double time)
@@ -49,18 +61,24 @@
 			{
 				if (_secondsLeft - delta <= 0)
 				{
-					_secondsLeft = 0;            
+					_secondsLeft = 0;
 
-					// Create message box that will be shown until server's roundEnd or gameEnd message arrives.
-					var messageBox = new MessageBox(MessageBoxButtons.OK)
+					lock (_hudStateLocker)
 					{
-						Title = "Round simulating",
-						Message = "Waiting for server to simulate the turn."
-							+ Environment.NewLine + Environment.NewLine
-							+ "(This OK button will disappear)"
-					};
-					messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };//TODO to be removed (no OK button!!)
-					ViewMgr.PushLayer(messageBox);
+						if (_hudState == HudState.WaitingForRoundEnd)
+						{
+							// Create message box that will be shown until server's roundEnd or gameEnd message arrives.
+							var messageBox = new MessageBox(MessageBoxButtons.OK)
+							{
+								Title = "Round simulating",
+								Message = "Waiting for server to simulate the turn."
+									+ Environment.NewLine + Environment.NewLine
+									+ "(This OK button will disappear)"
+							};
+							messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };//TODO to be removed (no OK button!!)
+							ViewMgr.PushLayer(messageBox);
+						}
+					}
 				}
 				else
 				{
@@ -73,11 +91,11 @@
 
 		#region View event handlers
 
-        internal void DeleteCommand(int orderIndex)
-        {
-            _commands.RemoveAt(orderIndex);
-            (ViewMgr.PeekLayer() as GameHud).UpdateCommandList(_commands);
-        }
+		internal void DeleteCommand(int orderIndex)
+		{
+			_commands.RemoveAt(orderIndex);
+			(ViewMgr.PeekLayer() as GameHud).UpdateCommandList(_commands);
+		}
 		internal void LeaveGame()
 		{
 			var messageBox = new MessageBox(MessageBoxButtons.None)
@@ -92,6 +110,12 @@
 		{
 			Client.Network.BeginSendCommands(_commands, OnSendOrders, null);
 			_commands.Clear();
+
+			InvokeOnMainThread((obj) =>
+			{
+				if (_secondsLeft > 0)
+					_secondsLeft = 0.001;
+			});
 		}
 		internal void SelectPlanet(Planet selectedPlanet)
 		{
@@ -109,44 +133,44 @@
 		{
 			var gameHud = ViewMgr.PeekLayer() as GameHud;
 
-            // Deploment is only possible on clients own planet
-            if (planet.Owner == null || !planet.Owner.Username.Equals(_clientPlayer.Username)) return;
+			// Deploment is only possible on clients own planet
+			if (planet.Owner == null || !planet.Owner.Username.Equals(_clientPlayer.Username)) return;
 
-            var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
-            if (command == null)
-            {
-                command = new UserCommand(_clientPlayer, planet, 1);
-                _commands.Add(command);
-            }
-            else
-            {
-                command.UnitCount++;
-            }
+			var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
+			if (command == null)
+			{
+				command = new UserCommand(planet, 1);
+				_commands.Add(command);
+			}
+			else
+			{
+				command.FleetCount++;
+			}
 
-            planet.NumFleetsPresent++;
-            _clientPlayer.DeployableFleets--;
-            _gameHud.UpdateCommandList(_commands);
-            _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+			planet.NumFleetsPresent++;
+			_clientPlayer.DeployableFleets--;
+			_gameHud.UpdateCommandList(_commands);
+			_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
 		}
 		internal void UndeployFleet(Planet planet)
 		{
 			var gameHud = ViewMgr.PeekLayer() as GameHud;
 
-            var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
-            if (command != null)
-            {
-                command.UnitCount--;
-                planet.NumFleetsPresent--;
-                _clientPlayer.DeployableFleets++;
+			var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
+			if (command != null)
+			{
+				command.FleetCount--;
+				planet.NumFleetsPresent--;
+				_clientPlayer.DeployableFleets++;
 
-                if (command.UnitCount == 0)
-                {
-                    _commands.Remove(command);
-                }
+				if (command.FleetCount == 0)
+				{
+					_commands.Remove(command);
+				}
 
-                _gameHud.UpdateCommandList(_commands);
-                _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
-            }
+				_gameHud.UpdateCommandList(_commands);
+				_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+			}
 		}
 		internal void OnHoverLink(PlanetLink hoverLink)
 		{
@@ -185,7 +209,7 @@
 		}
         internal void RevertMoveFleet(PlanetLink link)
         {
-            // TODO: Implement deployment command
+			// TODO: Implement deployment command
             var source = Scene.Map.GetPlanetById(link.SourcePlanet);
             var target = Scene.Map.GetPlanetById(link.TargetPlanet);
         }
@@ -224,22 +248,56 @@
 			InvokeOnMainThread(obj =>
 			{
 				Client.Network.EndSendCommands(result);
-				_secondsLeft = 0.001;
 			});
 		}
 
-		void Network_OnRoundStarted(SimulationResult simRes)
+		bool Network_OnRoundStarted(NewRoundInfo roundInfo)
 		{
-			_secondsLeft = simRes.RoundTime;
-			_gameHud.UpdateTimer((int)_secondsLeft);
+			lock (_hudStateLocker)
+			{
+				if (_hudState == HudState.WaitingForRoundStart)
+				{
+					_secondsLeft = roundInfo.RoundTime;
+					_gameHud.UpdateTimer((int)_secondsLeft);
+					_hudState = HudState.WaitingForRoundEnd;
 
-			// TODO update gui to enable it for making new moves
+					// We have consumed that packet.
+					return true;
+				}
+
+				return false;
+			}
 		}
 
-		void Network_OnRoundEnded(/*moves here!*/)
+		bool Network_OnRoundEnded(List<SimulationResult> simResults)
 		{
-			// TODO collect info about moves and animate them
-			throw new NotImplementedException();
+			lock (_hudStateLocker)
+			{
+				if (_hudState == HudState.WaitingForRoundEnd)
+				{
+					if (ViewMgr.PeekLayer() is MessageBox)
+					{
+						// Pop MessageBox "Waiting for server to simulate the turn."
+						ViewMgr.PopLayer();
+					}
+
+					_hudState = HudState.AnimatingSimulationResult;
+					// TODO do some animations using simulation results and then set _hudState to WaitingForRoundStart.
+
+					foreach (var simResult in simResults)
+					{
+						Scene.ImplementChange(simResult);
+					}
+					
+					// TODO when animation is done that line should be moved to the end of animation.
+					_hudState = HudState.WaitingForRoundStart;
+					
+					// We have consumed that packet.
+					return true;
+				}
+
+				return false;
+			}
 		}
 
 		void Network_OnGameEnded(/*game result here!*/)

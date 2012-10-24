@@ -1,14 +1,20 @@
 ﻿namespace Client.Common
 {
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
     using Newtonsoft.Json.Serialization;
 
     public class JsonLowercaseSerializer
     {
         private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
-            ContractResolver = new LowercaseContractResolver()
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
         };
+
+        static JsonLowercaseSerializer()
+        {
+            Settings.Converters.Add(new StringEnumConverter { CamelCaseText = true });            
+        }
 
         public static string SerializeObject(object o, Formatting formatting = Formatting.None)
         {
@@ -18,14 +24,6 @@
         public static T DeserializeObject<T>(string jsonStr)
         {
             return JsonConvert.DeserializeObject<T>(jsonStr);
-        }
-
-        public class LowercaseContractResolver : DefaultContractResolver
-        {
-            protected override string ResolvePropertyName(string propertyName)
-            {
-                return Utils.LowerFirstLetter(propertyName);
-            }
         }
     }
 }

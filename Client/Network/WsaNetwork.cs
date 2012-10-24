@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Globalization;
     using System.IO;
     using System.Net.Sockets;
     using System.Threading;
@@ -11,7 +12,6 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using NLog;
-    using System.Globalization;
 
     public class WsaNetwork : INetwork
     {
@@ -23,8 +23,8 @@
         public event Action<string, DateTime> OnOtherPlayerKicked;
         public event Action OnPlayerKicked;
         public event Action<Map> OnGameStarted;
-        public event Action<SimulationResult> OnRoundStarted;
-        public event Action OnRoundEnded;
+        public event Func<NewRoundInfo, bool> OnRoundStarted;
+        public event Func<List<SimulationResult>, bool> OnRoundEnded;
         public event Action OnGameEnded;
         public event Action<string> OnDisconnected;
         
@@ -77,7 +77,6 @@
             //Packet type:    Source:
 
             LoginFailed,    //Server
-            GameListEmpty,  //Server
             GameInvalidId,  //Server
             GameFull,       //Server
             GameCreateFailed//Server
@@ -93,6 +92,9 @@
         
         Dictionary<int, Tuple<bool, Action<string, MessageContentType, ErrorType>>> messageResponses
             = new Dictionary<int, Tuple<bool, Action<string, MessageContentType, ErrorType>>>();
+
+        List<Func<bool>> _incomingWaitingMessages = new List<Func<bool>>();
+        List<Func<bool>> _incomingWaitingMessagesToBeRemoved = new List<Func<bool>>();
 
         private const int TIMEOUT_MILLISECONDS = 15000;
 
@@ -141,6 +143,7 @@
                 {
                     Debug.WriteLine("S: " + jsonLine);
 
+                    #region Header part
                     if (nextPacketType == PacketType.Header)
                     {
                         // Handle situation when jsonLine isn't actually Json
@@ -245,7 +248,8 @@
                         }
                         else if (type == MessageContentType.RoundEnd)
                         {
-                            // TODO implement!
+                            // Next packet should contain battle simulation results.
+                            nextPacketType = PacketType.Content;
                         }
                         else if (type == MessageContentType.GameEnd)
                         {
@@ -256,6 +260,9 @@
                         // nextPacketType is PacketType.Content or PacketType.ContentAsResponse.
                         nextContentType = type;
                     }
+                    #endregion
+
+                    #region Content part
                     else if (nextPacketType == PacketType.Content)
                     {
                         if (nextContentType == MessageContentType.Error)
@@ -313,18 +320,26 @@
                         }
                         else if (nextContentType == MessageContentType.RoundStart)
                         {
-                            if (OnRoundStarted != null)
+                            var roundInfo = JsonLowercaseSerializer.DeserializeObject<NewRoundInfo>(jsonLine);
+
+                            if (OnRoundStarted == null || !OnRoundStarted.Invoke(roundInfo))
                             {
-                                var simRes = JsonLowercaseSerializer.DeserializeObject<SimulationResult>(jsonLine);
-                                OnRoundStarted.Invoke(simRes);
+                                EnqueueIncomingMessage(() =>
+                                {
+                                    return OnRoundStarted != null && OnRoundStarted.Invoke(roundInfo);
+                                });                                
                             }
                         }
                         else if (nextContentType == MessageContentType.RoundEnd)
                         {
-                            if (OnRoundEnded != null)
+                            var simRes = JsonLowercaseSerializer.DeserializeObject<List<SimulationResult>>(jsonLine);
+
+                            if (OnRoundEnded == null || !OnRoundEnded.Invoke(simRes))
                             {
-                                // TODO implement end of round
-                                OnRoundEnded.Invoke();
+                                EnqueueIncomingMessage(() =>
+                                {
+                                    return OnRoundEnded != null && OnRoundEnded.Invoke(simRes);
+                                });
                             }
                         }
                         else if (nextContentType == MessageContentType.GameEnd)
@@ -362,12 +377,13 @@
 
                         // Next packet will be a header for some another message.
                         nextPacketType = PacketType.Header;
-                    }                    
+                    }
+                    #endregion
                 }
             }
             catch (Exception ex)
             {
-                if (ex is IOException || ex is SocketException)
+                if (ex is IOException || ex is SocketException|| ex is ObjectDisposedException)
                 {
                     // Connection may be forcibly closed while waiting for message.
                     // It also could be a kick from the server.
@@ -392,6 +408,14 @@
                     TimeoutObject.Reset();
                 }
                 catch { }
+            }
+        }
+
+        private void EnqueueIncomingMessage(Func<bool> messageDispatcherFunc)
+        {
+            lock (_incomingWaitingMessages)
+            {
+                _incomingWaitingMessages.Add(messageDispatcherFunc);
             }
         }
 
@@ -460,6 +484,7 @@
         {
             Client = client;
         }
+
         public void Release()
         {
             Client = null;
@@ -470,8 +495,26 @@
             catch { }
             tcpClient = null;
         }
+
         public void Update(double delta, double time)
         {
+            lock (_incomingWaitingMessages)
+            {
+                _incomingWaitingMessagesToBeRemoved.Clear();
+
+                foreach (var message in _incomingWaitingMessages)
+                {
+                    if (message.Invoke())
+                    {
+                        _incomingWaitingMessagesToBeRemoved.Add(message);
+                    }
+                }
+
+                foreach (var message in _incomingWaitingMessagesToBeRemoved)
+                {
+                    _incomingWaitingMessages.Remove(message);
+                }
+            }
         }
 
         /// <summary>
@@ -512,6 +555,7 @@
 
             return ar;
         }
+
         public bool EndConnect(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<bool>)asyncResult;
@@ -519,6 +563,7 @@
 
             return ar.Result;
         }
+
         public IAsyncResult BeginLogin(string username, string password, AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<Player>(asyncCallback, asyncState);
@@ -543,6 +588,7 @@
 
             return ar;
         }
+
         public Player EndLogin(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<Player>)asyncResult;
@@ -643,6 +689,7 @@
             });
             return ar;
         }
+
         public void EndDisconnect(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<object>)asyncResult;
@@ -759,16 +806,13 @@
                 else if (messageContentType == MessageContentType.Error)
                 {
                     string message = "Waiting for game list received: " + errorType + '.';
-
-                    if (errorType == ErrorType.GameListEmpty)
-                        message = "There are currently no games.";
-
                     ar.HandleException(new Exception(message), false);
                 }                
             });
             
             return ar;
         }
+
         public List<LobbyListInfo> EndGetGameList(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<List<LobbyListInfo>>)asyncResult;
@@ -784,21 +828,18 @@
             ar.BeginInvoke(() => { Thread.Sleep(500); return null; });
             return ar;
         }
+
         public Map EndReceiveGameState(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<Map>)asyncResult;
             return ar.EndInvoke();
         }
+
         public IAsyncResult BeginSendCommands(List<UserCommand> commands, AsyncCallback asyncCallback, object asyncState)
         {
             var ar = new AsyncResult<bool>(asyncCallback, asyncState);
-
-            var infoContent = new
-            {
-                Commands = JsonLowercaseSerializer.SerializeObject(commands)
-            };
-
-            SendRequest(MessageContentType.Commands, false, infoContent, (jsonStr, messageContentType, errorType) =>
+            
+            SendRequest(MessageContentType.Commands, false, commands, (jsonStr, messageContentType, errorType) =>
             {
                 ar.BeginInvoke(() =>
                 {
@@ -811,6 +852,7 @@
 
             return ar;
         }
+
         public void EndSendCommands(IAsyncResult asyncResult)
         {
             var ar = (AsyncResult<bool>)asyncResult;
