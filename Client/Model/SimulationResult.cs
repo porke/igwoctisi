@@ -52,12 +52,10 @@
         [DataMember]
         public int DefenderLosses;
 
-        
         public int AttackerFleetsBack
         {
             get { return FleetCount - AttackerLosses; }
         }
-
 
         public enum MoveType
         {

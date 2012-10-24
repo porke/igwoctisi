@@ -12,6 +12,14 @@
             Tech
         }
 
+        public enum TechType
+        {
+            None,
+            Offense,
+            Defense,
+            Economy
+        }
+
         [DataMember]
         public int SourceId { get; set; }
 
@@ -23,6 +31,8 @@
 
         [DataMember]
         public CommandType Type { get; set; }
+
+        public TechType TechImproved { get; set; }
 
         public Planet SourcePlanet { get; private set; }
         public Planet TargetPlanet { get; private set; }
@@ -60,6 +70,28 @@
             Type = CommandType.Deploy;
         }
 
-        // TODO Create constructor for Tech Command
+        /// <summary>
+        /// Creates Tech Command.
+        /// </summary>
+        public UserCommand(TechType improvedTech)
+        {
+            Type = CommandType.Tech;
+            TechImproved = improvedTech;
+        }
+
+        public void Revert()
+        {
+            if (Type == CommandType.Deploy)
+            {
+                TargetPlanet.NumFleetsPresent -= FleetCount;
+                TargetPlanet.Owner.DeployableFleets += FleetCount;
+                FleetCount = 0;
+            }
+            else if (Type == CommandType.Move)
+            {
+                SourcePlanet.NumFleetsPresent += FleetCount;
+                TargetPlanet.NumFleetsPresent -= FleetCount;
+            }
+        }
     }
 }
