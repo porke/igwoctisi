@@ -204,11 +204,11 @@
             {
                 if (cmd.Type == UserCommand.CommandType.Deploy)
                 {
-                    _commandList.Items.Add(string.Format("D: {0} to {1}", cmd.UnitCount, cmd.TargetPlanet.Name));
+                    _commandList.Items.Add(string.Format("D: {0} to {1}", cmd.FleetCount, cmd.TargetPlanet.Name));
                 }
                 else if (cmd.Type == UserCommand.CommandType.Move)
                 {
-                    _commandList.Items.Add(string.Format("M: {0} from {1} to {2}", cmd.UnitCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
+                    _commandList.Items.Add(string.Format("M: {0} from {1} to {2}", cmd.FleetCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
                 }
             }            
         }

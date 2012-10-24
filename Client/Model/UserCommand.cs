@@ -61,13 +61,5 @@
         }
 
         // TODO Create constructor for Tech Command
-
-        public void SubtractUnit()
-        {
-            if (FleetCount == 0) return;
-
-            // TODO: temp unit subtraction implementation
-            --FleetCount;
-        }   
     }
 }
