@@ -34,11 +34,11 @@
 			_clientPlayer = clientPlayer;
 			_players = players;
 
-			Scene = new Scene(loadedMap, players);
+			Scene = new Scene(loadedMap, _players);
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
-			_gameHud.UpdateClientPlayerFleetData(clientPlayer);
-			_gameHud.UpdatePlayerList(players);
+            _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+			_gameHud.UpdatePlayerList(_players);
 
 			ViewMgr.PushLayer(_gameViewport);
 			ViewMgr.PushLayer(_gameHud);
@@ -94,19 +94,11 @@
 		internal void DeleteCommand(int orderIndex)
 		{
             var deletedCommand = _commands[orderIndex];
-
-            if (deletedCommand.Type == UserCommand.CommandType.Deploy)
-            {
-                deletedCommand.TargetPlanet.NumFleetsPresent -= deletedCommand.FleetCount;
-            }
-            else if (deletedCommand.Type == UserCommand.CommandType.Move)
-            {
-                deletedCommand.SourcePlanet.NumFleetsPresent += deletedCommand.FleetCount;
-                deletedCommand.TargetPlanet.NumFleetsPresent -= deletedCommand.FleetCount;
-            }
+            deletedCommand.Revert();
 
 			_commands.RemoveAt(orderIndex);
-			(ViewMgr.PeekLayer() as GameHud).UpdateCommandList(_commands);
+			_gameHud.UpdateCommandList(_commands);
+            _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
 		}
 		internal void LeaveGame()
 		{
@@ -146,7 +138,9 @@
 			var gameHud = ViewMgr.PeekLayer() as GameHud;
 
 			// Deploment is only possible on clients own planet
-			if (planet.Owner == null || !planet.Owner.Username.Equals(_clientPlayer.Username)) return;
+			if (planet.Owner == null) return;
+            if (!planet.Owner.Username.Equals(_clientPlayer.Username)) return;
+            if (_clientPlayer.DeployableFleets == 0) return;
 
 			var command = _commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
 			if (command == null)

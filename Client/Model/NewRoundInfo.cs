@@ -6,7 +6,6 @@
     using System.Text;
     using System.Runtime.Serialization;
 
-
     /// <summary>
     /// Data being received from server in RoundStart packet.
     /// </summary>

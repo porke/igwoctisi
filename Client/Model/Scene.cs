@@ -27,6 +27,8 @@
 				var startingPlanet = Map.StartingPositions[i];
 				startingPlanet.Owner = _players[i];
 				_players[i].AddPlanet(startingPlanet);
+
+                _players[i].DeployableFleets = startingPlanet.BaseUnitsPerTurn;
 			}
 		}
 		public Planet PickPlanet(Vector2 clickPosition, IRenderer renderer)

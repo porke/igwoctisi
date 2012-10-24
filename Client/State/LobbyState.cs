@@ -289,7 +289,8 @@
                     Client.Network.EndStartGame(result);
                     
                     var playerList = new List<Player>(_gameLobby.Players.Select(username => new Player(username)));
-                    Game.ChangeState(new PlayState(Game, _map, _clientPlayer, playerList));
+                    var clientPlayer = playerList.Find(player => player.Username.Equals(_clientPlayer.Username));
+                    Game.ChangeState(new PlayState(Game, _map, clientPlayer, playerList));
                 }
                 catch (Exception exc)
                 {
