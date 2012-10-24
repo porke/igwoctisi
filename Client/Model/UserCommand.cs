@@ -79,6 +79,16 @@
             TechImproved = improvedTech;
         }
 
+        public bool CanRevert()
+        {
+            if (Type == CommandType.Deploy)
+            {
+                return TargetPlanet.NumFleetsPresent - FleetCount > 0;
+            }
+
+            return true;
+        }
+
         public void Revert()
         {
             if (Type == CommandType.Deploy)

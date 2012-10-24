@@ -94,7 +94,20 @@
 		internal void DeleteCommand(int orderIndex)
 		{
             var deletedCommand = _commands[orderIndex];
-            deletedCommand.Revert();
+
+            // Remove dependant commands
+            // ex. a move dependant on an earlier deploy
+            if (!deletedCommand.CanRevert())
+            {
+                var dependantCommands = _commands.FindAll(cmd => cmd.Type == UserCommand.CommandType.Move && cmd.SourceId == deletedCommand.TargetId);
+
+                foreach (var item in dependantCommands)
+                {
+                    item.Revert();
+                    _commands.Remove(item);
+                }
+                deletedCommand.Revert();
+            }
 
 			_commands.RemoveAt(orderIndex);
 			_gameHud.UpdateCommandList(_commands);
@@ -117,8 +130,10 @@
 
 			InvokeOnMainThread((obj) =>
 			{
-				if (_secondsLeft > 0)
-					_secondsLeft = 0.001;
+                if (_secondsLeft > 0)
+                {
+                    _secondsLeft = 0.001;
+                }
 			});
 		}
 		internal void SelectPlanet(Planet selectedPlanet)
