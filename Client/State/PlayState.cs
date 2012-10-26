@@ -47,9 +47,20 @@
 			Client.Network.OnGameEnded += Network_OnGameEnded;
 			Client.Network.OnOtherPlayerLeft += Network_OnOtherPlayerLeft;
 			Client.Network.OnDisconnected += Network_OnDisconnected;
+            Client.Network.OnChatMessageReceived += Network_OnChatMessageReceived;
 
 			InvokeOnMainThread((obj) => { _hudState = HudState.WaitingForRoundStart; });
 		}
+
+        public override void OnExit()
+        {
+            Client.Network.OnRoundStarted -= Network_OnRoundStarted;
+            Client.Network.OnRoundEnded -= Network_OnRoundEnded;
+            Client.Network.OnGameEnded -= Network_OnGameEnded;
+            Client.Network.OnOtherPlayerLeft -= Network_OnOtherPlayerLeft;
+            Client.Network.OnDisconnected -= Network_OnDisconnected;
+            Client.Network.OnChatMessageReceived -= Network_OnChatMessageReceived;
+        }
 
 		public override void OnUpdate(double delta, double time)
 		{
@@ -210,12 +221,16 @@
             _clientPlayer.RevertFleetMove(source, target);
             _gameHud.UpdateCommandList(_clientPlayer.Commands);
         }
+        internal void SendChatMessage(string message)
+        {            
+            Client.Network.BeginSendChatMessage(message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
+        }
 
 		#endregion
 
 		#region Async network callbacks
 
-		void OnLeaveGame(IAsyncResult result)
+		private void OnLeaveGame(IAsyncResult result)
 		{
 			InvokeOnMainThread(obj =>
 			{
@@ -240,7 +255,7 @@
 			});
 		}
 
-		void OnSendOrders(IAsyncResult result)
+        private void OnSendOrders(IAsyncResult result)
 		{
 			InvokeOnMainThread(obj =>
 			{
@@ -248,7 +263,7 @@
 			});
 		}
 
-		bool Network_OnRoundStarted(NewRoundInfo roundInfo)
+        private bool Network_OnRoundStarted(NewRoundInfo roundInfo)
 		{
 			lock (_hudStateLocker)
 			{
@@ -269,7 +284,7 @@
 			}
 		}
 
-		bool Network_OnRoundEnded(List<SimulationResult> simResults)
+        private bool Network_OnRoundEnded(List<SimulationResult> simResults)
 		{
 			lock (_hudStateLocker)
 			{
@@ -303,13 +318,13 @@
 			}
 		}
 
-		void Network_OnGameEnded(/*game result here!*/)
+        private void Network_OnGameEnded(/*game result here!*/)
 		{
 			// TODO show game result and statistics
 			throw new NotImplementedException();
 		}
 
-		void Network_OnOtherPlayerLeft(string username, DateTime time)
+        private void Network_OnOtherPlayerLeft(string username, DateTime time)
 		{
             InvokeOnMainThread(obj =>
             {
@@ -319,7 +334,7 @@
 			// TODO print info (somewhere) about it!
 		}
 
-		void Network_OnDisconnected(string reason)
+        private void Network_OnDisconnected(string reason)
 		{
 			InvokeOnMainThread(obj =>
 			{
@@ -328,6 +343,14 @@
 				menuState.OnDisconnected("Disconnection", "You were disconnected from the server.");
 			});
 		}
+
+        private void Network_OnChatMessageReceived(ChatMessage msg)
+        {
+            InvokeOnMainThread(obj =>
+            {
+                _gameHud.AddMessage(string.Format("<{0}/{1}>: {2}", msg.Username, msg.Time, msg.Message));
+            }, msg);
+        }
 
 		#endregion
 	}

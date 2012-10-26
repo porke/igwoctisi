@@ -10,6 +10,7 @@
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
+    using Client.Input.Controls;
 
     class GameHud : BaseView
     {
@@ -22,6 +23,7 @@
         private ListControl _playerList;
         private LabelControl _timer;
         private ListControl _messageList;
+        private CommandInputControl _chatMessage;
 
         protected void CreateChildControls()
         {
@@ -123,12 +125,18 @@
             
             #endregion
 
-            #region Message box
+            #region Message box & chat
+
+            _chatMessage = new CommandInputControl
+            {
+                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.9f, 0), new UniScalar(0.65f, 0), new UniScalar(0.05f, 0))
+            };
+            _chatMessage.OnCommandHandler += new EventHandler(ChatMessage_Execute);
 
             _messageList = new ListControl
             {
                 SelectionMode = ListSelectionMode.None,
-                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.85f, 0), new UniScalar(0.65f, 0), new UniScalar(0.13f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.75f, 0), new UniScalar(0.65f, 0), new UniScalar(0.13f, 0))
             };
 
             var btnClearMessage = new ButtonControl
@@ -161,6 +169,7 @@
                     btnSendOrders,
                     
                     _messageList,
+                    _chatMessage,
                     btnClearMessage,
 
                     _timer
@@ -187,6 +196,15 @@
             {
                 var selectedOrderIndex = _commandList.SelectedItems[0];
 				PlayState.DeleteCommand(selectedOrderIndex);
+            }
+        }
+
+        private void ChatMessage_Execute(object sender, EventArgs e)
+        {
+            if (_chatMessage.Text.Trim().Length > 0)
+            {
+                PlayState.SendChatMessage(_chatMessage.Text);
+                _chatMessage.Text = string.Empty;
             }
         }
 
