@@ -108,10 +108,10 @@
                 switch (key)
                 {
                     case Keys.Down:
-                        camera.TranslationDirection = -Vector3.UnitY;
+                        camera.TranslationDirection = Vector3.UnitY;
                         break;
                     case Keys.Up:
-                        camera.TranslationDirection = Vector3.UnitY;
+                        camera.TranslationDirection = -Vector3.UnitY;
                         break;
                     case Keys.Left:
                         camera.TranslationDirection = -Vector3.UnitX;
