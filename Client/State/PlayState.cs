@@ -110,6 +110,7 @@
 		{
 			Client.Network.BeginSendCommands(_clientPlayer.Commands, OnSendOrders, null);
             _clientPlayer.ClearCommandList();
+            _gameHud.UpdateCommandList(_clientPlayer.Commands);
 
 			InvokeOnMainThread((obj) =>
 			{
