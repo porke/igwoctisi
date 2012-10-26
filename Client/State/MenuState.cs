@@ -30,7 +30,7 @@
             Client.Network.OnDisconnected -= new Action<string>(OnDisconnected_EventHandler);
         }
 
-        #region _view event handlers
+        #region View event handlers
 
         internal void QuitGame()
         {
