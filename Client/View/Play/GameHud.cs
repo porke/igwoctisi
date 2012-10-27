@@ -247,6 +247,10 @@
                 {
                     _commandList.Items.Add(string.Format("M: {0} from {1} to {2}", cmd.FleetCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
                 }
+                else if (cmd.Type == UserCommand.CommandType.Attack)
+                {
+                    _commandList.Items.Add(string.Format("A: {0} from {1} to {2}", cmd.FleetCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
+                }
             }            
         }
 

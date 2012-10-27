@@ -7,7 +7,8 @@
     {
         public enum CommandType
         {
-            Move,   //Attack inside
+            Move,
+            Attack,
             Deploy,
             Tech
         }
@@ -45,7 +46,7 @@
         }
 
         /// <summary>
-        /// Creates Move Command.
+        /// Creates Move Command or Attack Command if Source and Target owner are not equal.
         /// </summary>
         public UserCommand(Planet sourcePlanet, Planet targetPlanet)
         {
@@ -55,7 +56,7 @@
             SourceId = sourcePlanet.Id;
             TargetId = targetPlanet.Id;
             FleetCount = 1;
-            Type = CommandType.Move;
+            Type = (sourcePlanet.Owner == targetPlanet.Owner) ? CommandType.Move : CommandType.Attack;
         }
 
         /// <summary>
