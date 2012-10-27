@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using Client.Input.Controls;
     using Common;
     using Input;
     using Nuclex.UserInterface;
@@ -20,19 +21,17 @@
 
         protected MessageBoxButtons _buttons;
         protected WindowControl _window;
-        protected LabelControl _lblMessage;
+        protected WrappableLabelControl _lblMessage;
 
         protected void CreateChildControls()
         {
             _window = new WindowControl
             {
-                Title = "",
                 Bounds = new UniRectangle(new UniScalar(0.25f, 0), new UniScalar(0.35f, 0), new UniScalar(0.5f, 0), new UniScalar(0.25f, 0))
             };
 
-            _lblMessage = new LabelControl
+            _lblMessage = new WrappableLabelControl
             {
-                Text = "",
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.6f, 0))
             };
 
