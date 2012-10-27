@@ -37,6 +37,7 @@
         // Attributes names
         private static string NameAttribute = "Name";
         private static string PlanetIdAttribute = "PlanetId";
+        private static string ColorAttribute = "Color";
 
         // Element names
         private static string MapElement = "Map";
@@ -97,7 +98,8 @@
                 do
                 {
                     int planetId = Convert.ToInt32(reader.GetAttribute(PlanetIdAttribute));
-                    PlayerStartingData.Add(new StartingData(planetId));
+                    string colorHex = reader.GetAttribute(ColorAttribute);
+                    PlayerStartingData.Add(new StartingData(planetId, Convert.ToInt32(colorHex, 16)));
                 } while (reader.ReadToNextSibling(StartingDataElement));
             }
         }

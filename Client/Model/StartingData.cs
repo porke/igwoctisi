@@ -8,9 +8,13 @@
         [DataMember]
         public int PlanetId { get; set; }
 
-        public StartingData(int planetId)
+        [DataMember]
+        public int Color { get; set; }
+
+        public StartingData(int planetId, int color)
         {
             PlanetId = planetId;
+            Color = color;
         }
     }
 }
