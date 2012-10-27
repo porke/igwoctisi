@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Client.Model;
 using Client.Common;
 using Client.Input;
+using Client.Model;
+using Client.State;
 using Nuclex.UserInterface;
 using Nuclex.UserInterface.Controls;
 using Nuclex.UserInterface.Controls.Desktop;
-using Client.State;
 
 
 namespace Client.View.Lobby
