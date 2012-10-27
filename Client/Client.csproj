@@ -105,6 +105,7 @@
     <Compile Include="Common\SystemExtensions.cs" />
     <Compile Include="Common\XnaExtensions.cs" />
     <Compile Include="Input\Controls\CommandInputControl.cs" />
+    <Compile Include="Input\Controls\WrappableLabelControl.cs" />
     <Compile Include="Input\IInput.cs" />
     <Compile Include="Input\IInputReceiver.cs" />
     <Compile Include="Input\NullInputReceiver.cs" />

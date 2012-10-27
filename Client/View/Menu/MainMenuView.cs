@@ -46,8 +46,8 @@
             };
             btnQuit.Pressed += Quit_Pressed;
 
-            screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit });
-        }        
+            screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit});
+        }
 
         #endregion
 
