@@ -2,13 +2,16 @@
 {
     using System.Collections.Generic;
     using System.Runtime.Serialization;
+    using Microsoft.Xna.Framework;
+    using System.ComponentModel;
 
     [DataContract]
     public class Player
     {
         [DataMember]
         public string Username { get; private set; }
-        
+
+        public Color Color { get; private set; }
         public int DeployableFleets { get; set; }
         public bool CanDeployFleets { get { return DeployableFleets > 0; } }
         public int FleetIncomePerTurn
@@ -31,6 +34,7 @@
         public Player(string username)
         {
             Username = username;
+            Color = Color.White;
             Commands = new List<UserCommand>();
         }
 
