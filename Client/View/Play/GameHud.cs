@@ -16,13 +16,13 @@
     {
         #region Protected members
 
-        private ListControl _commandList;
+        private WrappableListControl _commandList;
         private LabelControl _playerNameValue;
         private LabelControl _fleetCountValue;
         private LabelControl _fleetIncomeValue;
         private ListControl _playerList;
         private LabelControl _timer;
-        private ListControl _messageList;
+        private WrappableListControl _messageList;
         private CommandInputControl _chatMessage;
 
         protected void CreateChildControls()
@@ -49,11 +49,11 @@
                 Bounds = new UniRectangle(new UniScalar(0.075f, 0), new UniScalar(0.2f, 0), new UniScalar(0.34f, 0), new UniScalar(0.1f, 0))
             };
 
-            _commandList = new ListControl()
+            _commandList = new WrappableListControl()
             {
-                SelectionMode = ListSelectionMode.Single,
+                SelectionMode = ListSelectionMode.Single,                
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.28f, 0), new UniScalar(0.21f, 0), new UniScalar(0.3f, 0))
-            };
+            };            
 
             var btnDeleteOrder = new ButtonControl()
             {
@@ -133,7 +133,7 @@
             };
             _chatMessage.OnCommandHandler += new EventHandler(ChatMessage_Execute);
 
-            _messageList = new ListControl
+            _messageList = new WrappableListControl
             {
                 SelectionMode = ListSelectionMode.None,
                 Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.75f, 0), new UniScalar(0.65f, 0), new UniScalar(0.13f, 0))
@@ -236,32 +236,32 @@
 
         public void UpdateCommandList(List<UserCommand> commands)
         {
-            _commandList.Items.Clear();
+            _commandList.Clear();
             foreach (var cmd in commands)
             {
                 if (cmd.Type == UserCommand.CommandType.Deploy)
                 {
-                    _commandList.Items.Add(string.Format("D: {0} to {1}", cmd.FleetCount, cmd.TargetPlanet.Name));
+                    _commandList.AddItem(string.Format("D: {0} to {1}", cmd.FleetCount, cmd.TargetPlanet.Name));
                 }
                 else if (cmd.Type == UserCommand.CommandType.Move)
                 {
-                    _commandList.Items.Add(string.Format("M: {0} from {1} to {2}", cmd.FleetCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
+                    _commandList.AddItem(string.Format("M: {0} from {1} to {2}", cmd.FleetCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
                 }
                 else if (cmd.Type == UserCommand.CommandType.Attack)
                 {
-                    _commandList.Items.Add(string.Format("A: {0} from {1} to {2}", cmd.FleetCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
+                    _commandList.AddItem(string.Format("A: {0} from {1} to {2}", cmd.FleetCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
                 }
             }            
         }
 
         public void ClearMessageList(object sender, EventArgs args)
         {
-            _messageList.Items.Clear();
+            _messageList.Clear();
         }
 
         public void AddMessage(string message)
         {
-            _messageList.Items.Add(message);
+            _messageList.AddItem(message);
         }
 
         #endregion
