@@ -15,7 +15,7 @@
     {
         #region Protected members
 
-        private ListControl _messageList;
+        private WrappableListControl _messageList;
         private ListControl _playerList;
         private CommandInputControl _currentMessage;
 
@@ -49,7 +49,7 @@
             };
             btnSendChatMessage.Pressed += SendChatMessage_Pressed;
 
-            _messageList = new ListControl()
+            _messageList = new WrappableListControl()
             {
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.5f, 0), new UniScalar(0.9f, 0), new UniScalar(0.4f, 0))
             };
@@ -131,13 +131,13 @@
         }
 
         public void ChatMessageReceived(ChatMessage message)
-        {
-            _messageList.Items.Add(string.Format("<{0}/{1}>: {2}", message.Username, message.Time, message.Message));
+        {            
+            _messageList.AddItem(string.Format("<{0}/{1}>: {2}", message.Username, message.Time, message.Message));
         }
 
         public void AddHostMessage(string message, string time)
         {
-            _messageList.Items.Add(string.Format("({0}): {1}", time, message));
+            _messageList.AddItem(string.Format("({0}): {1}", time, message));
         }
 
         #endregion
