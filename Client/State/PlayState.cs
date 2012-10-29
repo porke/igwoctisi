@@ -104,7 +104,7 @@
 		internal void DeleteCommand(int orderIndex)
 		{
             _clientPlayer.DeleteCommand(orderIndex);
-            _gameHud.UpdateCommandList(_clientPlayer.Commands);
+            _gameHud.UpdateCommandList(_clientPlayer.Commands, orderIndex);
             _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
 		}
 		internal void LeaveGame()

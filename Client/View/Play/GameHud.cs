@@ -51,7 +51,6 @@
 
             _commandList = new WrappableListControl()
             {
-                SelectionMode = ListSelectionMode.Single,                
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.28f, 0), new UniScalar(0.21f, 0), new UniScalar(0.3f, 0))
             };            
 
@@ -234,7 +233,7 @@
             _timer.Text = mins.ToString() + (secs < 10 ? ":0" : ":") + secs.ToString();
         }
 
-        public void UpdateCommandList(List<UserCommand> commands)
+        public void UpdateCommandList(List<UserCommand> commands, int selectedCommand = -1)
         {
             _commandList.Clear();
             foreach (var cmd in commands)
@@ -251,7 +250,9 @@
                 {
                     _commandList.AddItem(string.Format("A: {0} from {1} to {2}", cmd.FleetCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
                 }
-            }            
+            }
+
+            _commandList.SelectItem(selectedCommand);
         }
 
         public void ClearMessageList(object sender, EventArgs args)
