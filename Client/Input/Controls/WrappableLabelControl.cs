@@ -5,7 +5,7 @@
     using System.Text;
     using Nuclex.UserInterface.Controls;
 
-    class WrappableLabelControl : LabelControl
+    public class WrappableLabelControl : LabelControl
     {
         public bool EnableWrapping { get; set; }
         public int CharacterWidthInPx { get; set; }
