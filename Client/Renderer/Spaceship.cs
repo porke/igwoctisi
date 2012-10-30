@@ -3,13 +3,14 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Client.Common;
-    using Client.View;
     using Client.Model;
+    using Client.View;
+    using Common;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
-
+    using System.Diagnostics;
+    
     public class Spaceship : IMovable
     {
         #region Pooling
@@ -50,23 +51,45 @@
 
         private class SpaceshipFactory : ObjectPool<Spaceship>.IObjectFactory
         {
-            public ContentManager Content { get; set; }
+            public ContentManager Content
+            {
+                get { return _contentManager; }
+                set { _contentManager = value; OnInstallContentManager(); }
+            }
 
-            private PlayerColor _color;
-            private Texture2D _texture;
+            private ContentManager _contentManager;
             private static Model _model;
+            private Texture2D _texture;
+            private PlayerColor _color;
                        
             public SpaceshipFactory(PlayerColor color)
             {
                 _color = color;
-                _texture = Content.Load<Texture2D>(@"Textures\Spaceships\" + color.ToString());
-                _model = Content.Load<Model>(@"Models\LittleSpaceship");
             }
 
             public Spaceship Fetch()
             {
-                var ship = new Spaceship(_color, _texture, _model);
-                return ship;
+                Debug.Assert(_contentManager != null, "ContentManager can't be null!", "SpaceshipFactory should have ContentManager already installed on Fetching new Spaceship.");
+                return new Spaceship(_color, _texture, _model);
+            }
+
+            private void OnInstallContentManager()
+            {
+                Content.BeginLoad<Model>(@"Models\LittleSpaceship", OnModelLoad, null);
+                Content.BeginLoad<Texture2D>(@"Textures\Spaceships\" + _color.ToString(), OnTextureLoad, null);
+            }
+
+            public void OnModelLoad(IAsyncResult ar)
+            {
+                if (_model == null)
+                {
+                    _model = _contentManager.EndLoad<Model>(ar);
+                }
+            }
+
+            public void OnTextureLoad(IAsyncResult ar)
+            {
+                _texture = _contentManager.EndLoad<Texture2D>(ar);
             }
         }
 
