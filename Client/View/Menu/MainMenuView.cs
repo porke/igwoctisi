@@ -8,6 +8,7 @@
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
+	using Animations;
 
     class MainMenuView : BaseView
     {
@@ -15,6 +16,7 @@
 
         protected CommandInputControl tbLogin;
         protected PasswordInputControl tbPassword;
+		protected ButtonControl btnLogin, btnQuit;
 
         protected void CreateChildControls()
         {
@@ -32,14 +34,14 @@
             tbPassword.SetPassword("pswd");
             tbPassword.OnCommandHandler += Login_Pressed;
 
-            var btnLogin = new ButtonControl
+            btnLogin = new ButtonControl
             {
                 Text = "Login",
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.6f, 0), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
             };
             btnLogin.Pressed += Login_Pressed;
 
-            var btnQuit = new ButtonControl
+            btnQuit = new ButtonControl
             {
                 Text = "Quit",
                 Bounds = new UniRectangle(new UniScalar(0.51f, 0), new UniScalar(0.6f, 0), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
@@ -64,6 +66,15 @@
         }
 
         #endregion
+
+		#region BaseView members
+
+		public override void OnShow(ViewManager viewMgr, double time)
+		{
+			base.OnShow(viewMgr, time);
+		}
+
+		#endregion
 
 		public MenuState MenuState { get; protected set; }
 
