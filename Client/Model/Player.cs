@@ -109,7 +109,7 @@
             // ex. a move dependant on an earlier deploy
             if (!deletedCommand.CanRevert())
             {
-                var dependantCommands = Commands.FindAll(cmd => cmd.Type == UserCommand.CommandType.Move && cmd.SourceId == deletedCommand.TargetId);
+                var dependantCommands = Commands.FindAll(cmd => cmd.Type != UserCommand.CommandType.Deploy && cmd.SourceId == deletedCommand.TargetId);
 
                 foreach (var item in dependantCommands)
                 {

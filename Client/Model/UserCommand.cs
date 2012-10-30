@@ -98,7 +98,7 @@
                 TargetPlanet.Owner.DeployableFleets += FleetCount;
                 FleetCount = 0;
             }
-            else if (Type == CommandType.Move)
+            else if (Type == CommandType.Move || Type == CommandType.Attack)
             {
                 SourcePlanet.NumFleetsPresent += FleetCount;
                 TargetPlanet.NumFleetsPresent -= FleetCount;
