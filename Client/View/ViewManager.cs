@@ -103,6 +103,7 @@
 
         public GameClient Client { get; protected set; }
         public IInputReceiver InputReceiver { get; protected set; }
+		public AnimationManager AnimationManager { get; protected set; }
 
         public ViewManager(GameClient client)
         {
@@ -110,16 +111,18 @@
 
             Client = client;
             InputReceiver = new ViewManagerInputReceiver(this);
+			AnimationManager = new AnimationManager();
         }
 
         public void Update(double delta, double time)
         {
             currentTime += delta;
-
+			
             lock (_viewStack)
             {
                 _viewStack.ForEach(view => view.Update(delta, currentTime));
             }
+			AnimationManager.Update(delta);
         }
 
         public void Draw(double delta, double time)
