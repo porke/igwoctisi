@@ -13,9 +13,20 @@
         {
             get
             {
-                var selectedItems = new List<int>();
+                var selectedItems = new HashSet<int>();
                 base.SelectedItems.OrderBy(elem => elem);
-                return selectedItems;
+                foreach (var item in base.SelectedItems)
+                {
+                    var virtualItem = _virtualItems.Find(pair => item >= pair.Item1 && item < pair.Item1 + pair.Item2);
+                    
+                    var virtualItemIndex = _virtualItems.IndexOf(virtualItem);
+                    if (virtualItemIndex != -1)
+                    {
+                        selectedItems.Add(virtualItemIndex);
+                    }
+                }
+
+                return selectedItems.ToList();
             }
         }
         public new IList<string> Items 
@@ -116,7 +127,7 @@
         {
             _virtualItems.Clear();
             base.Items.Clear();
-            SelectedItems.Clear();
+            base.SelectedItems.Clear();
         }
 
         public void SelectItem(int item)
@@ -129,11 +140,11 @@
 
         protected override void OnRowClicked(int row)
         {
-            SelectedItems.Clear();
+            base.SelectedItems.Clear();
             var selectedItem = _virtualItems.Find(item => row >= item.Item1 && row < item.Item1 + item.Item2);
             for (int i = selectedItem.Item1; i < selectedItem.Item1 + selectedItem.Item2; ++i)
             {
-                SelectedItems.Add(i);
+                base.SelectedItems.Add(i);
             }
         }
 
