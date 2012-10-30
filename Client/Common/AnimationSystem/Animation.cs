@@ -3,7 +3,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 
-namespace Client.View
+namespace Client.Common.AnimationSystem
 {
 	public abstract class Animation
 	{
@@ -82,6 +82,18 @@ namespace Client.View
 		{
 			AddCallback(context => AnimationMgr.AddAnimation(animation));
 			return animation;
+		}
+		public static Animation<T> Dummy(T context, AnimationManager animationManager)
+		{
+			return new DummyAnimation(context, animationManager);
+		}
+
+		private class DummyAnimation : Animation<T>
+		{
+			public DummyAnimation(T context, AnimationManager animationManager)
+				: base(context, animationManager, 0, null)
+			{
+			}
 		}
 	}
 }

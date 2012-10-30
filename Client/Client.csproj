@@ -145,15 +145,16 @@
     <Compile Include="State\LobbyState.cs" />
     <Compile Include="State\MenuState.cs" />
     <Compile Include="State\PlayState.cs" />
-    <Compile Include="View\Animation.cs" />
-    <Compile Include="View\AnimationManager.cs" />
-    <Compile Include="View\Animations\MoveTo.cs" />
-    <Compile Include="View\Animations\Wait.cs" />
-    <Compile Include="View\IMovable.cs" />
-    <Compile Include="View\Interpolators.cs" />
+    <Compile Include="Common\AnimationSystem\Animation.cs" />
+    <Compile Include="Common\AnimationSystem\AnimationManager.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\MoveTo.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\Wait.cs" />
+    <Compile Include="Common\AnimationSystem\IMovable.cs" />
+    <Compile Include="Common\AnimationSystem\Interpolators.cs" />
     <Compile Include="View\Lobby\CreateGameView.cs" />
     <Compile Include="View\Lobby\LobbyBackground.cs" />
     <Compile Include="View\Lobby\MainLobbyView.cs" />
+    <Compile Include="View\Play\Animations\AnimationExtensions.cs" />
     <Compile Include="View\Play\Animations\Deploy.cs" />
     <Compile Include="View\Play\GameHud.cs" />
     <Compile Include="View\Play\GameViewport.cs" />
@@ -170,14 +171,6 @@
     <Content Include="GameThumbnail.png">
       <XnaPlatformSpecific>true</XnaPlatformSpecific>
     </Content>
-    <Content Include="References\Newtonsoft.Json.dll" />
-    <Content Include="References\NLog.dll" />
-    <Content Include="References\Nuclex.Fonts.Content.TrueTypeImporter.dll" />
-    <Content Include="References\Nuclex.Input.dll" />
-    <Content Include="References\Nuclex.Support.dll" />
-    <Content Include="References\Nuclex.UserInterface.dll" />
-    <Content Include="References\nunit.framework.dll" />
-    <Content Include="References\SlimDX.DirectInput.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Content\Content.contentproj">

@@ -1,13 +1,19 @@
 ﻿namespace Client.Renderer
 {
+    using Client.Common.AnimationSystem;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
-    public class SimpleCamera
+    public class SimpleCamera : IMovable
     {
         private const float Velocity = 250.0f;
 
         public Vector3 TranslationDirection { get; set; }
+        public Vector3 Position
+        {
+            get { return _world.Translation; }
+            set { _world.Translation = value; }
+        }
 
         private Matrix _world;
         private Matrix _view;

@@ -109,6 +109,7 @@
 		public void Draw(Scene scene, double delta, double time)
 		{
 			_camera.Update(delta);
+            scene.Visual.Camera = _camera;
 
 			var map = scene.Map;
 			
@@ -188,7 +189,7 @@
 
             #region Spaceships (and also should there be planets and links)
 
-            scene.Visual.Draw(_camera, delta, time);
+            scene.Visual.Draw(delta, time);
 
             #endregion
 
