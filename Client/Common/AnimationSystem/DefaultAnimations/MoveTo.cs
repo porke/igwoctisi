@@ -1,7 +1,8 @@
-﻿namespace Client.View.Animations
+﻿namespace Client.Common.AnimationSystem.DefaultAnimations
 {
-	using System;
-	using Microsoft.Xna.Framework;
+    using System;
+    using Client.Renderer;
+    using Microsoft.Xna.Framework;
 
 	public class MoveTo<T> : Animation<T>
         where T : IMovable
@@ -51,5 +52,11 @@
             animation.AddAfter(after);
             return after;
         }
+
+        public static MoveTo<Spaceship> MoveTo(this Animation<Spaceship> animation, Vector3 targetPosition, double duration, Func<double, double> interpolator = null)
+        {
+            return animation.MoveTo<Spaceship>(targetPosition, duration, interpolator);
+        }
+    
 	}
 }

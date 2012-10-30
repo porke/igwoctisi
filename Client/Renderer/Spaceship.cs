@@ -2,14 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
+    using Client.Common.AnimationSystem;
     using Client.Model;
-    using Client.View;
     using Common;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
-    using System.Diagnostics;
     
     public class Spaceship : IMovable
     {
@@ -27,11 +27,12 @@
             }
         }
 
-        public static void InstallContentManager(ContentManager Content)
+        public static void InstallManagers(ContentManager Content, AnimationManager AnimationManager)
         {
             foreach (var factory in pools.Values.Select(pool => pool.Factory))
             {
                 (factory as SpaceshipFactory).Content = Content;
+                (factory as SpaceshipFactory).AnimationManager = AnimationManager;
             }
         }
         
@@ -57,6 +58,8 @@
                 set { _contentManager = value; OnInstallContentManager(); }
             }
 
+            public AnimationManager AnimationManager { get; set; }
+
             private ContentManager _contentManager;
             private static Model _model;
             private Texture2D _texture;
@@ -70,21 +73,13 @@
             public Spaceship Fetch()
             {
                 Debug.Assert(_contentManager != null, "ContentManager can't be null!", "SpaceshipFactory should have ContentManager already installed on Fetching new Spaceship.");
-                return new Spaceship(_color, _texture, _model);
+                return new Spaceship(_color, _texture, _model, AnimationManager);
             }
 
             private void OnInstallContentManager()
             {
-                Content.BeginLoad<Model>(@"Models\LittleSpaceship", OnModelLoad, null);
-                Content.BeginLoad<Texture2D>(@"Textures\Spaceships\" + _color.ToString(), OnTextureLoad, null);
-            }
-
-            public void OnModelLoad(IAsyncResult ar)
-            {
-                if (_model == null)
-                {
-                    _model = _contentManager.EndLoad<Model>(ar);
-                }
+                _model = Content.Load<Model>(@"Models\LittleSpaceship");
+                //Content.BeginLoad<Texture2D>(@"Textures\Spaceships\" + _color.ToString(), OnTextureLoad, null);
             }
 
             public void OnTextureLoad(IAsyncResult ar)
@@ -117,11 +112,12 @@
 
         private Texture2D Texture { get; set; }
         private Model Model { get; set; }
+        private AnimationManager _animationManager;
 
         #endregion
 
 
-        private Spaceship(PlayerColor playerColor, Texture2D texture, Model model)
+        private Spaceship(PlayerColor playerColor, Texture2D texture, Model model, AnimationManager animationManager)
         {
             PlayerColor = playerColor;
             Texture = texture;
@@ -135,7 +131,7 @@
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.World = WorldTransform;
-                    effect.Texture = this.Texture;
+                    //effect.Texture = this.Texture;
                 }
                 mesh.Draw();
             }

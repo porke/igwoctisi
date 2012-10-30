@@ -8,7 +8,6 @@
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
-	using Animations;
 
     class MainMenuView : BaseView
     {

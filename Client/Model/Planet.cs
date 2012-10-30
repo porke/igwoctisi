@@ -1,11 +1,11 @@
 ﻿namespace Client.Model
 {
     using System;
-    using System.ComponentModel;
+    using System.Runtime.Serialization;
     using System.Xml.Serialization;
     using Client.Renderer;
+    using Microsoft.Xna.Framework;
     using Newtonsoft.Json;
-    using System.Runtime.Serialization;
 
     [Serializable]
     [DataContract]
@@ -54,6 +54,7 @@
         
         public int NumFleetsPresent { get; set; }
         public PlanetVisual Visual { get; set; }
+        public Vector3 Position { get { return new Vector3(X, Y, Z); } }
 
         [XmlIgnore, JsonIgnore]
         public Player Owner { get; set; }

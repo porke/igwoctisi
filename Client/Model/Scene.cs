@@ -1,9 +1,10 @@
 ﻿namespace Client.Model
 {
-	using System.Collections.Generic;
-	using System.Linq;
-	using Client.Renderer;
-	using Microsoft.Xna.Framework;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Client.Renderer;
+    using Microsoft.Xna.Framework;
 
 	public class Scene
 	{
@@ -15,6 +16,15 @@
 		public SceneVisual Visual { get; set; }
 
 		private List<Player> _players;
+
+		#region Events for SceneVisual
+
+        /// <summary>
+        /// Arguments: targetPlanet, newFleetsCount, onEndCallback.
+        /// </summary>
+		internal event Action<Planet, int, Action> AnimDeploy;
+
+		#endregion
 
 
 		public Scene(Map map, List<Player> playerList)
@@ -33,8 +43,6 @@
 
 				_players[i].DeployableFleets = startingPlanet.BaseUnitsPerTurn;
 			}
-			
-			Visual = new SceneVisual(this);
 		}
 		public Planet PickPlanet(Vector2 clickPosition, IRenderer renderer)
 		{
@@ -64,11 +72,11 @@
 		}
 		internal void ImplementChange(SimulationResult simResult)
 		{
+			var sourcePlanet = Map.GetPlanetById(simResult.SourceId);
+			var targetPlanet = Map.GetPlanetById(simResult.TargetId);
+
 			if (simResult.Type == SimulationResult.MoveType.Attack)
 			{
-				var sourcePlanet = Map.GetPlanetById(simResult.SourceId);
-				var targetPlanet = Map.GetPlanetById(simResult.TargetId);
-
 				sourcePlanet.NumFleetsPresent = simResult.SourceLeft;
 				targetPlanet.NumFleetsPresent = simResult.TargetLeft;
 
@@ -79,12 +87,16 @@
 			}
 			else if (simResult.Type == SimulationResult.MoveType.Move)
 			{
-				Map.GetPlanetById(simResult.SourceId).NumFleetsPresent = simResult.SourceLeft;
-				Map.GetPlanetById(simResult.TargetId).NumFleetsPresent = simResult.TargetLeft;
+				sourcePlanet.NumFleetsPresent = simResult.SourceLeft;
+				targetPlanet.NumFleetsPresent = simResult.TargetLeft;
 			}
 			else if (simResult.Type == SimulationResult.MoveType.Deploy)
 			{
-				Map.GetPlanetById(simResult.TargetId).NumFleetsPresent = simResult.TargetLeft;
+                int newFleetsCount = simResult.TargetLeft;
+                AnimDeploy(targetPlanet, newFleetsCount, () =>
+                {
+                    targetPlanet.NumFleetsPresent = simResult.TargetLeft;
+                });
 			}
 		}
 	}

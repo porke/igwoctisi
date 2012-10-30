@@ -1,4 +1,4 @@
-﻿namespace Client.View
+﻿namespace Client.Common.AnimationSystem
 {
     using Microsoft.Xna.Framework;
 

@@ -1,8 +1,7 @@
-﻿using System;
-
-
-namespace Client.View
+﻿namespace Client.Common.AnimationSystem
 {
+	using System;
+
 	public static class Interpolators
 	{
 		public static Func<double, double> Linear()
