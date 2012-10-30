@@ -8,6 +8,22 @@
     [DataContract]
     public class Player
     {
+        /// <summary>
+        /// ARGB hex.
+        /// </summary>
+        public enum Color
+        {
+            Red = 0x00FC0300,
+            Green = 0x0000FF00,
+            Blue = 0x000000FF,
+            Cyan = 0x0000FFFF,
+            Yellow = 0x00FFEF00,
+            Lime = 0x0093F600,
+            White = 0x00FFFFFF,
+            Orange = 0x00FE7F00
+        }
+
+
         [DataMember]
         public string Username { get; private set; }
 
