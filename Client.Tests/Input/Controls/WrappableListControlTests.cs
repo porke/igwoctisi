@@ -1,10 +1,8 @@
 ﻿namespace Client.Tests.Input.Controls
 {
     using System;
-    using System.Collections.Generic;
     using Client.Input.Controls;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Nuclex.Input;
     using Nuclex.UserInterface;
 
     [TestClass]

@@ -68,8 +68,12 @@
                 do
                 {
                     var planet = (Planet) planetSerializer.Deserialize(reader);
-                    planet.NumFleetsPresent = 1;
-                    Planets.Add(planet);
+
+                    if (planet != null)
+                    {
+                        planet.NumFleetsPresent = 1;
+                        Planets.Add(planet);
+                    }
                 } while (reader.ReadToNextSibling(typeof(Planet).Name));
 
                 // Read links
@@ -79,7 +83,11 @@
                 do
                 {
                     var planetLink = (PlanetLink) linkSerializer.Deserialize(reader);
-                    Links.Add(planetLink);
+
+                    if (planetLink != null)
+                    {
+                        Links.Add(planetLink);
+                    }
                 } while (reader.ReadToNextSibling(typeof(PlanetLink).Name));
 
                 // Read systems
@@ -89,7 +97,11 @@
                 do
                 {
                     var planetarySystem = (PlanetarySystem) systemSerializer.Deserialize(reader);
-                    PlanetarySystems.Add(planetarySystem);
+
+                    if (planetarySystem != null)
+                    {
+                        PlanetarySystems.Add(planetarySystem);
+                    }
                 } while (reader.ReadToNextSibling(typeof(PlanetarySystem).Name));
 
                 // Read starting positions
@@ -97,9 +109,12 @@
                 reader.ReadToDescendant(StartingDataElement);
                 do
                 {
-                    int planetId = Convert.ToInt32(reader.GetAttribute(PlanetIdAttribute));
-                    string colorHex = reader.GetAttribute(ColorAttribute);
-                    PlayerStartingData.Add(new StartingData(planetId, Convert.ToInt32(colorHex, 16)));
+                    if (reader.HasAttributes)
+                    {
+                        int planetId = Convert.ToInt32(reader.GetAttribute(PlanetIdAttribute));
+                        string colorHex = reader.GetAttribute(ColorAttribute);
+                        PlayerStartingData.Add(new StartingData(planetId, Convert.ToInt32(colorHex, 16)));
+                    }
                 } while (reader.ReadToNextSibling(StartingDataElement));
             }
         }
