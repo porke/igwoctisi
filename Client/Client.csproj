@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\JsonLowercaseSerializer.cs" />
+    <Compile Include="Common\NuclexExtensions.cs" />
     <Compile Include="Common\Utils.cs" />
     <Compile Include="GameClient.cs" />
     <Compile Include="Common\AsyncResult.cs" />
@@ -141,6 +142,10 @@
     <Compile Include="State\LobbyState.cs" />
     <Compile Include="State\MenuState.cs" />
     <Compile Include="State\PlayState.cs" />
+    <Compile Include="View\Animation.cs" />
+    <Compile Include="View\AnimationManager.cs" />
+    <Compile Include="View\Animations\Wait.cs" />
+    <Compile Include="View\Interpolators.cs" />
     <Compile Include="View\Lobby\CreateGameView.cs" />
     <Compile Include="View\Lobby\LobbyBackground.cs" />
     <Compile Include="View\Lobby\MainLobbyView.cs" />
