@@ -5,29 +5,29 @@
     using Microsoft.Xna.Framework;
     using System.ComponentModel;
 
+    /// <summary>
+    /// ARGB hex.
+    /// </summary>
+    public enum PlayerColor
+    {
+        Red = 0x00FC0300,
+        Green = 0x0000FF00,
+        Blue = 0x000000FF,
+        Cyan = 0x0000FFFF,
+        Yellow = 0x00FFEF00,
+        Lime = 0x0093F600,
+        White = 0x00FFFFFF,
+        Orange = 0x00FE7F00
+    }
+
     [DataContract]
     public class Player
     {
-        /// <summary>
-        /// ARGB hex.
-        /// </summary>
-        public enum Color
-        {
-            Red = 0x00FC0300,
-            Green = 0x0000FF00,
-            Blue = 0x000000FF,
-            Cyan = 0x0000FFFF,
-            Yellow = 0x00FFEF00,
-            Lime = 0x0093F600,
-            White = 0x00FFFFFF,
-            Orange = 0x00FE7F00
-        }
-
+        #region Public Fields
 
         [DataMember]
         public string Username { get; private set; }
 
-        public Color Color { get; private set; }
         public int DeployableFleets { get; set; }
         public bool CanDeployFleets { get { return DeployableFleets > 0; } }
         public int FleetIncomePerTurn
@@ -43,14 +43,36 @@
                 return fleets;
             }
         }
-
-        private List<Planet> _ownedPlanets = new List<Planet>();
         public List<UserCommand> Commands { get; private set; }
+        public Color XnaColor { get { return _xnaColor; } }
+        public PlayerColor Color
+        {
+            get { return _playerColor; }
+            set
+            {
+                _playerColor = value;
+                int r = (byte)((int)_playerColor >> 16);
+                int g = (byte)((int)_playerColor >> 8);
+                int b = (byte)((int)_playerColor >> 0);
+                int a = (byte)((int)_playerColor >> 24);
+                _xnaColor = Microsoft.Xna.Framework.Color.FromNonPremultiplied(r, g, b, a);
+            }
+        }
+
+        #endregion
+
+        #region Private Fieelds
+
+        private Color _xnaColor;
+        private PlayerColor _playerColor;
+        private List<Planet> _ownedPlanets = new List<Planet>();
+
+        #endregion
 
         public Player(string username)
         {
             Username = username;
-            Color = Color.White;
+            Color = PlayerColor.White;
             Commands = new List<UserCommand>();
         }
 
