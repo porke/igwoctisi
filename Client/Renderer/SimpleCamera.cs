@@ -25,7 +25,7 @@
             _world *= Matrix.CreateTranslation(Velocity * (float)delta * TranslationDirection);
         }
 
-        public void Apply(Effect effect, Matrix localWorld)
+        public void ApplyToEffect(Effect effect, Matrix localWorld)
         {
             effect.Parameters["World"].SetValue(localWorld * _world);
             effect.Parameters["View"].SetValue(_view);

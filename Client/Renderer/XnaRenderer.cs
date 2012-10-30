@@ -114,7 +114,7 @@
 			
 			#region Links
 
-			_camera.Apply(_fxLinks, Matrix.Identity);
+			_camera.ApplyToEffect(_fxLinks, Matrix.Identity);
 
 			if (map.Visual == null)
 			{
@@ -151,7 +151,7 @@
 							Matrix.CreateFromYawPitchRoll(visual.Yaw, visual.Pitch, visual.Roll) *
 							Matrix.CreateTranslation(planet.X, planet.Y, planet.Z);
 
-				_camera.Apply(_fxPlanet, localWorld);                
+				_camera.ApplyToEffect(_fxPlanet, localWorld);                
 				foreach (var pass in _fxPlanet.CurrentTechnique.Passes)
 				{
 					pass.Apply();
@@ -172,7 +172,7 @@
 							(sourcePlanet.Y + targetPlanet.Y)/2.0f,
 							(sourcePlanet.Z + targetPlanet.Z)/2.0f);
 
-						_camera.Apply(_fxLinks, linkWorld);
+						_camera.ApplyToEffect(_fxLinks, linkWorld);
 						_fxLinks.Parameters["Ambient"].SetValue(scene.HoveredLink == link ? HoverAmbient : 0.0f);
 						foreach (var pass in _fxLinks.CurrentTechnique.Passes)
 						{
@@ -186,9 +186,15 @@
 			
 			#endregion
 
-			#region Planets info
+            #region Spaceships (and also should there be planets and links)
 
-			_spriteBatch.Begin();
+            scene.Visual.Draw(_camera, delta, time);
+
+            #endregion
+
+            #region Planets info
+
+            _spriteBatch.Begin();
 
 			foreach (var planet in scene.Map.Planets)
 			{
