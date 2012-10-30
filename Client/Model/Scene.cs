@@ -1,7 +1,7 @@
 ﻿namespace Client.Model
 {
-	using System.Linq;
 	using System.Collections.Generic;
+	using System.Linq;
 	using Client.Renderer;
 	using Microsoft.Xna.Framework;
 
@@ -12,7 +12,10 @@
 		public int SelectedPlanet { get; set; }
 		public PlanetLink HoveredLink { get; set; }
 
+		public SceneVisual Visual { get; set; }
+
 		private List<Player> _players;
+
 
 		public Scene(Map map, List<Player> playerList)
 		{
@@ -28,8 +31,10 @@
 				startingPlanet.Owner = _players[i];
 				_players[i].AddPlanet(startingPlanet);
 
-                _players[i].DeployableFleets = startingPlanet.BaseUnitsPerTurn;
+				_players[i].DeployableFleets = startingPlanet.BaseUnitsPerTurn;
 			}
+			
+			Visual = new SceneVisual(this);
 		}
 		public Planet PickPlanet(Vector2 clickPosition, IRenderer renderer)
 		{

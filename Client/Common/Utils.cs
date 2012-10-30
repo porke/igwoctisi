@@ -1,12 +1,13 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Client.Renderer;
-
-
-namespace Client.Common
+﻿namespace Client.Common
 {
+    using System;
+    using System.Linq;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using Client.Renderer;
+    using System.Reflection;
+
+
     public static class Utils
     {
         #region Text methods
@@ -27,6 +28,29 @@ namespace Client.Common
         }
 
         #endregion
+
+
+        private static Random rand = new Random();
+        public static T RandomEnum<T>()
+        {
+            FieldInfo[] fields = typeof(T).GetFields(BindingFlags.Static | BindingFlags.Public);
+            int index = rand.Next(fields.Length);
+
+            return (T)fields[index].GetValue(null);
+        }
+
+        public static T RandomEnum<T>(T withoutVal)
+        {
+            FieldInfo[] fields = typeof(T).GetFields(BindingFlags.Static | BindingFlags.Public);
+            int index = rand.Next(fields.Length);
+
+            if (fields[index].GetValue(null).Equals(withoutVal))
+                index++;
+            if (index >= fields.Length)
+                index = 0;
+
+            return (T)fields[index].GetValue(null);
+        }
 
         public static VertexPositionNormalTexture[] SphereVertices(int subdivisions)
         {
