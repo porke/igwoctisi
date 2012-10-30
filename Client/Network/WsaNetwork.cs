@@ -849,7 +849,7 @@
                     if (messageContentType == MessageContentType.Ok)
                         return true;
                     else
-                        throw new Exception("OMG!");
+                        throw new Exception("OMG! Error: " + errorType);
                 });
             });
 
