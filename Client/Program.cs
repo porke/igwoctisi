@@ -7,7 +7,7 @@ namespace Client
         {
             try
             {
-                using (IGWOCTISI game = new IGWOCTISI())
+                using (var game = new IGWOCTISI())
                 {
                     game.Run();
                 }

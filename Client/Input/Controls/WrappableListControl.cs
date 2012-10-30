@@ -5,9 +5,19 @@
     using System.Text;
     using Client.Common;
     using Nuclex.UserInterface.Controls.Desktop;
+    using System.Linq;
 
     public class WrappableListControl : ListControl
     {
+        public new IList<int> SelectedItems
+        {
+            get
+            {
+                var selectedItems = new List<int>();
+                base.SelectedItems.OrderBy(elem => elem);
+                return selectedItems;
+            }
+        }
         public new IList<string> Items 
         { 
             get
