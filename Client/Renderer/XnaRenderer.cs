@@ -210,10 +210,16 @@
 				var nameScreen = new Vector2(planetScreen.X - nameSize.X / 2.0f, planetScreen.Y - nameSize.Y / 2.0f);
 				_spriteBatch.DrawString(_fontHud, planet.Name, nameScreen + NameOffset, Color.Yellow);
 
-				var fleetsScreen = new Vector2(planetScreen.X - fleetsSize.X / 2.0f, planetScreen.Y - fleetsSize.Y / 2.0f);
-				_spriteBatch.DrawString(_fontHud, fleetText, fleetsScreen + FleetsOffset, Color.Yellow);
+                var fleetsScreen = new Vector2(planetScreen.X - fleetsSize.X / 2.0f, planetScreen.Y - fleetsSize.Y / 2.0f);
+                if (planet.ShowDetails)
+                {                    
+                    _spriteBatch.DrawString(_fontHud, fleetText, fleetsScreen + FleetsOffset, Color.Yellow);
+                }
 
-				_spriteBatch.DrawString(_fontHud, fleetIncome, fleetsScreen + FleetIncomeOffset, Color.Yellow);
+                if (scene.HoveredPlanet == planet.Id)
+                {
+                    _spriteBatch.DrawString(_fontHud, fleetIncome, fleetsScreen + FleetIncomeOffset, Color.Yellow);
+                }
 
 				_spriteBatch.DrawString(_fontHud, ownerName, nameScreen + OwnerNameOffset, ownerColor);
 			}

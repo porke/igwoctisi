@@ -26,7 +26,6 @@
 
 		#endregion
 
-
 		public Scene(Map map, List<Player> playerList)
 		{
 			Map = map;
@@ -65,8 +64,10 @@
 				var sourcePos = new Vector3(sourcePlanet.X, sourcePlanet.Y, sourcePlanet.Z);
 				var targetPos = new Vector3(targetPlanet.X, targetPlanet.Y, targetPlanet.Z);
 
-				if (renderer.RayLinkIntersection(clickPosition, sourcePos, targetPos))
-					return link;
+                if (renderer.RayLinkIntersection(clickPosition, sourcePos, targetPos))
+                {
+                    return link;
+                }
 			}
 			return null;
 		}
