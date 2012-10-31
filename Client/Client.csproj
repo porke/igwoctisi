@@ -100,6 +100,7 @@
   <ItemGroup>
     <Compile Include="Common\JsonLowercaseSerializer.cs" />
     <Compile Include="Common\NuclexExtensions.cs" />
+    <Compile Include="Common\ObjectPool.cs" />
     <Compile Include="Common\Utils.cs" />
     <Compile Include="GameClient.cs" />
     <Compile Include="Common\AsyncResult.cs" />
@@ -132,7 +133,9 @@
     <Compile Include="Renderer\IRenderer.cs" />
     <Compile Include="Renderer\MapVisual.cs" />
     <Compile Include="Renderer\PlanetVisual.cs" />
+    <Compile Include="Renderer\SceneVisual.cs" />
     <Compile Include="Renderer\SimpleCamera.cs" />
+    <Compile Include="Renderer\Spaceship.cs" />
     <Compile Include="Renderer\Vertex.cs" />
     <Compile Include="Renderer\XnaRenderer.cs" />
     <Compile Include="State\GameState.cs" />
@@ -142,13 +145,17 @@
     <Compile Include="State\LobbyState.cs" />
     <Compile Include="State\MenuState.cs" />
     <Compile Include="State\PlayState.cs" />
-    <Compile Include="View\Animation.cs" />
-    <Compile Include="View\AnimationManager.cs" />
-    <Compile Include="View\Animations\Wait.cs" />
-    <Compile Include="View\Interpolators.cs" />
+    <Compile Include="Common\AnimationSystem\Animation.cs" />
+    <Compile Include="Common\AnimationSystem\AnimationManager.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\MoveTo.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\Wait.cs" />
+    <Compile Include="Common\AnimationSystem\IMovable.cs" />
+    <Compile Include="Common\AnimationSystem\Interpolators.cs" />
     <Compile Include="View\Lobby\CreateGameView.cs" />
     <Compile Include="View\Lobby\LobbyBackground.cs" />
     <Compile Include="View\Lobby\MainLobbyView.cs" />
+    <Compile Include="View\Play\Animations\AnimationExtensions.cs" />
+    <Compile Include="View\Play\Animations\Deploy.cs" />
     <Compile Include="View\Play\GameHud.cs" />
     <Compile Include="View\Play\GameViewport.cs" />
     <Compile Include="View\BaseView.cs" />
@@ -164,14 +171,6 @@
     <Content Include="GameThumbnail.png">
       <XnaPlatformSpecific>true</XnaPlatformSpecific>
     </Content>
-    <Content Include="References\Newtonsoft.Json.dll" />
-    <Content Include="References\NLog.dll" />
-    <Content Include="References\Nuclex.Fonts.Content.TrueTypeImporter.dll" />
-    <Content Include="References\Nuclex.Input.dll" />
-    <Content Include="References\Nuclex.Support.dll" />
-    <Content Include="References\Nuclex.UserInterface.dll" />
-    <Content Include="References\nunit.framework.dll" />
-    <Content Include="References\SlimDX.DirectInput.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Content\Content.contentproj">
