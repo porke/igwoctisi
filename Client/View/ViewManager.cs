@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Client.Common.AnimationSystem;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
     using Nuclex.Input;

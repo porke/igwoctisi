@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 
-namespace Client.View
+namespace Client.Common.AnimationSystem
 {
 	public class AnimationManager
 	{

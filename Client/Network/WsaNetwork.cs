@@ -61,8 +61,9 @@
             GamePlayerLeft, //Server
             GamePlayerKicked,//Server
             RoundStart,     //Server
-            Commands,          //Client
+            Commands,       //Client
             RoundEnd,       //Server
+			Ready,			//Client
             GameEnd,        //Server
 
             Ok,             //Client,Server
@@ -79,7 +80,9 @@
             LoginFailed,    //Server
             GameInvalidId,  //Server
             GameFull,       //Server
-            GameCreateFailed//Server
+            GameCreateFailed,//Server
+            GameInvalidCommand,//Server
+			CommandsAlreadySent,//Server
         }
 
         TcpClient tcpClient;
@@ -846,7 +849,7 @@
                     if (messageContentType == MessageContentType.Ok)
                         return true;
                     else
-                        throw new Exception("OMG!");
+                        throw new Exception("OMG! Error: " + errorType);
                 });
             });
 

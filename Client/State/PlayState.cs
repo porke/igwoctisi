@@ -34,6 +34,7 @@
 			_players = players;
 
 			Scene = new Scene(loadedMap, _players);
+            Scene.Visual = new Renderer.SceneVisual(Scene, Client.Content, ViewMgr.AnimationManager);
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
             _gameHud.UpdateClientPlayerFleetData(_clientPlayer);

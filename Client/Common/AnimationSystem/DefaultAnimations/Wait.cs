@@ -1,5 +1,4 @@
-﻿
-namespace Client.View.Animations
+﻿namespace Client.Common.AnimationSystem.DefaultAnimations
 {
 	public class Wait<T> : Animation<T>
 	{

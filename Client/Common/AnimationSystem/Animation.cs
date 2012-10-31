@@ -3,7 +3,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 
-namespace Client.View
+namespace Client.Common.AnimationSystem
 {
 	public abstract class Animation
 	{
@@ -22,7 +22,7 @@ namespace Client.View
 		public Animation(double duration, Func<double, double> interpolator)
 		{
 			Duration = duration;
-			Interpolator = interpolator;
+			Interpolator = interpolator != null ? interpolator : Interpolators.Linear();
 		}
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public virtual void Begin()
@@ -63,7 +63,7 @@ namespace Client.View
 		public T Context { get; protected set; }
 		public AnimationManager AnimationMgr { get; protected set; }
 
-		public Animation(T context, AnimationManager animationMgr, double duration, Func<double, double> interpolator)
+		public Animation(T context, AnimationManager animationMgr, double duration, Func<double, double> interpolator = null)
 			: base(duration, interpolator)
 		{
 			Context = context;
@@ -82,6 +82,18 @@ namespace Client.View
 		{
 			AddCallback(context => AnimationMgr.AddAnimation(animation));
 			return animation;
+		}
+		public static Animation<T> Dummy(T context, AnimationManager animationManager)
+		{
+			return new DummyAnimation(context, animationManager);
+		}
+
+		private class DummyAnimation : Animation<T>
+		{
+			public DummyAnimation(T context, AnimationManager animationManager)
+				: base(context, animationManager, 0, null)
+			{
+			}
 		}
 	}
 }
