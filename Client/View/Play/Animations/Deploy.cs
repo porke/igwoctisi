@@ -1,14 +1,10 @@
 ﻿namespace Client.View.Play.Animations
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using Client.Renderer;
-    using Client.Model;
-    using Client.Common;
     using Client.Common.AnimationSystem;
     using Client.Common.AnimationSystem.DefaultAnimations;
+    using Client.Model;
+    using Client.Renderer;
 
     public static class DeployAnimation
     {

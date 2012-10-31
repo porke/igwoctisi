@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using Client.Common;
     using Nuclex.UserInterface.Controls.Desktop;
-    using System.Linq;
 
     public class WrappableListControl : ListControl
     {
