@@ -36,8 +36,13 @@
 			// Assign planets
 			for (int i = 0; i < _players.Count; i++)
 			{
+				var startingData = Map.PlayerStartingData[i];
 				var startingPlanet = Map.StartingPositions[i];
 				startingPlanet.Owner = _players[i];
+
+				// Translate the color from hex to enum
+				int color = (startingData.Color << 8) >> 8;
+				_players[i].Color = (PlayerColor) Enum.Parse(typeof(PlayerColor), Convert.ToString(color));
 				_players[i].AddPlanet(startingPlanet);
 
 				_players[i].DeployableFleets = startingPlanet.BaseUnitsPerTurn;
