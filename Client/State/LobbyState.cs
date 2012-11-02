@@ -290,7 +290,7 @@
                     
                     var playerList = new List<Player>(_gameLobby.Players.Select(username => new Player(username)));
                     var clientPlayer = playerList.Find(player => player.Username.Equals(_clientPlayer.Username));
-                    Game.ChangeState(new PlayState(Game, _map, clientPlayer, playerList));
+                    Game.ChangeState(new PlayState(Game, _map, clientPlayer));
                 }
                 catch (Exception exc)
                 {
@@ -393,8 +393,7 @@
             InvokeOnMainThread(obj =>
             {
                 UnbindNetworkEvents();
-                var playerList = _gameLobby.Players.Select(username => new Player(username)).ToList();
-                Game.ChangeState(new PlayState(Game, map, _clientPlayer, playerList));
+                Game.ChangeState(new PlayState(Game, map, _clientPlayer));
             });
         }
 

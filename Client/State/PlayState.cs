@@ -5,14 +5,17 @@
 	using Client.View;
 	using Model;
 	using View.Play;
+	using System.Linq;
+	using System.Threading;
 
 	class PlayState : GameState
 	{
-		public Scene Scene { get; protected set; }
+		public readonly Scene Scene;
 
 		private GameViewport _gameViewport;
 		private GameHud _gameHud;
 
+		private Map _loadedMap;
 		private Player _clientPlayer;
 		private List<Player> _players;
 		private double _secondsLeft = 0;
@@ -27,19 +30,16 @@
 			AnimatingSimulationResult
 		}
 
-		public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer, List<Player> players)
+		public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer)
 			: base(game)
 		{
+			_loadedMap = loadedMap;
 			_clientPlayer = clientPlayer;
-			_players = players;
 
-			Scene = new Scene(loadedMap, _players);
-            Scene.Visual = new Renderer.SceneVisual(Scene, Client.Content, ViewMgr.AnimationManager);
-            Scene.Map.UpdatePlanetShowDetails(clientPlayer);
+			Scene = new Scene(_loadedMap);
+			Scene.Visual = new Renderer.SceneVisual(Scene, Client.Content, ViewMgr.AnimationManager);
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
-            _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
-			_gameHud.UpdatePlayerList(_players);
 
 			ViewMgr.PushLayer(_gameViewport);
 			ViewMgr.PushLayer(_gameHud);
@@ -49,20 +49,24 @@
 			Client.Network.OnGameEnded += Network_OnGameEnded;
 			Client.Network.OnOtherPlayerLeft += Network_OnOtherPlayerLeft;
 			Client.Network.OnDisconnected += Network_OnDisconnected;
-            Client.Network.OnChatMessageReceived += Network_OnChatMessageReceived;
-
-			InvokeOnMainThread((obj) => { _hudState = HudState.WaitingForRoundStart; });
+			Client.Network.OnChatMessageReceived += Network_OnChatMessageReceived;
 		}
 
-        public override void OnExit()
+        public override void OnEnter()
         {
-            Client.Network.OnRoundStarted -= Network_OnRoundStarted;
-            Client.Network.OnRoundEnded -= Network_OnRoundEnded;
-            Client.Network.OnGameEnded -= Network_OnGameEnded;
-            Client.Network.OnOtherPlayerLeft -= Network_OnOtherPlayerLeft;
-            Client.Network.OnDisconnected -= Network_OnDisconnected;
-            Client.Network.OnChatMessageReceived -= Network_OnChatMessageReceived;
+            base.OnEnter();
+            Client.Network.BeginSetReady(null, null);
         }
+
+		public override void OnExit()
+		{
+			Client.Network.OnRoundStarted -= Network_OnRoundStarted;
+			Client.Network.OnRoundEnded -= Network_OnRoundEnded;
+			Client.Network.OnGameEnded -= Network_OnGameEnded;
+			Client.Network.OnOtherPlayerLeft -= Network_OnOtherPlayerLeft;
+			Client.Network.OnDisconnected -= Network_OnDisconnected;
+			Client.Network.OnChatMessageReceived -= Network_OnChatMessageReceived;
+		}
 
 		public override void OnUpdate(double delta, double time)
 		{
@@ -105,9 +109,9 @@
 
 		internal void DeleteCommand(int orderIndex)
 		{
-            _clientPlayer.DeleteCommand(orderIndex);
-            _gameHud.UpdateCommandList(_clientPlayer.Commands, orderIndex);
-            _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+			_clientPlayer.DeleteCommand(orderIndex);
+			_gameHud.UpdateCommandList(_clientPlayer.Commands, orderIndex);
+			_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
 		}
 		internal void LeaveGame()
 		{
@@ -122,15 +126,15 @@
 		internal void SendCommands()
 		{
 			Client.Network.BeginSendCommands(_clientPlayer.Commands, OnSendOrders, null);
-            _clientPlayer.ClearCommandList();
-            _gameHud.UpdateCommandList(_clientPlayer.Commands);
+			_clientPlayer.ClearCommandList();
+			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 
 			InvokeOnMainThread((obj) =>
 			{
-                if (_secondsLeft > 0)
-                {
-                    _secondsLeft = 0.001;
-                }
+				if (_secondsLeft > 0)
+				{
+					_secondsLeft = 0.001;
+				}
 			});
 		}
 		internal void SelectPlanet(Planet selectedPlanet)
@@ -148,38 +152,38 @@
 		internal void DeployFleet(Planet planet)
 		{
 			// Deploment is only possible on clients own planet
-            if (planet.Owner == null)
-            {
-                _gameHud.AddMessage("Cannot deploy fleet: you have to own the target planet.");
-                return;
-            }
-            if (!planet.Owner.Username.Equals(_clientPlayer.Username))
-            {
-                _gameHud.AddMessage("Cannot deploy fleet: you have to own the target planet.");
-                return;
-            }
-            if (_clientPlayer.DeployableFleets == 0)
-            {
-                _gameHud.AddMessage("Cannot deploy fleet: Not enough deployable fleets.");
-                return;
-            }
+			if (planet.Owner == null)
+			{
+				_gameHud.AddMessage("Cannot deploy fleet: you have to own the target planet.");
+				return;
+			}
+			if (!planet.Owner.Username.Equals(_clientPlayer.Username))
+			{
+				_gameHud.AddMessage("Cannot deploy fleet: you have to own the target planet.");
+				return;
+			}
+			if (_clientPlayer.DeployableFleets == 0)
+			{
+				_gameHud.AddMessage("Cannot deploy fleet: Not enough deployable fleets.");
+				return;
+			}
 
-            _clientPlayer.DeployFleet(planet);
-            _gameHud.UpdateCommandList(_clientPlayer.Commands);
+			_clientPlayer.DeployFleet(planet);
+			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 			_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
 		}
 		internal void UndeployFleet(Planet planet)
 		{
 			var command = _clientPlayer.Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
-            if (command == null)
-            {
-                _gameHud.AddMessage("Cannot revert deploy: no fleets deployed to selected planet.");
-                return;
-            }
+			if (command == null)
+			{
+				_gameHud.AddMessage("Cannot revert deploy: no fleets deployed to selected planet.");
+				return;
+			}
 
-            _clientPlayer.UndeployFleet(planet);
-            _gameHud.UpdateCommandList(_clientPlayer.Commands);
-            _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+			_clientPlayer.UndeployFleet(planet);
+			_gameHud.UpdateCommandList(_clientPlayer.Commands);
+			_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
 		}
 		internal void OnHoverLink(PlanetLink hoverLink)
 		{
@@ -191,42 +195,42 @@
 		}
 		internal void MoveFleet(PlanetLink link)
 		{
-            var source = Scene.Map.GetPlanetById(link.SourcePlanet);
-            var target = Scene.Map.GetPlanetById(link.TargetPlanet);
+			var source = Scene.Map.GetPlanetById(link.SourcePlanet);
+			var target = Scene.Map.GetPlanetById(link.TargetPlanet);
 
-            if (source.Owner == null || !_clientPlayer.Username.Equals(source.Owner.Username))
-            {
-                _gameHud.AddMessage("Cannot move fleet: fleets can be sent only from owned planets.");
-                return;
-            }
-            if (source.NumFleetsPresent < 2)
-            {
-                _gameHud.AddMessage("Cannot move fleet: there must be at least one fleet remaining.");
-                return;
-            }
+			if (source.Owner == null || !_clientPlayer.Username.Equals(source.Owner.Username))
+			{
+				_gameHud.AddMessage("Cannot move fleet: fleets can be sent only from owned planets.");
+				return;
+			}
+			if (source.NumFleetsPresent < 2)
+			{
+				_gameHud.AddMessage("Cannot move fleet: there must be at least one fleet remaining.");
+				return;
+			}
 
-            _clientPlayer.MoveFleet(source, target);
-            _gameHud.UpdateCommandList(_clientPlayer.Commands);
+			_clientPlayer.MoveFleet(source, target);
+			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 		}
-        internal void RevertMoveFleet(PlanetLink link)
-        {
-            var source = Scene.Map.GetPlanetById(link.SourcePlanet);
-            var target = Scene.Map.GetPlanetById(link.TargetPlanet);
+		internal void RevertMoveFleet(PlanetLink link)
+		{
+			var source = Scene.Map.GetPlanetById(link.SourcePlanet);
+			var target = Scene.Map.GetPlanetById(link.TargetPlanet);
 
-            var targetCommand = _clientPlayer.Commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
-            if (targetCommand == null)
-            {
-                _gameHud.AddMessage("Cannot revert fleet move: no fleets moving.");
-                return;
-            }
+			var targetCommand = _clientPlayer.Commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
+			if (targetCommand == null)
+			{
+				_gameHud.AddMessage("Cannot revert fleet move: no fleets moving.");
+				return;
+			}
 
-            _clientPlayer.RevertFleetMove(source, target);
-            _gameHud.UpdateCommandList(_clientPlayer.Commands);
-        }
-        internal void SendChatMessage(string message)
-        {            
-            Client.Network.BeginSendChatMessage(message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
-        }
+			_clientPlayer.RevertFleetMove(source, target);
+			_gameHud.UpdateCommandList(_clientPlayer.Commands);
+		}
+		internal void SendChatMessage(string message)
+		{            
+			Client.Network.BeginSendChatMessage(message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
+		}
 
 		#endregion
 
@@ -257,7 +261,7 @@
 			});
 		}
 
-        private void OnSendOrders(IAsyncResult result)
+		private void OnSendOrders(IAsyncResult result)
 		{
 			InvokeOnMainThread(obj =>
 			{
@@ -265,18 +269,62 @@
 			});
 		}
 
-        private bool Network_OnRoundStarted(NewRoundInfo roundInfo)
+		private bool Network_OnRoundStarted(NewRoundInfo roundInfo)
 		{
 			lock (_hudStateLocker)
 			{
+				if (_hudState == HudState.Initializing)
+				{
+					// Collect player list. Don't forget about existing player reference.
+					_players = roundInfo.Players
+						.Select(username =>
+                            username.Equals(_clientPlayer.Username)
+                                ? _clientPlayer
+                                : new Player(username)
+                            )
+                        .ToList();
+					
+					// Assign players to the planets.
+					var locker = new ManualResetEvent(false);
+					InvokeOnMainThread(obj =>
+					{
+						Scene.Initialize(roundInfo, _players);
+						Scene.Map.UpdatePlanetShowDetails(_clientPlayer);
+						_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+						_gameHud.UpdatePlayerList(_players);
+					    locker.Set();
+					});
+					locker.WaitOne();
+
+					// Use the rest of round info by going to next state.
+					_hudState = HudState.WaitingForRoundStart;
+				}
+
+				// Don't add "else" here!
+				// Initializing happens right before using round info.
 				if (_hudState == HudState.WaitingForRoundStart)
 				{
-                    InvokeOnMainThread(obj =>
-                    {
-                        _secondsLeft = roundInfo.RoundTime;
-                        _gameHud.UpdateTimer((int)_secondsLeft);
-                        _hudState = HudState.WaitingForRoundEnd;
-                    });
+					InvokeOnMainThread(obj =>
+					{
+						// Update timer
+						_secondsLeft = roundInfo.RoundTime;
+						_gameHud.UpdateTimer((int)_secondsLeft);
+
+						// Update world info.
+						_clientPlayer.DeployableFleets += roundInfo.FleetsToDeploy;
+                        
+                        _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+                        _loadedMap.UpdatePlanetShowDetails(_clientPlayer);
+                        
+                        
+
+					    // TODO update planet states (owners, fleet numbers)
+						// TODO update player list due to `roundInfo.Players' (_gameHud.UpdatePlayerList(players);)
+						// TODO update tech info due to `roundInfo.Tech'
+
+						// Now wait to the end of the round.
+						_hudState = HudState.WaitingForRoundEnd;
+					});
 
 					// We have consumed that packet.
 					return true;
@@ -286,31 +334,31 @@
 			}
 		}
 
-        private bool Network_OnRoundEnded(List<SimulationResult> simResults)
+		private bool Network_OnRoundEnded(List<SimulationResult> simResults)
 		{
 			lock (_hudStateLocker)
 			{
 				if (_hudState == HudState.WaitingForRoundEnd)
 				{
-                    InvokeOnMainThread(obj =>
-                    {
-                        if (ViewMgr.PeekLayer() is MessageBox)
-                        {
-                            // Pop MessageBox "Waiting for server to simulate the turn."
-                            ViewMgr.PopLayer();
-                        }
+					InvokeOnMainThread(obj =>
+					{
+						if (ViewMgr.PeekLayer() is MessageBox)
+						{
+							// Pop MessageBox "Waiting for server to simulate the turn."
+							ViewMgr.PopLayer();
+						}
 
-                        _hudState = HudState.AnimatingSimulationResult;
-                        // TODO do some animations using simulation results and then set _hudState to WaitingForRoundStart.
+						_hudState = HudState.AnimatingSimulationResult;
+						// TODO do some animations using simulation results and then set _hudState to WaitingForRoundStart.
 
-                        foreach (var simResult in simResults)
-                        {
-                            Scene.ImplementChange(simResult);
-                        }
+						foreach (var simResult in simResults)
+						{
+							Scene.ImplementChange(simResult);
+						}
 
-                        // TODO when animation is done that line should be moved to the end of animation.
-                        _hudState = HudState.WaitingForRoundStart;
-                    });
+						// TODO when animation is done that line should be moved to the end of animation.
+						_hudState = HudState.WaitingForRoundStart;
+					});
 
 					// We have consumed that packet.
 					return true;
@@ -320,23 +368,23 @@
 			}
 		}
 
-        private void Network_OnGameEnded(/*game result here!*/)
+		private void Network_OnGameEnded(/*game result here!*/)
 		{
 			// TODO show game result and statistics
 			throw new NotImplementedException();
 		}
 
-        private void Network_OnOtherPlayerLeft(string username, DateTime time)
+		private void Network_OnOtherPlayerLeft(string username, DateTime time)
 		{
-            InvokeOnMainThread(obj =>
-            {
-                _players.RemoveAll(player => player.Username.Equals(username));
-                _gameHud.UpdatePlayerList(_players);
-            });
+			InvokeOnMainThread(obj =>
+			{
+				_players.RemoveAll(player => player.Username.Equals(username));
+				_gameHud.UpdatePlayerList(_players);
+			});
 			// TODO print info (somewhere) about it!
 		}
 
-        private void Network_OnDisconnected(string reason)
+		private void Network_OnDisconnected(string reason)
 		{
 			InvokeOnMainThread(obj =>
 			{
@@ -346,13 +394,13 @@
 			});
 		}
 
-        private void Network_OnChatMessageReceived(ChatMessage msg)
-        {
-            InvokeOnMainThread(obj =>
-            {
-                _gameHud.AddMessage(string.Format("<{0}/{1}>: {2}", msg.Username, msg.Time, msg.Message));
-            }, msg);
-        }
+		private void Network_OnChatMessageReceived(ChatMessage msg)
+		{
+			InvokeOnMainThread(obj =>
+			{
+				_gameHud.AddMessage(string.Format("<{0}/{1}>: {2}", msg.Username, msg.Time, msg.Message));
+			}, msg);
+		}
 
 		#endregion
 	}

@@ -7,3 +7,4 @@ Client/*.cachefile
 Client.Tests/bin*
 Client.Tests/obj*
 TestResults
+_ReSharper.*
