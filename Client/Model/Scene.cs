@@ -82,10 +82,10 @@
 			}
 			else if (simResult.Type == SimulationResult.MoveType.Deploy)
 			{
-                int newFleetsCount = simResult.TargetLeft;
+                int newFleetsCount = simResult.FleetCount;
                 AnimDeploy(targetPlanet, newFleetsCount, () =>
                 {
-                    targetPlanet.NumFleetsPresent = simResult.TargetLeft;
+                    targetPlanet.NumFleetsPresent += newFleetsCount;
                 });
 			}
 		}
