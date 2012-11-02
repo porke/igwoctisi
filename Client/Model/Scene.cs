@@ -109,8 +109,7 @@
                     planet.NumFleetsPresent = newPlanetState.Fleets;
 
                     // Translate the color from hex to enum
-                    int color = (data.Color << 8) >> 8;
-                    player.Color = (PlayerColor) Enum.Parse(typeof (PlayerColor), Convert.ToString(color));
+                    player.Color = (PlayerColor) Enum.Parse(typeof (PlayerColor), Convert.ToString(data.Color));
                 }
             }
 	    }
