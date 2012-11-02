@@ -358,6 +358,8 @@
 
 						// TODO when animation is done that line should be moved to the end of animation.
 						_hudState = HudState.WaitingForRoundStart;
+
+                        Client.Network.BeginSetReady(null, null);
 					});
 
 					// We have consumed that packet.
