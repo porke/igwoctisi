@@ -35,17 +35,17 @@
         private const string MapsPath = "Content/Maps/{0}.xml";
 
         // Attributes names
-        private static string NameAttribute = "Name";
-        private static string PlanetIdAttribute = "PlanetId";
-        private static string ColorAttribute = "Color";
+        private const string NameAttribute = "Name";
+        private const string PlanetIdAttribute = "PlanetId";
+        private const string ColorAttribute = "Color";
 
         // Element names
-        private static string MapElement = "Map";
-        private static string PlanetsElement = "Planets";
-        private static string LinksElement = "Links";
-        private static string SystemsElement = "Systems";
-        private static string PlayerStartingDataElement = "PlayerStartingData";
-        private static string StartingDataElement = "StartingData";
+        private const string MapElement = "Map";
+        private const string PlanetsElement = "Planets";
+        private const string LinksElement = "Links";
+        private const string SystemsElement = "Systems";
+        private const string PlayerStartingDataElement = "PlayerStartingData";
+        private const string StartingDataElement = "StartingData";
 
         /// <summary>
         /// Reads localWorld map from XML file (no extension required). 
@@ -117,6 +117,12 @@
                     }
                 } while (reader.ReadToNextSibling(StartingDataElement));
             }
+        }
+
+        [OnDeserialized]
+        public void OnJsonDeserialized(StreamingContext context)
+        {
+            // TODO Make Player (& Planet) references to be the same objects?
         }
 
         public Map()
