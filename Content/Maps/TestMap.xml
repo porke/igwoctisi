@@ -38,8 +38,8 @@
 	</Systems>
 	
 	<PlayerStartingData>
-		<StartingData PlanetId="1" Color="0xFFFF0000"/>
-		<StartingData PlanetId="4" Color="0xFF00FF00"/>
-		<StartingData PlanetId="7" Color="0xFF0000FF"/>
+		<StartingData PlanetId="1" Color="0x00FF0000"/>
+		<StartingData PlanetId="4" Color="0x0000FF00"/>
+		<StartingData PlanetId="7" Color="0x000000FF"/>
 	</PlayerStartingData>
 </Map>
