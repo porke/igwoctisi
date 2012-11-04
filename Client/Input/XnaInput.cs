@@ -28,7 +28,7 @@
         }
         public void Update(double delta, double time)
         {
-            var receiver = Client.State.ViewMgr.InputReceiver;
+            var receiver = Client.ViewMgr.InputReceiver;
             if (receiver == null) return;
 
             var newKeyboardState = Keyboard.GetState();

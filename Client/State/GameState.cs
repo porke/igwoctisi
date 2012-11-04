@@ -9,7 +9,6 @@
     {
         public GameClient Client { get; protected set; }
         public IGWOCTISI Game { get; protected set; }
-        public ViewManager ViewMgr { get; protected set; }
 
         public delegate void MessageQueueFunc(object args);
         private ConcurrentQueue<Tuple<MessageQueueFunc, object>> _messageQueue = new ConcurrentQueue<Tuple<MessageQueueFunc, object>>();
@@ -18,7 +17,6 @@
         {
             Game = client as IGWOCTISI;
             Client = client;
-            ViewMgr = new ViewManager(Client);
         }
 
         public virtual void OnEnter()
@@ -42,7 +40,7 @@
 
         public virtual void OnUpdate(double delta, double time)
         {
-            ViewMgr.Update(delta, time);
+			Client.ViewMgr.Update(delta, time);
 
             if (!_messageQueue.IsEmpty)
             {
@@ -54,12 +52,12 @@
             }
         }
 
-        public virtual void OnDraw(double delta, double time)
+        public virtual void BeforeDraw(double delta, double time)
         {
             var graphicsDevice = Client.GraphicsDevice;
 
             graphicsDevice.Clear(Color.Black);
-            ViewMgr.Draw(delta, time);
+			Client.ViewMgr.Draw(delta, time);
         }
     }
 }

@@ -8,6 +8,7 @@
     using Nuclex.UserInterface.Visuals.Flat;
     using Renderer;
     using State;
+	using Client.View;
 
     public abstract class GameClient : Game
     {
@@ -16,6 +17,7 @@
         public INetwork Network { get; protected set; }
         public IInput Input { get; protected set; }
         public IGuiVisualizer Visualizer { get; protected set; }
+		public ViewManager ViewMgr { get; protected set; }
         public GameState State { get; protected set; }
 
         protected GameClient()
@@ -25,6 +27,7 @@
             Renderer = new XnaRenderer();
             Network = new WsaNetwork();
             Input = new XnaInput();
+			ViewMgr = new ViewManager(this);
         }
 
         protected override void Initialize()
@@ -53,6 +56,7 @@
 
             Input.Update(delta, time);
             Network.Update(delta, time);
+			ViewMgr.Update(delta, time);
 
             State.OnUpdate(delta, time);
             base.Update(gameTime);
@@ -63,7 +67,8 @@
             var delta = gameTime.ElapsedGameTime.TotalSeconds;
             var time = gameTime.TotalGameTime.TotalSeconds;
 
-            State.OnDraw(delta, time);
+            State.BeforeDraw(delta, time);
+			ViewMgr.Draw(delta, time);
             base.Draw(gameTime);
         }
 
