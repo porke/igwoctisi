@@ -11,8 +11,8 @@
         Vector3 _startingPosition;
         
 
-		public MoveTo(T context, AnimationManager animationMgr, Vector3 targetPosition, double duration, Func<double, double> interpolator = null)
-			: base(context, animationMgr, duration)
+		public MoveTo(T context, AnimationManager animationMgr, Vector3 targetPosition, double duration, Func<double, double> interpolator)
+			: base(context, animationMgr, duration, interpolator)
 		{
             _targetPosition = targetPosition;
 		}

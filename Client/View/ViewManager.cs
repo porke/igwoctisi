@@ -121,7 +121,22 @@
 			
             lock (_viewStack)
             {
-                _viewStack.ForEach(view => view.Update(delta, currentTime));
+				for (var i = 0; i < _viewStack.Count; )
+				{
+					if (_viewStack[i].IsHidden)
+					{
+						_viewStack.RemoveAt(i);
+					}
+					else
+					{
+						++i;
+					}
+				}
+
+				_viewStack.ForEach(view =>
+				{
+					if (!view.IsHidden) view.Update(delta, currentTime);
+				});
             }
 			AnimationManager.Update(delta);
         }
