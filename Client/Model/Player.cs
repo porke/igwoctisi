@@ -4,20 +4,21 @@
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
     using System.ComponentModel;
+    using System.Linq;
 
     /// <summary>
     /// ARGB hex.
     /// </summary>
     public enum PlayerColor
     {
-        Red = 0x00FC0300,
+        Red =   0x00FC0300,
         Green = 0x0000FF00,
-        Blue = 0x000000FF,
-        Cyan = 0x0000FFFF,
-        Yellow = 0x00FFEF00,
-        Lime = 0x0093F600,
+        Blue =  0x000000FF,
+        Cyan =  0x0000FFFF,
+        Yellow =0x00FFEF00,
+        Lime =  0x0093F600,
         White = 0x00FFFFFF,
-        Orange = 0x00FE7F00
+        Orange =0x00FE7F00
     }
 
     [DataContract]
@@ -54,8 +55,9 @@
                 int r = (byte)((int)_playerColor >> 16);
                 int g = (byte)((int)_playerColor >> 8);
                 int b = (byte)((int)_playerColor >> 0);
-                int a = (byte)((int)_playerColor >> 24);
-                _xnaColor = Microsoft.Xna.Framework.Color.FromNonPremultiplied(r, g, b, a);
+                int transparency = (byte)((int)_playerColor >> 24);
+                int alpha = 0xFF - transparency;
+                _xnaColor = Microsoft.Xna.Framework.Color.FromNonPremultiplied(r, g, b, alpha);
             }
         }
 
@@ -65,7 +67,7 @@
 
         private Color _xnaColor;
         private PlayerColor _playerColor;
-        private List<Planet> _ownedPlanets = new List<Planet>();
+        private readonly List<Planet> _ownedPlanets = new List<Planet>();
 
         #endregion
 
@@ -162,9 +164,22 @@
 
         #endregion
 
-        public void AddPlanet(Planet planet)
+        /// <summary>
+        /// Add planet to the player. Planet's owner is changed to this player.
+        /// </summary>
+        /// <param name="planet"></param>
+        /// <returns>true if player didn't own the planet before</returns>
+        public bool TryAssignPlanet(Planet planet)
         {
-            _ownedPlanets.Add(planet);
+            // If player doesn't own the planet then assign it to him.
+            if (!_ownedPlanets.Exists(p => p.Id == planet.Id))
+            {
+                _ownedPlanets.Add(planet);
+                planet.Owner = this;
+                return true;
+            }
+
+            return false;
         }
 
         public void EndRound()

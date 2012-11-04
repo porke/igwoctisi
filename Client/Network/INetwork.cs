@@ -33,8 +33,8 @@
         IAsyncResult BeginStartGame(AsyncCallback asyncCallback, object asyncState);
         void EndStartGame(IAsyncResult asyncResult);
 
-        IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState);
-        Map EndReceiveGameState(IAsyncResult asyncResult);
+        IAsyncResult BeginSetReady(AsyncCallback asyncCallback, object asyncState);
+        void EndSetReady(IAsyncResult asyncResult);
         IAsyncResult BeginSendCommands(List<UserCommand> commands, AsyncCallback asyncCallback, object asyncState);
         void EndSendCommands(IAsyncResult asyncResult);
 

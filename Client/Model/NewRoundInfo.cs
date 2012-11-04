@@ -38,10 +38,38 @@
             public int PlanetId { get; set; }
 
             [DataMember]
-            public int PlanetIndex { get; set; }
+            public int PlayerIndex { get; set; }
 
             [DataMember]
             public int Fleets { get; set; }
+        }
+
+        /// <summary>
+        /// Gets owner of the planet.
+        /// </summary>
+        /// <param name="planetId">id of planet</param>
+        /// <param name="out_username">returned username of player owning the planet</param>
+        /// <returns>true if out_username param was set, otherwise false</returns>
+        public bool TryFindPlanetOwner(int planetId, ref string out_username)
+        {
+            int playerIndex = Map.First(ps => ps.PlanetId == planetId).PlayerIndex;
+            if (playerIndex >= 0)
+            {
+                out_username = Players[playerIndex];
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets planet state.
+        /// </summary>
+        /// <param name="planetId"></param>
+        /// <returns>planet state (fleet count)</returns>
+        public PlanetState FindPlanetState(int planetId)
+        {
+            return Map.First(p => p.PlanetId.Equals(planetId));
         }
     }
 }

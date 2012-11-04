@@ -824,18 +824,19 @@
             return ar.Result;
         }
 
-        public IAsyncResult BeginReceiveGameState(AsyncCallback asyncCallback, object asyncState)
+        public IAsyncResult BeginSetReady(AsyncCallback asyncCallback, object asyncState)
         {
-            var ar = new AsyncResult<Map>(asyncCallback, asyncState);
-            // simulate time consuming task
-            ar.BeginInvoke(() => { Thread.Sleep(500); return null; });
+            var ar = new AsyncResult<object>(asyncCallback, asyncState);
+
+            SendInfo(MessageContentType.Ready, null);
+            ar.Complete(null, true);
             return ar;
         }
 
-        public Map EndReceiveGameState(IAsyncResult asyncResult)
+        public void EndSetReady(IAsyncResult asyncResult)
         {
-            var ar = (AsyncResult<Map>)asyncResult;
-            return ar.EndInvoke();
+            var ar = (AsyncResult<object>)asyncResult;
+            ar.EndInvoke();
         }
 
         public IAsyncResult BeginSendCommands(List<UserCommand> commands, AsyncCallback asyncCallback, object asyncState)

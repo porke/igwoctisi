@@ -26,27 +26,11 @@
 
 		#endregion
 
-		public Scene(Map map, List<Player> playerList)
+		public Scene(Map map)
 		{
-			Map = map;
+            Map = map;
 			HoveredPlanet = SelectedPlanet = 0;
 			HoveredLink = null;
-			_players = playerList;
-
-			// Assign planets
-			for (int i = 0; i < _players.Count; i++)
-			{
-				var startingData = Map.PlayerStartingData[i];
-				var startingPlanet = Map.StartingPositions[i];
-				startingPlanet.Owner = _players[i];
-
-				// Translate the color from hex to enum
-				int color = (startingData.Color << 8) >> 8;
-				_players[i].Color = (PlayerColor) Enum.Parse(typeof(PlayerColor), Convert.ToString(color));
-				_players[i].AddPlanet(startingPlanet);
-
-				_players[i].DeployableFleets = startingPlanet.BaseUnitsPerTurn;
-			}
 		}
 		public Planet PickPlanet(Vector2 clickPosition, IRenderer renderer)
 		{
@@ -98,12 +82,52 @@
 			}
 			else if (simResult.Type == SimulationResult.MoveType.Deploy)
 			{
-                int newFleetsCount = simResult.TargetLeft;
+                int newFleetsCount = simResult.FleetCount;
                 AnimDeploy(targetPlanet, newFleetsCount, () =>
                 {
-                    targetPlanet.NumFleetsPresent = simResult.TargetLeft;
+                    targetPlanet.NumFleetsPresent += newFleetsCount;
                 });
 			}
 		}
+
+	    public void Initialize(NewRoundInfo roundInfo, List<Player> players)
+	    {
+            _players = players;
+
+            // Assign planets to the players and vice versa.
+            foreach (var data in Map.PlayerStartingData)
+            {
+                var planet = Map.GetPlanetById(data.PlanetId);
+                var newPlanetState = roundInfo.FindPlanetState(planet.Id);
+                string ownerName = null;
+
+                // Planet may be not assigned to anyone.
+                if (roundInfo.TryFindPlanetOwner(planet.Id, ref ownerName))
+                {
+                    var player = _players.Find(p => p.Username.Equals(ownerName));
+                    player.TryAssignPlanet(planet);
+                    planet.NumFleetsPresent = newPlanetState.Fleets;
+
+                    // Translate the color from hex to enum
+                    int color = (data.Color << 8) >> 8;
+                    player.Color = (PlayerColor) Enum.Parse(typeof (PlayerColor), Convert.ToString(color));
+                }
+            }
+
+            // OBSOLETE!
+            return;
+            for (int i = 0; i < _players.Count; i++)
+            {
+                var startingData = Map.PlayerStartingData[i];
+                var startingPlanet = Map.StartingPositions[i];
+                startingPlanet.Owner = _players[i];
+
+                // Translate the color from hex to enum
+                int color = (startingData.Color << 8) >> 8;
+                _players[i].Color = (PlayerColor)Enum.Parse(typeof(PlayerColor), Convert.ToString(color));
+                _players[i].TryAssignPlanet(startingPlanet);
+                _players[i].DeployableFleets = startingPlanet.BaseUnitsPerTurn;
+            }
+	    }
 	}
 }
