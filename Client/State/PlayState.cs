@@ -37,12 +37,12 @@
 			_clientPlayer = clientPlayer;
 
 			Scene = new Scene(_loadedMap);
-			Scene.Visual = new Renderer.SceneVisual(Scene, Client.Content, ViewMgr.AnimationManager);
+			Scene.Visual = new Renderer.SceneVisual(Scene, Client.Content, Client.ViewMgr.AnimationManager);
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
 
-			ViewMgr.PushLayer(_gameViewport);
-			ViewMgr.PushLayer(_gameHud);
+			Client.ViewMgr.PushLayer(_gameViewport);
+			Client.ViewMgr.PushLayer(_gameHud);
 
 			Client.Network.OnRoundStarted += Network_OnRoundStarted;
 			Client.Network.OnRoundEnded += Network_OnRoundEnded;
@@ -91,8 +91,8 @@
 									+ Environment.NewLine + Environment.NewLine
 									+ "(This OK button will disappear)"
 							};
-							messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };//TODO to be removed (no OK button!!)
-							ViewMgr.PushLayer(messageBox);
+							messageBox.OkPressed += (sender, e) => { Client.ViewMgr.PopLayer(); };//TODO to be removed (no OK button!!)
+							Client.ViewMgr.PushLayer(messageBox);
 						}
 					}
 				}
@@ -119,7 +119,7 @@
 			{
 				Message = "Leaving game..."
 			};
-			ViewMgr.PushLayer(messageBox);
+			Client.ViewMgr.PushLayer(messageBox);
 
 			Client.Network.BeginLeaveGame(OnLeaveGame, messageBox);
 		}
@@ -245,7 +245,7 @@
 				try
 				{
 					Client.Network.EndLeaveGame(result);
-					ViewMgr.PopLayer(); // MessageBox
+					Client.ViewMgr.PopLayer(); // MessageBox
 					Client.ChangeState(new LobbyState(Game, _clientPlayer));
 				}
 				catch (Exception exc)
@@ -254,7 +254,7 @@
 					messageBox.Message = exc.Message;
 					messageBox.OkPressed += (sender, e) =>
 					{
-						ViewMgr.PopLayer();
+						Client.ViewMgr.PopLayer();
 						Client.ChangeState(new LobbyState(Game, _clientPlayer));
 					};
 				}
@@ -342,10 +342,10 @@
 				{
 					InvokeOnMainThread(obj =>
 					{
-						if (ViewMgr.PeekLayer() is MessageBox)
+						if (Client.ViewMgr.PeekLayer() is MessageBox)
 						{
 							// Pop MessageBox "Waiting for server to simulate the turn."
-							ViewMgr.PopLayer();
+							Client.ViewMgr.PopLayer();
 						}
 
 						_hudState = HudState.AnimatingSimulationResult;
