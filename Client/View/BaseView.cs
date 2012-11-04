@@ -7,6 +7,7 @@
     public abstract class BaseView
     {
         public bool IsLoaded { get; protected set; }
+		public bool IsHidden { get; protected set; }
         public bool IsTransparent { get; protected set; }
         public IInputReceiver InputReceiver { get; protected set; }
 
@@ -23,11 +24,12 @@
         public virtual void OnShow(ViewManager viewMgr, double time)
         {
             this.ViewMgr = viewMgr;
+			IsHidden = false;
         }
 
         public virtual void OnHide(double time)
         {
-            // No implementation required
+			IsHidden = true;
         }
 
         public virtual void Update(double delta, double time)

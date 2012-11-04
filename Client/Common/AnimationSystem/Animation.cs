@@ -78,7 +78,7 @@ namespace Client.Common.AnimationSystem
 				_callbacks.Add(callback);
 			}
 		}
-		public Animation<T> AddAfter(Animation<T> animation)
+		public Animation<S> AddAfter<S>(Animation<S> animation)
 		{
 			AddCallback(context => AnimationMgr.AddAnimation(animation));
 			return animation;

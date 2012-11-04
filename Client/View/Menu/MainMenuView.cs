@@ -8,6 +8,8 @@
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
+	using Common.AnimationSystem.DefaultAnimations;
+	using Client.Common.AnimationSystem;
 
     class MainMenuView : BaseView
     {
@@ -71,6 +73,12 @@
 		public override void OnShow(ViewManager viewMgr, double time)
 		{
 			base.OnShow(viewMgr, time);
+
+			this.screen.Desktop.Animate(this).SlideIn();
+		}
+		public override void OnHide(double time)
+		{
+			this.screen.Desktop.Animate(this).SlideOut().AddCallback(control => this.IsHidden = true);
 		}
 
 		#endregion
