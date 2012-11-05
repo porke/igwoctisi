@@ -123,6 +123,7 @@
     <Compile Include="Model\PlanetarySystem.cs" />
     <Compile Include="Model\PlanetLink.cs" />
     <Compile Include="Model\Player.cs" />
+    <Compile Include="Model\PlayerColor.cs" />
     <Compile Include="Model\SimulationResult.cs" />
     <Compile Include="Model\SpecificGameLobbyInfo.cs" />
     <Compile Include="Model\Planet.cs" />

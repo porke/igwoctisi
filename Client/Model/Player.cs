@@ -3,22 +3,7 @@
     using System.Collections.Generic;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
-
-	/// <summary>
-    /// ARGB hex.
-    /// </summary>
-    public enum PlayerColor
-    {
-        Red =   0x00FC0300,
-        Green = 0x0000FF00,
-        Blue =  0x000000FF,
-        Cyan =  0x0000FFFF,
-        Yellow =0x00FFEF00,
-        Lime =  0x0093F600,
-        White = 0x00FFFFFF,
-        Orange =0x00FE7F00
-    }
-
+    
     [DataContract]
     public class Player
     {
@@ -44,36 +29,20 @@
             }
         }
         public List<UserCommand> Commands { get; private set; }
-        public Color XnaColor { get { return _xnaColor; } }
-        public PlayerColor Color
-        {
-            get { return _playerColor; }
-            set
-            {
-                _playerColor = value;
-                int r = (byte)((int)_playerColor >> 16);
-                int g = (byte)((int)_playerColor >> 8);
-                int b = (byte)((int)_playerColor >> 0);
-                int transparency = (byte)((int)_playerColor >> 24);
-                int alpha = 0xFF - transparency;
-                _xnaColor = Microsoft.Xna.Framework.Color.FromNonPremultiplied(r, g, b, alpha);
-            }
-        }
+        public PlayerColor Color { get; set; }
 
         #endregion
 
         #region Private Fieelds
 
-        private Color _xnaColor;
-        private PlayerColor _playerColor;
         private readonly List<Planet> _ownedPlanets = new List<Planet>();
 
         #endregion
 
-        public Player(string username)
+        public Player(string username, PlayerColor color)
         {
             Username = username;
-            Color = PlayerColor.White;
+            Color = color;
             Commands = new List<UserCommand>();
         }
 

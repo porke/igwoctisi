@@ -15,35 +15,33 @@
     {
         #region Pooling
 
-        private static Dictionary<PlayerColor, ObjectPool<Spaceship>> pools;
-
-        static Spaceship()
+        /// <summary>
+        /// Dictionary key is the color value.
+        /// </summary>
+        private static Dictionary<int, ObjectPool<Spaceship>> pools = new Dictionary<int,ObjectPool<Spaceship>>();
+        
+        public static void SetupPools(ICollection<PlayerColor> colors, ContentManager Content, AnimationManager AnimationManager)
         {
-            pools = new Dictionary<PlayerColor, ObjectPool<Spaceship>>();
-            foreach (var color in Enum.GetValues(typeof(PlayerColor)).Cast<PlayerColor>())
+            foreach (var color in colors)
             {
-                var colorPool = new ObjectPool<Spaceship>(100, new SpaceshipFactory(color));
-                pools.Add(color, colorPool);
-            }
-        }
+                var factory = new SpaceshipFactory(color);
+                var pool = new ObjectPool<Spaceship>(100, factory);
 
-        public static void InstallManagers(ContentManager Content, AnimationManager AnimationManager)
-        {
-            foreach (var factory in pools.Values.Select(pool => pool.Factory))
-            {
-                (factory as SpaceshipFactory).Content = Content;
-                (factory as SpaceshipFactory).AnimationManager = AnimationManager;
+                factory.Content = Content;
+                factory.AnimationManager = AnimationManager;
+
+                pools.Add(color.Value, pool);
             }
         }
         
         public static Spaceship Acquire(PlayerColor playerColor)
         {
-            return pools[playerColor].Get(spaceship => { spaceship.Visible = true; });
+            return pools[playerColor.Value].Get(spaceship => { spaceship.Visible = true; });
         }
 
         public static void Put(Spaceship obj)
         {
-            pools[obj.PlayerColor].Put(obj);
+            pools[obj.PlayerColor.Value].Put(obj);
         }
 
         #endregion

@@ -117,7 +117,7 @@
 			Client.ViewMgr.PushLayer(messageBox);
 
             Client.Network.BeginStartGame(OnGameStarted, messageBox);
-            var playerList = _gameLobby.Players.Select(username => new Player(username)).ToList();
+            var playerList = _gameLobby.Players.Select(username => new Player(username, _map.Colors.First())).ToList();
         }
 		internal void RefreshGameList(BaseView sender)
         {
@@ -288,9 +288,7 @@
                 {
                     Client.Network.EndStartGame(result);
                     
-                    var playerList = new List<Player>(_gameLobby.Players.Select(username => new Player(username)));
-                    var clientPlayer = playerList.Find(player => player.Username.Equals(_clientPlayer.Username));
-                    Game.ChangeState(new PlayState(Game, _map, clientPlayer));
+                    Game.ChangeState(new PlayState(Game, _map, _clientPlayer));
                 }
                 catch (Exception exc)
                 {

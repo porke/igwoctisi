@@ -105,11 +105,12 @@
                 if (roundInfo.TryFindPlanetOwner(planet.Id, ref ownerName))
                 {
                     var player = _players.Find(p => p.Username.Equals(ownerName));
+                    player.Color = Map.GetColorById(data.ColorId);
                     player.TryAssignPlanet(planet);
                     planet.NumFleetsPresent = newPlanetState.Fleets;
 
                     // Translate the color from hex to enum
-                    player.Color = (PlayerColor) Enum.Parse(typeof (PlayerColor), Convert.ToString(data.Color));
+                    player.Color = Map.GetColorById(data.ColorId);
                 }
             }
 	    }
