@@ -3,10 +3,8 @@
     using System.Collections.Generic;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
-    using System.ComponentModel;
-    using System.Linq;
 
-    /// <summary>
+	/// <summary>
     /// ARGB hex.
     /// </summary>
     public enum PlayerColor
@@ -29,6 +27,7 @@
         [DataMember]
         public string Username { get; private set; }
 
+		public int TechPoints { get; set; }
         public int DeployableFleets { get; set; }
         public bool CanDeployFleets { get { return DeployableFleets > 0; } }
         public int FleetIncomePerTurn
@@ -167,7 +166,6 @@
         /// <summary>
         /// Add planet to the player. Planet's owner is changed to this player.
         /// </summary>
-        /// <param name="planet"></param>
         /// <returns>true if player didn't own the planet before</returns>
         public bool TryAssignPlanet(Planet planet)
         {
@@ -180,12 +178,6 @@
             }
 
             return false;
-        }
-
-        public void EndRound()
-        {
-            // TODO: mock implementation
-            DeployableFleets += FleetIncomePerTurn;
-        }
+        }    
     }
 }
