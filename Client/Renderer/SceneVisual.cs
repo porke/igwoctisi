@@ -16,7 +16,6 @@
         private AnimationManager AnimationManager;
         private List<Spaceship> _spaceshipsToAdd = new List<Spaceship>();
 
-
         public SceneVisual(Scene scene, ContentManager Content, AnimationManager AnimationManager)
         {
             Scene = scene;

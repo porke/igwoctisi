@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Client.Common.AnimationSystem;
-using Client.Renderer;
-
-namespace Client.View.Play.Animations
+﻿namespace Client.View.Play.Animations
 {
+	using Client.Common.AnimationSystem;
+	using Client.Renderer;
+
     public static class AnimationExtensions
     {
         public static Animation<Spaceship> Animate(this Spaceship ship, AnimationManager animationManager)

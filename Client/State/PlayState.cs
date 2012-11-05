@@ -111,7 +111,7 @@
 		{
 			_clientPlayer.DeleteCommand(orderIndex);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands, orderIndex);
-			_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+			_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
 		}
 		internal void LeaveGame()
 		{
@@ -170,7 +170,7 @@
 
 			_clientPlayer.DeployFleet(planet);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
-			_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+			_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
 		}
 		internal void UndeployFleet(Planet planet)
 		{
@@ -183,7 +183,7 @@
 
 			_clientPlayer.UndeployFleet(planet);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
-			_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+			_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
 		}
 		internal void OnHoverLink(PlanetLink hoverLink)
 		{
@@ -290,7 +290,7 @@
 					{
 						Scene.Initialize(roundInfo, _players);
 						Scene.Map.UpdatePlanetShowDetails(_clientPlayer);
-						_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+						_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
 						_gameHud.UpdatePlayerList(_players);
 					    locker.Set();
 					});
@@ -313,11 +313,9 @@
 						// Update world info.
 						_clientPlayer.DeployableFleets += roundInfo.FleetsToDeploy;
                         
-                        _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+                        _gameHud.UpdateClientPlayerResourceData(_clientPlayer);
                         _loadedMap.UpdatePlanetShowDetails(_clientPlayer);
                         
-                        
-
 					    // TODO update planet states (owners, fleet numbers)
 						// TODO update player list due to `roundInfo.Players' (_gameHud.UpdatePlayerList(players);)
 						// TODO update tech info due to `roundInfo.Tech'
@@ -382,8 +380,8 @@
 			{
 				_players.RemoveAll(player => player.Username.Equals(username));
 				_gameHud.UpdatePlayerList(_players);
-			});
-			// TODO print info (somewhere) about it!
+				_gameHud.AddMessage(string.Format("Player {0} has left.", username));
+			});			
 		}
 
 		private void Network_OnDisconnected(string reason)

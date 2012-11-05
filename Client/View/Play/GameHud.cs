@@ -1,16 +1,16 @@
 ﻿namespace Client.View.Play
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Client.Model;
-    using Common;
-    using Input;
-    using Nuclex.UserInterface;
-    using Nuclex.UserInterface.Controls;
-    using Nuclex.UserInterface.Controls.Desktop;
-    using State;
-    using Client.Input.Controls;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Client.Input.Controls;
+	using Client.Model;
+	using Common;
+	using Input;
+	using Nuclex.UserInterface;
+	using Nuclex.UserInterface.Controls;
+	using Nuclex.UserInterface.Controls.Desktop;
+	using State;
 
     class GameHud : BaseView
     {
@@ -20,6 +20,7 @@
         private LabelControl _playerNameValue;
         private LabelControl _fleetCountValue;
         private LabelControl _fleetIncomeValue;
+		private LabelControl _techPointsValue;
         private ListControl _playerList;
         private LabelControl _timer;
         private WrappableListControl _messageList;
@@ -57,20 +58,20 @@
             var btnDeleteOrder = new ButtonControl()
             {
                 Text = "Delete",
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.59f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.12f, 0), new UniScalar(0.59f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
             };
             btnDeleteOrder.Pressed += DeleteCommand_Pressed;
 
             #endregion
 
-            #region Fleet values
+            #region Resource values
 
             var playerNameDesc = new LabelControl("Player:")
             {
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.0f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
             };
 
-            _playerNameValue = new LabelControl("")
+            _playerNameValue = new LabelControl()
             {
                 Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
             };
@@ -95,6 +96,16 @@
                 Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
             };
 
+			var techPointsDesc = new LabelControl("Tech points:")
+			{
+				Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.15f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
+			};
+
+			_techPointsValue = new LabelControl("0")
+			{
+				Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.15f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
+			};
+
             #endregion
 
             #region Game buttons
@@ -108,8 +119,8 @@
 
             var btnSendOrders = new ButtonControl()
             {
-                Text = "End turn",
-                Bounds = new UniRectangle(new UniScalar(0.12f, 0), new UniScalar(0.93f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
+                Text = "Send",
+				Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.59f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))                
             };
             btnSendOrders.Pressed += SendCommands_Pressed;
 
@@ -128,20 +139,20 @@
 
             _chatMessage = new CommandInputControl
             {
-                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.9f, 0), new UniScalar(0.65f, 0), new UniScalar(0.05f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.93f, 0), new UniScalar(0.6f, 0), new UniScalar(0.05f, 0))
             };
             _chatMessage.OnCommandHandler += new EventHandler(ChatMessage_Execute);
 
             _messageList = new WrappableListControl
             {
                 SelectionMode = ListSelectionMode.None,
-                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.75f, 0), new UniScalar(0.65f, 0), new UniScalar(0.13f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.75f, 0), new UniScalar(0.675f, 0), new UniScalar(0.16f, 0))
             };
 
             var btnClearMessage = new ButtonControl
             {
                 Text = "C",
-                Bounds = new UniRectangle(new UniScalar(0.96f, 0), new UniScalar(0.94f, 0), new UniScalar(0.03f, 0), new UniScalar(0.03f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.925f, 0), new UniScalar(0.93f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
             };
             btnClearMessage.Pressed += ClearMessageList;
 
@@ -162,6 +173,8 @@
                     _fleetCountValue, 
                     fleetCountDesc,
                     fleetIncomeDesc,
+					techPointsDesc,
+					_techPointsValue,
                     
                     btnDeleteOrder, 
                     btnLeaveGame, 
@@ -217,11 +230,12 @@
             _playerList.Items.AddRange(players.Select(player => player.Username));
         }
 
-        public void UpdateClientPlayerFleetData(Player player)
+        public void UpdateClientPlayerResourceData(Player player)
         {
             _playerNameValue.Text = player.Username;
             _fleetCountValue.Text = Convert.ToString(player.DeployableFleets);
             _fleetIncomeValue.Text = Convert.ToString(player.FleetIncomePerTurn);
+			_techPointsValue.Text = Convert.ToString(player.TechPoints);
         }
 
         public void UpdateTimer(int secondsLeft)
