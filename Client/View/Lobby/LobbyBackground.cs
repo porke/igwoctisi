@@ -21,7 +21,7 @@
             var contentMgr = (ContentManager)ar.AsyncState;
             _effect = contentMgr.EndLoad<Effect>(ar);
 
-            IsLoaded = true;
+            State = ViewState.Loaded;
         }
 
         #endregion
@@ -30,10 +30,7 @@
 
         public override void Draw(double delta, double time)
         {
-            if (!IsLoaded)
-                return;
-
-            var graphicsDevice = state.Client.GraphicsDevice;
+            var graphicsDevice = GameState.Client.GraphicsDevice;
             var world = Matrix.CreateRotationZ((float)(time + MathHelper.PiOver4));
             var view = Matrix.CreateLookAt(Vector3.Backward * -2, Vector3.Zero, Vector3.Up);
             var projection = Matrix.CreatePerspectiveFieldOfView(
@@ -56,7 +53,6 @@
 
         public LobbyBackground(GameState state): base(state)
         {
-            IsLoaded = false;
             IsTransparent = false;
             var graphicsDevice = state.Client.GraphicsDevice;
             var contentMgr = state.Client.Content;

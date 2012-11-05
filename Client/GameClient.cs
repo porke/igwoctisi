@@ -77,8 +77,9 @@
             if (State != null)
                 State.OnExit();
 
+
             State = newState;
-            
+
             if (State != null)
                 State.OnEnter();
         }

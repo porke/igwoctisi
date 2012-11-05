@@ -8,6 +8,7 @@
     using Nuclex.UserInterface;
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
+	using Client.State;
 
     enum MessageBoxButtons
     {
@@ -70,7 +71,20 @@
 
         #endregion
 
-        public string Title
+		#region BaseView members
+
+		protected override void OnShow(double time)
+		{
+			State = ViewState.Visible;
+		}
+		protected override void OnHide(double time)
+		{
+			State = ViewState.Hidden;
+		}
+
+		#endregion
+
+		public string Title
         {
             get { return _window.Title; }
             set { _window.Title = value; }
@@ -88,15 +102,15 @@
 
         public event EventHandler OkPressed;
 
-        public MessageBox(MessageBoxButtons buttons) : base(null)
+        public MessageBox(GameState gameState, MessageBoxButtons buttons) : base(gameState)
         {
             screen = new Screen(800, 600);
             InputReceiver = new NuclexScreenInputReceiver(screen, true);
 
             CreateChildControls();
             Buttons = buttons;
-            IsLoaded = true;
             IsTransparent = true;
+			State = ViewState.Loaded;
         }
         public void RaiseOkPressed(object sender, EventArgs e)
         {

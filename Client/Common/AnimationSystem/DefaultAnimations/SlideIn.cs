@@ -45,7 +45,7 @@ namespace Client.Common.AnimationSystem.DefaultAnimations
 
 		#endregion
 
-		public SlideIn(Control context, AnimationManager animationMgr, double duration = 0.4, Func<double, double> interpolator = null)
+		public SlideIn(Control context, AnimationManager animationMgr, double duration = 1.2, Func<double, double> interpolator = null)
 			: base(context, animationMgr, duration, interpolator ?? Interpolators.AccelerateDecelerate())
 		{
 		}
@@ -53,7 +53,7 @@ namespace Client.Common.AnimationSystem.DefaultAnimations
 
 	public static class SlideInExtensions
 	{
-		public static SlideIn SlideIn<T>(this Animation<T> animation, double duration = 0.4, Func<double, double> interpolator = null) where T : Control
+		public static SlideIn SlideIn<T>(this Animation<T> animation, double duration = 1.2, Func<double, double> interpolator = null) where T : Control
 		{
 			var after = new SlideIn(animation.Context, animation.AnimationMgr, duration, interpolator);
 			animation.AddAfter(after);

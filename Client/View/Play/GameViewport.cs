@@ -12,7 +12,7 @@
 
         public override void Draw(double delta, double time)
         {
-            var renderer = state.Client.Renderer;
+            var renderer = GameState.Client.Renderer;
 
             renderer.Draw(PlayState.Scene, delta, time);
         }
@@ -190,10 +190,10 @@
 		public GameViewport(PlayState state)
 			: base(state)
         {
-            IsLoaded = true;
             IsTransparent = false;
             InputReceiver = new GameInputReceiver(this);
             PlayState = state;
+			State = ViewState.Loaded;
         }
     }
 }

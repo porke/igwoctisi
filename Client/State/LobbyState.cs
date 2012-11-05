@@ -72,7 +72,7 @@
         }
 		internal void CreateGame(string gameName, string mapName)
         {
-            var messageBox = new MessageBox(MessageBoxButtons.None)
+            var messageBox = new MessageBox(this, MessageBoxButtons.None)
             {
                 Title = "Join Game",
                 Message = "Joining in..."
@@ -99,7 +99,7 @@
         }
 		internal void JoinGame(int lobbyId)
         {
-            var messageBox = new MessageBox(MessageBoxButtons.None)
+            var messageBox = new MessageBox(this, MessageBoxButtons.None)
             {
                 Title = "Join Game",
                 Message = "Joining in..."
@@ -109,7 +109,7 @@
         }
 		internal void BeginGame()
         {
-            var messageBox = new MessageBox(MessageBoxButtons.None)
+            var messageBox = new MessageBox(this, MessageBoxButtons.None)
             {
                 Title = "Begin Game",
                 Message = "Starting game, please wait..."
@@ -121,7 +121,7 @@
         }
 		internal void RefreshGameList(BaseView sender)
         {
-            var messageBox = new MessageBox(MessageBoxButtons.None)
+            var messageBox = new MessageBox(this, MessageBoxButtons.None)
             {
                 Title = "Loading Main Lobby",
                 Message = "Downloading game list..."
@@ -378,7 +378,7 @@
 				Client.ViewMgr.PopLayer(); // GameLobbyView
 				Client.ViewMgr.PushLayer(new MainLobbyView(this));
 
-                var messageBox = new MessageBox(MessageBoxButtons.OK)
+                var messageBox = new MessageBox(this, MessageBoxButtons.OK)
                 {
                     Title = "Out of Game",
                     Message = "You were kicked out from Game Lobby."

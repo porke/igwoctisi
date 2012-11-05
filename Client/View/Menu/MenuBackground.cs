@@ -21,7 +21,7 @@
             var contentMgr = (ContentManager)ar.AsyncState;
             _planetEffect = contentMgr.EndLoad<Effect>(ar);
 
-            IsLoaded = true;
+            State = ViewState.Loaded;
         }
 
         #endregion
@@ -30,10 +30,8 @@
 
         public override void Draw(double delta, double time)
         {
-            if (!IsLoaded)
-                return;
+			var graphicsDevice = GameState.Client.GraphicsDevice;
 
-            var graphicsDevice = state.Client.GraphicsDevice;
             var world = Matrix.CreateRotationX((float)time) * 
                         Matrix.CreateRotationY((float)(time + MathHelper.PiOver4)) * 
                         Matrix.CreateRotationZ((float)(time + MathHelper.PiOver4*3.0));
@@ -59,7 +57,6 @@
         public MenuBackground(GameState state) : base(state)
         {
             IsTransparent = false;
-            IsLoaded = false;
             var graphicsDevice = state.Client.GraphicsDevice;
             var contentMgr = state.Client.Content;
             InputReceiver = new NullInputReceiver(false);

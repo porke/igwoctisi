@@ -148,12 +148,12 @@
             : base(state)
         {
 			LobbyState = state;
-            IsLoaded = true;
             IsTransparent = true;
             screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.25f, 0), new UniScalar(0.6f, 0), new UniScalar(0.5f, 0));
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls(showHostButtons);
+			State = ViewState.Loaded;
         }
     }
 }

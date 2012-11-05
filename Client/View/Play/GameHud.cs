@@ -272,11 +272,11 @@
         public GameHud(PlayState state) : base(state)
         {
 			PlayState = state;
-            IsLoaded = true;
             IsTransparent = true;            
             InputReceiver = new NuclexScreenInputReceiver(screen, false);            
 
             CreateChildControls();
+			State = ViewState.Loaded;
         }
     }
 }

@@ -12,7 +12,7 @@
 
     class CreateGameView : BaseView
     {
-        #region Protected members
+        #region Private members
 
         private ListControl _mapList;
         private CommandInputControl _gameName;
@@ -68,6 +68,16 @@
                 btnCreateGame.Enabled = false;
             }
         }
+		private void LoadMapNames()
+		{
+			var applicationDir = AppDomain.CurrentDomain.BaseDirectory;
+			var mapNames = Directory.EnumerateFiles(applicationDir + "/Content/Maps");
+			foreach (var mapName in mapNames)
+			{
+				var filename = Path.GetFileNameWithoutExtension(mapName);
+				_mapList.Items.Add(filename);
+			}
+		}
 
         #endregion
 
@@ -77,7 +87,6 @@
         {
 			LobbyState.CancelCreateGame();
         }
-
         private void CreateGame_Pressed(object sender, EventArgs args)
         {
             var mapName = _mapList.Items[_mapList.SelectedItems[0]];
@@ -92,23 +101,12 @@
             : base(state)
         {
 			LobbyState = state;
-            IsLoaded = true;
             IsTransparent = true;
             screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.25f, 0), new UniScalar(0.4f, 0), new UniScalar(0.5f, 0));
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
-            CreateChildControls();            
-        }
-
-        private void LoadMapNames()
-        {
-            var applicationDir = AppDomain.CurrentDomain.BaseDirectory;
-            var mapNames = Directory.EnumerateFiles(applicationDir + "/Content/Maps");
-            foreach (var mapName in mapNames)
-            {
-                var filename = Path.GetFileNameWithoutExtension(mapName);
-                _mapList.Items.Add(filename);
-            }
+            CreateChildControls();
+			State = ViewState.Loaded;
         }
     }
 }

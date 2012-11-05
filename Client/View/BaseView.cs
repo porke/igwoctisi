@@ -3,43 +3,68 @@
     using Input;
     using Nuclex.UserInterface;
     using State;
+	using Common;
+	using Common.AnimationSystem.DefaultAnimations;
+
+	public enum ViewState
+	{
+		Loading,
+		Loaded,
+		FadeIn,
+		Visible,
+		FadeOut,
+		Hidden
+	}
 
     public abstract class BaseView
-    {
-        public bool IsLoaded { get; protected set; }
-		public bool IsHidden { get; protected set; }
+	{
+		#region Protected members
+
+		protected internal ViewManager ViewMgr { get; protected set; }
+		protected Screen screen;
+		
+		protected BaseView(GameState controller)
+		{
+			State = ViewState.Loading;
+			GameState = controller;
+			screen = new Screen(800, 600);
+		}
+		protected virtual void OnShow(double time)
+		{
+			screen.Desktop.Animate(this).SlideIn().AddCallback(x => State = ViewState.Visible);
+		}
+		protected virtual void OnHide(double time)
+		{
+			screen.Desktop.Animate(this).SlideOut().AddCallback(x => State = ViewState.Hidden);
+		}
+
+		#endregion
+
+		public GameState GameState { get; protected set; }
+		public ViewState State { get; protected set; }
         public bool IsTransparent { get; protected set; }
         public IInputReceiver InputReceiver { get; protected set; }
 
-        protected internal ViewManager ViewMgr { get; protected set; }
-        protected Screen screen;
-        protected GameState state;
+		public void Show(ViewManager viewMgr, double time)
+		{
+			ViewMgr = viewMgr;
+			State = ViewState.FadeIn;
 
-        protected BaseView(GameState controller)
-        {
-            state = controller;
-            screen = new Screen(800, 600);
-        }
+			OnShow(time);
+		}
+		public void Hide(double time)
+		{
+			State = ViewState.FadeOut;
 
-        public virtual void OnShow(ViewManager viewMgr, double time)
-        {
-            this.ViewMgr = viewMgr;
-			IsHidden = false;
-        }
-
-        public virtual void OnHide(double time)
-        {
-			IsHidden = true;
-        }
-
+			OnHide(time);
+		}
         public virtual void Update(double delta, double time)
         {
             // No implementation required
         }
-
         public virtual void Draw(double delta, double time)
         {
-            ViewMgr.Client.Visualizer.Draw(screen);
+            GameState.Client.Visualizer.Draw(screen);
         }
     }
 }
