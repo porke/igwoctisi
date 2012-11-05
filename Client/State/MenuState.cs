@@ -52,7 +52,7 @@
                 // TODO: Log any error messages
             }
             
-            var messageBox = new MessageBox(MessageBoxButtons.None)
+            var messageBox = new MessageBox(this, MessageBoxButtons.None)
             {
                 Title = "Log in",
                 Message = string.Format("Connecting... {0}@{1}", login, password)
@@ -63,7 +63,7 @@
         }
 		internal void OnDisconnected(string title, string message)
         {
-            var messageBox = new MessageBox(MessageBoxButtons.OK)
+            var messageBox = new MessageBox(this, MessageBoxButtons.OK)
             {
                 Title = title,
                 Message = message

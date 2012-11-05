@@ -84,7 +84,7 @@
 						if (_hudState == HudState.WaitingForRoundEnd)
 						{
 							// Create message box that will be shown until server's roundEnd or gameEnd message arrives.
-							var messageBox = new MessageBox(MessageBoxButtons.OK)
+							var messageBox = new MessageBox(this, MessageBoxButtons.OK)
 							{
 								Title = "Round simulating",
 								Message = "Waiting for server to simulate the turn."
@@ -115,7 +115,7 @@
 		}
 		internal void LeaveGame()
 		{
-			var messageBox = new MessageBox(MessageBoxButtons.None)
+			var messageBox = new MessageBox(this, MessageBoxButtons.None)
 			{
 				Message = "Leaving game..."
 			};

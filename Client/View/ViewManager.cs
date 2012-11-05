@@ -75,12 +75,10 @@
             #endregion
 
             public ViewManager ViewMgr { get; protected set; }
-
             public ViewManagerInputReceiver(ViewManager viewMgr)
             {
                 ViewMgr = viewMgr;
             }
-
             protected bool ProcessEvent(Func<IInputReceiver, bool> eventFunc)
             {
                 var viewStack = ViewMgr._viewStack;
@@ -89,7 +87,7 @@
                     for (var i = viewStack.Count - 1; i >= 0; --i)
                     {
                         var layer = viewStack[i];
-                        if (eventFunc(layer.InputReceiver))
+                        if (layer.State == ViewState.Visible && eventFunc(layer.InputReceiver))
                         {
                             return true;
                         }
@@ -114,7 +112,6 @@
             InputReceiver = new ViewManagerInputReceiver(this);
 			AnimationManager = new AnimationManager();
         }
-
         public void Update(double delta, double time)
         {
             currentTime += delta;
@@ -123,7 +120,19 @@
             {
 				for (var i = 0; i < _viewStack.Count; )
 				{
-					if (_viewStack[i].IsHidden)
+					var view = _viewStack[i];
+
+					if (view.State == ViewState.Loaded)
+					{
+						view.Show(this, currentTime);
+					}
+
+					if (view.State == ViewState.Visible && view.GameState != Client.State)
+					{
+						view.Hide(currentTime);
+					}
+
+					if (view.State == ViewState.Hidden)
 					{
 						_viewStack.RemoveAt(i);
 					}
@@ -135,57 +144,78 @@
 
 				_viewStack.ForEach(view =>
 				{
-					if (!view.IsHidden) view.Update(delta, currentTime);
+					if (view.State == ViewState.FadeIn ||
+						view.State == ViewState.Visible ||
+						view.State == ViewState.FadeOut)
+					{
+						view.Update(delta, currentTime);
+					}
 				});
             }
 			AnimationManager.Update(delta);
         }
-
         public void Draw(double delta, double time)
         {
             lock (_viewStack)
             {
                 // start from topmost non transparent layer
-                var first = _viewStack.FindLastIndex(view => !view.IsTransparent);
+                var first = _viewStack.FindLastIndex(view => !view.IsTransparent && 
+					(view.State == ViewState.FadeIn ||
+					view.State == ViewState.Visible ||
+					view.State == ViewState.FadeOut));
                 if (first == -1) first = 0;
 
                 // and draw
                 for (var i = first; i < _viewStack.Count; ++i)
                 {
-                    _viewStack[i].Draw(delta, currentTime);
+					var view = _viewStack[i];
+					if (view.State == ViewState.FadeIn ||
+						view.State == ViewState.Visible ||
+						view.State == ViewState.FadeOut)
+					{
+						view.Draw(delta, currentTime);
+					}
                 }
             }
         }
-
         public void PushLayer(BaseView view)
         {
             lock (_viewStack)
             {
                 _viewStack.Add(view);
             }
-
-            view.OnShow(this, currentTime);
         }
-
         public BaseView PopLayer()
         {
-            BaseView view;
             lock (_viewStack)
             {
-                view = _viewStack[_viewStack.Count - 1];
-                _viewStack.RemoveAt(_viewStack.Count - 1);
+				for (var i = _viewStack.Count - 1; i >= 0; --i)
+				{
+					var view = _viewStack[i];
+					if (view.State != ViewState.FadeIn && view.State != ViewState.Visible)
+						continue;
+
+					view.Hide(currentTime);
+					return view;
+				}
             }
 
-            view.OnHide(currentTime);
-            return view;
+            return null;
         }
-
         public BaseView PeekLayer()
         {
             lock (_viewStack)
-            {
-                return _viewStack[_viewStack.Count - 1];
+			{
+				for (var i = _viewStack.Count - 1; i >= 0; --i)
+				{
+					var view = _viewStack[i];
+					if (view.State != ViewState.Visible)
+						continue;
+
+					return view;
+				}
             }
+			return null;
         }
     }
 }

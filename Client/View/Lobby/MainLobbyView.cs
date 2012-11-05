@@ -91,14 +91,13 @@ namespace Client.View.Lobby
             : base(state)
         {
 			LobbyState = state;
-            IsLoaded = true;
             IsTransparent = true;
             screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.2f, 0), new UniScalar(0.6f, 0), new UniScalar(0.6f, 0));
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();
+			State = ViewState.Loaded;
         }
-
         public void RefreshGameList(List<LobbyListInfo> gameInfoList)
         {
             _gameInfoList = gameInfoList;

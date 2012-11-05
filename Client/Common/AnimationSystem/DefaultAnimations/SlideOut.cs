@@ -23,8 +23,8 @@ namespace Client.Common.AnimationSystem.DefaultAnimations
 			base.Begin();
 
 			_begin = Context.Bounds.Left;
-			_begin.Offset -= Context.GetAbsoluteBounds().Right;
 			_end = Context.Bounds.Left;
+			_end.Offset -= Context.GetAbsoluteBounds().Right;
 
 			Context.Bounds.Left = _begin;
 		}
@@ -45,7 +45,7 @@ namespace Client.Common.AnimationSystem.DefaultAnimations
 
 		#endregion
 
-		public SlideOut(Control context, AnimationManager animationMgr, double duration = 0.4, Func<double, double> interpolator = null)
+		public SlideOut(Control context, AnimationManager animationMgr, double duration = 1.2, Func<double, double> interpolator = null)
 			: base(context, animationMgr, duration, interpolator ?? Interpolators.AccelerateDecelerate())
 		{
 		}
@@ -53,7 +53,7 @@ namespace Client.Common.AnimationSystem.DefaultAnimations
 
 	public static class SlideOutExtensions
 	{
-		public static SlideOut SlideOut<T>(this Animation<T> animation, double duration = 0.4, Func<double, double> interpolator = null) where T : Control
+		public static SlideOut SlideOut<T>(this Animation<T> animation, double duration = 1.2, Func<double, double> interpolator = null) where T : Control
 		{
 			var after = new SlideOut(animation.Context, animation.AnimationMgr, duration, interpolator);
 			animation.AddAfter(after);

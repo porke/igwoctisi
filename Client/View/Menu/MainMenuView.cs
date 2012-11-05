@@ -60,7 +60,6 @@
         {
 			MenuState.RequestLogin(tbLogin.Text, tbPassword.GetPassword());
         }
-
         protected void Quit_Pressed(object sender, EventArgs e)
         {
 			MenuState.QuitGame();
@@ -68,32 +67,17 @@
 
         #endregion
 
-		#region BaseView members
-
-		public override void OnShow(ViewManager viewMgr, double time)
-		{
-			base.OnShow(viewMgr, time);
-
-			this.screen.Desktop.Animate(this).SlideIn();
-		}
-		public override void OnHide(double time)
-		{
-			this.screen.Desktop.Animate(this).SlideOut().AddCallback(control => this.IsHidden = true);
-		}
-
-		#endregion
-
 		public MenuState MenuState { get; protected set; }
 
 		public MainMenuView(MenuState state)
 			: base(state)
         {
 			MenuState = state;
-            IsLoaded = true;
             IsTransparent = true;
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();
+			State = ViewState.Loaded;
         }
     }
 }

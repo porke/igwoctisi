@@ -23,16 +23,15 @@
             var contentMgr = (ContentManager) ar.AsyncState;
             _texture = contentMgr.EndLoad<Texture2D>(ar);
 
-            IsLoaded = true;
+            State = ViewState.Loaded;
         }
 
         #endregion
 
         #region IView members
 
-        public override void OnShow(ViewManager viewMgr, double time)
+        protected override void OnShow(double time)
         {
-            ViewMgr = viewMgr;
             _elapsedTime = 0;
         }
 
@@ -42,12 +41,6 @@
 
             if (_elapsedTime > SwitchTime && NextLayers != null && NextLayers.Count > 0)
             {
-                // wait until each layer are loaded
-                foreach (var layer in NextLayers)
-                {
-                    if (!layer.IsLoaded) break;
-                }
-
                 ViewMgr.PopLayer();
 
                 foreach (var layer in NextLayers)
@@ -58,10 +51,7 @@
         }
         public override void Draw(double delta, double time)
         {
-            if (!IsLoaded)
-                return;
-
-            var graphicsDevice = state.Client.GraphicsDevice;
+            var graphicsDevice = GameState.Client.GraphicsDevice;
             var viewport = graphicsDevice.Viewport.Bounds;
 
             var destPos = new Vector2((viewport.Width - _texture.Width)/2.0f, (viewport.Height - _texture.Height)/2.0f);
@@ -78,7 +68,6 @@
         public SplashScreen(GameState state, string textureName, double switchTime) : base(state)
         {
             IsTransparent = false;
-            IsLoaded = false;
             var graphicsDevice = state.Client.GraphicsDevice;
             var contentMgr = state.Client.Content;
             InputReceiver = new NullInputReceiver(false);
