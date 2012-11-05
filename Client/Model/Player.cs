@@ -29,6 +29,7 @@
         [DataMember]
         public string Username { get; private set; }
 
+		public int TechPoints { get; set; }
         public int DeployableFleets { get; set; }
         public bool CanDeployFleets { get { return DeployableFleets > 0; } }
         public int FleetIncomePerTurn

@@ -111,7 +111,7 @@
 		{
 			_clientPlayer.DeleteCommand(orderIndex);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands, orderIndex);
-			_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+			_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
 		}
 		internal void LeaveGame()
 		{
@@ -170,7 +170,7 @@
 
 			_clientPlayer.DeployFleet(planet);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
-			_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+			_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
 		}
 		internal void UndeployFleet(Planet planet)
 		{
@@ -183,7 +183,7 @@
 
 			_clientPlayer.UndeployFleet(planet);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
-			_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+			_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
 		}
 		internal void OnHoverLink(PlanetLink hoverLink)
 		{
@@ -290,7 +290,7 @@
 					{
 						Scene.Initialize(roundInfo, _players);
 						Scene.Map.UpdatePlanetShowDetails(_clientPlayer);
-						_gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+						_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
 						_gameHud.UpdatePlayerList(_players);
 					    locker.Set();
 					});
@@ -313,7 +313,7 @@
 						// Update world info.
 						_clientPlayer.DeployableFleets += roundInfo.FleetsToDeploy;
                         
-                        _gameHud.UpdateClientPlayerFleetData(_clientPlayer);
+                        _gameHud.UpdateClientPlayerResourceData(_clientPlayer);
                         _loadedMap.UpdatePlanetShowDetails(_clientPlayer);
                         
                         
