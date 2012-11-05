@@ -205,7 +205,7 @@
 				var ownerName = planet.Owner != null ? planet.Owner.Username : string.Empty;
 				var nameSize = _fontHud.MeasureString(planet.Name);
 				var fleetsSize = _fontHud.MeasureString(fleetText);
-				var ownerColor = planet.Owner != null ? planet.Owner.XnaColor : Color.Gray;
+				var ownerColor = planet.Owner != null ? planet.Owner.Color.XnaColor : Color.Gray;
 
 				var nameScreen = new Vector2(planetScreen.X - nameSize.X / 2.0f, planetScreen.Y - nameSize.Y / 2.0f);
 				_spriteBatch.DrawString(_fontHud, planet.Name, nameScreen + NameOffset, Color.Yellow);

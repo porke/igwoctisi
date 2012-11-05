@@ -16,11 +16,11 @@
         private AnimationManager AnimationManager;
         private List<Spaceship> _spaceshipsToAdd = new List<Spaceship>();
 
-        public SceneVisual(Scene scene, ContentManager Content, AnimationManager AnimationManager)
+        public SceneVisual(Scene scene, ICollection<PlayerColor> colors, ContentManager Content, AnimationManager AnimationManager)
         {
             Scene = scene;
             Spaceships = new List<Spaceship>();
-            Spaceship.InstallManagers(Content, AnimationManager);
+            Spaceship.SetupPools(colors, Content, AnimationManager);
 
             // Install handlers
             scene.AnimDeploy += new Action<Planet, int, Action>(Animation_Deploy);

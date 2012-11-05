@@ -27,6 +27,9 @@
         [DataMember]
         public List<StartingData> PlayerStartingData { get; set; }
 
+        [DataMember]
+        public List<PlayerColor> Colors { get; set; }
+
         public MapVisual Visual { get; set; }
 
         public List<Planet> StartingPositions { get { return PlayerStartingData.Select(data => GetPlanetById(data.PlanetId)).ToList(); } }
@@ -37,7 +40,9 @@
         // Attributes names
         private const string NameAttribute = "Name";
         private const string PlanetIdAttribute = "PlanetId";
-        private const string ColorAttribute = "Color";
+        private const string ColorIdAttribute = "ColorId";
+        private const string ValueAttribute = "Value";
+        private const string IdAttribute = "Id";
 
         // Element names
         private const string MapElement = "Map";
@@ -46,6 +51,8 @@
         private const string SystemsElement = "Systems";
         private const string PlayerStartingDataElement = "PlayerStartingData";
         private const string StartingDataElement = "StartingData";
+        private const string ColorsElement = "Colors";
+        private const string ColorElement = "Color";
 
         /// <summary>
         /// Reads localWorld map from XML file (no extension required). 
@@ -112,10 +119,24 @@
                     if (reader.HasAttributes)
                     {
                         int planetId = Convert.ToInt32(reader.GetAttribute(PlanetIdAttribute));
-                        string colorHex = reader.GetAttribute(ColorAttribute);
-                        PlayerStartingData.Add(new StartingData(planetId, Convert.ToInt32(colorHex, 16)));
+                        int colorId = Convert.ToInt32(reader.GetAttribute(ColorIdAttribute));
+                        PlayerStartingData.Add(new StartingData(planetId, colorId));
                     }
                 } while (reader.ReadToNextSibling(StartingDataElement));
+
+                // Read available colors
+                reader.ReadToFollowing(ColorsElement);
+                reader.ReadToDescendant(ColorElement);
+                do
+                {
+                    if (reader.HasAttributes)
+                    {
+                        int colorId = Convert.ToInt32(reader.GetAttribute(IdAttribute));
+                        string colorHex = reader.GetAttribute(ValueAttribute);
+                        int value = Convert.ToInt32(colorHex, 16);
+                        Colors.Add(new PlayerColor(colorId, value));
+                    }
+                } while (reader.ReadToNextSibling(ColorElement));
             }
         }
 
@@ -131,6 +152,7 @@
             Links = new List<PlanetLink>();
             PlanetarySystems = new List<PlanetarySystem>();
             PlayerStartingData = new List<StartingData>();
+            Colors = new List<PlayerColor>();
         }
 
         public Planet GetPlanetById(int planetId)
@@ -181,6 +203,11 @@
                     }
                 }
             }
+        }
+
+        public PlayerColor GetColorById(int colorId)
+        {
+            return Colors.First(c => c.ColorId == colorId);
         }
     }
 }

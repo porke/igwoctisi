@@ -37,7 +37,7 @@
 			_clientPlayer = clientPlayer;
 
 			Scene = new Scene(_loadedMap);
-			Scene.Visual = new Renderer.SceneVisual(Scene, Client.Content, Client.ViewMgr.AnimationManager);
+			Scene.Visual = new Renderer.SceneVisual(Scene, loadedMap.Colors, Client.Content, Client.ViewMgr.AnimationManager);
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
 
@@ -280,7 +280,7 @@
 						.Select(username =>
                             username.Equals(_clientPlayer.Username)
                                 ? _clientPlayer
-                                : new Player(username)
+                                : new Player(username, null)
                             )
                         .ToList();
 					

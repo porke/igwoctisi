@@ -583,7 +583,7 @@
                 ar.BeginInvoke(() =>
                 {
                     if (loggedIn)
-                        return new Player(username);
+                        return new Player(username, null);
                     else
                         throw new Exception("Login failed due to the error: " + messageContentType.ToString());
                 });
