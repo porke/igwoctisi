@@ -71,7 +71,7 @@
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.0f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
             };
 
-            _playerNameValue = new LabelControl("")
+            _playerNameValue = new LabelControl()
             {
                 Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
             };

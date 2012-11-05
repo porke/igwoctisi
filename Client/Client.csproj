@@ -126,6 +126,7 @@
     <Compile Include="Model\Planet.cs" />
     <Compile Include="Model\Scene.cs" />
     <Compile Include="Model\StartingData.cs" />
+    <Compile Include="Model\Technology.cs" />
     <Compile Include="Model\UserCommand.cs" />
     <Compile Include="Model\LobbyListInfo.cs" />
     <Compile Include="Network\INetwork.cs" />

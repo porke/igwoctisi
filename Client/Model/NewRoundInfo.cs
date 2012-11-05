@@ -1,10 +1,8 @@
 ﻿namespace Client.Model
 {
-    using System;
-    using System.Collections.Generic;
+	using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Runtime.Serialization;
+	using System.Runtime.Serialization;
 
     /// <summary>
     /// Data being received from server in RoundStart packet.
@@ -29,7 +27,6 @@
         /// </summary>
         [DataMember]
         public int RoundTime { get; set; }
-
 
         [DataContract]
         public class PlanetState
@@ -65,7 +62,6 @@
         /// <summary>
         /// Gets planet state.
         /// </summary>
-        /// <param name="planetId"></param>
         /// <returns>planet state (fleet count)</returns>
         public PlanetState FindPlanetState(int planetId)
         {

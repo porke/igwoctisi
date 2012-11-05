@@ -116,7 +116,6 @@
 
         #endregion
 
-
         private Spaceship(PlayerColor playerColor, Texture2D texture, Model model, AnimationManager animationManager)
         {
             PlayerColor = playerColor;

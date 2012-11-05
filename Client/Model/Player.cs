@@ -3,10 +3,8 @@
     using System.Collections.Generic;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
-    using System.ComponentModel;
-    using System.Linq;
 
-    /// <summary>
+	/// <summary>
     /// ARGB hex.
     /// </summary>
     public enum PlayerColor
@@ -168,7 +166,6 @@
         /// <summary>
         /// Add planet to the player. Planet's owner is changed to this player.
         /// </summary>
-        /// <param name="planet"></param>
         /// <returns>true if player didn't own the planet before</returns>
         public bool TryAssignPlanet(Planet planet)
         {
@@ -181,12 +178,6 @@
             }
 
             return false;
-        }
-
-        public void EndRound()
-        {
-            // TODO: mock implementation
-            DeployableFleets += FleetIncomePerTurn;
-        }
+        }    
     }
 }
