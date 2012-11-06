@@ -7,13 +7,13 @@
     using Microsoft.Xna.Framework;
 
 	public class Scene
-	{
-		public Map Map { get; private set; }
+	{		
 		public int HoveredPlanet { get; set; }
-		public int SelectedPlanet { get; set; }
 		public PlanetLink HoveredLink { get; set; }
-
 		public SceneVisual Visual { get; set; }
+
+		public int SelectedPlanet { get; private set; }
+		public Map Map { get; private set; }		
 
 		private List<Player> _players;
 
@@ -114,5 +114,18 @@
                 }
             }
 	    }
+
+		public bool CanSelectPlanet(Planet planet, Player clientPlayer)
+		{
+			if (planet.Owner == null) return false;
+			if (!planet.Owner.Username.Equals(clientPlayer.Username)) return false;
+
+			return true;
+		}
+
+		public void SelectPlanet(Planet planet)
+		{
+			SelectedPlanet = planet.Id;
+		}
 	}
 }

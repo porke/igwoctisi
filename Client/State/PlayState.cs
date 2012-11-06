@@ -140,7 +140,10 @@
 		}
 		internal void SelectPlanet(Planet selectedPlanet)
 		{
-			Scene.SelectedPlanet = selectedPlanet.Id;
+			if (Scene.CanSelectPlanet(selectedPlanet, _clientPlayer))
+			{
+				Scene.SelectPlanet(selectedPlanet);
+			}
 		}
 		internal void OnHoverPlanet(Planet hoverPlanet)
 		{
