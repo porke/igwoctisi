@@ -62,32 +62,35 @@
 		}
 		internal void ImplementChange(SimulationResult simResult)
 		{
-			var sourcePlanet = Map.GetPlanetById(simResult.SourceId);
-			var targetPlanet = Map.GetPlanetById(simResult.TargetId);
+			// TODO: The animation actually makes debugging the move and deploy mechanics a little more difficult
+			// so until it is done, this function will not function properly
 
-			if (simResult.Type == SimulationResult.MoveType.Attack)
-			{
-				sourcePlanet.NumFleetsPresent = simResult.SourceLeft;
-				targetPlanet.NumFleetsPresent = simResult.TargetLeft;
+			//var sourcePlanet = Map.GetPlanetById(simResult.SourceId);
+			//var targetPlanet = Map.GetPlanetById(simResult.TargetId);
 
-				if (simResult.TargetOwnerChanged)
-				{
-					targetPlanet.Owner = _players.Find(player => player.Username.Equals(simResult.TargetOwner));
-				}
-			}
-			else if (simResult.Type == SimulationResult.MoveType.Move)
-			{
-				sourcePlanet.NumFleetsPresent = simResult.SourceLeft;
-				targetPlanet.NumFleetsPresent = simResult.TargetLeft;
-			}
-			else if (simResult.Type == SimulationResult.MoveType.Deploy)
-			{
-                int newFleetsCount = simResult.FleetCount;
-                AnimDeploy(targetPlanet, newFleetsCount, () =>
-                {
-                    targetPlanet.NumFleetsPresent += newFleetsCount;
-                });
-			}
+			//if (simResult.Type == SimulationResult.MoveType.Attack)
+			//{
+			//    sourcePlanet.NumFleetsPresent = simResult.SourceLeft;
+			//    targetPlanet.NumFleetsPresent = simResult.TargetLeft;
+
+			//    if (simResult.TargetOwnerChanged)
+			//    {
+			//        targetPlanet.Owner = _players.Find(player => player.Username.Equals(simResult.TargetOwner));
+			//    }
+			//}
+			//else if (simResult.Type == SimulationResult.MoveType.Move)
+			//{
+			//    sourcePlanet.NumFleetsPresent = simResult.SourceLeft;
+			//    targetPlanet.NumFleetsPresent = simResult.TargetLeft;
+			//}
+			//else if (simResult.Type == SimulationResult.MoveType.Deploy)
+			//{
+			//    int newFleetsCount = simResult.FleetCount;
+			//    AnimDeploy(targetPlanet, newFleetsCount, () =>
+			//    {
+			//        targetPlanet.NumFleetsPresent += newFleetsCount;
+			//    });
+			//}
 		}
 
 	    public void Initialize(NewRoundInfo roundInfo, List<Player> players)

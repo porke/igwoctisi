@@ -8,10 +8,8 @@
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
     using State;
-	using Common.AnimationSystem.DefaultAnimations;
-	using Client.Common.AnimationSystem;
 
-    class MainMenuView : BaseView
+	class MainMenuView : BaseView
     {
         #region Protected members
 
