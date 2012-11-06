@@ -17,7 +17,7 @@
 		public Technology(TechType type)
 		{
 			TechnologyType = type;
-			CurrentLevel = 1;
+			CurrentLevel = 0;
 			BonusMultiplier = FirstLevelMultiplier;
 			NextLevelCost = FirstLevelRaiseCost;
 		}

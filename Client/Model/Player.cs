@@ -90,6 +90,7 @@
         }
         public void MoveFleet(Planet source, Planet target)
         {
+			// Check if movement between these two planets exists, if so update it, otherwise, create a new command
             var command = Commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
             if (command == null)
             {
@@ -102,8 +103,8 @@
                 command.FleetCount++;
             }
 
-            source.NumFleetsPresent--;
-            target.NumFleetsPresent++;
+            source.FleetChange--;
+			target.FleetChange++;
         }
         public void RevertFleetMove(Planet source, Planet target)
         {

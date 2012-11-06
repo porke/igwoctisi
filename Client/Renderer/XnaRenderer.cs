@@ -16,6 +16,7 @@
 		protected readonly Vector2 NameOffset = new Vector2(0.0f, 25.0f);
 		protected readonly Vector2 FleetsOffset = new Vector2(0.0f, 42.0f);
 		protected readonly Vector2 FleetIncomeOffset = new Vector2(21.0f, 42.0f);
+		protected readonly Vector2 FleetDeltaOffset = new Vector2(21.0f, -42.0f);
 		protected readonly Vector2 OwnerNameOffset = new Vector2(0.0f, 59.0f);
 		protected SpriteBatch _spriteBatch;
 		protected SpriteFont _fontHud;
@@ -221,6 +222,13 @@
                 {
                     _spriteBatch.DrawString(_fontHud, fleetIncome, fleetsScreen + FleetIncomeOffset, Color.Yellow);
                 }
+
+				if (planet.FleetChange != 0)
+				{
+					var color = planet.FleetChange > 0 ? Color.Green : Color.Red;
+					var text = string.Format("{0}{1}", planet.FleetChange > 0 ? "+" : "", planet.FleetChange);
+					_spriteBatch.DrawString(_fontHud, text, fleetsScreen + FleetDeltaOffset, color);
+				}
 
 				_spriteBatch.DrawString(_fontHud, ownerName, nameScreen + OwnerNameOffset, ownerColor);
 			}

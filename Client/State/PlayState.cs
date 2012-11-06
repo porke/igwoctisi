@@ -207,7 +207,8 @@
 				_gameHud.AddMessage("Cannot move fleet: fleets can be sent only from owned planets.");
 				return;
 			}
-			if (source.NumFleetsPresent < 2)
+			if (source.NumFleetsPresent < 2 
+				|| source.FleetChange == -source.NumFleetsPresent + 1)
 			{
 				_gameHud.AddMessage("Cannot move fleet: there must be at least one fleet remaining.");
 				return;
@@ -319,11 +320,11 @@
                         
 					    // TODO update planet states (owners, fleet numbers)
 						// TODO update tech info due to `roundInfo.Tech'
-						// Update the 
 						foreach (var planetUpdateData in roundInfo.Map)
 						{
 							var planet = _loadedMap.Planets.Find(p => p.Id == planetUpdateData.PlanetId);
 							planet.NumFleetsPresent = planetUpdateData.Fleets;
+							planet.FleetChange = 0;
 
 							if (planetUpdateData.PlayerIndex != -1)
 							{
