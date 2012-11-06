@@ -1,14 +1,12 @@
 ﻿namespace Client.Common
 {
-    using System;
-    using System.Linq;
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
-    using Client.Renderer;
-    using System.Reflection;
+	using System;
+	using System.Linq;
+	using System.Reflection;
+	using Microsoft.Xna.Framework;
+	using Microsoft.Xna.Framework.Graphics;
 
-
-    public static class Utils
+	public static class Utils
     {
         #region Text methods
 
@@ -28,7 +26,6 @@
         }
 
         #endregion
-
 
         private static Random rand = new Random();
         public static T RandomEnum<T>()

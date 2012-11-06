@@ -7,7 +7,7 @@
     {
         public enum CommandType
         {
-            Move,
+            Move = 0,
             Attack,
             Deploy,
             Tech
