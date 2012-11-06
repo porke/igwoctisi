@@ -49,6 +49,13 @@
             return (T)fields[index].GetValue(null);
         }
 
+		public static void SwapRef<T>(ref T l, ref T r)
+		{
+			T tmp = l;
+			l = r;
+			r = tmp;
+		}
+
         public static VertexPositionNormalTexture[] SphereVertices(int subdivisions)
         {
 			var vertices = new[]
