@@ -202,13 +202,22 @@
 			var source = Scene.Map.GetPlanetById(link.SourcePlanet);
 			var target = Scene.Map.GetPlanetById(link.TargetPlanet);
 
+			// The links are bidirectional, but represented only once in the list
+			// Swap source and target to compensate for this
+			if (Scene.SelectedPlanet == target.Id)
+			{
+				var tmp = source;
+				source = target;
+				target = tmp;
+			}
+
 			if (source.Owner == null || !_clientPlayer.Username.Equals(source.Owner.Username))
 			{
 				_gameHud.AddMessage("Cannot move fleet: fleets can be sent only from owned planets.");
 				return;
 			}
 			if (source.NumFleetsPresent < 2 
-				|| source.FleetChange == -source.NumFleetsPresent + 1)
+				|| source.FleetChange <= -source.NumFleetsPresent + 1)
 			{
 				_gameHud.AddMessage("Cannot move fleet: there must be at least one fleet remaining.");
 				return;
