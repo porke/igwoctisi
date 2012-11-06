@@ -192,7 +192,7 @@
 				for (var i = _viewStack.Count - 1; i >= 0; --i)
 				{
 					var view = _viewStack[i];
-					if (view.State != ViewState.FadeIn && view.State != ViewState.Visible)
+					if (view.State == ViewState.FadeOut || view.State == ViewState.Hidden)
 						continue;
 
 					view.Hide(currentTime);
@@ -209,7 +209,7 @@
 				for (var i = _viewStack.Count - 1; i >= 0; --i)
 				{
 					var view = _viewStack[i];
-					if (view.State != ViewState.Visible)
+					if (view.State == ViewState.FadeOut || view.State == ViewState.Hidden)
 						continue;
 
 					return view;

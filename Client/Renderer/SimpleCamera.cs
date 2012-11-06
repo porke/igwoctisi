@@ -9,41 +9,42 @@
         private const float Velocity = 250.0f;
 
         public Vector3 TranslationDirection { get; set; }
-        public Vector3 Position
-        {
-            get { return _world.Translation; }
-            set { _world.Translation = value; }
-        }
+		public Vector3 Position { get; set; }
+		public Vector3 LookAt { get; set; }
 
         private Matrix _world;
-        private Matrix _view;
+		private Matrix _view
+		{
+			get { return Matrix.CreateLookAt(Position, LookAt, Vector3.Up); }
+		}
         private Matrix _projection;
         
-        public SimpleCamera()
+        public SimpleCamera(GraphicsDevice graphicsDevice)
         {
             _world = Matrix.Identity;
-            _view = Matrix.CreateLookAt(Vector3.Backward * -1000, Vector3.Zero, Vector3.Up);
-            //_projection = Matrix.CreateOrthographic(1000.0f, 1000.0f, 1.0f, 1000.0f);
-            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), 1.3333f, 1, 10000);
+			Position = Vector3.Backward * -1000;
+			LookAt = Vector3.Zero;
+            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), graphicsDevice.Viewport.AspectRatio, 1, 1000);
         }
 
         public void Update(double delta)
         {
-            _world *= Matrix.CreateTranslation(Velocity * (float)delta * TranslationDirection);
+			Position += (float)delta * TranslationDirection * 100;
+			LookAt += (float)delta * TranslationDirection * 100;
         }
 
         public void ApplyToEffect(Effect effect, Matrix localWorld)
         {
-            effect.Parameters["World"].SetValue(localWorld * _world);
-
             if (effect is BasicEffect)
             {
                 var basicEffect = effect as BasicEffect;
+				basicEffect.World = localWorld * _world;
                 basicEffect.View = _view;
                 basicEffect.Projection = _projection;
             }
             else
             {
+				effect.Parameters["World"].SetValue(localWorld * _world);
                 effect.Parameters["View"].SetValue(_view);
                 effect.Parameters["Projection"].SetValue(_projection);
             }

@@ -22,7 +22,7 @@
 		protected Effect _fxLinks, _fxPlanet;
 		protected VertexBuffer _sphereVB;
 
-		private SimpleCamera _camera = new SimpleCamera();
+        private SimpleCamera _camera;
 
 		protected void InitializeMapVisual(Map map)
 		{
@@ -91,6 +91,7 @@
 		{
 			Client = client;
 			GraphicsDevice = Client.GraphicsDevice;
+		    _camera = new SimpleCamera(GraphicsDevice);
 
 			var contentMgr = Client.Content;
 			_spriteBatch = new SpriteBatch(GraphicsDevice);
