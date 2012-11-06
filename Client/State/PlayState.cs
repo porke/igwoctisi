@@ -204,8 +204,7 @@
 			var target = Scene.Map.GetPlanetById(link.TargetPlanet);
 
 			// The links are bidirectional, but represented only once in the list
-			// Swap source and target to compensate for this
-			
+			// Swap source and target to compensate for this			
 			if (Scene.SelectedPlanet == target.Id)
 			{
 				Utils.SwapRef(ref source, ref target);
@@ -230,6 +229,13 @@
 		{
 			var source = Scene.Map.GetPlanetById(link.SourcePlanet);
 			var target = Scene.Map.GetPlanetById(link.TargetPlanet);
+
+			// The links are bidirectional, but represented only once in the list
+			// Swap source and target to compensate for this			
+			if (Scene.SelectedPlanet == target.Id)
+			{
+				Utils.SwapRef(ref source, ref target);
+			}
 
 			var targetCommand = _clientPlayer.Commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
 			if (targetCommand == null)
@@ -327,7 +333,6 @@
 						// Update world info.
 						_clientPlayer.DeployableFleets += roundInfo.FleetsToDeploy;
                         
-					    // TODO update planet states (owners, fleet numbers)
 						// TODO update tech info due to `roundInfo.Tech'
 						foreach (var planetUpdateData in roundInfo.Map)
 						{
