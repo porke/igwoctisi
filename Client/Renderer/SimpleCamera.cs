@@ -22,7 +22,7 @@
         public SimpleCamera()
         {
             _world = Matrix.Identity;
-            _view = Matrix.CreateLookAt(Vector3.Backward * 1000, Vector3.Zero, Vector3.Up);
+            _view = Matrix.CreateLookAt(Vector3.Backward * -1000, Vector3.Zero, Vector3.Up);
             //_projection = Matrix.CreateOrthographic(1000.0f, 1000.0f, 1.0f, 1000.0f);
             _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), 1.3333f, 1, 10000);
         }
