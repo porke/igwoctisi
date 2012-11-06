@@ -4,6 +4,7 @@
     using System.Collections.Concurrent;
     using Microsoft.Xna.Framework;
     using View;
+    using Microsoft.Xna.Framework.Graphics;
 
     public abstract class GameState
     {
@@ -56,7 +57,7 @@
         {
             var graphicsDevice = Client.GraphicsDevice;
 
-            graphicsDevice.Clear(Color.Black);
+            graphicsDevice.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, Color.Black, 1f, 0);
 			Client.ViewMgr.Draw(delta, time);
         }
     }

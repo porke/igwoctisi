@@ -19,12 +19,12 @@
 		}
         private Matrix _projection;
         
-        public SimpleCamera()
+        public SimpleCamera(GraphicsDevice graphicsDevice)
         {
             _world = Matrix.Identity;
 			Position = Vector3.Backward * -1000;
 			LookAt = Vector3.Zero;
-            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), 1.3333f, 1, 10000);
+            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), graphicsDevice.Viewport.AspectRatio, 1, 1000);
         }
 
         public void Update(double delta)
