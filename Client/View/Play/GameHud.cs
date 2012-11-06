@@ -13,10 +13,10 @@
 	using State;
 
     class GameHud : BaseView
-    {
-        #region Protected members
+	{
+		#region Protected members
 
-        private WrappableListControl _commandList;
+		private WrappableListControl _commandList;
         private LabelControl _playerNameValue;
         private LabelControl _fleetCountValue;
         private LabelControl _fleetIncomeValue;
@@ -250,7 +250,11 @@
         public void UpdateCommandList(List<UserCommand> commands, int selectedCommand = -1)
         {
             _commandList.Clear();
-            foreach (var cmd in commands)
+
+			// Not using sort, because it's unstable
+			var orderedCmds = commands.OrderByDescending(cmd => (int)cmd.Type);
+			commands = new List<UserCommand>(orderedCmds);
+			foreach (var cmd in commands)
             {
                 if (cmd.Type == UserCommand.CommandType.Deploy)
                 {
