@@ -47,7 +47,7 @@
 
             var ordersHeader = new LabelControl("Orders")
             {                
-                Bounds = new UniRectangle(new UniScalar(0.075f, 0), new UniScalar(0.2f, 0), new UniScalar(0.34f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.075f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
             };
 
             _commandList = new WrappableListControl()
@@ -68,7 +68,7 @@
 
             var playerNameDesc = new LabelControl("Player:")
             {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.0f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
             };
 
             _playerNameValue = new LabelControl()
@@ -78,7 +78,7 @@
 
             var fleetCountDesc = new LabelControl("Deployable fleets:")
             {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.05f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
             };
 
             _fleetCountValue = new LabelControl("0")
@@ -88,7 +88,7 @@
 
             var fleetIncomeDesc = new LabelControl("Fleets per turn:")
             {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.1f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
             };
 
             _fleetIncomeValue = new LabelControl("0")
@@ -98,7 +98,7 @@
 
 			var techPointsDesc = new LabelControl("Tech points:")
 			{
-				Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.15f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.15f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
 			};
 
 			_techPointsValue = new LabelControl("0")

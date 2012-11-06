@@ -8,6 +8,7 @@
     using Client.View;
     using Model;
     using View.Play;
+	using Client.Common;
 
 	class PlayState : GameState
 	{
@@ -204,11 +205,10 @@
 
 			// The links are bidirectional, but represented only once in the list
 			// Swap source and target to compensate for this
+			
 			if (Scene.SelectedPlanet == target.Id)
 			{
-				var tmp = source;
-				source = target;
-				target = tmp;
+				Utils.SwapRef(ref source, ref target);
 			}
 
 			if (source.Owner == null || !_clientPlayer.Username.Equals(source.Owner.Username))

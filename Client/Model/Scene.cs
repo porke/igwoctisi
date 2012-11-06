@@ -46,7 +46,8 @@
 		}
 		public PlanetLink PickLink(Vector2 clickPosition, IRenderer renderer)
 		{
-			foreach (var link in Map.Links.Where(x => SelectedPlanet == x.SourcePlanet || SelectedPlanet == x.TargetPlanet))
+			var selectedLinks = Map.Links.Where(x => SelectedPlanet == x.SourcePlanet || SelectedPlanet == x.TargetPlanet);
+			foreach (var link in selectedLinks)
 			{
 				var sourcePlanet = Map.GetPlanetById(link.SourcePlanet);
 				var targetPlanet = Map.GetPlanetById(link.TargetPlanet);
