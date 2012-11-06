@@ -85,7 +85,9 @@ namespace Client.Common.AnimationSystem
 		}
 		public static Animation<T> Dummy(T context, AnimationManager animationManager)
 		{
-			return new DummyAnimation(context, animationManager);
+		    var animation = new DummyAnimation(context, animationManager);
+		    //animationManager.AddAnimation(animation);
+            return animation;
 		}
 
 		private class DummyAnimation : Animation<T>

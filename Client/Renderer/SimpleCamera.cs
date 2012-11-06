@@ -22,8 +22,9 @@
         public SimpleCamera()
         {
             _world = Matrix.Identity;
-            _view = Matrix.CreateLookAt(Vector3.Backward * -1000, Vector3.Zero, Vector3.Up);
-            _projection = Matrix.CreateOrthographic(1000.0f, 1000.0f, 1.0f, 1000.0f);
+            _view = Matrix.CreateLookAt(Vector3.Backward * 1000, Vector3.Zero, Vector3.Up);
+            //_projection = Matrix.CreateOrthographic(1000.0f, 1000.0f, 1.0f, 1000.0f);
+            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), 1.3333f, 1, 10000);
         }
 
         public void Update(double delta)
@@ -34,8 +35,18 @@
         public void ApplyToEffect(Effect effect, Matrix localWorld)
         {
             effect.Parameters["World"].SetValue(localWorld * _world);
-            effect.Parameters["View"].SetValue(_view);
-            effect.Parameters["Projection"].SetValue(_projection);
+
+            if (effect is BasicEffect)
+            {
+                var basicEffect = effect as BasicEffect;
+                basicEffect.View = _view;
+                basicEffect.Projection = _projection;
+            }
+            else
+            {
+                effect.Parameters["View"].SetValue(_view);
+                effect.Parameters["Projection"].SetValue(_projection);
+            }
         }
 
         public Ray GetRay(Viewport viewport, Vector3 pointOnScreen)
