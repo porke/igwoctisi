@@ -20,7 +20,7 @@
         public static void AnimateDeploy(this Spaceship ship, AnimationManager animationManager, Planet targetPlanet, int newFleetsCount, Action onEndCallback)
         {
             ship.Animate(animationManager)
-                .MoveTo(targetPlanet.Position, 1)
+                .MoveTo(targetPlanet.Position, 10)
                 .AddCallback(s => onEndCallback());
         }
     }

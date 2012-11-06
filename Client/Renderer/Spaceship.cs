@@ -127,14 +127,17 @@
             foreach (ModelMesh mesh in Model.Meshes)
             {
                 foreach (BasicEffect effect in mesh.Effects)
-                {
-                    effect.EnableDefaultLighting();
+				{
+					effect.EnableDefaultLighting();
+					camera.ApplyToEffect(effect, WorldTransform);
+
                     //effect.Texture = this.Texture;
 
-                    camera.ApplyToEffect(effect, WorldTransform);
-                }
-                mesh.Draw();
+				}
+				mesh.Draw();
             }
+
+
         }
     }
 }
