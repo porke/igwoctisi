@@ -100,8 +100,8 @@
             }
             else if (Type == CommandType.Move || Type == CommandType.Attack)
             {
-                SourcePlanet.NumFleetsPresent += FleetCount;
-                TargetPlanet.NumFleetsPresent -= FleetCount;
+                SourcePlanet.FleetChange += FleetCount;
+				TargetPlanet.FleetChange -= FleetCount;
             }
         }
     }

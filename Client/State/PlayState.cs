@@ -342,7 +342,7 @@
 
 							if (planetUpdateData.PlayerIndex != -1)
 							{
-								planet.Owner = _players[planetUpdateData.PlayerIndex];
+								planet.Owner = _players.Find(p => p.Username.Equals(roundInfo.Players[planetUpdateData.PlayerIndex]));
 							}
 							else
 							{
