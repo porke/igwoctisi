@@ -1,12 +1,13 @@
 ﻿namespace Client.State
 {
-	using System;
-	using System.Collections.Generic;
-	using Client.View;
-	using Model;
-	using View.Play;
-	using System.Linq;
-	using System.Threading;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using Client.Renderer;
+    using Client.View;
+    using Model;
+    using View.Play;
 
 	class PlayState : GameState
 	{
@@ -37,7 +38,7 @@
 			_clientPlayer = clientPlayer;
 
 			Scene = new Scene(_loadedMap);
-			Scene.Visual = new Renderer.SceneVisual(Scene, loadedMap.Colors, Client.Content, Client.ViewMgr.AnimationManager);
+			Scene.Visual = new SceneVisual(Scene, loadedMap.Colors, Client.Content, Client.ViewMgr.AnimationManager);
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
 

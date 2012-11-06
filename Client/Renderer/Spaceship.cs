@@ -20,7 +20,7 @@
         /// </summary>
         private static Dictionary<int, ObjectPool<Spaceship>> pools = new Dictionary<int,ObjectPool<Spaceship>>();
         
-        public static void SetupPools(ICollection<PlayerColor> colors, ContentManager Content, AnimationManager AnimationManager)
+        public static void SetupColorPools(ICollection<PlayerColor> colors, ContentManager Content, AnimationManager AnimationManager)
         {
             foreach (var color in colors)
             {
@@ -39,8 +39,9 @@
             return pools[playerColor.Value].Get(spaceship => { spaceship.Visible = true; });
         }
 
-        public static void Put(Spaceship obj)
+        public static void Recycle(Spaceship obj)
         {
+            obj.Visible = false;
             pools[obj.PlayerColor.Value].Put(obj);
         }
 
@@ -127,8 +128,10 @@
             {
                 foreach (BasicEffect effect in mesh.Effects)
                 {
-                    effect.World = WorldTransform;
+                    effect.EnableDefaultLighting();
                     //effect.Texture = this.Texture;
+
+                    camera.ApplyToEffect(effect, WorldTransform);
                 }
                 mesh.Draw();
             }

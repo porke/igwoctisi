@@ -15,12 +15,14 @@
         private Scene Scene { get; set; }
         private AnimationManager AnimationManager;
         private List<Spaceship> _spaceshipsToAdd = new List<Spaceship>();
+        private List<Spaceship> _spaceshipsToRemove = new List<Spaceship>();
 
         public SceneVisual(Scene scene, ICollection<PlayerColor> colors, ContentManager Content, AnimationManager AnimationManager)
         {
             Scene = scene;
             Spaceships = new List<Spaceship>();
-            Spaceship.SetupPools(colors, Content, AnimationManager);
+            Spaceship.SetupColorPools(colors, Content, AnimationManager);
+            this.AnimationManager = AnimationManager;
 
             // Install handlers
             scene.AnimDeploy += new Action<Planet, int, Action>(Animation_Deploy);
@@ -31,14 +33,19 @@
             for (int i = 0; i < newFleetsCount; ++i)
             {
                 var ship = Spaceship.Acquire(targetPlanet.Owner.Color);
+                AddSpaceship(ship);
                 ship.Position = Camera.Position;
-                ship.AnimateDeploy(AnimationManager, targetPlanet, newFleetsCount, onEndCallback);
+                ship.AnimateDeploy(AnimationManager, targetPlanet, newFleetsCount,
+                    () => {
+                        onEndCallback();
+                        Spaceship.Recycle(ship);
+                    });
 
                 break;
             }
         }
 
-        public void AddSpaceship(Spaceship ship)
+        internal void AddSpaceship(Spaceship ship)
         {
             lock (_spaceshipsToAdd)
             {
@@ -61,9 +68,16 @@
             // TODO Draw planets and links (and particles?)
 
             // Draw spaceships
-            foreach (var ship in Spaceships)
+            lock (_spaceshipsToRemove)
             {
-                ship.Draw(Camera, delta, time);
+                foreach (var ship in Spaceships)
+                {
+                    if (ship.Visible)
+                        ship.Draw(Camera, delta, time);
+                    else
+                        _spaceshipsToRemove.Add(ship);
+                }
+                _spaceshipsToRemove.Clear();
             }
         }
     }

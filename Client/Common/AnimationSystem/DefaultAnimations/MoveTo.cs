@@ -52,11 +52,6 @@
             animation.AddAfter(after);
             return after;
         }
-
-        public static MoveTo<Spaceship> MoveTo(this Animation<Spaceship> animation, Vector3 targetPosition, double duration, Func<double, double> interpolator = null)
-        {
-            return animation.MoveTo<Spaceship>(targetPosition, duration, interpolator);
-        }
     
 	}
 }
