@@ -314,12 +314,33 @@
 						// Update world info.
 						_clientPlayer.DeployableFleets += roundInfo.FleetsToDeploy;
                         
-                        _gameHud.UpdateClientPlayerResourceData(_clientPlayer);
-                        _loadedMap.UpdatePlanetShowDetails(_clientPlayer);
-                        
 					    // TODO update planet states (owners, fleet numbers)
-						// TODO update player list due to `roundInfo.Players' (_gameHud.UpdatePlayerList(players);)
 						// TODO update tech info due to `roundInfo.Tech'
+						// Update the 
+						foreach (var planetUpdateData in roundInfo.Map)
+						{
+							var planet = _loadedMap.Planets.Find(p => p.Id == planetUpdateData.PlanetId);
+							planet.NumFleetsPresent = planetUpdateData.Fleets;
+
+							if (planetUpdateData.PlayerIndex != -1)
+							{
+								planet.Owner = _players[planetUpdateData.PlayerIndex];
+							}
+							else
+							{
+								planet.Owner = null;
+							}
+						}
+
+						// Update the underlying planets for the player
+						foreach (var player in _players)
+						{
+							var planetList = _loadedMap.Planets.FindAll(p => p.Owner != null && p.Owner.Username == player.Username);
+							player.OwnedPlanets = planetList;
+						}
+
+						_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
+						_loadedMap.UpdatePlanetShowDetails(_clientPlayer);
 
 						// Now wait to the end of the round.
 						_hudState = HudState.WaitingForRoundEnd;
