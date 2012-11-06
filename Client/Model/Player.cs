@@ -110,8 +110,8 @@
         {
             var targetCommand = Commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
             targetCommand.FleetCount--;
-            source.NumFleetsPresent++;
-            target.NumFleetsPresent--;
+            source.FleetChange++;
+			target.FleetChange--;
 
             if (targetCommand.FleetCount == 0)
             {
