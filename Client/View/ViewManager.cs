@@ -100,15 +100,13 @@
 
         #endregion
 
-        public GameClient Client { get; protected set; }
         public IInputReceiver InputReceiver { get; protected set; }
 		public AnimationManager AnimationManager { get; protected set; }
 
-        public ViewManager(GameClient client)
+        public ViewManager()
         {
             _viewStack = new List<BaseView>();
 
-            Client = client;
             InputReceiver = new ViewManagerInputReceiver(this);
 			AnimationManager = new AnimationManager();
         }
@@ -125,11 +123,6 @@
 					if (view.State == ViewState.Loaded)
 					{
 						view.Show(this, currentTime);
-					}
-
-					if (view.State == ViewState.Visible && view.GameState != Client.State)
-					{
-						view.Hide(currentTime);
 					}
 
 					if (view.State == ViewState.Hidden)
