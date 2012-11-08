@@ -21,14 +21,14 @@
             var menuBackground = new LobbyBackground(this);
             var lobbyMenu = new MainLobbyView(this);
 
-			Client.ViewMgr.PushLayer(menuBackground);
-			Client.ViewMgr.PushLayer(lobbyMenu);
+			ViewMgr.PushLayer(menuBackground);
+			ViewMgr.PushLayer(lobbyMenu);
         }
 
         public override void OnEnter()
         {
             Client.Network.OnDisconnected += new Action<string>(OnDisconnected_EventHandler);
-			RefreshGameList(Client.ViewMgr.PeekLayer());
+			RefreshGameList(ViewMgr.PeekLayer());
         }
 
         public override void OnExit()
@@ -77,20 +77,20 @@
                 Title = "Join Game",
                 Message = "Joining in..."
             };
-			Client.ViewMgr.PushLayer(messageBox);
+			ViewMgr.PushLayer(messageBox);
 
             var map = new Map(mapName);
             Client.Network.BeginCreateGame(gameName, map, OnCreateGame, Tuple.Create(messageBox, mapName, gameName));
         }
 		internal void CancelCreateGame()
         {
-			Client.ViewMgr.PopLayer();     // pop create game view
-			Client.ViewMgr.PushLayer(new MainLobbyView(this));
+			ViewMgr.PopLayer();     // pop create game view
+			ViewMgr.PushLayer(new MainLobbyView(this));
         }
 		internal void EnterCreateGameView()
         {
-			Client.ViewMgr.PopLayer();     // pop main lobby view
-			Client.ViewMgr.PushLayer(new CreateGameView(this));
+			ViewMgr.PopLayer();     // pop main lobby view
+			ViewMgr.PushLayer(new CreateGameView(this));
         }
 		internal void Logout()
         {
@@ -104,7 +104,7 @@
                 Title = "Join Game",
                 Message = "Joining in..."
             };
-			Client.ViewMgr.PushLayer(messageBox);
+			ViewMgr.PushLayer(messageBox);
             Client.Network.BeginJoinGameLobby(lobbyId, OnJoinLobby, messageBox);
         }
 		internal void BeginGame()
@@ -114,7 +114,7 @@
                 Title = "Begin Game",
                 Message = "Starting game, please wait..."
             };
-			Client.ViewMgr.PushLayer(messageBox);
+			ViewMgr.PushLayer(messageBox);
 
             Client.Network.BeginStartGame(OnGameStarted, messageBox);
         }
@@ -126,7 +126,7 @@
                 Message = "Downloading game list..."
             };
 
-			Client.ViewMgr.PushLayer(messageBox);
+			ViewMgr.PushLayer(messageBox);
 
             var mainLobbyView = sender;
             Client.Network.BeginGetGameList(OnGetGameList, Tuple.Create(mainLobbyView as MainLobbyView, messageBox));
@@ -172,13 +172,13 @@
                 {
                     var gameNames = Client.Network.EndGetGameList(result);
                     mainLobbyView.RefreshGameList(gameNames);
-					Client.ViewMgr.PopLayer(); // MessageBox
+					ViewMgr.PopLayer(); // MessageBox
                 }
                 catch (Exception exc)
                 {
                     messageBox.Buttons = MessageBoxButtons.OK;
                     messageBox.Message = exc.Message;
-					messageBox.OkPressed += (sender, e) => { Client.ViewMgr.PopLayer(); };
+					messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
                 }
             });
         }
@@ -194,18 +194,18 @@
                 {
                     _gameLobby = Client.Network.EndJoinGameLobby(result);
 
-					Client.ViewMgr.PopLayer(); // MessageBox
-					Client.ViewMgr.PopLayer(); // MainLobbyView
+					ViewMgr.PopLayer(); // MessageBox
+					ViewMgr.PopLayer(); // MainLobbyView
 
                     var gameLobbyView = new GameLobbyView(this, false);
                     gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
-					Client.ViewMgr.PushLayer(gameLobbyView);
+					ViewMgr.PushLayer(gameLobbyView);
                 }
                 catch (Exception exc)
                 {
                     messageBox.Buttons = MessageBoxButtons.OK;
                     messageBox.Message = exc.Message;
-					messageBox.OkPressed += (sender, e) => { Client.ViewMgr.PopLayer(); };
+					messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
                 }
             });
         }
@@ -224,8 +224,8 @@
             {
                 InvokeOnMainThread(arg =>
                 {
-					Client.ViewMgr.PopLayer(); // pop game lobby
-					Client.ViewMgr.PushLayer(new MainLobbyView(this));
+					ViewMgr.PopLayer(); // pop game lobby
+					ViewMgr.PushLayer(new MainLobbyView(this));
                 });
             }
         }
@@ -261,17 +261,17 @@
                     _map = new Map(mapName);
                     _gameLobby = new SpecificGameLobbyInfo(gameName, _clientPlayer);
 
-					Client.ViewMgr.PopLayer();     // pop MessageBox
-					Client.ViewMgr.PopLayer();     // pop main lobby window
+					ViewMgr.PopLayer();     // pop MessageBox
+					ViewMgr.PopLayer();     // pop main lobby window
 
                     var gameLobbyView = new GameLobbyView(this, true);
                     gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
-					Client.ViewMgr.PushLayer(gameLobbyView);
+					ViewMgr.PushLayer(gameLobbyView);
                 }
                 catch (Exception exc)
                 {
                     messageBox.Buttons = MessageBoxButtons.OK;
-					messageBox.OkPressed += (sender, e) => { Client.ViewMgr.PopLayer(); };
+					messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
                     messageBox.Message = exc.Message;
                 }
             });            
@@ -292,7 +292,7 @@
                 catch (Exception exc)
                 {
                     messageBox.Buttons = MessageBoxButtons.OK;
-					messageBox.OkPressed += (sender, e) => { Client.ViewMgr.PopLayer(); Client.ViewMgr.PopLayer(); };
+					messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); ViewMgr.PopLayer(); };
                     messageBox.Message = exc.Message;
                 }
             });
@@ -328,7 +328,7 @@
         {
             InvokeOnMainThread(obj =>
             {
-				var gameLobbyView = Client.ViewMgr.PeekLayer() as GameLobbyView;
+				var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.AddPlayer(username);
                 gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
                 gameLobbyView.AddHostMessage(username + " joined.", time.ToString("H:mm"));
@@ -339,7 +339,7 @@
         {
             InvokeOnMainThread(obj =>
             {
-				var gameLobbyView = Client.ViewMgr.PeekLayer() as GameLobbyView;
+				var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.RemovePlayer(username);
                 gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
                 gameLobbyView.AddHostMessage(username + " left.", time.ToString("H:mm"));
@@ -350,7 +350,7 @@
         {
             InvokeOnMainThread(obj =>
             {
-				var gameLobbyView = Client.ViewMgr.PeekLayer() as GameLobbyView;
+				var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 _gameLobby.RemovePlayer(username);
                 gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
                 gameLobbyView.AddHostMessage(username + " have been kicked by host.", time.ToString("H:mm"));
@@ -361,7 +361,7 @@
         {
             InvokeOnMainThread(obj =>
             {
-				var gameLobbyView = Client.ViewMgr.PeekLayer() as GameLobbyView;
+				var gameLobbyView = ViewMgr.PeekLayer() as GameLobbyView;
                 gameLobbyView.ChatMessageReceived(obj as ChatMessage);
             }, message);
         }
@@ -372,16 +372,16 @@
             {
                 UnbindNetworkEvents();
 
-				Client.ViewMgr.PopLayer(); // GameLobbyView
-				Client.ViewMgr.PushLayer(new MainLobbyView(this));
+				ViewMgr.PopLayer(); // GameLobbyView
+				ViewMgr.PushLayer(new MainLobbyView(this));
 
                 var messageBox = new MessageBox(this, MessageBoxButtons.OK)
                 {
                     Title = "Out of Game",
                     Message = "You were kicked out from Game Lobby."
                 };
-				messageBox.OkPressed += (sender, e) => { Client.ViewMgr.PopLayer(); };
-				Client.ViewMgr.PushLayer(messageBox);
+				messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
+				ViewMgr.PushLayer(messageBox);
             });
         }
 
