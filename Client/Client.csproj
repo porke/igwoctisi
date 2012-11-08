@@ -98,6 +98,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\Shake.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideOut.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideIn.cs" />
     <Compile Include="Common\JsonLowercaseSerializer.cs" />
@@ -159,8 +160,9 @@
     <Compile Include="View\Lobby\LobbyBackground.cs" />
     <Compile Include="View\Lobby\MainLobbyView.cs" />
     <Compile Include="View\Play\Animations\AnimationExtensions.cs" />
-    <Compile Include="View\Play\Animations\Camera.cs" />
+    <Compile Include="View\Play\Animations\Attack.cs" />
     <Compile Include="View\Play\Animations\Deploy.cs" />
+    <Compile Include="View\Play\Animations\Move.cs" />
     <Compile Include="View\Play\GameHud.cs" />
     <Compile Include="View\Play\GameViewport.cs" />
     <Compile Include="View\BaseView.cs" />

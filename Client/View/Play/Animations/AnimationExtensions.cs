@@ -22,6 +22,16 @@
 			return Animate<SimpleCamera>(camera, animationManager);
 		}
 
+		public static Wait<SimpleCamera> Wait(this Animation<SimpleCamera> animation, double duration)
+		{
+			return animation.Wait<SimpleCamera>(duration);
+		}
+
+		public static void Shake(this Animation<SimpleCamera> camera, float duration)
+		{
+			//TODO camera shake animation
+		}
+
 		#endregion
 
 		#region Spaceship animations
@@ -34,6 +44,11 @@
 		public static MoveTo<Spaceship> MoveTo(this Animation<Spaceship> animation, Vector3 targetPosition, double duration, Func<double, double> interpolator = null)
 		{
 			return animation.MoveTo<Spaceship>(targetPosition, duration, interpolator);
+		}
+
+		public static Wait<Spaceship> Wait(this Animation<Spaceship> animation, double duration)
+		{
+			return animation.Wait<Spaceship>(duration);
 		}
 
 		#endregion
