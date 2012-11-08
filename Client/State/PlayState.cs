@@ -1,14 +1,14 @@
 ﻿namespace Client.State
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using Client.Renderer;
-    using Client.View;
-    using Model;
-    using View.Play;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Threading;
 	using Client.Common;
+	using Client.Renderer;
+	using Client.View;
+	using Model;
+	using View.Play;
 
 	class PlayState : GameState
 	{
@@ -258,9 +258,9 @@
 							planet.NumFleetsPresent = planetUpdateData.Fleets;
 							planet.FleetChange = 0;
 
-							if (planetUpdateData.PlayerIndex != -1)
+							if (!string.IsNullOrEmpty(planetUpdateData.Player))
 							{
-								planet.Owner = _players.Find(p => p.Username.Equals(roundInfo.Players[planetUpdateData.PlayerIndex]));
+								planet.Owner = _players.Find(p => p.Username.Equals(planetUpdateData.Player));
 							}
 							else
 							{
