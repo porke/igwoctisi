@@ -24,7 +24,7 @@
             _world = Matrix.Identity;
 			Position = Vector3.Backward * -1000;
 			LookAt = Vector3.Zero;
-            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), graphicsDevice.Viewport.AspectRatio, 1, 1000);
+            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), graphicsDevice.Viewport.AspectRatio, 1, 10000);
         }
 
         public void Update(double delta)

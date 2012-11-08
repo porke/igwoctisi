@@ -304,18 +304,13 @@
 							ViewMgr.PopLayer();
 						}
 
+                        // Begin animation and wait until it is done.
 						_hudState = HudState.AnimatingSimulationResult;
-						// TODO do some animations using simulation results and then set _hudState to WaitingForRoundStart.
-
-						foreach (var simResult in simResults)
-						{
-							Scene.ImplementChange(simResult);
-						}
-
-						// TODO when animation is done that line should be moved to the end of animation.
-						_hudState = HudState.WaitingForRoundStart;
-
-						Client.Network.BeginSetReady(null, null);
+                        Scene.AnimateChanges(simResults, () =>
+                        {
+                            _hudState = HudState.WaitingForRoundStart;
+                            Client.Network.BeginSetReady(null, null);
+                        });
 					});
 
 					// We have consumed that packet.

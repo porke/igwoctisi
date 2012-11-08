@@ -110,6 +110,10 @@
 		}
 		public void Draw(Scene scene, double delta, double time)
 		{
+            // Turn depth buffer on (SpriteBatch may turn it off).
+            GraphicsDevice.DepthStencilState = new DepthStencilState() { DepthBufferEnable = true };
+
+            // Update current camera and pass it to the scene renderer
 			_camera.Update(delta);
             scene.Visual.Camera = _camera;
 

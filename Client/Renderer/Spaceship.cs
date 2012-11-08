@@ -78,7 +78,6 @@
             private void OnInstallContentManager()
             {
                 _model = Content.Load<Model>(@"Models\LittleSpaceship");
-                //Content.BeginLoad<Texture2D>(@"Textures\Spaceships\" + _color.ToString(), OnTextureLoad, null);
             }
 
             public void OnTextureLoad(IAsyncResult ar)
@@ -111,7 +110,7 @@
 
         private Texture2D Texture { get; set; }
         private Model Model { get; set; }
-        private AnimationManager _animationManager;
+        private AnimationManager AnimationManager;
 
         #endregion
 
@@ -120,6 +119,8 @@
             PlayerColor = playerColor;
             Texture = texture;
             Model = model;
+            AnimationManager = animationManager;
+            WorldTransform = Matrix.Identity;
         }
 
         public void Draw(SimpleCamera camera, double delta, double time)
@@ -131,13 +132,11 @@
 					effect.EnableDefaultLighting();
 					camera.ApplyToEffect(effect, WorldTransform);
 
-                    //effect.Texture = this.Texture;
+				    //effect.Texture = this.Texture;
 
 				}
 				mesh.Draw();
             }
-
-
         }
     }
 }

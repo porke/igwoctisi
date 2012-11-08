@@ -28,11 +28,7 @@
         {
             base.Update(delta);
 
-            float progress = (float)Progress;
-            Context.Position = new Vector3(
-                progress * _targetPosition.X + (1.0f - progress) * _startingPosition.X,
-                progress * _targetPosition.Y + (1.0f - progress) * _startingPosition.Y,
-                progress * _targetPosition.Z + (1.0f - progress) * _startingPosition.Z);
+            Context.Position = Vector3.Lerp(_startingPosition, _targetPosition, (float)Progress);
         }
 
         public override void End()
