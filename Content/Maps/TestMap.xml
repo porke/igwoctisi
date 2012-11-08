@@ -1,0 +1,56 @@
+<Map Name="Duel">
+	<Planets>
+		<Planet Id="1" Name="Alpha"       BaseUnitsPerTurn="5" X="-300" Y="-200" Z="0" Radius="35" Diffuse="Textures\\MarsDiffuse" />
+		<Planet Id="2" Name="Beta"        BaseUnitsPerTurn="3" X="-300" Y="100"  Z="0" Radius="45" Diffuse="Textures\\VenusDiffuse" />
+		<Planet Id="3" Name="Gamma"       BaseUnitsPerTurn="3" X="0"    Y="-200" Z="0" Radius="55" Diffuse="Textures\\JupiterDiffuse" />
+		<Planet Id="4" Name="A"           BaseUnitsPerTurn="5" X="200"  Y="300"  Z="0" Radius="25" Diffuse="Textures\\MoonDiffuse" />
+		<Planet Id="5" Name="B"		      BaseUnitsPerTurn="3" X="0"    Y="300"  Z="0" Radius="40" Diffuse="Textures\\EarthDiffuse" Clouds="Textures\\EarthClouds" CloudsAlpha="Textures\\EarthCloudsAlpha" />
+		<Planet Id="6" Name="C" 		  BaseUnitsPerTurn="3" X="200"  Y="100"  Z="0" Radius="30" Diffuse="Textures\\PlutonDiffuse" />
+		<Planet Id="7" Name="Core Prime"  BaseUnitsPerTurn="6" X="0"    Y="100"  Z="0" Radius="50" Diffuse="Textures\\PlanetDiffuse1" />
+	</Planets>
+	
+	<Links>
+		<PlanetLink SourceId="1" TargetId="2"/>
+		<PlanetLink SourceId="1" TargetId="3"/>
+		<PlanetLink SourceId="2" TargetId="7"/>
+		<PlanetLink SourceId="3" TargetId="7"/>
+		<PlanetLink SourceId="7" TargetId="5"/>
+		<PlanetLink SourceId="7" TargetId="6"/>
+		<PlanetLink SourceId="4" TargetId="5"/>
+		<PlanetLink SourceId="4" TargetId="6"/>
+	</Links>
+	
+	<Systems>
+		<PlanetarySystem Name="Southern Sector" FleetBonusPerTurn="4" Id="1">
+			<Planets>
+				<PlanetId>1</PlanetId>
+				<PlanetId>2</PlanetId>
+				<PlanetId>3</PlanetId>			
+			</Planets>
+		</PlanetarySystem>
+		<PlanetarySystem Name="Northern Sector" FleetBonusPerTurn="4" Id="2">
+			<Planets>
+				<PlanetId>4</PlanetId>
+				<PlanetId>5</PlanetId>
+				<PlanetId>6</PlanetId>
+			</Planets>
+		</PlanetarySystem>		
+	</Systems>
+
+  <PlayerStartingData>
+    <StartingData PlanetId="1" ColorId="1"/>
+    <StartingData PlanetId="4" ColorId="2"/>
+    <StartingData PlanetId="7" ColorId="3"/>
+  </PlayerStartingData>
+
+  <Colors>
+    <Color Id="1" Value="0x00FC0300" />
+    <Color Id="2" Value="0x0000FF00" />
+    <Color Id="3" Value="0x000000FF" />
+    <Color Id="4" Value="0x0000FFFF" />
+    <Color Id="5" Value="0x00FFEF00" />
+    <Color Id="6" Value="0x0093F600" />
+    <Color Id="7" Value="0x00FFFFFF" />
+    <Color Id="8" Value="0x00FE7F00" />
+  </Colors>
+</Map>
