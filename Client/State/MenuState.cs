@@ -16,8 +16,8 @@
             var menuBackground = new MenuBackground(this);
             var mainMenu = new MainMenuView(this);
 
-            Client.ViewMgr.PushLayer(menuBackground);
-			Client.ViewMgr.PushLayer(mainMenu);
+            ViewMgr.PushLayer(menuBackground);
+			ViewMgr.PushLayer(mainMenu);
         }
 
         public override void OnEnter()
@@ -70,7 +70,7 @@
             };
 
             Client.Network.BeginConnect(hostname, port, OnConnect_Debug, Tuple.Create<MessageBox, string, string>(messageBox, login, password));
-            Client.ViewMgr.PushLayer(messageBox);
+			ViewMgr.PushLayer(messageBox);
         }
 		internal void OnDisconnected(string title, string message)
         {
@@ -79,8 +79,8 @@
                 Title = title,
                 Message = message
             };
-			messageBox.OkPressed += (sender, e) => { Client.ViewMgr.PopLayer(); };
-			Client.ViewMgr.PushLayer(messageBox);
+			messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
+			ViewMgr.PushLayer(messageBox);
         }
 
         #endregion
@@ -91,7 +91,7 @@
         {                        
             InvokeOnMainThread(arg =>
             {
-				var network = Client.ViewMgr.Client.Network;
+				var network = Client.Network;
                 var connectData = (Tuple<MessageBox, string, string>)ar.AsyncState;
                 var messageBox = connectData.Item1;
 				var username = connectData.Item2;
@@ -113,7 +113,7 @@
                 {
                     messageBox.Message = exc.Message;
                     messageBox.Buttons = MessageBoxButtons.OK;
-					messageBox.OkPressed += (sender, e) => Client.ViewMgr.PopLayer();
+					messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
                 }
             });
         }
@@ -153,7 +153,7 @@
         {
             InvokeOnMainThread(arg =>
             {
-				var network = Client.ViewMgr.Client.Network;
+				var network = Client.Network;
                 var messageBox = (MessageBox)ar.AsyncState;
 
                 try
@@ -167,7 +167,7 @@
                     network.BeginDisconnect(OnDisconnect, null);
                     messageBox.Message = exc.Message;
                     messageBox.Buttons = MessageBoxButtons.OK;
-					messageBox.OkPressed += (sender, e) => Client.ViewMgr.PopLayer();
+					messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
                 }
             });
         }
@@ -231,7 +231,7 @@
 
         private void OnDisconnect(IAsyncResult ar)
         {
-			var network = Client.ViewMgr.Client.Network;
+			var network = Client.Network;
             network.EndDisconnect(ar);
         }
 
@@ -263,7 +263,7 @@
         {
             InvokeOnMainThread(arg =>
             {
-				Client.ViewMgr.PopLayer(); // Probably "Logging in..." MessageBox
+				ViewMgr.PopLayer(); // Probably "Logging in..." MessageBox
 				OnDisconnected("Disconnection", "You were forcefully kicked out by the server.");
             }, reason);
         }

@@ -12,10 +12,7 @@
 
 	class PlayState : GameState
 	{
-		public readonly Scene Scene;
-
-		private GameViewport _gameViewport;
-		private GameHud _gameHud;
+		#region Private members
 
 		private Map _loadedMap;
 		private Player _clientPlayer;
@@ -23,89 +20,10 @@
 		private double _secondsLeft = 0;
 		private HudState _hudState = HudState.Initializing;
 		private object _hudStateLocker = new object();
+		private GameViewport _gameViewport;
+		private GameHud _gameHud;
 
-		private enum HudState
-		{
-			Initializing,
-			WaitingForRoundStart,
-			WaitingForRoundEnd,
-			AnimatingSimulationResult
-		}
-
-		public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer)
-			: base(game)
-		{
-			_loadedMap = loadedMap;
-			_clientPlayer = clientPlayer;
-
-			Scene = new Scene(_loadedMap);
-			Scene.Visual = new SceneVisual(Scene, loadedMap.Colors, Client.Content, Client.ViewMgr.AnimationManager);
-			_gameViewport = new GameViewport(this);
-			_gameHud = new GameHud(this);
-
-			Client.ViewMgr.PushLayer(_gameViewport);
-			Client.ViewMgr.PushLayer(_gameHud);
-
-			Client.Network.OnRoundStarted += Network_OnRoundStarted;
-			Client.Network.OnRoundEnded += Network_OnRoundEnded;
-			Client.Network.OnGameEnded += Network_OnGameEnded;
-			Client.Network.OnOtherPlayerLeft += Network_OnOtherPlayerLeft;
-			Client.Network.OnDisconnected += Network_OnDisconnected;
-			Client.Network.OnChatMessageReceived += Network_OnChatMessageReceived;
-		}
-
-        public override void OnEnter()
-        {
-            base.OnEnter();
-            Client.Network.BeginSetReady(null, null);
-        }
-
-		public override void OnExit()
-		{
-			Client.Network.OnRoundStarted -= Network_OnRoundStarted;
-			Client.Network.OnRoundEnded -= Network_OnRoundEnded;
-			Client.Network.OnGameEnded -= Network_OnGameEnded;
-			Client.Network.OnOtherPlayerLeft -= Network_OnOtherPlayerLeft;
-			Client.Network.OnDisconnected -= Network_OnDisconnected;
-			Client.Network.OnChatMessageReceived -= Network_OnChatMessageReceived;
-		}
-
-		public override void OnUpdate(double delta, double time)
-		{
-			base.OnUpdate(delta, time);
-			
-			// Update timer
-			if (_secondsLeft > 0)
-			{
-				if (_secondsLeft - delta <= 0)
-				{
-					_secondsLeft = 0;
-
-					lock (_hudStateLocker)
-					{
-						if (_hudState == HudState.WaitingForRoundEnd)
-						{
-							// Create message box that will be shown until server's roundEnd or gameEnd message arrives.
-							var messageBox = new MessageBox(this, MessageBoxButtons.OK)
-							{
-								Title = "Round simulating",
-								Message = "Waiting for server to simulate the turn."
-									+ Environment.NewLine + Environment.NewLine
-									+ "(This OK button will disappear)"
-							};
-							messageBox.OkPressed += (sender, e) => { Client.ViewMgr.PopLayer(); };//TODO to be removed (no OK button!!)
-							Client.ViewMgr.PushLayer(messageBox);
-						}
-					}
-				}
-				else
-				{
-					_secondsLeft -= delta;
-				}
-			}
-
-			_gameHud.UpdateTimer((int)_secondsLeft);
-		}
+		#endregion
 
 		#region View event handlers
 
@@ -121,7 +39,7 @@
 			{
 				Message = "Leaving game..."
 			};
-			Client.ViewMgr.PushLayer(messageBox);
+			ViewMgr.PushLayer(messageBox);
 
 			Client.Network.BeginLeaveGame(OnLeaveGame, messageBox);
 		}
@@ -215,7 +133,7 @@
 				_gameHud.AddMessage("Cannot move fleet: fleets can be sent only from owned planets.");
 				return;
 			}
-			if (source.NumFleetsPresent < 2 
+			if (source.NumFleetsPresent < 2
 				|| source.FleetChange <= -source.NumFleetsPresent + 1)
 			{
 				_gameHud.AddMessage("Cannot move fleet: there must be at least one fleet remaining.");
@@ -248,7 +166,7 @@
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 		}
 		internal void SendChatMessage(string message)
-		{            
+		{
 			Client.Network.BeginSendChatMessage(message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
 		}
 
@@ -265,7 +183,7 @@
 				try
 				{
 					Client.Network.EndLeaveGame(result);
-					Client.ViewMgr.PopLayer(); // MessageBox
+					ViewMgr.PopLayer(); // MessageBox
 					Client.ChangeState(new LobbyState(Game, _clientPlayer));
 				}
 				catch (Exception exc)
@@ -274,7 +192,7 @@
 					messageBox.Message = exc.Message;
 					messageBox.OkPressed += (sender, e) =>
 					{
-						Client.ViewMgr.PopLayer();
+						ViewMgr.PopLayer();
 						Client.ChangeState(new LobbyState(Game, _clientPlayer));
 					};
 				}
@@ -298,12 +216,12 @@
 					// Collect player list. Don't forget about existing player reference.
 					_players = roundInfo.Players
 						.Select(username =>
-                            username.Equals(_clientPlayer.Username)
-                                ? _clientPlayer
-                                : new Player(username, null)
-                            )
-                        .ToList();
-					
+							username.Equals(_clientPlayer.Username)
+								? _clientPlayer
+								: new Player(username, null)
+							)
+						.ToList();
+
 					// Assign players to the planets.
 					var locker = new ManualResetEvent(false);
 					InvokeOnMainThread(obj =>
@@ -312,7 +230,7 @@
 						Scene.Map.UpdatePlanetShowDetails(_clientPlayer);
 						_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
 						_gameHud.UpdatePlayerList(_players);
-					    locker.Set();
+						locker.Set();
 					});
 					locker.WaitOne();
 
@@ -332,7 +250,7 @@
 
 						// Update world info.
 						_clientPlayer.DeployableFleets += roundInfo.FleetsToDeploy;
-                        
+
 						// TODO update tech info due to `roundInfo.Tech'
 						foreach (var planetUpdateData in roundInfo.Map)
 						{
@@ -380,10 +298,10 @@
 				{
 					InvokeOnMainThread(obj =>
 					{
-						if (Client.ViewMgr.PeekLayer() is MessageBox)
+						if (ViewMgr.PeekLayer() is MessageBox)
 						{
 							// Pop MessageBox "Waiting for server to simulate the turn."
-							Client.ViewMgr.PopLayer();
+							ViewMgr.PopLayer();
 						}
 
 						_hudState = HudState.AnimatingSimulationResult;
@@ -397,7 +315,7 @@
 						// TODO when animation is done that line should be moved to the end of animation.
 						_hudState = HudState.WaitingForRoundStart;
 
-                        Client.Network.BeginSetReady(null, null);
+						Client.Network.BeginSetReady(null, null);
 					});
 
 					// We have consumed that packet.
@@ -421,7 +339,7 @@
 				_players.RemoveAll(player => player.Username.Equals(username));
 				_gameHud.UpdatePlayerList(_players);
 				_gameHud.AddMessage(string.Format("Player {0} has left.", username));
-			});			
+			});
 		}
 
 		private void Network_OnDisconnected(string reason)
@@ -443,5 +361,92 @@
 		}
 
 		#endregion
+
+		#region GameState members
+
+		public override void OnEnter()
+		{
+			base.OnEnter();
+			Client.Network.BeginSetReady(null, null);
+		}
+		public override void OnExit()
+		{
+			Client.Network.OnRoundStarted -= Network_OnRoundStarted;
+			Client.Network.OnRoundEnded -= Network_OnRoundEnded;
+			Client.Network.OnGameEnded -= Network_OnGameEnded;
+			Client.Network.OnOtherPlayerLeft -= Network_OnOtherPlayerLeft;
+			Client.Network.OnDisconnected -= Network_OnDisconnected;
+			Client.Network.OnChatMessageReceived -= Network_OnChatMessageReceived;
+		}
+		public override void Update(double delta, double time)
+		{
+			base.Update(delta, time);
+
+			// Update timer
+			if (_secondsLeft > 0)
+			{
+				if (_secondsLeft - delta <= 0)
+				{
+					_secondsLeft = 0;
+
+					lock (_hudStateLocker)
+					{
+						if (_hudState == HudState.WaitingForRoundEnd)
+						{
+							// Create message box that will be shown until server's roundEnd or gameEnd message arrives.
+							var messageBox = new MessageBox(this, MessageBoxButtons.OK)
+							{
+								Title = "Round simulating",
+								Message = "Waiting for server to simulate the turn."
+									+ Environment.NewLine + Environment.NewLine
+									+ "(This OK button will disappear)"
+							};
+							messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };//TODO to be removed (no OK button!!)
+							ViewMgr.PushLayer(messageBox);
+						}
+					}
+				}
+				else
+				{
+					_secondsLeft -= delta;
+				}
+			}
+
+			_gameHud.UpdateTimer((int)_secondsLeft);
+		}
+
+		#endregion
+
+		public readonly Scene Scene;
+
+		private enum HudState
+		{
+			Initializing,
+			WaitingForRoundStart,
+			WaitingForRoundEnd,
+			AnimatingSimulationResult
+		}
+
+		public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer)
+			: base(game)
+		{
+			_loadedMap = loadedMap;
+			_clientPlayer = clientPlayer;
+
+			Scene = new Scene(_loadedMap);
+			Scene.Visual = new SceneVisual(Scene, loadedMap.Colors, Client.Content, ViewMgr.AnimationManager);
+			_gameViewport = new GameViewport(this);
+			_gameHud = new GameHud(this);
+
+			ViewMgr.PushLayer(_gameViewport);
+			ViewMgr.PushLayer(_gameHud);
+
+			Client.Network.OnRoundStarted += Network_OnRoundStarted;
+			Client.Network.OnRoundEnded += Network_OnRoundEnded;
+			Client.Network.OnGameEnded += Network_OnGameEnded;
+			Client.Network.OnOtherPlayerLeft += Network_OnOtherPlayerLeft;
+			Client.Network.OnDisconnected += Network_OnDisconnected;
+			Client.Network.OnChatMessageReceived += Network_OnChatMessageReceived;
+		}
 	}
 }
