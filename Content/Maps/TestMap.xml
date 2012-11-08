@@ -38,9 +38,10 @@
 	</Systems>
 
   <PlayerStartingData>
-    <StartingData PlanetId="1" ColorId="1"/>
-    <StartingData PlanetId="4" ColorId="2"/>
-    <StartingData PlanetId="7" ColorId="3"/>
+    <StartingData PlanetId="2" ColorId="1"/>
+    <StartingData PlanetId="3" ColorId="2"/>
+    <StartingData PlanetId="5" ColorId="3"/>
+	<StartingData PlanetId="6" ColorId="4"/>
   </PlayerStartingData>
 
   <Colors>

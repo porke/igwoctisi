@@ -35,6 +35,7 @@
         public List<Planet> StartingPositions { get { return PlayerStartingData.Select(data => GetPlanetById(data.PlanetId)).ToList(); } }
         public int MaxPlayersCount { get { return StartingPositions.Count; } }
 
+		// Map path template
         private const string MapsPath = "Content/Maps/{0}.xml";
 
         // Attributes names
@@ -185,7 +186,6 @@
                 {
                     planet.ShowDetails = true;
                 }
-                // Or...
                 // Find any neighbouring planets also owned by the client player
                 else
                 {
