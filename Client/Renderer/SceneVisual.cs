@@ -34,8 +34,7 @@
             {
                 var ship = Spaceship.Acquire(targetPlanet.Owner.Color);
                 AddSpaceship(ship);
-                ship.Position = Camera.Position;
-                ship.AnimateDeploy(AnimationManager, targetPlanet, newFleetsCount,
+                ship.AnimateDeploy(AnimationManager, Camera, targetPlanet, newFleetsCount,
                     () => {
                         onEndCallback();
                         Spaceship.Recycle(ship);

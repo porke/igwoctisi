@@ -79,7 +79,7 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ProcessorParameters_Scale>100</ProcessorParameters_Scale>
+      <ProcessorParameters_Scale>5</ProcessorParameters_Scale>
     </Compile>
     <None Include="Skin\SuaveSkin.xml">
       <Name>SuaveSkin</Name>
