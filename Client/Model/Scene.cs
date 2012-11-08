@@ -1,11 +1,11 @@
 ﻿namespace Client.Model
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Client.Renderer;
-    using Microsoft.Xna.Framework;
-    using System.Threading;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Client.Renderer;
+	using Microsoft.Xna.Framework;
+	using System.Threading;
 
 	public class Scene
 	{		
@@ -20,16 +20,26 @@
 
 		#region Events for SceneVisual
 
-        /// <summary>
-        /// Arguments: targetPlanet, newFleetsCount, onEndCallback.
-        /// </summary>
-		internal event Action<Planet, int, Action> AnimDeploy;
+		/// <summary>
+		/// Arguments: [{targetPlanet, newFleetsCount, onEndCallback}]
+		/// </summary>
+		internal event Action<List<Tuple<Planet, int, Action>>> AnimDeploys;
+
+		/// <summary>
+		/// Arguments: [{sourcePlanet, targetPlanet, numFleetsCount, onEndCallback}]
+		/// </summary>
+		internal event Action<List<Tuple<Planet, Planet, int, Action>>> AnimMoves;
+
+		/// <summary>
+		/// Arguments: [{simResult, onEndCallback}]
+		/// </summary>
+		internal event Action<List<Tuple<SimulationResult, Action>>> AnimAttacks;
 
 		#endregion
 
 		public Scene(Map map)
 		{
-            Map = map;
+			Map = map;
 			HoveredPlanet = SelectedPlanet = 0;
 			HoveredLink = null;
 		}
@@ -55,109 +65,104 @@
 				var sourcePos = new Vector3(sourcePlanet.X, sourcePlanet.Y, sourcePlanet.Z);
 				var targetPos = new Vector3(targetPlanet.X, targetPlanet.Y, targetPlanet.Z);
 
-                if (renderer.RayLinkIntersection(clickPosition, sourcePos, targetPos))
-                {
-                    return link;
-                }
+				if (renderer.RayLinkIntersection(clickPosition, sourcePos, targetPos))
+				{
+					return link;
+				}
 			}
 			return null;
 		}
 		internal void AnimateChanges(IList<SimulationResult> simResults, Action endCallback)
 		{
-		    var deploys = simResults.Where(sr => sr.Type == SimulationResult.MoveType.Deploy).ToList();
-            var moves = simResults.Where(sr => sr.Type == SimulationResult.MoveType.Move).ToList();
-		    var attacks = simResults.Where(sr => sr.Type == SimulationResult.MoveType.Attack).ToList();
+            CountdownEvent deployAnimsCounter = null;
+            CountdownEvent moveAnimsCounter = null;
+            CountdownEvent attackAnimsCounter = null;
 
-		    var deployAnimCounter = new CountdownEvent(deploys.Count);
-		    var moveAnimCounter = new CountdownEvent(moves.Count);
-		    var attackAnimCounter = new CountdownEvent(attacks.Count);
+			// Collect data
+			var deploys = simResults
+				.Where(sr => sr.Type == SimulationResult.MoveType.Deploy)
+				.Select(sr =>
+							{
+								var targetPlanet = Map.GetPlanetById(sr.TargetId);
+								return Tuple.Create<Planet, int, Action>(targetPlanet, sr.FleetCount,
+									() => //action called when one deploy animation ends
+										{
+											targetPlanet.NumFleetsPresent += 1;
+                                            deployAnimsCounter.Signal();
+										});
+							})
+				.ToList();
 
-            foreach (var deployResult in deploys)
-            {
-                var targetPlanet = Map.GetPlanetById(deployResult.TargetId);
-                int newFleetsCount = deployResult.FleetCount;
+			var moves = simResults
+				.Where(sr => sr.Type == SimulationResult.MoveType.Move)
+				.Select(sr =>
+							{
+								var sourcePlanet = Map.GetPlanetById(sr.SourceId);
+								var targetPlanet = Map.GetPlanetById(sr.TargetId);
+								return Tuple.Create<Planet, Planet, int, Action>(sourcePlanet, targetPlanet, sr.FleetCount,
+									() => //action called when one move animation ends
+										{
+                                            moveAnimsCounter.Signal();
+										});
+							})
+				.ToList();
 
-                AnimDeploy(targetPlanet, newFleetsCount, () =>
-                {
-                    //targetPlanet.NumFleetsPresent += newFleetsCount;
-                    deployAnimCounter.Signal();
-                });
-            }
+			var attacks = simResults
+				.Where(sr => sr.Type == SimulationResult.MoveType.Attack)
+				.Select(sr =>
+							{
+								return Tuple.Create<SimulationResult, Action>(sr,
+									() => //action called when one attack animation ends
+										{
+                                            attackAnimsCounter.Signal();
+										});
+							})
+				.ToList();
 
-            foreach (var moveResult in moves)
-            {
-                moveAnimCounter.Signal();
-            }
+			// Start playing animations and call callback when all of them are done.
+			deployAnimsCounter = new CountdownEvent(deploys.Count);
+			moveAnimsCounter = new CountdownEvent(moves.Count);
+			attackAnimsCounter = new CountdownEvent(attacks.Count);
 
-            foreach (var attackResult in attacks)
-            {
-                attackAnimCounter.Signal();
-            }
+			AnimDeploys(deploys);
 
-		    ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
-		    {
-		        deployAnimCounter.Wait();
-		        moveAnimCounter.Wait();
-		        attackAnimCounter.Wait();
-		        endCallback.Invoke();
-		    }));
+			ThreadPool.QueueUserWorkItem(new WaitCallback(obj =>
+			{
+				deployAnimsCounter.Wait();
 
+                AnimMoves(moves);
+                AnimAttacks(attacks);
+				moveAnimsCounter.Wait();
+				attackAnimsCounter.Wait();
 
-		    // TODO: The animation actually makes debugging the move and deploy mechanics a little more difficult
-		    // so until it is done, this function will not function properly
-
-		    //var sourcePlanet = Map.GetPlanetById(simResult.SourceId);
-		    //var targetPlanet = Map.GetPlanetById(simResult.TargetId);
-
-		    //if (simResult.Type == SimulationResult.MoveType.Attack)
-		    //{
-		    //    sourcePlanet.NumFleetsPresent = simResult.SourceLeft;
-		    //    targetPlanet.NumFleetsPresent = simResult.TargetLeft;
-
-		    //    if (simResult.TargetOwnerChanged)
-		    //    {
-		    //        targetPlanet.Owner = _players.Find(player => player.Username.Equals(simResult.TargetOwner));
-		    //    }
-		    //}
-		    //else if (simResult.Type == SimulationResult.MoveType.Move)
-		    //{
-		    //    sourcePlanet.NumFleetsPresent = simResult.SourceLeft;
-		    //    targetPlanet.NumFleetsPresent = simResult.TargetLeft;
-		    //}
-		    //else if (simResult.Type == SimulationResult.MoveType.Deploy)
-		    //{
-		    //    int newFleetsCount = simResult.FleetCount;
-		    //    AnimDeploy(targetPlanet, newFleetsCount, () =>
-		    //    {
-		    //        targetPlanet.NumFleetsPresent += newFleetsCount;
-		    //    });
-		    //}
+				endCallback.Invoke();
+			}));
 		}
 
-	    public void Initialize(NewRoundInfo roundInfo, List<Player> players)
-	    {
-            _players = players;
+		public void Initialize(NewRoundInfo roundInfo, List<Player> players)
+		{
+			_players = players;
 
-            // Assign planets to the players and vice versa.
-            foreach (var data in Map.PlayerStartingData)
-            {
-                var planet = Map.GetPlanetById(data.PlanetId);
-                var newPlanetState = roundInfo.FindPlanetState(planet.Id);
-                string ownerName = null;
+			// Assign planets to the players and vice versa.
+			foreach (var data in Map.PlayerStartingData)
+			{
+				var planet = Map.GetPlanetById(data.PlanetId);
+				var newPlanetState = roundInfo.FindPlanetState(planet.Id);
+				string ownerName = null;
 
-                // Planet may be not assigned to anyone.
-                if (roundInfo.TryFindPlanetOwner(planet.Id, ref ownerName))
-                {
-                    var player = _players.Find(p => p.Username.Equals(ownerName));
-                    player.Color = Map.GetColorById(data.ColorId);
-                    player.TryAssignPlanet(planet);
-                    planet.NumFleetsPresent = newPlanetState.Fleets;
+				// Planet may be not assigned to anyone.
+				if (roundInfo.TryFindPlanetOwner(planet.Id, ref ownerName))
+				{
+					var player = _players.Find(p => p.Username.Equals(ownerName));
+					player.Color = Map.GetColorById(data.ColorId);
+					player.TryAssignPlanet(planet);
+					planet.NumFleetsPresent = newPlanetState.Fleets;
 
-                    // Translate the color from hex to enum
-                    player.Color = Map.GetColorById(data.ColorId);
-                }
-            }
-	    }
+					// Translate the color from hex to enum
+					player.Color = Map.GetColorById(data.ColorId);
+				}
+			}
+		}
 
 		public bool CanSelectPlanet(Planet planet, Player clientPlayer)
 		{

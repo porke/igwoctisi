@@ -9,39 +9,39 @@
 
     public sealed class SceneVisual
     {
-        public List<Spaceship> Spaceships { get; private set; }
         public SimpleCamera Camera { get; set; }
 
         private Scene Scene { get; set; }
-        private AnimationManager AnimationManager;
-        private List<Spaceship> _spaceshipsToAdd = new List<Spaceship>();
-        private List<Spaceship> _spaceshipsToRemove = new List<Spaceship>();
+        private readonly AnimationManager AnimationManager;
+        private readonly List<Spaceship> _spaceships = new List<Spaceship>();
+        private readonly List<Spaceship> _spaceshipsToAdd = new List<Spaceship>();
+        private readonly List<Spaceship> _spaceshipsToRemove = new List<Spaceship>();
 
         public SceneVisual(Scene scene, ICollection<PlayerColor> colors, ContentManager Content, AnimationManager AnimationManager)
         {
             Scene = scene;
-            Spaceships = new List<Spaceship>();
             Spaceship.SetupColorPools(colors, Content, AnimationManager);
             this.AnimationManager = AnimationManager;
 
             // Install handlers
-            scene.AnimDeploy += new Action<Planet, int, Action>(Animation_Deploy);
+            scene.AnimDeploys += new Action<IList<Tuple<Planet, int, Action>>>(Animation_Deploys);
+            scene.AnimMoves += new Action<IList<Tuple<Planet, Planet, int, Action>>>(Animation_Moves);
+            scene.AnimAttacks+=new Action<List<Tuple<SimulationResult,Action>>>(Animation_Attacks);
         }
 
-        void Animation_Deploy(Planet targetPlanet, int newFleetsCount, Action onEndCallback)
+        void Animation_Deploys(IList<Tuple<Planet, int, Action>> deploys)
         {
-            for (int i = 0; i < newFleetsCount; ++i)
-            {
-                var ship = Spaceship.Acquire(targetPlanet.Owner.Color);
-                AddSpaceship(ship);
-                ship.AnimateDeploy(AnimationManager, Camera, targetPlanet, newFleetsCount,
-                    () => {
-                        onEndCallback();
-                        Spaceship.Recycle(ship);
-                    });
+            this.AnimateDeploys(AnimationManager, Camera, deploys);
+        }
 
-                break;
-            }
+        void Animation_Moves(IList<Tuple<Planet, Planet, int, Action>> moves)
+        {
+            this.AnimateMoves(moves, AnimationManager, Camera);
+        }
+
+        void Animation_Attacks(IList<Tuple<SimulationResult, Action>> attacks)
+        {
+            this.AnimateAttacks(attacks, AnimationManager, Camera);
         }
 
         internal void AddSpaceship(Spaceship ship)
@@ -59,7 +59,7 @@
             {
                 // It is more efficient to use that type of loop than foreach/ForEach.
                 for (int i = 0, n = _spaceshipsToAdd.Count; i < n; ++i)
-                    Spaceships.Add(_spaceshipsToAdd[i]);
+                    _spaceships.Add(_spaceshipsToAdd[i]);
 
                 _spaceshipsToAdd.Clear();
             }
@@ -69,7 +69,7 @@
             // Draw spaceships
             lock (_spaceshipsToRemove)
             {
-                foreach (var ship in Spaceships)
+                foreach (var ship in _spaceships)
                 {
                     if (ship.Visible)
                         ship.Draw(Camera, delta, time);

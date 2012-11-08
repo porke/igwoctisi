@@ -2,39 +2,44 @@
 {
     using System;
     using Client.Common.AnimationSystem;
-    using Client.Common.AnimationSystem.DefaultAnimations;
     using Client.Model;
     using Client.Renderer;
-    using System.Threading;
     using System.Collections.Generic;
+    using System.Threading;
 
 
     public static class DeployAnimation
     {
-        //public static void AnimateDeployAsync(this Spaceship ship, Planet targetPlanet, int newFleetsCount, Action onEndCallback)
-        //{
-        //    ThreadPool.QueueUserWorkItem(obj =>
-        //    {
-        //        AnimateDeploy(ship, targetPlanet, newFleetsCount);
-        //        onEndCallback.Invoke();
-        //    });
-        //}
-
         private static Random rand = new Random();
 
-        public static void AnimateDeploy(this Spaceship ship, AnimationManager animationManager, SimpleCamera camera,
-            Planet targetPlanet, int newFleetsCount, Action onEndCallback)
+        public static void AnimateDeploys(this SceneVisual scene, AnimationManager animationManager, SimpleCamera camera,
+            IList<Tuple<Planet, int, Action>> deploys)
         {
             // Camera quake 5 arena 2
             camera.Animate(animationManager)
-                  .Shake(1);
+                .Wait(0.25);
+                //.Shake(0.4);
+            
+            // Deploy one ship for one planet coming from the camera origin
+            foreach (var deploy in deploys)
+            {
+                Planet targetPlanet = deploy.Item1;
+                int newFleetsCount = deploy.Item2;
+                Action onDeployEnd = deploy.Item3;
 
-            // Deploy from the camera
-            ship.Position = camera.Position;
-            ship.Animate(animationManager)
-                .MoveTo(targetPlanet.Position, 1.75f,
-                        Interpolators.AccelerateDecelerate())
-                .AddCallback(s => onEndCallback());
+                var ship = Spaceship.Acquire(targetPlanet.Owner.Color);
+                scene.AddSpaceship(ship);
+
+                ship.Position = camera.Position;
+                ship.Animate(animationManager)
+                    .Wait(rand.NextDouble() % 0.5)
+                    .MoveTo(targetPlanet.Position, 1.75, Interpolators.AccelerateDecelerate())
+                    .AddCallback(s =>
+                    {
+                        onDeployEnd.Invoke();
+                        Spaceship.Recycle(s);
+                    });
+            }
         }
     }
 }
