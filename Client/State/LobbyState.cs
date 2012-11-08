@@ -117,7 +117,6 @@
 			Client.ViewMgr.PushLayer(messageBox);
 
             Client.Network.BeginStartGame(OnGameStarted, messageBox);
-            var playerList = _gameLobby.Players.Select(username => new Player(username, _map.Colors.First())).ToList();
         }
 		internal void RefreshGameList(BaseView sender)
         {
