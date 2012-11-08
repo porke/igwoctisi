@@ -53,7 +53,7 @@
             };
 
             Client.Network.BeginConnect(hostname, port, OnConnect, Tuple.Create<MessageBox, string, string>(messageBox, login, password));
-			Client.ViewMgr.PushLayer(messageBox);
+			ViewMgr.PushLayer(messageBox);
         }
         internal void EnterPlayState(string login, string password)
         {
@@ -91,7 +91,7 @@
         {                        
             InvokeOnMainThread(arg =>
             {
-				var network = Client.Network;
+                var network = Client.Network;
                 var connectData = (Tuple<MessageBox, string, string>)ar.AsyncState;
                 var messageBox = connectData.Item1;
 				var username = connectData.Item2;
@@ -122,7 +122,7 @@
         {
             InvokeOnMainThread(arg =>
             {
-                var network = Client.ViewMgr.Client.Network;
+                var network = Client.Network;
                 var connectData = (Tuple<MessageBox, string, string>)ar.AsyncState;
                 var messageBox = connectData.Item1;
                 var username = connectData.Item2;
@@ -144,7 +144,7 @@
                 {
                     messageBox.Message = exc.Message;
                     messageBox.Buttons = MessageBoxButtons.OK;
-                    messageBox.OkPressed += (sender, e) => Client.ViewMgr.PopLayer();
+                    messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
                 }
             });
         }
@@ -176,7 +176,7 @@
         {
             InvokeOnMainThread(arg =>
             {
-                var network = Client.ViewMgr.Client.Network;
+                var network = Client.Network;
                 var messageBox = (MessageBox)ar.AsyncState;
 
                 try
@@ -195,7 +195,7 @@
                     network.BeginDisconnect(OnDisconnect, null);
                     messageBox.Message = exc.Message;
                     messageBox.Buttons = MessageBoxButtons.OK;
-                    messageBox.OkPressed += (sender, e) => Client.ViewMgr.PopLayer();
+                    messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
                 }
             });
         }
@@ -214,8 +214,8 @@
                 {
                     Client.Network.EndCreateGame(result);
 
-                    Client.ViewMgr.PopLayer();     // pop MessageBox
-                    Client.ViewMgr.PopLayer();     // pop main lobby window
+                    ViewMgr.PopLayer();     // pop MessageBox
+                    ViewMgr.PopLayer();     // pop main lobby window
 
                     var map = new Map(mapName);
                     Game.Network.BeginStartGame(OnGameStarted_Debug, Tuple.Create(messageBox, map, player));
@@ -223,7 +223,7 @@
                 catch (Exception exc)
                 {
                     messageBox.Buttons = MessageBoxButtons.OK;
-                    messageBox.OkPressed += (sender, e) => { Client.ViewMgr.PopLayer(); };
+                    messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
                     messageBox.Message = exc.Message;
                 }
             });
@@ -253,7 +253,7 @@
                 catch (Exception exc)
                 {
                     messageBox.Buttons = MessageBoxButtons.OK;
-                    messageBox.OkPressed += (sender, e) => { Client.ViewMgr.PopLayer(); Client.ViewMgr.PopLayer(); };
+                    messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); ViewMgr.PopLayer(); };
                     messageBox.Message = exc.Message;
                 }
             });
