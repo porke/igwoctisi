@@ -24,16 +24,11 @@
 		/// Arguments: [{targetPlanet, newFleetsCount, onEndCallback}]
 		/// </summary>
 		internal event Action<List<Tuple<Planet, int, Action>>> AnimDeploys;
-
-		/// <summary>
-		/// Arguments: [{sourcePlanet, targetPlanet, numFleetsCount, onEndCallback}]
-		/// </summary>
-		internal event Action<List<Tuple<Planet, Planet, int, Action>>> AnimMoves;
-
+		
 		/// <summary>
 		/// Arguments: [{simResult, onEndCallback}]
 		/// </summary>
-		internal event Action<List<Tuple<SimulationResult, Action>>> AnimAttacks;
+		internal event Action<List<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>>> AnimMovesAndAttacks;
 
 		#endregion
 
@@ -74,9 +69,8 @@
 		}
 		internal void AnimateChanges(IList<SimulationResult> simResults, Action endCallback)
 		{
-            CountdownEvent deployAnimsCounter = null;
-            CountdownEvent moveAnimsCounter = null;
-            CountdownEvent attackAnimsCounter = null;
+			CountdownEvent deployAnimsCounter = null;
+			CountdownEvent moveAndAttackAnimsCounter = null;
 
 			// Collect data
 			var deploys = simResults
@@ -88,52 +82,39 @@
 									() => //action called when one deploy animation ends
 										{
 											targetPlanet.NumFleetsPresent += 1;
-                                            deployAnimsCounter.Signal();
+											deployAnimsCounter.Signal();
 										});
 							})
 				.ToList();
 
-			var moves = simResults
-				.Where(sr => sr.Type == SimulationResult.MoveType.Move)
+			var movesAndAttacks = simResults
+				.Where(sr => sr.Type == SimulationResult.MoveType.Attack)
 				.Select(sr =>
 							{
 								var sourcePlanet = Map.GetPlanetById(sr.SourceId);
 								var targetPlanet = Map.GetPlanetById(sr.TargetId);
-								return Tuple.Create<Planet, Planet, int, Action>(sourcePlanet, targetPlanet, sr.FleetCount,
-									() => //action called when one move animation ends
+								return Tuple.Create<Planet, Planet, SimulationResult, Action<SimulationResult>>(sourcePlanet, targetPlanet, sr,
+									(srDone) => //action called when one move or attack animation ends
 										{
-                                            moveAnimsCounter.Signal();
-										});
-							})
-				.ToList();
-
-			var attacks = simResults
-				.Where(sr => sr.Type == SimulationResult.MoveType.Attack)
-				.Select(sr =>
-							{
-								return Tuple.Create<SimulationResult, Action>(sr,
-									() => //action called when one attack animation ends
-										{
-                                            attackAnimsCounter.Signal();
+											moveAndAttackAnimsCounter.Signal();
 										});
 							})
 				.ToList();
 
 			// Start playing animations and call callback when all of them are done.
 			deployAnimsCounter = new CountdownEvent(deploys.Count);
-			moveAnimsCounter = new CountdownEvent(moves.Count);
-			attackAnimsCounter = new CountdownEvent(attacks.Count);
+			moveAndAttackAnimsCounter = new CountdownEvent(movesAndAttacks.Count);
 
 			AnimDeploys(deploys);
 
 			ThreadPool.QueueUserWorkItem(new WaitCallback(obj =>
 			{
+				// First deploy all fleets
 				deployAnimsCounter.Wait();
-
-                AnimMoves(moves);
-                AnimAttacks(attacks);
-				moveAnimsCounter.Wait();
-				attackAnimsCounter.Wait();
+				
+				// Then move and attack
+				AnimMovesAndAttacks(movesAndAttacks);
+				moveAndAttackAnimsCounter.Wait();
 
 				endCallback.Invoke();
 			}));

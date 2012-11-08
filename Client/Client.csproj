@@ -160,9 +160,8 @@
     <Compile Include="View\Lobby\LobbyBackground.cs" />
     <Compile Include="View\Lobby\MainLobbyView.cs" />
     <Compile Include="View\Play\Animations\AnimationExtensions.cs" />
-    <Compile Include="View\Play\Animations\Attack.cs" />
+    <Compile Include="View\Play\Animations\MoveAndAttack.cs" />
     <Compile Include="View\Play\Animations\Deploy.cs" />
-    <Compile Include="View\Play\Animations\Move.cs" />
     <Compile Include="View\Play\GameHud.cs" />
     <Compile Include="View\Play\GameViewport.cs" />
     <Compile Include="View\BaseView.cs" />
