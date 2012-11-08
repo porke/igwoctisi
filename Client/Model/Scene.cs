@@ -88,7 +88,7 @@
 				.ToList();
 
 			var movesAndAttacks = simResults
-				.Where(sr => sr.Type == SimulationResult.MoveType.Attack)
+				.Where(sr => sr.Type == SimulationResult.MoveType.Move || sr.Type == SimulationResult.MoveType.Attack)
 				.Select(sr =>
 							{
 								var sourcePlanet = Map.GetPlanetById(sr.SourceId);
