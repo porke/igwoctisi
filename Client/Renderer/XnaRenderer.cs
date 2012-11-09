@@ -22,8 +22,8 @@
 		protected SpriteFont _fontHud;
 		protected Effect _fxLinks, _fxPlanet;
 		protected VertexBuffer _sphereVB;
-
-        private SimpleCamera _camera;
+		protected SimpleCamera _camera;
+		protected Texture2D _txSpace;
 
 		protected void InitializeMapVisual(Map map)
 		{
@@ -99,6 +99,14 @@
 			_fontHud = contentMgr.Load<SpriteFont>("Fonts\\HUD");
 			_fxLinks = contentMgr.Load<Effect>("Effects\\Links");
 			_fxPlanet = contentMgr.Load<Effect>("Effects\\Planet");
+			_txSpace = contentMgr.Load<Texture2D>("Textures\\Space");
+
+			var quadVertices = new[] {
+				new VertexPositionColor(new Vector3(0, 0, 0), Color.Red),
+				new VertexPositionColor(new Vector3(0, 1, 0), Color.Red),
+				new VertexPositionColor(new Vector3(1, 1, 0), Color.Red),
+				new VertexPositionColor(new Vector3(1, 0, 0), Color.Red)
+			};
 
 			var vertices = Utils.SphereVertices(3).Select(x => new Vertex(x.Position, x.Normal, Color.LightGreen, x.TextureCoordinate)).ToArray();
 			_sphereVB = new VertexBuffer(GraphicsDevice, Vertex.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
@@ -110,6 +118,8 @@
 		}
 		public void Draw(Scene scene, double delta, double time)
 		{
+			GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer | ClearOptions.Stencil, Color.Black, 1, 0);
+
             // Turn depth buffer on (SpriteBatch may turn it off).
 			GraphicsDevice.DepthStencilState = DepthStencilState.Default; // new DepthStencilState() { DepthBufferEnable = true };
 
@@ -118,7 +128,11 @@
             scene.Visual.Camera = _camera;
 
 			var map = scene.Map;
-			
+
+			_spriteBatch.Begin();
+			_spriteBatch.Draw(_txSpace, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+			_spriteBatch.End();
+
 			#region Links
 
 			_camera.ApplyToEffect(_fxLinks, Matrix.Identity);
@@ -140,6 +154,8 @@
 
 			#region Planets
 
+
+
 			foreach (var planet in map.Planets)
 			{
 				if (planet.Visual == null)
@@ -148,10 +164,13 @@
 				}
 				var visual = planet.Visual;
 
+				PlanetarySystem planetarySystem = scene.Map.GetSystemByPlanetid(planet.Id);
+
 				_fxPlanet.Parameters["Ambient"].SetValue(scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f);
 				_fxPlanet.Parameters["Diffuse"].SetValue(visual.DiffuseTexture);
 				_fxPlanet.Parameters["Clouds"].SetValue(visual.CloudsTexture);
 				_fxPlanet.Parameters["CloudsAlpha"].SetValue(visual.CloudsAlphaTexture);
+				_fxPlanet.Parameters["Glow"].SetValue(planetarySystem != null ? planetarySystem.Color.ToVector4() : Color.LightGray.ToVector4());
 
 				var localWorld = Matrix.CreateScale(planet.Radius) * 
 							Matrix.CreateRotationY((float)time / visual.Period * MathHelper.TwoPi) *

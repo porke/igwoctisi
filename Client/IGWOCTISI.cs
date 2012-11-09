@@ -6,6 +6,7 @@ namespace Client
     using System;
     using Client.Common;
     using Nuclex.UserInterface;
+	using Microsoft.Xna.Framework.Graphics;
 
     public class IGWOCTISI : GameClient
     {
@@ -26,6 +27,7 @@ namespace Client
             Content.RootDirectory = "Content";
             GraphicsManager.PreferredBackBufferWidth = 800;
             GraphicsManager.PreferredBackBufferHeight = 600;
+			GraphicsManager.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             IsMouseVisible = true;
         }
 

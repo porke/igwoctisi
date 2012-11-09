@@ -8,3 +8,5 @@ Client.Tests/bin*
 Client.Tests/obj*
 TestResults
 _ReSharper.*
+*.user
+Content/Textures/Thumbs.db
