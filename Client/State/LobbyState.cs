@@ -4,10 +4,8 @@
     using Client.Model;
     using View;
     using View.Lobby;
-    using System.Collections.Generic;
-    using System.Linq;
 
-    class LobbyState : GameState
+	class LobbyState : GameState
     {
         private Map _map;
         private Player _clientPlayer;
