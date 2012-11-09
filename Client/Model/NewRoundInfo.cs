@@ -35,7 +35,7 @@
             public int PlanetId { get; set; }
 
             [DataMember]
-            public int PlayerIndex { get; set; }
+            public string Player { get; set; }
 
             [DataMember]
             public int Fleets { get; set; }
@@ -49,10 +49,10 @@
         /// <returns>true if out_username param was set, otherwise false</returns>
         public bool TryFindPlanetOwner(int planetId, ref string out_username)
         {
-            int playerIndex = Map.First(ps => ps.PlanetId == planetId).PlayerIndex;
-            if (playerIndex >= 0)
+            var ownerName = Map.First(ps => ps.PlanetId == planetId).Player;
+            if (!string.IsNullOrEmpty(ownerName))
             {
-                out_username = Players[playerIndex];
+				out_username = ownerName;
                 return true;
             }
 

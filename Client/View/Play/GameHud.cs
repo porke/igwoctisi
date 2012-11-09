@@ -21,6 +21,9 @@
         private LabelControl _fleetCountValue;
         private LabelControl _fleetIncomeValue;
 		private LabelControl _techPointsValue;
+		private LabelControl _techAttackValue;
+		private LabelControl _techDefenseValue;
+		private LabelControl _techEconomyValue;
         private ListControl _playerList;
         private LabelControl _timer;
         private WrappableListControl _messageList;
@@ -47,18 +50,18 @@
 
             var ordersHeader = new LabelControl("Orders")
             {                
-                Bounds = new UniRectangle(new UniScalar(0.075f, 0), new UniScalar(0.2f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.075f, 0), new UniScalar(0.37f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
             };
 
             _commandList = new WrappableListControl()
             {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.28f, 0), new UniScalar(0.21f, 0), new UniScalar(0.3f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.45f, 0), new UniScalar(0.21f, 0), new UniScalar(0.3f, 0))
             };            
 
             var btnDeleteOrder = new ButtonControl()
             {
                 Text = "Delete",
-				Bounds = new UniRectangle(new UniScalar(0.12f, 0), new UniScalar(0.59f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.12f, 0), new UniScalar(0.76f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
             };
             btnDeleteOrder.Pressed += DeleteCommand_Pressed;
 
@@ -108,9 +111,54 @@
 
             #endregion
 
-            #region Game buttons
+			#region Technology section
 
-            var btnLeaveGame = new ButtonControl()
+			var techHeader = new LabelControl("Technology")
+			{
+				Bounds = new UniRectangle(new UniScalar(0.06f, 0), new UniScalar(0.21f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
+			};
+
+			_techAttackValue = new LabelControl("Att: 0")
+			{
+				Bounds = new UniRectangle(new UniScalar(0.02f, 0), new UniScalar(0.25f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
+			};
+
+			_techDefenseValue = new LabelControl("Def: 0")
+			{
+				Bounds = new UniRectangle(new UniScalar(0.08f, 0), new UniScalar(0.25f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
+			};
+
+			_techEconomyValue = new LabelControl("Eco: 0")
+			{
+				Bounds = new UniRectangle(new UniScalar(0.14f, 0), new UniScalar(0.25f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0))
+			};
+
+			var raiseAttackTech = new ButtonControl()
+			{
+				Text = "+",
+				Bounds = new UniRectangle(new UniScalar(0.02f, 0), new UniScalar(0.32f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
+			};
+			raiseAttackTech.Pressed += RaiseTech_Pressed;
+
+			var raiseDefenseTech = new ButtonControl()
+			{
+				Text = "+",
+				Bounds = new UniRectangle(new UniScalar(0.08f, 0), new UniScalar(0.32f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
+			};
+			raiseDefenseTech.Pressed += RaiseTech_Pressed;
+
+			var raiseEconomyTech = new ButtonControl()
+			{
+				Text = "+",
+				Bounds = new UniRectangle(new UniScalar(0.14f, 0), new UniScalar(0.32f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
+			};
+			raiseEconomyTech.Pressed += RaiseTech_Pressed;
+
+			#endregion
+
+			#region Game buttons
+
+			var btnLeaveGame = new ButtonControl()
             {
                 Text = "Leave",
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.93f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
@@ -176,6 +224,14 @@
 					techPointsDesc,
 					_techPointsValue,
                     
+					techHeader,
+					_techAttackValue,
+					_techDefenseValue,
+					_techEconomyValue,
+					raiseAttackTech,
+					raiseDefenseTech,
+					raiseEconomyTech,
+
                     btnDeleteOrder, 
                     btnLeaveGame, 
                     btnSendOrders,
@@ -219,6 +275,11 @@
                 _chatMessage.Text = string.Empty;
             }
         }
+
+		private void RaiseTech_Pressed(object sender, EventArgs e)
+		{
+			// TODO implement raise tech event handler
+		}
 
         #endregion
 
