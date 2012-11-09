@@ -7,6 +7,7 @@
 	using Client.Renderer;
 	using System.Threading;
 	using System.Diagnostics;
+	using Microsoft.Xna.Framework;
 	
 	public static class MoveAndAttack
 	{
@@ -16,7 +17,7 @@
 		{
 			ThreadPool.QueueUserWorkItem(obj =>
 			{
-				ManualResetEvent waiter = new ManualResetEvent(false);
+				var waiter = new ManualResetEvent(true);
 				foreach (var tpl in movesAndAttacks)
 				{
 					var sourcePlanet = tpl.Item1;
@@ -46,9 +47,22 @@
 			var ship = Spaceship.Acquire(sourcePlanet.Owner.Color);
 			scene.AddSpaceship(ship);
 
-			ship.Position = sourcePlanet.Position;
+			ship.SetPosition(sourcePlanet.Position);
+			ship.LookAt(targetPlanet.Position);
 			ship.Animate(animationManager)
-				.MoveTo(targetPlanet.Position, 2, Interpolators.AccelerateDecelerate())
+				//.MoveTo(targetPlanet.Position, 2, Interpolators.AccelerateDecelerate())
+				.Compound(2.0, c =>
+				{
+					c.InterpolateTo(targetPlanet.Position.X, 2.0, Interpolators.AccelerateDecelerate(),
+						(s) => s.X,
+						(s, x) => { s.X = (float)x; });
+					c.InterpolateTo(targetPlanet.Position.Y, 2.0, Interpolators.Decelerate(),
+						(s) => s.Y,
+						(s, y) => { s.Y = (float)y; });
+					c.InterpolateTo(targetPlanet.Position.Z, 1.5, Interpolators.OvershootInterpolator(),
+						(s) => s.Z,
+						(s, z) => { s.Z = (float)z; });
+				})
 				.AddCallback(s =>
 				{
 					Spaceship.Recycle(s);
@@ -62,7 +76,8 @@
 			var ship = Spaceship.Acquire(sourcePlanet.Owner.Color);
 			scene.AddSpaceship(ship);
 
-			ship.Position = sourcePlanet.Position;
+			ship.SetPosition(sourcePlanet.Position);
+			ship.LookAt(targetPlanet.Position);
 			ship.Animate(animationManager)
 				.MoveTo(targetPlanet.Position, 2, Interpolators.AccelerateDecelerate())
 				.AddCallback(s =>

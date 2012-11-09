@@ -41,7 +41,8 @@
 			return Animate<Spaceship>(ship, animationManager);
 		}
 		
-		public static MoveTo<Spaceship> MoveTo(this Animation<Spaceship> animation, Vector3 targetPosition, double duration, Func<double, double> interpolator = null)
+		public static MoveTo<Spaceship> MoveTo(this Animation<Spaceship> animation, Vector3 targetPosition, double duration,
+			Func<double, double> interpolator = null)
 		{
 			return animation.MoveTo<Spaceship>(targetPosition, duration, interpolator);
 		}
@@ -49,6 +50,12 @@
 		public static Wait<Spaceship> Wait(this Animation<Spaceship> animation, double duration)
 		{
 			return animation.Wait<Spaceship>(duration);
+		}
+
+		public static InterpolateTo<Spaceship> InterpolateTo(this Animation<Spaceship> animation, double targetValue, double duration,
+			Func<double, double> interpolator, Func<Spaceship, double> startingValueGetter, Action<Spaceship, double> valueChanger)
+		{
+			return animation.InterpolateTo<Spaceship>(targetValue, duration, interpolator, startingValueGetter, valueChanger);
 		}
 
 		#endregion

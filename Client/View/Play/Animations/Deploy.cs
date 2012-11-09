@@ -30,7 +30,8 @@
                 var ship = Spaceship.Acquire(targetPlanet.Owner.Color);
                 scene.AddSpaceship(ship);
 
-                ship.Position = camera.Position;
+                ship.SetPosition(camera.GetPosition());
+				ship.LookAt(targetPlanet.Position);
                 ship.Animate(animationManager)
                     .Wait(rand.NextDouble() % 0.5)
                     .MoveTo(targetPlanet.Position, 0.75, Interpolators.Accelerate(2.5))

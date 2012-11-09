@@ -98,6 +98,8 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\AnimationSystem\CompoundAnimation.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\InterpolateTo.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\Shake.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideOut.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideIn.cs" />
@@ -154,7 +156,7 @@
     <Compile Include="Common\AnimationSystem\AnimationManager.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\MoveTo.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\Wait.cs" />
-    <Compile Include="Common\AnimationSystem\IMovable.cs" />
+    <Compile Include="Common\AnimationSystem\ITransformable.cs" />
     <Compile Include="Common\AnimationSystem\Interpolators.cs" />
     <Compile Include="View\Lobby\CreateGameView.cs" />
     <Compile Include="View\Lobby\LobbyBackground.cs" />
