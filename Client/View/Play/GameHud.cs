@@ -168,7 +168,7 @@
             var btnSendOrders = new ButtonControl()
             {
                 Text = "Send",
-				Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.59f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))                
+				Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.76f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))                
             };
             btnSendOrders.Pressed += SendCommands_Pressed;
 
@@ -233,8 +233,8 @@
 					raiseEconomyTech,
 
                     btnDeleteOrder, 
-                    btnLeaveGame, 
                     btnSendOrders,
+                    btnLeaveGame, 
                     
                     _messageList,
                     _chatMessage,
