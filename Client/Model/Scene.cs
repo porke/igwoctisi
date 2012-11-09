@@ -81,7 +81,7 @@
 								return Tuple.Create<Planet, int, Action>(targetPlanet, sr.FleetCount,
 									() => //action called when one deploy animation ends
 										{
-											targetPlanet.NumFleetsPresent += 1;
+											//targetPlanet.NumFleetsPresent += 1;
 											deployAnimsCounter.Signal();
 										});
 							})
