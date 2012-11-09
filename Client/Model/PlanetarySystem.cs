@@ -3,6 +3,7 @@
     using System;
     using System.Runtime.Serialization;
     using System.Xml.Serialization;
+	using Microsoft.Xna.Framework;
 
     [Serializable] //XML
     [DataContract] //Json
@@ -24,5 +25,8 @@
         [XmlArrayItem("PlanetId")]
         [DataMember]
         public int[] Planets { get; set; }
+
+		//[DataMember]
+		public Color Color { get; set; }
     }
 }

@@ -8,6 +8,7 @@
     using System.Xml;
     using System.Xml.Serialization;
     using Client.Renderer;
+	using Microsoft.Xna.Framework;
 
     [DataContract]
     public class Map
@@ -138,6 +139,9 @@
                     }
                 } while (reader.ReadToNextSibling(ColorElement));
             }
+
+			PlanetarySystems[0].Color = Color.Blue;
+			PlanetarySystems[1].Color = Color.Red;
         }
 
         [OnDeserialized]
@@ -159,6 +163,10 @@
         {
             return Planets.Find(planet => planet.Id == planetId);
         }
+		public PlanetarySystem GetSystemByPlanetid(int planetId)
+		{
+			return PlanetarySystems.FirstOrDefault(x => x.Planets.Contains(planetId));
+		}
 
         /// <summary>
         /// The function determines which planets should have details visible, based on their owner
