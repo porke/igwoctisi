@@ -6,6 +6,7 @@ Texture Diffuse;
 Texture Clouds;
 Texture CloudsAlpha;
 float Ambient = 0.0f;
+float4 Glow;
 
 
 sampler DiffuseSampler = sampler_state
@@ -58,6 +59,29 @@ struct VertexShaderOutput
     // coordinates here. These values will automatically be interpolated
     // over the triangle, and provided as input to your pixel shader.
 };
+
+VertexShaderOutput Glow_VertexShader(VertexShaderInput input)
+{
+    VertexShaderOutput output;
+
+	float4 position = input.Position * float4(1.05, 1.05, 1.05, 1.0);
+    float4 worldPosition = mul(position, World);
+    float4 viewPosition = mul(worldPosition, View);
+    output.Position = mul(viewPosition, Projection);
+	output.Normal = mul(input.Normal, World);
+	output.UV = input.UV;
+
+    // TODO: add your vertex shader code here.
+
+    return output;
+}
+
+float4 Glow_PixelShader(VertexShaderOutput input) : COLOR0
+{
+    // TODO: add your pixel shader code here.
+
+	return Glow;
+}
 
 VertexShaderOutput Surface_VertexShader(VertexShaderInput input)
 {
@@ -120,10 +144,37 @@ technique Planet
 		ZEnable = true;
 		ZWriteEnable = true;
 		AlphaBlendEnable = false;
+		
+		
+		StencilEnable = true;
+		StencilMask = 0xFF;
+		StencilWriteMask = 0xFF;
+		StencilFail = Keep;
+		StencilZFail = Keep;
+		StencilPass = IncrSat;
+		StencilFunc = Always;
 
         VertexShader = compile vs_2_0 Surface_VertexShader();
         PixelShader = compile ps_2_0 Surface_PixelShader();
     }
+	pass Glow
+	{
+		ZEnable = true;
+		ZWriteEnable = true;
+		AlphaBlendEnable = false;
+
+		
+		StencilEnable = true;
+		StencilMask = 0xFF;
+		StencilWriteMask = 0xFF;
+		StencilFail = Keep;
+		StencilZFail = Keep;
+		StencilPass = Keep;
+		StencilFunc = Equal;
+
+        VertexShader = compile vs_2_0 Glow_VertexShader();
+        PixelShader = compile ps_2_0 Glow_PixelShader();
+	}
     pass Pass2
     {
 		ZEnable = false;
@@ -131,6 +182,8 @@ technique Planet
 		AlphaBlendEnable = true;
 		SrcBlend = SrcAlpha;
 		DestBlend = One;
+
+		StencilEnable = false;
 
         VertexShader = compile vs_2_0 Clouds_VertexShader();
         PixelShader = compile ps_2_0 Clouds_PixelShader();

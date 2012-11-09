@@ -144,7 +144,6 @@
 				}
 			}
 		}
-
 		public bool CanSelectPlanet(Planet planet, Player clientPlayer)
 		{
 			if (planet.Owner == null) return false;
@@ -152,7 +151,6 @@
 
 			return true;
 		}
-
 		public void SelectPlanet(Planet planet)
 		{
 			SelectedPlanet = planet.Id;
