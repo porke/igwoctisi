@@ -121,6 +121,8 @@
     <Compile Include="Input\Controls\PasswordInputControl.cs" />
     <Compile Include="Input\XnaInput.cs" />
     <Compile Include="Model\ChatMessage.cs" />
+    <Compile Include="Model\EndgameData.cs" />
+    <Compile Include="Model\GameStatistic.cs" />
     <Compile Include="Model\Map.cs" />
     <Compile Include="Model\NewRoundInfo.cs" />
     <Compile Include="Model\PlanetarySystem.cs" />
@@ -166,6 +168,7 @@
     <Compile Include="View\Play\Animations\MoveAndAttack.cs" />
     <Compile Include="View\Play\Animations\Deploy.cs" />
     <Compile Include="View\Play\GameHud.cs" />
+    <Compile Include="View\Play\GameStats.cs" />
     <Compile Include="View\Play\GameViewport.cs" />
     <Compile Include="View\BaseView.cs" />
     <Compile Include="View\Lobby\GameLobbyView.cs" />

@@ -1,8 +1,8 @@
-﻿using System.Runtime.Serialization;
-using System;
-namespace Client.Model
+﻿namespace Client.Model
 {
-    [DataContract]
+	using System.Runtime.Serialization;
+
+	[DataContract]
     public class ChatMessage
     {
         [DataMember]

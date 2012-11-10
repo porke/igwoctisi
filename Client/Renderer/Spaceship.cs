@@ -3,11 +3,9 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
-	using System.Linq;
 	using Client.Common.AnimationSystem;
 	using Client.Model;
 	using Common;
-	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Content;
 	using Microsoft.Xna.Framework.Graphics;
 	
@@ -24,13 +22,16 @@
 		{
 			foreach (var color in colors)
 			{
-				var factory = new SpaceshipFactory(color);
-				var pool = new ObjectPool<Spaceship>(100, factory);
+				if (!pools.ContainsKey(color.Value))
+				{
+					var factory = new SpaceshipFactory(color);
+					var pool = new ObjectPool<Spaceship>(100, factory);
 
-				factory.Content = Content;
-				factory.AnimationManager = AnimationManager;
+					factory.Content = Content;
+					factory.AnimationManager = AnimationManager;
 
-				pools.Add(color.Value, pool);
+					pools.Add(color.Value, pool);
+				}
 			}
 		}
 		

@@ -324,7 +324,13 @@
 		private void Network_OnGameEnded(/*game result here!*/)
 		{
 			// TODO show game result and statistics
-			throw new NotImplementedException();
+			InvokeOnMainThread(obj =>
+			{
+				// Mock stats
+				var stats = new EndgameData();
+				var statsWnd = new GameStats(this, stats);
+				ViewMgr.PushLayer(statsWnd);
+			});
 		}
 
 		private void Network_OnOtherPlayerLeft(string username, DateTime time)
@@ -362,7 +368,7 @@
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			Client.Network.BeginSetReady(null, null);
+			Client.Network.BeginSetReady(null, null);			
 		}
 		public override void OnExit()
 		{
@@ -435,6 +441,10 @@
 
 			ViewMgr.PushLayer(_gameViewport);
 			ViewMgr.PushLayer(_gameHud);
+			
+			// TODO: Testing stats window
+			//var stats = new EndgameData();
+			//ViewMgr.PushLayer(new GameStats(this, stats));
 
 			Client.Network.OnRoundStarted += Network_OnRoundStarted;
 			Client.Network.OnRoundEnded += Network_OnRoundEnded;
