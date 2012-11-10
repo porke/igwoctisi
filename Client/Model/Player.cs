@@ -49,58 +49,68 @@
         {
             Commands.Clear();
         }
-        public void DeployFleet(Planet planet)
+        public void DeployFleet(Planet planet, int count)
         {
             var command = Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
             if (command == null)
             {
-                command = new UserCommand(planet, 1);
+                command = new UserCommand(planet, count);
                 Commands.Add(command);
             }
             else
             {
-                command.FleetCount++;
+                command.FleetCount += count;
             }
 
-            planet.NumFleetsPresent++;
-            DeployableFleets--;
+            planet.NumFleetsPresent += count;
+            DeployableFleets -= count;
         }
-        public void UndeployFleet(Planet planet)
+        public void UndeployFleet(Planet planet, int count)
         {
             var command = Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
-            command.FleetCount--;
-            planet.NumFleetsPresent--;
-            DeployableFleets++;
+			if (command.FleetCount < count)
+			{
+				count = command.FleetCount;
+			}
+			
+			command.FleetCount -= count;
+            planet.NumFleetsPresent -= count;
+            DeployableFleets += count;
 
             if (command.FleetCount == 0)
             {
                 Commands.Remove(command);
             }
         }
-        public void MoveFleet(Planet source, Planet target)
+        public void MoveFleet(Planet source, Planet target, int count)
         {
 			// Check if movement between these two planets exists, if so update it, otherwise, create a new command
             var command = Commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
             if (command == null)
             {
                 command = new UserCommand(source, target);
-                command.FleetCount = 1;
+				command.FleetCount = count;
                 Commands.Add(command);
             }
             else
             {
-                command.FleetCount++;
+				command.FleetCount += count;
             }
 
-            source.FleetChange--;
-			target.FleetChange++;
+			source.FleetChange -= count;
+			target.FleetChange += count;
         }
-        public void RevertFleetMove(Planet source, Planet target)
+        public void RevertFleetMove(Planet source, Planet target, int count)
         {
             var targetCommand = Commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
-            targetCommand.FleetCount--;
-            source.FleetChange++;
-			target.FleetChange--;
+			if (targetCommand.FleetCount < count)
+			{
+				count = targetCommand.FleetCount;
+			}
+			
+			targetCommand.FleetCount -= count;
+            source.FleetChange += count;
+			target.FleetChange -= count;
 
             if (targetCommand.FleetCount == 0)
             {

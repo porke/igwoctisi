@@ -188,7 +188,6 @@
                     string mapName = "TestMap";
                     string gameName = "TestGame";
                     Game.Network.BeginCreateGame(gameName, new Map(mapName), OnCreateGame_Debug, Tuple.Create(messageBox, mapName, gameName, player));
-
                 }
                 catch (Exception exc)
                 {
