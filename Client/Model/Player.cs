@@ -23,19 +23,8 @@
 		public int TechPoints { get; set; }
         public int DeployableFleets { get; set; }
         public bool CanDeployFleets { get { return DeployableFleets > 0; } }
-        public int FleetIncomePerTurn
-        {
-            get
-            {
-                int fleets = 0;
-                foreach (var planet in _ownedPlanets)
-                {
-                    fleets += planet.BaseUnitsPerTurn;
-                }
+        public int FleetIncomePerTurn {get; set;}
 
-                return fleets;
-            }
-        }
         public List<UserCommand> Commands { get; private set; }
         public PlayerColor Color { get; set; }
 

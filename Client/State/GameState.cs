@@ -1,10 +1,10 @@
 ﻿namespace Client.State
 {
-    using System;
-    using System.Collections.Concurrent;
-    using Microsoft.Xna.Framework;
-    using View;
-    using Microsoft.Xna.Framework.Graphics;
+	using System;
+	using System.Collections.Concurrent;
+	using Microsoft.Xna.Framework;
+	using Microsoft.Xna.Framework.Graphics;
+	using View;
 
     public abstract class GameState
     {
