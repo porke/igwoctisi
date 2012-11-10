@@ -1,10 +1,10 @@
 ﻿namespace Client.View
 {
-    using Input;
-    using Nuclex.UserInterface;
-    using State;
 	using Common;
 	using Common.AnimationSystem.DefaultAnimations;
+	using Input;
+	using Nuclex.UserInterface;
+	using State;
 
 	public enum ViewState
 	{

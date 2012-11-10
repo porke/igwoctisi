@@ -30,8 +30,10 @@
 			<Bounds>
 				<Point3 X="-350"	Y="-250"	Z="0"/>
 				<Point3 X="-350"	Y="150"		Z="0"/>
+				<Point3 X="-150"	Y="150"		Z="0"/>
 				<Point3 X="50"		Y="150"		Z="0"/>
 				<Point3 X="50"		Y="-250"	Z="0"/>
+				<Point3 X="50"		Y="-25"		Z="0"/>
 			</Bounds>
 		</PlanetarySystem>
 		<PlanetarySystem Name="Northern Sector" FleetBonusPerTurn="4" Id="2">
@@ -43,7 +45,9 @@
 			<Bounds>
 				<Point3 X="-50"	Y="50"		Z="0"/>
 				<Point3 X="-50"	Y="350"		Z="0"/>
-				<Point3 X="250"	Y="350"		Z="0"/>
+				<Point3 X="-50"	Y="200"		Z="0"/>
+				<Point3 X="125"	Y="50"		Z="0"/>
+				<Point3 X="250"	Y="350"		Z="0"/>				
 				<Point3 X="250"	Y="50"		Z="0"/>
 			</Bounds>
 		</PlanetarySystem>		
