@@ -152,6 +152,29 @@
 
 			#endregion
 
+			#region Systems
+
+			_fxLinks.Parameters["Ambient"].SetValue(0.0f);
+			foreach (var planetarySystem in map.PlanetarySystems)
+			{
+				foreach (var point in planetarySystem.Bounds)
+				{
+					var world = Matrix.CreateScale(5) *
+						Matrix.CreateTranslation(point.X, point.Y, point.Z);
+					_camera.ApplyToEffect(_fxLinks, world);
+
+
+					foreach (var pass in _fxLinks.CurrentTechnique.Passes)
+					{
+						pass.Apply();
+						GraphicsDevice.SetVertexBuffer(_sphereVB);
+						GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
+					}
+				}
+			}
+
+			#endregion
+
 			#region Planets
 
 
@@ -212,9 +235,9 @@
 			
 			#endregion
 
-            #region Spaceships (and also should there be planets and links)
+			#region Spaceships (and also should there be planets and links)
 
-            scene.Visual.Draw(delta, time);
+			scene.Visual.Draw(delta, time);
 
             #endregion
 
