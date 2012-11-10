@@ -272,7 +272,8 @@
 						foreach (var player in _players)
 						{
 							var planetList = _loadedMap.Planets.FindAll(p => p.Owner != null && p.Owner.Username == player.Username);
-							player.OwnedPlanets = planetList;
+							player.OwnedPlanets = planetList;							
+							player.FleetIncomePerTurn = roundInfo.FleetsToDeploy;
 						}
 
 						_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
