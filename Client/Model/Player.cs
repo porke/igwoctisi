@@ -3,6 +3,8 @@
     using System.Collections.Generic;
     using System.Runtime.Serialization;
     using Microsoft.Xna.Framework;
+	using Client.Common;
+	using System;
     
     [DataContract]
     public class Player
@@ -27,6 +29,7 @@
 
         public List<UserCommand> Commands { get; private set; }
         public PlayerColor Color { get; set; }
+		public Dictionary<TechType, Technology> Technologies { get; private set; }
 
         #endregion
 
@@ -37,18 +40,51 @@
         #endregion
 
         public Player(string username, PlayerColor color)
-        {
+        {			
             Username = username;
             Color = color;
             Commands = new List<UserCommand>();
+			Technologies = new Dictionary<TechType, Technology>();
+
+			var techs = (TechType[]) Enum.GetValues(typeof(TechType));
+			foreach (var item in techs)
+			{
+				Technologies.Add(item, new Technology(item));
+			}
         }
 
         #region Command operations
-
+		
         public void ClearCommandList()
         {
             Commands.Clear();
         }
+		public bool CanRaiseTech(TechType type, ref string reason)
+		{
+			if (Technologies[type].IsMaxLevel)
+			{
+				reason = "Cannot raise tech: already at maximum level.";
+				return false;
+			}
+			if (Technologies[type].NextLevelCost > TechPoints)
+			{
+				reason = "Cannot raise tech: not enough technology points.";
+				return false;
+			}
+			if (Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Tech && cmd.TechImproved == type) != null)
+			{
+				reason = "Cannot raise tech: tech can be raised only once per round.";
+				return false;
+			}
+
+			return true;
+		}
+		public void RaiseTech(TechType type)
+		{			
+			TechPoints -= Technologies[type].NextLevelCost;
+			Technologies[type].CurrentLevel++;
+			Commands.Add(new UserCommand(type, this));
+		}
         public void DeployFleet(Planet planet, int count)
         {
             var command = Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);

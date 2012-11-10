@@ -11,15 +11,7 @@
             Attack,
             Deploy,
             Tech
-        }
-
-        public enum TechType
-        {
-            None,
-            Offense,
-            Defense,
-            Economy
-        }
+        }   
 
         [DataMember]
         public int SourceId { get; set; }
@@ -34,6 +26,8 @@
         public CommandType Type { get; set; }
 
         public TechType TechImproved { get; set; }
+
+		private Player _issuer;
 
         public Planet SourcePlanet { get; private set; }
         public Planet TargetPlanet { get; private set; }
@@ -57,6 +51,7 @@
             TargetId = targetPlanet.Id;
             FleetCount = 1;
             Type = (sourcePlanet.Owner == targetPlanet.Owner) ? CommandType.Move : CommandType.Attack;
+			_issuer = sourcePlanet.Owner;
         }
 
         /// <summary>
@@ -65,6 +60,7 @@
         public UserCommand(Planet planet, int deployUnitCount)
         {
             TargetPlanet = planet;
+			_issuer = planet.Owner;
 
             TargetId = planet.Id;
             FleetCount = deployUnitCount;
@@ -74,10 +70,11 @@
         /// <summary>
         /// Creates Tech Command.
         /// </summary>
-        public UserCommand(TechType improvedTech)
+        public UserCommand(TechType improvedTech, Player issuer)
         {
             Type = CommandType.Tech;
             TechImproved = improvedTech;
+			_issuer = issuer;
         }
 
         public bool CanRevert()
@@ -103,6 +100,11 @@
                 SourcePlanet.FleetChange += FleetCount;
 				TargetPlanet.FleetChange -= FleetCount;
             }
+			else if (Type == CommandType.Tech)
+			{
+				_issuer.TechPoints += _issuer.Technologies[TechImproved].CurrentLevelCost;
+				_issuer.Technologies[TechImproved].CurrentLevel--;
+			}
         }
     }
 }

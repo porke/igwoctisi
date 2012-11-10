@@ -31,7 +31,7 @@
 		{
 			_clientPlayer.DeleteCommand(orderIndex);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands, orderIndex);
-			_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
+			_gameHud.UpdateResourceData(_clientPlayer);
 		}
 		internal void LeaveGame()
 		{
@@ -100,7 +100,7 @@
 
 			_clientPlayer.DeployFleet(planet, count);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
-			_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
+			_gameHud.UpdateResourceData(_clientPlayer);
 		}
 		internal void UndeployFleet(Planet planet, int count)
 		{
@@ -113,7 +113,7 @@
 
 			_clientPlayer.UndeployFleet(planet, count);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
-			_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
+			_gameHud.UpdateResourceData(_clientPlayer);
 		}
 		internal void OnHoverLink(PlanetLink hoverLink)
 		{
@@ -185,6 +185,20 @@
 		{
 			Client.Network.BeginSendChatMessage(message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
 		}
+		internal void RaiseTechnology(TechType techType)
+		{
+			string reason = string.Empty;
+			if (_clientPlayer.CanRaiseTech(techType, ref reason))
+			{
+				_clientPlayer.RaiseTech(techType);
+				_gameHud.UpdateCommandList(_clientPlayer.Commands);
+				_gameHud.UpdateResourceData(_clientPlayer);
+			}
+			else
+			{
+				_gameHud.AddMessage(reason);
+			}
+		}
 
 		#endregion
 
@@ -244,7 +258,7 @@
 					{
 						Scene.Initialize(roundInfo, _players);
 						Scene.Map.UpdatePlanetShowDetails(_clientPlayer);
-						_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
+						_gameHud.UpdateResourceData(_clientPlayer);
 						_gameHud.UpdatePlayerList(_players);
 						locker.Set();
 					});
@@ -265,9 +279,9 @@
 						_gameHud.UpdateTimer((int)_secondsLeft);
 
 						// Update world info.
-						_clientPlayer.DeployableFleets += roundInfo.FleetsToDeploy;
+						_clientPlayer.DeployableFleets += roundInfo.FleetsToDeploy;						
 
-						// TODO update tech info due to `roundInfo.Tech'
+						// Updates planet owners and fleet states
 						foreach (var planetUpdateData in roundInfo.Map)
 						{
 							var planet = _loadedMap.Planets.Find(p => p.Id == planetUpdateData.PlanetId);
@@ -292,7 +306,15 @@
 							player.FleetIncomePerTurn = roundInfo.FleetsToDeploy;
 						}
 
-						_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
+						// Update technology data
+						// TODO: currently roundInfo.Tech is empty, don't really know what's supposed to be in there so for the time being, it's todo
+						//var techs = (TechType[]) Enum.GetValues(typeof(TechType));
+						//for(int techIndex = 0; techIndex < techs.Length; ++techIndex)
+						//{
+						//    _clientPlayer.Technologies[techs[techIndex]].CurrentLevel = roundInfo.Tech[techIndex];
+						//}
+
+						_gameHud.UpdateResourceData(_clientPlayer);
 						_loadedMap.UpdatePlanetShowDetails(_clientPlayer);
 
 						// Now wait to the end of the round.
@@ -339,14 +361,10 @@
 		}
 
 		private void Network_OnGameEnded(/*game result here!*/)
-		{
-			// TODO show game result and statistics
+		{			
 			InvokeOnMainThread(obj =>
 			{
-				// Mock stats
-				var stats = new EndgameData();
-				var statsWnd = new GameStats(this, stats);
-				ViewMgr.PushLayer(statsWnd);
+				// TODO show game result and statistics		
 			});
 		}
 

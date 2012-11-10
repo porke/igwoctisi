@@ -1,11 +1,10 @@
 ﻿namespace Client.Common
 {
-	using Nuclex.UserInterface.Controls;
-	using Client.View;
 	using Client.Common.AnimationSystem;
 	using Client.Common.AnimationSystem.DefaultAnimations;
+	using Client.View;
 	using Nuclex.UserInterface;
-	using System;
+	using Nuclex.UserInterface.Controls;
 
 	public static class NuclexExtensions
 	{
