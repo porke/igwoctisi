@@ -23,11 +23,14 @@
 
         private class GameInputReceiver : Client.Input.NullInputReceiver
         {
+			public static int FleetCountForMultiActions = 5;
+
             private Vector2 _currentMousePosition = Vector2.Zero;
             private GameViewport _receiverView;
+			private bool _isShiftDown = false;
 
             protected internal GameInputReceiver(GameViewport receiverView) : base(false)
-            {
+            {				
                 _receiverView = receiverView;
             }
 
@@ -62,23 +65,24 @@
 
             public override bool OnMousePressed(MouseButtons button)
             {
-                if (button.HasFlag(MouseButtons.Middle)) return true;
+                if (button.HasFlag(MouseButtons.Middle)) return true;				
 
 				var scene = this._receiverView.PlayState.Scene;
 				PlanetLink link = null;
 
+				int count = _isShiftDown ? FleetCountForMultiActions : 1;
                 var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition, _receiverView.PlayState.Client.Renderer);
 				if (planet != null)
 				{
 					if (scene.SelectedPlanet == planet.Id)
 					{
 						if (button.HasFlag(MouseButtons.Left))
-						{
-							_receiverView.DeployFleet(planet);
+						{							
+							_receiverView.DeployFleet(planet, count);
 						}
 						else if (button.HasFlag(MouseButtons.Right))
 						{
-							_receiverView.UndeployFleet(planet);
+							_receiverView.UndeployFleet(planet, count);
 						}
 					}
 					else
@@ -90,11 +94,11 @@
 				{
                     if (button.HasFlag(MouseButtons.Left))
                     {
-                        _receiverView.MoveFleet(link);
+                        _receiverView.MoveFleet(link, count);
                     }
                     else if (button.HasFlag(MouseButtons.Right))
                     {
-                        _receiverView.RevertMoveFleet(link);
+						_receiverView.RevertMoveFleet(link, count);
                     }
 				}
 
@@ -107,6 +111,10 @@
 
                 switch (key)
                 {
+					case Keys.LeftShift:
+					case Keys.RightShift:
+						_isShiftDown = true;
+						break;
                     case Keys.Down:
                         camera.TranslationDirection = Vector3.UnitY;
                         break;
@@ -128,6 +136,10 @@
             {
                 switch (key)
                 {
+					case Keys.LeftShift:
+					case Keys.RightShift:
+						_isShiftDown = false;
+						break;
                     case Keys.Down:
                     case Keys.Up:
                     case Keys.Left:
@@ -146,13 +158,13 @@
 
         #region Event handlers
 
-        private void DeployFleet(Planet destinationPlanet)
+        private void DeployFleet(Planet destinationPlanet, int count)
         {
-			PlayState.DeployFleet(destinationPlanet);
+			PlayState.DeployFleet(destinationPlanet, count);
         }
-        private void UndeployFleet(Planet destinationPlanet)
+        private void UndeployFleet(Planet destinationPlanet, int count)
         {
-			PlayState.UndeployFleet(destinationPlanet);
+			PlayState.UndeployFleet(destinationPlanet, count);
         }
         private void PlanetSelected(Planet planetSelected)
         {
@@ -174,13 +186,13 @@
 		{
 			PlayState.UnhoverLinks();
 		}
-		private void RevertMoveFleet(PlanetLink linkSelected)
+		private void RevertMoveFleet(PlanetLink linkSelected, int count)
 		{
-            PlayState.RevertMoveFleet(linkSelected);
+            PlayState.RevertMoveFleet(linkSelected, count);
 		}
-        private void MoveFleet(PlanetLink linkSelected)
+        private void MoveFleet(PlanetLink linkSelected, int count)
         {
-            PlayState.MoveFleet(linkSelected);
+            PlayState.MoveFleet(linkSelected, count);
         }
 
         #endregion

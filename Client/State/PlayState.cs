@@ -72,7 +72,7 @@
 		{
 			Scene.HoveredPlanet = 0;
 		}
-		internal void DeployFleet(Planet planet)
+		internal void DeployFleet(Planet planet, int count)
 		{
 			// Deploment is only possible on clients own planet
 			if (planet.Owner == null)
@@ -85,17 +85,24 @@
 				_gameHud.AddMessage("Cannot deploy fleet: you have to own the target planet.");
 				return;
 			}
-			if (_clientPlayer.DeployableFleets == 0)
+			if (_clientPlayer.DeployableFleets < count)
 			{
-				_gameHud.AddMessage("Cannot deploy fleet: Not enough deployable fleets.");
-				return;
+				if (_clientPlayer.DeployableFleets == 0)
+				{
+					_gameHud.AddMessage("Cannot deploy fleet: Not enough deployable fleets.");
+					return;
+				}
+				else
+				{
+					count = _clientPlayer.DeployableFleets;
+				}
 			}
 
-			_clientPlayer.DeployFleet(planet);
+			_clientPlayer.DeployFleet(planet, count);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 			_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
 		}
-		internal void UndeployFleet(Planet planet)
+		internal void UndeployFleet(Planet planet, int count)
 		{
 			var command = _clientPlayer.Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
 			if (command == null)
@@ -104,7 +111,7 @@
 				return;
 			}
 
-			_clientPlayer.UndeployFleet(planet);
+			_clientPlayer.UndeployFleet(planet, count);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 			_gameHud.UpdateClientPlayerResourceData(_clientPlayer);
 		}
@@ -116,7 +123,7 @@
 		{
 			Scene.HoveredLink = null;
 		}
-		internal void MoveFleet(PlanetLink link)
+		internal void MoveFleet(PlanetLink link, int count)
 		{
 			var source = Scene.Map.GetPlanetById(link.SourcePlanet);
 			var target = Scene.Map.GetPlanetById(link.TargetPlanet);
@@ -133,17 +140,26 @@
 				_gameHud.AddMessage("Cannot move fleet: fleets can be sent only from owned planets.");
 				return;
 			}
-			if (source.NumFleetsPresent < 2
-				|| source.FleetChange <= -source.NumFleetsPresent + 1)
+
+			// The FleetChange can be negative, hence the absolute value
+			if (Math.Abs(source.FleetChange - count) > source.NumFleetsPresent - 1)
 			{
-				_gameHud.AddMessage("Cannot move fleet: there must be at least one fleet remaining.");
-				return;
+				if (source.NumFleetsPresent == 1
+					|| source.FleetChange + source.NumFleetsPresent == 1)
+				{
+					_gameHud.AddMessage("Cannot move fleet: there must be at least one fleet remaining.");
+					return;
+				}
+				else
+				{
+					count = source.FleetChange + source.NumFleetsPresent - 1;
+				}
 			}
 
-			_clientPlayer.MoveFleet(source, target);
+			_clientPlayer.MoveFleet(source, target, count);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 		}
-		internal void RevertMoveFleet(PlanetLink link)
+		internal void RevertMoveFleet(PlanetLink link, int count)
 		{
 			var source = Scene.Map.GetPlanetById(link.SourcePlanet);
 			var target = Scene.Map.GetPlanetById(link.TargetPlanet);
@@ -160,9 +176,9 @@
 			{
 				_gameHud.AddMessage("Cannot revert fleet move: no fleets moving.");
 				return;
-			}
+			}			
 
-			_clientPlayer.RevertFleetMove(source, target);
+			_clientPlayer.RevertFleetMove(source, target, count);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 		}
 		internal void SendChatMessage(string message)
