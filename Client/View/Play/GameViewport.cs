@@ -5,16 +5,28 @@
     using Microsoft.Xna.Framework.Input;
     using Model;
     using Nuclex.Input;
+	using Client.Input.Controls;
+	using Nuclex.UserInterface;
+	using Client.Input;
 
     class GameViewport : BaseView
-    {
-        #region IView members
+	{
+		#region Protected members
 
-        public override void Draw(double delta, double time)
+		protected ViewportControl _viewport;
+
+		#endregion
+
+		#region IView members
+
+		public override void Draw(double delta, double time)
         {
-            var renderer = GameState.Client.Renderer;
+			_viewport.Scene = PlayState.Scene;
+			_viewport.Draw(delta, time);
+			base.Draw(delta, time);
 
-            renderer.Draw(PlayState.Scene, delta, time);
+            /*var renderer = GameState.Client.Renderer;
+            renderer.Draw(PlayState.Scene, delta, time);*/
         }
 
         #endregion
@@ -59,7 +71,6 @@
 
                 return true;
             }
-
             public override bool OnMousePressed(MouseButtons button)
             {
                 if (button.HasFlag(MouseButtons.Middle)) return true;
@@ -100,7 +111,6 @@
 
                 return true;
             }
-
             public override bool OnKeyPressed(Keys key)
             {
                 var camera = _receiverView.PlayState.Client.Renderer.GetCamera();
@@ -123,7 +133,6 @@
 
                 return true;
             }
-
             public override bool OnKeyReleased(Keys key)
             {
                 switch (key)
@@ -191,9 +200,13 @@
 			: base(state)
         {
             IsTransparent = false;
-            InputReceiver = new GameInputReceiver(this);
+			InputReceiver = new NuclexScreenInputReceiver(screen, false);//new GameInputReceiver(this);
             PlayState = state;
 			State = ViewState.Loaded;
+
+			_viewport = new ViewportControl(PlayState.Client.Renderer);
+			_viewport.Bounds = new UniRectangle(new UniScalar(0, 0), new UniScalar(0, 0), new UniScalar(1, 0), new UniScalar(1, 0));
+			this.screen.Desktop.Children.Add(_viewport);
         }
     }
 }

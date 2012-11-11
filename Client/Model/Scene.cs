@@ -14,7 +14,8 @@
 		public SceneVisual Visual { get; set; }
 
 		public int SelectedPlanet { get; private set; }
-		public Map Map { get; private set; }		
+		public Map Map { get; private set; }
+		public SimpleCamera Camera { get; private set; }
 
 		private List<Player> _players;
 
