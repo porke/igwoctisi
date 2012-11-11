@@ -54,9 +54,6 @@
 			_viewport.Scene = PlayState.Scene;
 			_viewport.Draw(delta, time);
 			base.Draw(delta, time);
-
-            /*var renderer = GameState.Client.Renderer;
-            renderer.Draw(PlayState.Scene, delta, time);*/
         }
 
         #endregion
@@ -66,6 +63,9 @@
 		public void Viewport_MouseClick(ViewportControl viewport, MouseButtons button)
 		{
 			var scene = PlayState.Scene;
+			var keyboard = Keyboard.GetState();
+			var count = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift)
+				? FleetCountForMultiActions : 1;
 
 			if (_viewport.HoveredPlanet != null)
 			{
@@ -77,14 +77,14 @@
 					}
 					else
 					{
-						DeployFleet(_viewport.HoveredPlanet);
+						DeployFleet(_viewport.HoveredPlanet, count);
 					}
 				}
 				else if (button == MouseButtons.Right)
 				{
 					if (scene.SelectedPlanet != null)
 					{
-						UndeployFleet(_viewport.HoveredPlanet);
+						UndeployFleet(_viewport.HoveredPlanet, count);
 					}
 				}
 			}
@@ -92,11 +92,11 @@
 			{
 				if (button == MouseButtons.Left)
 				{
-					MoveFleet(_viewport.HoveredLink);
+					MoveFleet(_viewport.HoveredLink, count);
 				}
 				else if (button == MouseButtons.Right)
 				{
-					RevertMoveFleet(_viewport.HoveredLink);
+					RevertMoveFleet(_viewport.HoveredLink, count);
 				}
 			}
 		}
@@ -104,13 +104,13 @@
 		{
 			PlayState.SelectPlanet(planet);
 		}
-        private void DeployFleet(Planet destinationPlanet)
+		private void DeployFleet(Planet destinationPlanet, int count)
         {
-			PlayState.DeployFleet(destinationPlanet);
+			PlayState.DeployFleet(destinationPlanet, count);
         }
-        private void UndeployFleet(Planet destinationPlanet)
+        private void UndeployFleet(Planet destinationPlanet, int count)
         {
-			PlayState.UndeployFleet(destinationPlanet);
+			PlayState.UndeployFleet(destinationPlanet, count);
         }
         private void HoverPlanet(Planet planet)
         {
@@ -128,17 +128,18 @@
 		{
 			PlayState.UnhoverLinks();
 		}
-
-		private void RevertMoveFleet(PlanetLink linkSelected)
+		private void RevertMoveFleet(PlanetLink linkSelected, int count)
 		{
-            PlayState.RevertMoveFleet(linkSelected);
+            PlayState.RevertMoveFleet(linkSelected, count);
 		}
-        private void MoveFleet(PlanetLink linkSelected)
+		private void MoveFleet(PlanetLink linkSelected, int count)
         {
-            PlayState.MoveFleet(linkSelected);
+            PlayState.MoveFleet(linkSelected, count);
         }
 
         #endregion
+
+		public static readonly int FleetCountForMultiActions = 5;
 
         public PlayState PlayState { get; protected set; }
 
