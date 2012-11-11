@@ -55,7 +55,7 @@
 			public int Defensive { get; set; }
 
 			[DataMember]
-			public int TechPoints { get; set; }
+			public int Points { get; set; }
 		}
 
         /// <summary>
