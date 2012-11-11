@@ -279,7 +279,7 @@
 						_gameHud.UpdateTimer((int)_secondsLeft);
 
 						// Update world info.
-						_clientPlayer.DeployableFleets += roundInfo.FleetsToDeploy;
+						_clientPlayer.DeployableFleets = roundInfo.FleetsToDeploy;
 
 						// Updates planet owners and fleet states
 						foreach (var planetUpdateData in roundInfo.Map)
@@ -310,7 +310,7 @@
 						_clientPlayer.Technologies[TechnologyType.Economic].CurrentLevel = roundInfo.Tech.Economic;
 						_clientPlayer.Technologies[TechnologyType.Defensive].CurrentLevel = roundInfo.Tech.Defensive;
 						_clientPlayer.Technologies[TechnologyType.Offensive].CurrentLevel = roundInfo.Tech.Offensive;
-						_clientPlayer.TechPoints = roundInfo.Tech.TechPoints;
+						_clientPlayer.TechPoints = roundInfo.Tech.Points;
 
 						_gameHud.UpdateResourceData(_clientPlayer);
 						_loadedMap.UpdatePlanetShowDetails(_clientPlayer);
