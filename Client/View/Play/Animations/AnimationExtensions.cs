@@ -5,6 +5,7 @@
 	using Client.Common.AnimationSystem.DefaultAnimations;
 	using Client.Renderer;
 	using Microsoft.Xna.Framework;
+	using Client.Model;
 
 	public static class AnimationExtensions
 	{

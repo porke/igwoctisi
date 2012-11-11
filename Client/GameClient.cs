@@ -9,6 +9,7 @@
     using Renderer;
     using State;
 	using Client.View;
+	using System.Reflection;
 
     public abstract class GameClient : Game
     {
@@ -35,7 +36,10 @@
             Renderer.Initialize(this);
             Network.Initialize(this);
             Input.Initialize(this);
-            Visualizer = FlatGuiVisualizer.FromFile(Services, "Content\\Skin\\SuaveSkin.xml");
+
+			var flatGuiVisualizer = FlatGuiVisualizer.FromFile(Services, "Content\\Skin\\SuaveSkin.xml");
+			flatGuiVisualizer.RendererRepository.AddAssembly(typeof(GameClient).Assembly);
+			Visualizer = flatGuiVisualizer;
         }
 
         protected override void OnExiting(object sender, EventArgs args)

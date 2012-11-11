@@ -73,4 +73,6 @@
     <Color Id="7" Value="0x00FFFFFF" />
     <Color Id="8" Value="0x00FE7F00" />
   </Colors>
+
+	<Camera Min="-200;-200;-2000" Max="200;200;-500" />
 </Map>
