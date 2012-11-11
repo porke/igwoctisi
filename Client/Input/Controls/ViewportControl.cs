@@ -5,7 +5,7 @@ using Client.Renderer;
 using Microsoft.Xna.Framework;
 using Client.Common.AnimationSystem;
 using System;
-using Microsoft.Xna.Framework.Graphics;
+using Nuclex.Input;
 
 
 namespace Client.Input.Controls
@@ -27,21 +27,39 @@ namespace Client.Input.Controls
 
 		#region Control members
 
-		protected override void OnMousePressed(Nuclex.Input.MouseButtons button)
+		protected override void OnMousePressed(MouseButtons button)
 		{
-			_currentTime = _pressTime;
-			_pressed = true;
-		}
-		protected override void OnMouseReleased(Nuclex.Input.MouseButtons button)
-		{
-			_pressed = false;
-			if (_currentTime - _pressTime < ClickInterval)	// clic
+			if (button == MouseButtons.Left)
 			{
+				_pressTime = _currentTime;
+				_pressed = true;
+			}
+		}
+		protected override void OnMouseReleased(MouseButtons button)
+		{
+			if (button == MouseButtons.Left)
+			{
+				_pressed = false;
+			}
+
+			if (!_pressed || _currentTime - _pressTime < ClickInterval)	// click
+			{
+				if (MouseClick != null) MouseClick(this, button);
 			}
 		}
 		protected override void OnMouseMoved(float x, float y)
 		{
 			_currentMousePosition = new Vector2(x, y);
+
+			if (_pressed)
+			{
+				HoveredPlanet = null;
+			}
+			else
+			{
+				HoveredPlanet = Scene.PickPlanet(_currentMousePosition, Renderer);
+				HoveredLink = Scene.PickLink(_currentMousePosition, Renderer);
+			}
 		}
 		protected override void OnMouseWheel(float ticks)
 		{
@@ -50,10 +68,15 @@ namespace Client.Input.Controls
 
 		#endregion
 
+		public const float DragSpeedFactor = 1.0f / 10.0f;
 		public const float ZoomVelocityFactor = 1.0f / 1200.0f;
 
 		public IRenderer Renderer { get; set; }
 		public Scene Scene { get; set; }
+		public Planet HoveredPlanet { get; protected set; }
+		public PlanetLink HoveredLink { get; protected set; }
+
+		public event Action<ViewportControl, MouseButtons> MouseClick;
 
 		public ViewportControl(IRenderer renderer)
 		{
@@ -69,24 +92,10 @@ namespace Client.Input.Controls
 			if (_pressed) // drag
 			{
 				var bounds = this.GetAbsoluteBounds();
-				var viewport = new Viewport((int)bounds.X, (int)bounds.Y, (int)bounds.Width, (int)bounds.Height);
-				var cameraPosition = camera.GetPosition();
-				var zeroPlane = new Plane(Vector3.Backward, 0);
-
-				var currentUnit = Vector3.Normalize(viewport.Project(
-					new Vector3(-_currentMousePosition.X, _currentMousePosition.Y, 1),
-					camera.Projection, camera.GetView(), Matrix.Identity));
-				var currentDist = new Ray(cameraPosition, currentUnit).Intersects(zeroPlane).Value;
-				var currentWorld = cameraPosition + currentUnit * currentDist;
-
-				var lastUnit = Vector3.Normalize(viewport.Project(
-					new Vector3(-_lastMousePosition.X, _lastMousePosition.Y, 1),
-					camera.Projection, camera.GetView(), Matrix.Identity));
-				var lastDist = new Ray(cameraPosition, lastUnit).Intersects(zeroPlane).Value;
-				var lastWorld = cameraPosition + lastUnit * lastDist;
-
-				var dragForce = (currentWorld - lastWorld) / new Vector3(bounds.Width, bounds.Height, 1) / (float)delta * new Vector3(1, 1, 0);
-				camera.Force = new Vector3(dragForce.X, dragForce.Y, camera.Force.Z);
+				var dragForce = (_currentMousePosition - _lastMousePosition);
+				dragForce *= (float)Math.Tan(camera.FieldOfView) * Math.Abs(Vector3.Distance(camera.GetPosition(), camera.LookAt));
+				dragForce *= DragSpeedFactor;
+				camera.Force = new Vector3(dragForce.X, -dragForce.Y, camera.Force.Z);
 			}
 
 			if (_wheelTicks != 0)
