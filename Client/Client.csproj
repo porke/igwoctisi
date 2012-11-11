@@ -74,16 +74,29 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="Nuclex.Fonts.Content.TrueTypeImporter">
+      <HintPath>References\Nuclex.Fonts.Content.TrueTypeImporter.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.Graphics">
+      <HintPath>References\Nuclex.Graphics.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.Graphics.SpecialEffects">
+      <HintPath>References\Nuclex.Graphics.SpecialEffects.dll</HintPath>
+    </Reference>
     <Reference Include="Nuclex.Input">
       <HintPath>References\Nuclex.Input.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Support">
       <HintPath>References\Nuclex.Support.dll</HintPath>
     </Reference>
+    <Reference Include="Nuclex.Support.Plugins">
+      <HintPath>References\Nuclex.Support.Plugins.dll</HintPath>
+    </Reference>
     <Reference Include="Nuclex.UserInterface">
       <HintPath>References\Nuclex.UserInterface.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
+    <Reference Include="nunit.framework, Version=2.5.5.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>References\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX.DirectInput">
@@ -112,6 +125,7 @@
     <Compile Include="Common\SystemExtensions.cs" />
     <Compile Include="Common\XnaExtensions.cs" />
     <Compile Include="Input\Controls\CommandInputControl.cs" />
+    <Compile Include="Input\Controls\ViewportControl.cs" />
     <Compile Include="Input\Controls\WrappableListControl.cs" />
     <Compile Include="Input\Controls\WrappableLabelControl.cs" />
     <Compile Include="Input\IInput.cs" />
@@ -140,11 +154,13 @@
     <Compile Include="Model\LobbyListInfo.cs" />
     <Compile Include="Network\INetwork.cs" />
     <Compile Include="Network\WsaNetwork.cs" />
+    <Compile Include="Renderer\Controls\FlatViewportControlRenderer.cs" />
+    <Compile Include="Renderer\ICamera.cs" />
     <Compile Include="Renderer\IRenderer.cs" />
     <Compile Include="Renderer\MapVisual.cs" />
     <Compile Include="Renderer\PlanetVisual.cs" />
     <Compile Include="Renderer\SceneVisual.cs" />
-    <Compile Include="Renderer\SimpleCamera.cs" />
+    <Compile Include="Model\SimpleCamera.cs" />
     <Compile Include="Renderer\Spaceship.cs" />
     <Compile Include="Renderer\Vertex.cs" />
     <Compile Include="Renderer\XnaRenderer.cs" />

@@ -5,194 +5,137 @@
     using Microsoft.Xna.Framework.Input;
     using Model;
     using Nuclex.Input;
+	using Client.Input.Controls;
+	using Nuclex.UserInterface;
+	using Client.Input;
 
     class GameViewport : BaseView
-    {
-        #region IView members
+	{
+		#region Protected members
 
-        public override void Draw(double delta, double time)
-        {
-            var renderer = GameState.Client.Renderer;
+		protected ViewportControl _viewport;
 
-            renderer.Draw(PlayState.Scene, delta, time);
-        }
+		#endregion
 
-        #endregion
+		#region IView members
 
-        #region Nested class: GameInputReceiver
+		public override void Update(double delta, double time)
+		{
+			base.Update(delta, time);
+			_viewport.Update(delta, time);
 
-        private class GameInputReceiver : Client.Input.NullInputReceiver
-        {
-			public static int FleetCountForMultiActions = 5;
-
-            private Vector2 _currentMousePosition = Vector2.Zero;
-            private GameViewport _receiverView;
-			private bool _isShiftDown = false;
-
-            protected internal GameInputReceiver(GameViewport receiverView) : base(false)
-            {				
-                _receiverView = receiverView;
-            }
-
-            #region IInputReceiver members
-
-            public override bool OnMouseMoved(Vector2 position)
-            {
-                _currentMousePosition = position;
-                
-                var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition, _receiverView.PlayState.Client.Renderer);
-                if (planet != null)
-                {
-                    _receiverView.OnHoverPlanet(planet);
-                }
-                else
-                {
-                    _receiverView.UnhoverPlanets();
-                }
-
-				var link = _receiverView.PlayState.Scene.PickLink(_currentMousePosition, _receiverView.PlayState.Client.Renderer);
-				if (link != null)
+			var scene = PlayState.Scene;
+			var hoveredPlanetId = _viewport.HoveredPlanet != null ? _viewport.HoveredPlanet.Id : 0;
+			if (scene.HoveredPlanet != hoveredPlanetId)
+			{
+				if (_viewport.HoveredPlanet != null)
 				{
-					_receiverView.OnHoverLink(link);
+					HoverPlanet(_viewport.HoveredPlanet);
 				}
 				else
 				{
-					_receiverView.UnhoverLinks();
+					UnhoverPlanets();
 				}
-
-                return true;
-            }
-
-            public override bool OnMousePressed(MouseButtons button)
-            {
-                if (button.HasFlag(MouseButtons.Middle)) return true;				
-
-				var scene = this._receiverView.PlayState.Scene;
-				PlanetLink link = null;
-
-				int count = _isShiftDown ? FleetCountForMultiActions : 1;
-                var planet = _receiverView.PlayState.Scene.PickPlanet(_currentMousePosition, _receiverView.PlayState.Client.Renderer);
-				if (planet != null)
+			}
+			if (scene.HoveredLink != _viewport.HoveredLink)
+			{
+				if (_viewport.HoveredLink != null)
 				{
-					if (scene.SelectedPlanet == planet.Id)
-					{
-						if (button.HasFlag(MouseButtons.Left))
-						{							
-							_receiverView.DeployFleet(planet, count);
-						}
-						else if (button.HasFlag(MouseButtons.Right))
-						{
-							_receiverView.UndeployFleet(planet, count);
-						}
-					}
-					else
-					{
-						_receiverView.PlanetSelected(planet);
-					}
+					HoverLink(_viewport.HoveredLink);
 				}
-				else if ((link = _receiverView.PlayState.Scene.PickLink(_currentMousePosition, _receiverView.PlayState.Client.Renderer)) != null)
+				else
 				{
-                    if (button.HasFlag(MouseButtons.Left))
-                    {
-                        _receiverView.MoveFleet(link, count);
-                    }
-                    else if (button.HasFlag(MouseButtons.Right))
-                    {
-						_receiverView.RevertMoveFleet(link, count);
-                    }
+					UnhoverLinks();
 				}
+			}
+		}
+		public override void Draw(double delta, double time)
+        {
+			_viewport.Scene = PlayState.Scene;
+			_viewport.Draw(delta, time);
+			base.Draw(delta, time);
 
-                return true;
-            }
-
-            public override bool OnKeyPressed(Keys key)
-            {
-                var camera = _receiverView.PlayState.Client.Renderer.GetCamera();
-
-                switch (key)
-                {
-					case Keys.LeftShift:
-					case Keys.RightShift:
-						_isShiftDown = true;
-						break;
-                    case Keys.Down:
-                        camera.TranslationDirection = Vector3.UnitY;
-                        break;
-                    case Keys.Up:
-                        camera.TranslationDirection = -Vector3.UnitY;
-                        break;
-                    case Keys.Left:
-                        camera.TranslationDirection = -Vector3.UnitX;
-                        break;
-                    case Keys.Right:
-                        camera.TranslationDirection = Vector3.UnitX;
-                        break;
-                }
-
-                return true;
-            }
-
-            public override bool OnKeyReleased(Keys key)
-            {
-                switch (key)
-                {
-					case Keys.LeftShift:
-					case Keys.RightShift:
-						_isShiftDown = false;
-						break;
-                    case Keys.Down:
-                    case Keys.Up:
-                    case Keys.Left:
-                    case Keys.Right:
-                        _receiverView.PlayState.Client.Renderer.GetCamera().TranslationDirection = Vector3.Zero;
-                        break;
-                }
-
-                return true;
-            }
-
-            #endregion
-        }        
+            /*var renderer = GameState.Client.Renderer;
+            renderer.Draw(PlayState.Scene, delta, time);*/
+        }
 
         #endregion
 
         #region Event handlers
 
-        private void DeployFleet(Planet destinationPlanet, int count)
+		public void Viewport_MouseClick(ViewportControl viewport, MouseButtons button)
+		{
+			var scene = PlayState.Scene;
+
+			if (_viewport.HoveredPlanet != null)
+			{
+				if (button == MouseButtons.Left)
+				{
+					if (scene.SelectedPlanet != _viewport.HoveredPlanet.Id)
+					{
+						SelectPlanet(_viewport.HoveredPlanet);
+					}
+					else
+					{
+						DeployFleet(_viewport.HoveredPlanet);
+					}
+				}
+				else if (button == MouseButtons.Right)
+				{
+					if (scene.SelectedPlanet != null)
+					{
+						UndeployFleet(_viewport.HoveredPlanet);
+					}
+				}
+			}
+			else if (_viewport.HoveredLink != null)
+			{
+				if (button == MouseButtons.Left)
+				{
+					MoveFleet(_viewport.HoveredLink);
+				}
+				else if (button == MouseButtons.Right)
+				{
+					RevertMoveFleet(_viewport.HoveredLink);
+				}
+			}
+		}
+		private void SelectPlanet(Planet planet)
+		{
+			PlayState.SelectPlanet(planet);
+		}
+        private void DeployFleet(Planet destinationPlanet)
         {
-			PlayState.DeployFleet(destinationPlanet, count);
+			PlayState.DeployFleet(destinationPlanet);
         }
-        private void UndeployFleet(Planet destinationPlanet, int count)
+        private void UndeployFleet(Planet destinationPlanet)
         {
-			PlayState.UndeployFleet(destinationPlanet, count);
+			PlayState.UndeployFleet(destinationPlanet);
         }
-        private void PlanetSelected(Planet planetSelected)
+        private void HoverPlanet(Planet planet)
         {
-			PlayState.SelectPlanet(planetSelected);
-        }
-        private void OnHoverPlanet(Planet planetSelected)
-        {
-			PlayState.OnHoverPlanet(planetSelected);
+			PlayState.OnHoverPlanet(planet);
         }
         private void UnhoverPlanets()
         {
 			PlayState.UnhoverPlanets();
         }
-		private void OnHoverLink(PlanetLink linkSelected)
+		private void HoverLink(PlanetLink link)
 		{
-			PlayState.OnHoverLink(linkSelected);
+			PlayState.OnHoverLink(link);
 		}
 		private void UnhoverLinks()
 		{
 			PlayState.UnhoverLinks();
 		}
-		private void RevertMoveFleet(PlanetLink linkSelected, int count)
+
+		private void RevertMoveFleet(PlanetLink linkSelected)
 		{
-            PlayState.RevertMoveFleet(linkSelected, count);
+            PlayState.RevertMoveFleet(linkSelected);
 		}
-        private void MoveFleet(PlanetLink linkSelected, int count)
+        private void MoveFleet(PlanetLink linkSelected)
         {
-            PlayState.MoveFleet(linkSelected, count);
+            PlayState.MoveFleet(linkSelected);
         }
 
         #endregion
@@ -203,9 +146,14 @@
 			: base(state)
         {
             IsTransparent = false;
-            InputReceiver = new GameInputReceiver(this);
+			InputReceiver = new NuclexScreenInputReceiver(screen, false);//new GameInputReceiver(this);
             PlayState = state;
 			State = ViewState.Loaded;
+
+			_viewport = new ViewportControl(PlayState.Client.Renderer);
+			_viewport.Bounds = new UniRectangle(new UniScalar(0, 0), new UniScalar(0, 0), new UniScalar(1, 0), new UniScalar(1, 0));
+			_viewport.MouseClick += Viewport_MouseClick;
+			this.screen.Desktop.Children.Add(_viewport);
         }
     }
 }
