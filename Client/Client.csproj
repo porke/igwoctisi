@@ -157,7 +157,7 @@
     <Compile Include="Renderer\MapVisual.cs" />
     <Compile Include="Renderer\PlanetVisual.cs" />
     <Compile Include="Renderer\SceneVisual.cs" />
-    <Compile Include="Renderer\SimpleCamera.cs" />
+    <Compile Include="Model\SimpleCamera.cs" />
     <Compile Include="Renderer\Spaceship.cs" />
     <Compile Include="Renderer\Vertex.cs" />
     <Compile Include="Renderer\XnaRenderer.cs" />

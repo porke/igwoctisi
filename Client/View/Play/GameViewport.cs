@@ -31,6 +31,9 @@
 
         #endregion
 
+
+
+		/*
         #region Nested class: GameInputReceiver
 
         private class GameInputReceiver : Client.Input.NullInputReceiver
@@ -152,6 +155,9 @@
         }        
 
         #endregion
+		*/
+
+
 
         #region Event handlers
 

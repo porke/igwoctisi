@@ -5,12 +5,10 @@
 
     public interface IRenderer
     {
-        SimpleCamera GetCamera();
-
         void Initialize(GameClient client);
         void Release();
-        void Draw(Scene scene, double delta, double time);
-        bool RaySphereIntersection(Vector2 screenPosition, Vector3 position, float radius);
-		bool RayLinkIntersection(Vector2 screenPosition, Vector3 linkSource, Vector3 linkTarget);
+        void Draw(SimpleCamera camera, Scene scene, double delta, double time);
+        bool RaySphereIntersection(SimpleCamera camera, Vector2 screenPosition, Vector3 position, float radius);
+		bool RayLinkIntersection(SimpleCamera camera, Vector2 screenPosition, Vector3 linkSource, Vector3 linkTarget);
     }
 }
