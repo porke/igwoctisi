@@ -3,6 +3,7 @@
 	using System.Collections.Generic;
     using System.Linq;
 	using System.Runtime.Serialization;
+	using System;
 
     /// <summary>
     /// Data being received from server in RoundStart packet.
@@ -17,7 +18,7 @@
         public List<PlanetState> Map { get; set; }
 
         [DataMember]
-        public List<int> Tech { get; set; }
+        public TechState Tech { get; set; }
 
         [DataMember]
         public int FleetsToDeploy { get; set; }
@@ -40,6 +41,22 @@
             [DataMember]
             public int Fleets { get; set; }
         }
+
+		[DataContract]
+		public class TechState
+		{
+			[DataMember]
+			public int Economic { get; set; }
+
+			[DataMember]
+			public int Offensive { get; set; }
+
+			[DataMember]
+			public int Defensive { get; set; }
+
+			[DataMember]
+			public int TechPoints { get; set; }
+		}
 
         /// <summary>
         /// Gets owner of the planet.

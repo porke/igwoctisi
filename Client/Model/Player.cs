@@ -1,10 +1,8 @@
 ﻿namespace Client.Model
 {
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using Microsoft.Xna.Framework;
-	using Client.Common;
 	using System;
+	using System.Collections.Generic;
+	using System.Runtime.Serialization;
     
     [DataContract]
     public class Player
@@ -29,7 +27,7 @@
 
         public List<UserCommand> Commands { get; private set; }
         public PlayerColor Color { get; set; }
-		public Dictionary<TechType, Technology> Technologies { get; private set; }
+		public Dictionary<TechnologyType, Technology> Technologies { get; private set; }
 
         #endregion
 
@@ -44,12 +42,15 @@
             Username = username;
             Color = color;
             Commands = new List<UserCommand>();
-			Technologies = new Dictionary<TechType, Technology>();
+			Technologies = new Dictionary<TechnologyType, Technology>();
 
-			var techs = (TechType[]) Enum.GetValues(typeof(TechType));
+			var techs = (TechnologyType[]) Enum.GetValues(typeof(TechnologyType));
 			foreach (var item in techs)
 			{
-				Technologies.Add(item, new Technology(item));
+				if (item != TechnologyType.None)
+				{
+					Technologies.Add(item, new Technology(item));
+				}
 			}
         }
 
@@ -59,7 +60,7 @@
         {
             Commands.Clear();
         }
-		public bool CanRaiseTech(TechType type, ref string reason)
+		public bool CanRaiseTech(TechnologyType type, ref string reason)
 		{
 			if (Technologies[type].IsMaxLevel)
 			{
@@ -71,7 +72,7 @@
 				reason = "Cannot raise tech: not enough technology points.";
 				return false;
 			}
-			if (Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Tech && cmd.TechImproved == type) != null)
+			if (Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Tech && cmd.TechType == type) != null)
 			{
 				reason = "Cannot raise tech: tech can be raised only once per round.";
 				return false;
@@ -79,7 +80,7 @@
 
 			return true;
 		}
-		public void RaiseTech(TechType type)
+		public void RaiseTech(TechnologyType type)
 		{			
 			TechPoints -= Technologies[type].NextLevelCost;
 			Technologies[type].CurrentLevel++;

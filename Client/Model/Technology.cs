@@ -1,15 +1,16 @@
 ﻿namespace Client.Model
 {
-	public enum TechType
+	public enum TechnologyType
 	{
-		Attack,
-		Defense,
-		Economy
+		None,
+		Offensive,
+		Defensive,
+		Economic
 	}
 
 	public class Technology
 	{
-		public TechType TechnologyType { get; private set; }		
+		public TechnologyType TechnologyType { get; private set; }		
 		public int CurrentLevel { get; set; }
 		public int NextLevelCost 
 		{
@@ -40,7 +41,7 @@
 			}
 		}
 
-		public Technology(TechType type)
+		public Technology(TechnologyType type)
 		{
 			TechnologyType = type;
 			CurrentLevel = 0;			

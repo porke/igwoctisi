@@ -185,7 +185,7 @@
 		{
 			Client.Network.BeginSendChatMessage(message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
 		}
-		internal void RaiseTechnology(TechType techType)
+		internal void RaiseTechnology(TechnologyType techType)
 		{
 			string reason = string.Empty;
 			if (_clientPlayer.CanRaiseTech(techType, ref reason))
@@ -279,7 +279,7 @@
 						_gameHud.UpdateTimer((int)_secondsLeft);
 
 						// Update world info.
-						_clientPlayer.DeployableFleets += roundInfo.FleetsToDeploy;						
+						_clientPlayer.DeployableFleets += roundInfo.FleetsToDeploy;
 
 						// Updates planet owners and fleet states
 						foreach (var planetUpdateData in roundInfo.Map)
@@ -307,12 +307,10 @@
 						}
 
 						// Update technology data
-						// TODO: currently roundInfo.Tech is empty, don't really know what's supposed to be in there so for the time being, it's todo
-						//var techs = (TechType[]) Enum.GetValues(typeof(TechType));
-						//for(int techIndex = 0; techIndex < techs.Length; ++techIndex)
-						//{
-						//    _clientPlayer.Technologies[techs[techIndex]].CurrentLevel = roundInfo.Tech[techIndex];
-						//}
+						_clientPlayer.Technologies[TechnologyType.Economic].CurrentLevel = roundInfo.Tech.Economic;
+						_clientPlayer.Technologies[TechnologyType.Defensive].CurrentLevel = roundInfo.Tech.Defensive;
+						_clientPlayer.Technologies[TechnologyType.Offensive].CurrentLevel = roundInfo.Tech.Offensive;
+						_clientPlayer.TechPoints = roundInfo.Tech.TechPoints;
 
 						_gameHud.UpdateResourceData(_clientPlayer);
 						_loadedMap.UpdatePlanetShowDetails(_clientPlayer);

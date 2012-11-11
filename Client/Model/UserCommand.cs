@@ -25,7 +25,8 @@
         [DataMember]
         public CommandType Type { get; set; }
 
-        public TechType TechImproved { get; set; }
+		[DataMember]
+        public TechnologyType TechType { get; set; }
 
 		private Player _issuer;
 
@@ -37,10 +38,11 @@
         /// </summary>
         public UserCommand()
         {
+
         }
 
         /// <summary>
-        /// Creates Move Command or Attack Command if Source and Target owner are not equal.
+        /// Creates Move Command or Offensive Command if Source and Target owner are not equal.
         /// </summary>
         public UserCommand(Planet sourcePlanet, Planet targetPlanet)
         {
@@ -70,10 +72,10 @@
         /// <summary>
         /// Creates Tech Command.
         /// </summary>
-        public UserCommand(TechType improvedTech, Player issuer)
+        public UserCommand(TechnologyType improvedTech, Player issuer)
         {
             Type = CommandType.Tech;
-            TechImproved = improvedTech;
+            TechType = improvedTech;
 			_issuer = issuer;
         }
 
@@ -102,8 +104,8 @@
             }
 			else if (Type == CommandType.Tech)
 			{
-				_issuer.TechPoints += _issuer.Technologies[TechImproved].CurrentLevelCost;
-				_issuer.Technologies[TechImproved].CurrentLevel--;
+				_issuer.TechPoints += _issuer.Technologies[TechType].CurrentLevelCost;
+				_issuer.Technologies[TechType].CurrentLevel--;
 			}
         }
     }

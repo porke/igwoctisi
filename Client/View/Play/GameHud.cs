@@ -136,7 +136,7 @@
 			var raiseAttackTech = new ButtonControl()
 			{
 				Text = "+",
-				Name = TechType.Attack.ToString(),
+				Name = TechnologyType.Offensive.ToString(),
 				Bounds = new UniRectangle(new UniScalar(0.02f, 0), new UniScalar(0.32f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
 			};
 			raiseAttackTech.Pressed += RaiseTech_Pressed;
@@ -144,7 +144,7 @@
 			var raiseDefenseTech = new ButtonControl()
 			{
 				Text = "+",
-				Name = TechType.Defense.ToString(),
+				Name = TechnologyType.Defensive.ToString(),
 				Bounds = new UniRectangle(new UniScalar(0.08f, 0), new UniScalar(0.32f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
 			};
 			raiseDefenseTech.Pressed += RaiseTech_Pressed;
@@ -152,7 +152,7 @@
 			var raiseEconomyTech = new ButtonControl()
 			{
 				Text = "+",
-				Name = TechType.Economy.ToString(),
+				Name = TechnologyType.Economic.ToString(),
 				Bounds = new UniRectangle(new UniScalar(0.14f, 0), new UniScalar(0.32f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
 			};
 			raiseEconomyTech.Pressed += RaiseTech_Pressed;
@@ -282,7 +282,7 @@
 		private void RaiseTech_Pressed(object sender, EventArgs e)
 		{
 			var senderName = (sender as Control).Name;			
-			var techType = (TechType) Enum.Parse(typeof(TechType), senderName);
+			var techType = (TechnologyType) Enum.Parse(typeof(TechnologyType), senderName);
 			PlayState.RaiseTechnology(techType);
 		}
 
@@ -302,9 +302,9 @@
             _fleetCountValue.Text = Convert.ToString(player.DeployableFleets);
             _fleetIncomeValue.Text = Convert.ToString(player.FleetIncomePerTurn);
 			_techPointsValue.Text = Convert.ToString(player.TechPoints);
-			_techAttackValue.Text = string.Format("Att: {0}", player.Technologies[TechType.Attack].CurrentLevel);
-			_techDefenseValue.Text = string.Format("Def: {0}", player.Technologies[TechType.Defense].CurrentLevel);
-			_techEconomyValue.Text = string.Format("Eco: {0}", player.Technologies[TechType.Economy].CurrentLevel);
+			_techAttackValue.Text = string.Format("Att: {0}", player.Technologies[TechnologyType.Offensive].CurrentLevel);
+			_techDefenseValue.Text = string.Format("Def: {0}", player.Technologies[TechnologyType.Defensive].CurrentLevel);
+			_techEconomyValue.Text = string.Format("Eco: {0}", player.Technologies[TechnologyType.Economic].CurrentLevel);
         }
 
         public void UpdateTimer(int secondsLeft)
@@ -339,7 +339,7 @@
                 }
 				else if (cmd.Type == UserCommand.CommandType.Tech)
 				{
-					_commandList.AddItem(string.Format("T: Research {0} tech", cmd.TechImproved));
+					_commandList.AddItem(string.Format("T: Research {0} tech", cmd.TechType));
 				}
             }
 
