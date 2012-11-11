@@ -15,7 +15,6 @@
 
 		public int SelectedPlanet { get; private set; }
 		public Map Map { get; private set; }
-		public SimpleCamera Camera { get; private set; }
 
 		private List<Player> _players;
 
@@ -43,7 +42,7 @@
 		{
 			foreach (var item in Map.Planets)
 			{
-				if (renderer.RaySphereIntersection(clickPosition, new Vector3(item.X, item.Y, item.Z), item.Radius))
+				if (renderer.RaySphereIntersection(Map.Camera, clickPosition, new Vector3(item.X, item.Y, item.Z), item.Radius))
 				{
 					return item;
 				}
@@ -61,7 +60,7 @@
 				var sourcePos = new Vector3(sourcePlanet.X, sourcePlanet.Y, sourcePlanet.Z);
 				var targetPos = new Vector3(targetPlanet.X, targetPlanet.Y, targetPlanet.Z);
 
-				if (renderer.RayLinkIntersection(clickPosition, sourcePos, targetPos))
+				if (renderer.RayLinkIntersection(Map.Camera, clickPosition, sourcePos, targetPos))
 				{
 					return link;
 				}

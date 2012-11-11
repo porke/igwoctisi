@@ -14,7 +14,6 @@ namespace Client.Input.Controls
 
 		public IRenderer Renderer { get; set; }
 		public Scene Scene { get; set; }
-		public SimpleCamera Camera { get; set; }
 
 		public ViewportControl(IRenderer renderer)
 		{
@@ -22,7 +21,7 @@ namespace Client.Input.Controls
 		}
 		public void Draw(double delta, double time)
 		{
-			Renderer.Draw(Scene, delta, time);
+			Renderer.Draw(Scene.Map.Camera, Scene, delta, time);
 		}
 	}
 }

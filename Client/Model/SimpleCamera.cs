@@ -1,4 +1,4 @@
-﻿namespace Client.Renderer
+﻿namespace Client.Model
 {
     using Client.Common.AnimationSystem;
     using Microsoft.Xna.Framework;
@@ -11,6 +11,19 @@
 		public float X { get; set; }
 		public float Y { get; set; }
 		public float Z { get; set; }
+		public Vector3 Position
+		{
+			get { return new Vector3(X, Y, Z); }
+			set
+			{
+				X = value.X;
+				Y = value.Y;
+				Z = value.Z;
+			}
+		}
+
+		public Vector3 Min { get; set; }
+		public Vector3 Max { get; set; }
 
 		public float RotationX { get; set; }
 		public float RotationY { get; set; }
@@ -30,20 +43,18 @@
 		}
         private Matrix _projection;
         
-        public SimpleCamera(GraphicsDevice graphicsDevice)
+        public SimpleCamera(float aspectRatio)
         {
             _world = Matrix.Identity;
 			this.SetPosition(Vector3.Backward * -1000);
 			LookAt = Vector3.Zero;
-            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), graphicsDevice.Viewport.AspectRatio, 1, 10000);
+            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), aspectRatio, 1, 10000);
         }
-
         public void Update(double delta)
         {
 			this.SetPosition(this.GetPosition() + (float)delta * TranslationDirection * 100);
 			LookAt += (float)delta * TranslationDirection * 100;
         }
-
         public void ApplyToEffect(Effect effect, Matrix localWorld)
         {
             if (effect is BasicEffect)
@@ -60,7 +71,6 @@
                 effect.Parameters["Projection"].SetValue(_projection);
             }
         }
-
         public Ray GetRay(Viewport viewport, Vector3 pointOnScreen)
         {
             var pointNear = new Vector3(pointOnScreen.X, pointOnScreen.Y, 0);
