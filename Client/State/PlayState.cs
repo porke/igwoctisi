@@ -415,6 +415,7 @@
 		public override void Update(double delta, double time)
 		{
 			base.Update(delta, time);
+			Scene.Update(delta, time);
 
 			// Update timer
 			if (_secondsLeft > 0)
