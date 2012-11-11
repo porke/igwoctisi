@@ -1,29 +1,19 @@
-﻿namespace Client.Model
-{
-    using Client.Common.AnimationSystem;
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
+﻿
+using Client.Common.AnimationSystem;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Client.Renderer;
 
-    public class SimpleCamera : ITransformable
-    {
-        private const float Velocity = 250.0f;
+
+namespace Client.Model
+{
+    public class SimpleCamera : ICamera
+	{
+		#region ITransformable members
 
 		public float X { get; set; }
 		public float Y { get; set; }
 		public float Z { get; set; }
-		public Vector3 Position
-		{
-			get { return new Vector3(X, Y, Z); }
-			set
-			{
-				X = value.X;
-				Y = value.Y;
-				Z = value.Z;
-			}
-		}
-
-		public Vector3 Min { get; set; }
-		public Vector3 Max { get; set; }
 
 		public float RotationX { get; set; }
 		public float RotationY { get; set; }
@@ -33,56 +23,51 @@
 		public float ScaleY { get; set; }
 		public float ScaleZ { get; set; }
 
-        public Vector3 TranslationDirection { get; set; }
-		public Vector3 LookAt { get; set; }
+		#endregion
 
-        private Matrix _world;
-		private Matrix _view
+		#region ICamera members
+
+		/// in this case it is also LookAt vector
+		public Vector3 Forward { get; protected set; }
+		public Vector3 Up
 		{
-			get { return Matrix.CreateLookAt(this.GetPosition(), LookAt, Vector3.Up); }
+			get { return Vector3.Up; }
 		}
-        private Matrix _projection;
+		public float AspectRatio { get; set; }
+		public Matrix Projection
+		{
+			get { return Matrix.CreatePerspectiveFieldOfView(FieldOfView, AspectRatio, NearPlane, FarPlane); }
+		}
+
+		public Ray GetRay(Viewport viewport, Vector3 pointOnScreen)
+		{
+			var pointNear = new Vector3(pointOnScreen.X, pointOnScreen.Y, 0);
+			var pointFar = new Vector3(pointOnScreen.X, pointOnScreen.Y, 1);
+			var pointNearUnproj = viewport.Unproject(pointNear, Projection, this.GetView(), Matrix.Identity);
+			var pointFarUnproj = viewport.Unproject(pointFar, Projection, this.GetView(), Matrix.Identity);
+			var dir = Vector3.Normalize(pointFarUnproj - pointNearUnproj);
+			return new Ray(pointNearUnproj, dir);
+		}
+
+		#endregion
+
+		public float FieldOfView { get; set; }
+		public float NearPlane { get; set; }
+		public float FarPlane { get; set; }
+		public Vector3 Min { get; set; }
+		public Vector3 Max { get; set; }
         
-        public SimpleCamera(float aspectRatio)
+        public SimpleCamera()
         {
-            _world = Matrix.Identity;
 			this.SetPosition(Vector3.Backward * -1000);
-			LookAt = Vector3.Zero;
-            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), aspectRatio, 1, 10000);
+			Forward = Vector3.Zero;
+			FieldOfView = MathHelper.ToRadians(45);
+			AspectRatio = 4.0f / 3.0f;
+			NearPlane = 1;
+			FarPlane = 10000;
         }
-        public void Update(double delta)
+        public void Update(double delta, double time)
         {
-			this.SetPosition(this.GetPosition() + (float)delta * TranslationDirection * 100);
-			LookAt += (float)delta * TranslationDirection * 100;
         }
-        public void ApplyToEffect(Effect effect, Matrix localWorld)
-        {
-            if (effect is BasicEffect)
-            {
-                var basicEffect = effect as BasicEffect;
-				basicEffect.World = localWorld * _world;
-                basicEffect.View = _view;
-                basicEffect.Projection = _projection;
-            }
-            else
-            {
-				effect.Parameters["World"].SetValue(localWorld * _world);
-                effect.Parameters["View"].SetValue(_view);
-                effect.Parameters["Projection"].SetValue(_projection);
-            }
-        }
-        public Ray GetRay(Viewport viewport, Vector3 pointOnScreen)
-        {
-            var pointNear = new Vector3(pointOnScreen.X, pointOnScreen.Y, 0);
-            var pointFar = new Vector3(pointOnScreen.X, pointOnScreen.Y, 1);
-            var pointNearUnproj = viewport.Unproject(pointNear, _projection, _view, _world);
-            var pointFarUnproj = viewport.Unproject(pointFar, _projection, _view, _world);
-            var dir = Vector3.Normalize(pointFarUnproj - pointNearUnproj);
-            return new Ray(pointNearUnproj, dir);
-        }
-		public Vector3 Project(Viewport viewport, Vector3 worldVector)
-		{
-			return viewport.Project(worldVector, _projection, _view, _world);
-		}
     }
 }

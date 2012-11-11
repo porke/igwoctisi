@@ -10,8 +10,6 @@
 
 	public sealed class SceneVisual
 	{
-		public SimpleCamera Camera { get; set; }
-
 		private Scene Scene { get; set; }
 		private readonly AnimationManager AnimationManager;
 		private readonly List<Spaceship> _spaceships = new List<Spaceship>();
@@ -31,12 +29,12 @@
 
 		void Animation_Deploys(IList<Tuple<Planet, int, Action>> deploys)
 		{
-			this.AnimateDeploys(AnimationManager, Camera, deploys);
+			this.AnimateDeploys(AnimationManager, Scene.Map.Camera, deploys);
 		}
 
 		void Animation_MovesAndAttacks(IList<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>> movesAndAttacks)
 		{
-			this.AnimateMovesAndAttacks(movesAndAttacks, AnimationManager, Camera);
+			this.AnimateMovesAndAttacks(movesAndAttacks, AnimationManager, Scene.Map.Camera);
 		}
 
 		internal void AddSpaceship(Spaceship ship)
@@ -67,7 +65,7 @@
 				foreach (var ship in _spaceships)
 				{
 					if (ship.Visible)
-						ship.Draw(Camera, delta, time);
+						ship.Draw(Scene.Map.Camera, delta, time);
 					else
 						_spaceshipsToRemove.Add(ship);
 				}

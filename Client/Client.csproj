@@ -153,6 +153,7 @@
     <Compile Include="Network\INetwork.cs" />
     <Compile Include="Network\WsaNetwork.cs" />
     <Compile Include="Renderer\Controls\FlatViewportControlRenderer.cs" />
+    <Compile Include="Renderer\ICamera.cs" />
     <Compile Include="Renderer\IRenderer.cs" />
     <Compile Include="Renderer\MapVisual.cs" />
     <Compile Include="Renderer\PlanetVisual.cs" />

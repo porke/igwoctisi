@@ -30,26 +30,22 @@ namespace Client.Common.AnimationSystem
 						* Matrix.CreateScale(t.ScaleX, t.ScaleY, t.ScaleZ)
 						* Matrix.CreateTranslation(t.X, t.Y, t.Z);
 		}
-
 		public static void SetPosition(this ITransformable t, Vector3 position)
 		{
 			t.X = position.X;
 			t.Y = position.Y;
 			t.Z = position.Z;
 		}
-
 		public static Vector3 GetPosition(this ITransformable t)
 		{
 			return new Vector3(t.X, t.Y, t.Z);
 		}
-
 		public static void SetRotation(this ITransformable t, Vector3 rot)
 		{
 			t.RotationX = rot.X;
 			t.RotationY = rot.Y;
 			t.RotationZ = rot.Z;
 		}
-
 		public static void LookAt(this ITransformable t, Vector3 lookAt)
 		{
 			var dir = (lookAt - t.GetPosition());
@@ -111,7 +107,6 @@ namespace Client.Common.AnimationSystem
 				}
 			}
 		}
-
 		private static Matrix GetRotationMatrix(this Vector3 source, Vector3 target)
 		{
 			float dot = Vector3.Dot(source, target);

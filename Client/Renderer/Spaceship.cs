@@ -132,7 +132,9 @@
 				foreach (BasicEffect effect in mesh.Effects)
 				{
 					effect.EnableDefaultLighting();
-					camera.ApplyToEffect(effect, this.CalculateWorldTransform());
+					effect.World = this.CalculateWorldTransform();
+					effect.View = camera.GetView();
+					effect.Projection = camera.Projection;
 
 					//effect.Texture = this.Texture;
 

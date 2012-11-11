@@ -76,12 +76,12 @@
 
 		#region IRenderer members
 
-		public bool RaySphereIntersection(SimpleCamera camera, Vector2 screenPosition, Vector3 position, float radius)
+		public bool RaySphereIntersection(ICamera camera, Vector2 screenPosition, Vector3 position, float radius)
 		{
 			var ray = camera.GetRay(GraphicsDevice.Viewport, new Vector3(screenPosition, 0));
 			return ray.Intersects(new BoundingSphere(position, radius)) != null;
 		}
-		public bool RayLinkIntersection(SimpleCamera camera, Vector2 screenPosition, Vector3 linkSource, Vector3 linkTarget)
+		public bool RayLinkIntersection(ICamera camera, Vector2 screenPosition, Vector3 linkSource, Vector3 linkTarget)
 		{
 			var ray = camera.GetRay(GraphicsDevice.Viewport, new Vector3(screenPosition, 0));
 			return ray.Intersects(new BoundingSphere((linkSource + linkTarget) / 2.0f, LinkJointSize)) != null;
@@ -114,16 +114,12 @@
 		{
 			Client = null;
 		}
-		public void Draw(SimpleCamera camera, Scene scene, double delta, double time)
+		public void Draw(ICamera camera, Scene scene, double delta, double time)
 		{
 			GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer | ClearOptions.Stencil, Color.Black, 1, 0);
 
             // Turn depth buffer on (SpriteBatch may turn it off).
 			GraphicsDevice.DepthStencilState = DepthStencilState.Default; // new DepthStencilState() { DepthBufferEnable = true };
-
-            // Update current camera and pass it to the scene renderer
-			camera.Update(delta);
-			scene.Visual.Camera = camera;
 
 			var map = scene.Map;
 
@@ -133,7 +129,9 @@
 
 			#region Links
 
-			camera.ApplyToEffect(_fxLinks, Matrix.Identity);
+			_fxLinks.Parameters["World"].SetValue(Matrix.Identity);
+			_fxLinks.Parameters["View"].SetValue(camera.GetView());
+			_fxLinks.Parameters["Projection"].SetValue(camera.Projection);
 
 			if (map.Visual == null)
 			{
@@ -153,14 +151,15 @@
 			#region Systems
 
 			_fxLinks.Parameters["Ambient"].SetValue(0.0f);
+			_fxLinks.Parameters["View"].SetValue(camera.GetView());
+			_fxLinks.Parameters["Projection"].SetValue(camera.Projection);
 			foreach (var planetarySystem in map.PlanetarySystems)
 			{
 				foreach (var point in planetarySystem.Bounds)
 				{
 					var world = Matrix.CreateScale(5) *
 						Matrix.CreateTranslation(point.X, point.Y, point.Z);
-					camera.ApplyToEffect(_fxLinks, world);
-
+					_fxLinks.Parameters["World"].SetValue(world);
 
 					foreach (var pass in _fxLinks.CurrentTechnique.Passes)
 					{
@@ -198,7 +197,9 @@
 							Matrix.CreateFromYawPitchRoll(visual.Yaw, visual.Pitch, visual.Roll) *
 							Matrix.CreateTranslation(planet.X, planet.Y, planet.Z);
 
-				camera.ApplyToEffect(_fxPlanet, localWorld);                
+				_fxPlanet.Parameters["World"].SetValue(localWorld);
+				_fxPlanet.Parameters["View"].SetValue(camera.GetView());
+				_fxPlanet.Parameters["Projection"].SetValue(camera.Projection);
 				foreach (var pass in _fxPlanet.CurrentTechnique.Passes)
 				{
 					pass.Apply();
@@ -219,7 +220,9 @@
 							(sourcePlanet.Y + targetPlanet.Y)/2.0f,
 							(sourcePlanet.Z + targetPlanet.Z)/2.0f);
 
-						camera.ApplyToEffect(_fxLinks, linkWorld);
+						_fxLinks.Parameters["World"].SetValue(linkWorld);
+						_fxLinks.Parameters["View"].SetValue(camera.GetView());
+						_fxLinks.Parameters["Projection"].SetValue(camera.Projection);
 						_fxLinks.Parameters["Ambient"].SetValue(scene.HoveredLink == link ? HoverAmbient : 0.0f);
 						foreach (var pass in _fxLinks.CurrentTechnique.Passes)
 						{
