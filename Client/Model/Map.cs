@@ -10,6 +10,7 @@
     using Client.Renderer;
 	using Microsoft.Xna.Framework;
 	using Client.Common;
+	using Client.Common.AnimationSystem;
 
     [DataContract]
     public class Map
@@ -149,11 +150,10 @@
 
 				// Camera
 				reader.ReadToFollowing(CameraElement);
-				Camera = new SimpleCamera(4.0f/3.0f);
+				Camera = new SimpleCamera();
 				Camera.Min = XnaExtensions.ParseVector3(reader.GetAttribute(MinAttribute));
 				Camera.Max = XnaExtensions.ParseVector3(reader.GetAttribute(MaxAttribute));
-				Camera.Position = (Camera.Min + Camera.Max) / 2.0f;
-
+				Camera.SetPosition((Camera.Min + Camera.Max) / 2.0f);
             }
 
 			PlanetarySystems[0].Color = Color.Blue;
@@ -174,7 +174,10 @@
             PlayerStartingData = new List<StartingData>();
             Colors = new List<PlayerColor>();
         }
-
+		public void Update(double delta, double time)
+		{
+			Camera.Update(delta, time);
+		}
         public Planet GetPlanetById(int planetId)
         {
             return Planets.Find(planet => planet.Id == planetId);
@@ -183,7 +186,6 @@
 		{
 			return PlanetarySystems.FirstOrDefault(x => x.Planets.Contains(planetId));
 		}
-
         /// <summary>
         /// The function determines which planets should have details visible, based on their owner
         /// and proximity to the client players planets (that is only neighbouring ones).
@@ -227,7 +229,6 @@
                 }
             }
         }
-
         public PlayerColor GetColorById(int colorId)
         {
             return Colors.First(c => c.ColorId == colorId);

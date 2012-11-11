@@ -19,6 +19,12 @@
 
 		#region IView members
 
+		public override void Update(double delta, double time)
+		{
+			base.Update(delta, time);
+
+			_viewport.Update(delta, time);
+		}
 		public override void Draw(double delta, double time)
         {
 			_viewport.Scene = PlayState.Scene;

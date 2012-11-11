@@ -38,6 +38,10 @@
 			HoveredPlanet = SelectedPlanet = 0;
 			HoveredLink = null;
 		}
+		public void Update(double delta, double time)
+		{
+			Map.Update(delta, time);
+		}
 		public Planet PickPlanet(Vector2 clickPosition, IRenderer renderer)
 		{
 			foreach (var item in Map.Planets)
@@ -67,7 +71,7 @@
 			}
 			return null;
 		}
-		internal void AnimateChanges(IList<SimulationResult> simResults, Action endCallback)
+		public void AnimateChanges(IList<SimulationResult> simResults, Action endCallback)
 		{
 			CountdownEvent deployAnimsCounter = null;
 			CountdownEvent moveAndAttackAnimsCounter = null;
@@ -119,7 +123,6 @@
 				endCallback.Invoke();
 			}));
 		}
-
 		public void Initialize(NewRoundInfo roundInfo, List<Player> players)
 		{
 			_players = players;
