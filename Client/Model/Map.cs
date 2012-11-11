@@ -9,6 +9,8 @@
     using System.Xml.Serialization;
     using Client.Renderer;
 	using Microsoft.Xna.Framework;
+	using Client.Common;
+	using Client.Common.AnimationSystem;
 
     [DataContract]
     public class Map
@@ -31,6 +33,9 @@
         [DataMember]
         public List<PlayerColor> Colors { get; set; }
 
+		[DataMember]
+		public SimpleCamera Camera { get; set; }
+
         public MapVisual Visual { get; set; }
 
         public List<Planet> StartingPositions { get { return PlayerStartingData.Select(data => GetPlanetById(data.PlanetId)).ToList(); } }
@@ -45,6 +50,8 @@
         private const string ColorIdAttribute = "ColorId";
         private const string ValueAttribute = "Value";
         private const string IdAttribute = "Id";
+		private const string MinAttribute = "Min";
+		private const string MaxAttribute = "Max";
 
         // Element names
         private const string MapElement = "Map";
@@ -55,6 +62,7 @@
         private const string StartingDataElement = "StartingData";
         private const string ColorsElement = "Colors";
         private const string ColorElement = "Color";
+		private const string CameraElement = "Camera";
 
         /// <summary>
         /// Reads localWorld map from XML file (no extension required). 
@@ -139,6 +147,13 @@
                         Colors.Add(new PlayerColor(colorId, value));
                     }
                 } while (reader.ReadToNextSibling(ColorElement));
+
+				// Camera
+				reader.ReadToFollowing(CameraElement);
+				Camera = new SimpleCamera();
+				Camera.Min = XnaExtensions.ParseVector3(reader.GetAttribute(MinAttribute));
+				Camera.Max = XnaExtensions.ParseVector3(reader.GetAttribute(MaxAttribute));
+				Camera.SetPosition((Camera.Min + Camera.Max) / 2.0f);
             }
 
 			PlanetarySystems[0].Color = Color.Blue;
@@ -159,7 +174,10 @@
             PlayerStartingData = new List<StartingData>();
             Colors = new List<PlayerColor>();
         }
-
+		public void Update(double delta, double time)
+		{
+			Camera.Update(delta, time);
+		}
         public Planet GetPlanetById(int planetId)
         {
             return Planets.Find(planet => planet.Id == planetId);
@@ -168,7 +186,6 @@
 		{
 			return PlanetarySystems.FirstOrDefault(x => x.Planets.Contains(planetId));
 		}
-
         /// <summary>
         /// The function determines which planets should have details visible, based on their owner
         /// and proximity to the client players planets (that is only neighbouring ones).
@@ -212,7 +229,6 @@
                 }
             }
         }
-
         public PlayerColor GetColorById(int colorId)
         {
             return Colors.First(c => c.ColorId == colorId);

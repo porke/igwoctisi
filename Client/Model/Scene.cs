@@ -14,7 +14,7 @@
 		public SceneVisual Visual { get; set; }
 
 		public int SelectedPlanet { get; private set; }
-		public Map Map { get; private set; }		
+		public Map Map { get; private set; }
 
 		private List<Player> _players;
 
@@ -38,11 +38,15 @@
 			HoveredPlanet = SelectedPlanet = 0;
 			HoveredLink = null;
 		}
+		public void Update(double delta, double time)
+		{
+			Map.Update(delta, time);
+		}
 		public Planet PickPlanet(Vector2 clickPosition, IRenderer renderer)
 		{
 			foreach (var item in Map.Planets)
 			{
-				if (renderer.RaySphereIntersection(clickPosition, new Vector3(item.X, item.Y, item.Z), item.Radius))
+				if (renderer.RaySphereIntersection(Map.Camera, clickPosition, new Vector3(item.X, item.Y, item.Z), item.Radius))
 				{
 					return item;
 				}
@@ -60,14 +64,14 @@
 				var sourcePos = new Vector3(sourcePlanet.X, sourcePlanet.Y, sourcePlanet.Z);
 				var targetPos = new Vector3(targetPlanet.X, targetPlanet.Y, targetPlanet.Z);
 
-				if (renderer.RayLinkIntersection(clickPosition, sourcePos, targetPos))
+				if (renderer.RayLinkIntersection(Map.Camera, clickPosition, sourcePos, targetPos))
 				{
 					return link;
 				}
 			}
 			return null;
 		}
-		internal void AnimateChanges(IList<SimulationResult> simResults, Action endCallback)
+		public void AnimateChanges(IList<SimulationResult> simResults, Action endCallback)
 		{
 			CountdownEvent deployAnimsCounter = null;
 			CountdownEvent moveAndAttackAnimsCounter = null;
@@ -119,7 +123,6 @@
 				endCallback.Invoke();
 			}));
 		}
-
 		public void Initialize(NewRoundInfo roundInfo, List<Player> players)
 		{
 			_players = players;
