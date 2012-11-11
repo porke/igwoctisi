@@ -1,0 +1,12 @@
+syntax: glob
+Client\obj*
+Client/bin/*
+Content/obj/*
+*.suo
+Client/*.cachefile
+Client.Tests/bin*
+Client.Tests/obj*
+TestResults
+_ReSharper.*
+*.user
+Content/Textures/Thumbs.db
