@@ -104,7 +104,6 @@
 
         public MessageBox(GameState gameState, MessageBoxButtons buttons) : base(gameState)
         {
-            screen = new Screen(800, 600);
             InputReceiver = new NuclexScreenInputReceiver(screen, true);
 
             CreateChildControls();
