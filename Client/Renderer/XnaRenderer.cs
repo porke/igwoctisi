@@ -196,49 +196,32 @@
 				planet.Visual.Draw(GraphicsDevice, view, projection, time, ambient, glow);
 			}
 
-			/*foreach (var planet in map.Planets)
+			var selectedPlanet = scene.Map.GetPlanetById(scene.SelectedPlanet);
+			if (selectedPlanet != null)
 			{
-				if (planet.Visual == null)
+				foreach (var link in map.Links.Where(x => x.SourcePlanet == selectedPlanet.Id || x.TargetPlanet == selectedPlanet.Id))
 				{
-					InitializePlanetVisual(planet);
-				}
-				var visual = planet.Visual;
+					var sourcePlanet = map.GetPlanetById(link.SourcePlanet);
+					var targetPlanet = map.GetPlanetById(link.TargetPlanet);
 
-				PlanetarySystem planetarySystem = scene.Map.GetSystemByPlanetid(planet.Id);
+					var linkWorld = Matrix.CreateScale(LinkJointSize) *
+						Matrix.CreateTranslation(
+						(sourcePlanet.X + targetPlanet.X) / 2.0f,
+						(sourcePlanet.Y + targetPlanet.Y) / 2.0f,
+						(sourcePlanet.Z + targetPlanet.Z) / 2.0f);
 
-				foreach (var pass in _fxPlanet.CurrentTechnique.Passes)
-				{
-					pass.Apply();
-					GraphicsDevice.SetVertexBuffer(_sphereVB);
-					GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
-				}
-
-				if (scene.SelectedPlanet == planet.Id)
-				{
-					foreach (var link in map.Links.Where(x => x.SourcePlanet == planet.Id || x.TargetPlanet == planet.Id))
+					_fxLinks.Parameters["World"].SetValue(linkWorld);
+					_fxLinks.Parameters["View"].SetValue(camera.GetView());
+					_fxLinks.Parameters["Projection"].SetValue(camera.Projection);
+					_fxLinks.Parameters["Ambient"].SetValue(scene.HoveredLink == link ? HoverAmbient : 0.0f);
+					foreach (var pass in _fxLinks.CurrentTechnique.Passes)
 					{
-						var sourcePlanet = map.GetPlanetById(link.SourcePlanet);
-						var targetPlanet = map.GetPlanetById(link.TargetPlanet);
-
-						var linkWorld = Matrix.CreateScale(LinkJointSize) *
-							Matrix.CreateTranslation(
-							(sourcePlanet.X + targetPlanet.X)/2.0f,
-							(sourcePlanet.Y + targetPlanet.Y)/2.0f,
-							(sourcePlanet.Z + targetPlanet.Z)/2.0f);
-
-						_fxLinks.Parameters["World"].SetValue(linkWorld);
-						_fxLinks.Parameters["View"].SetValue(camera.GetView());
-						_fxLinks.Parameters["Projection"].SetValue(camera.Projection);
-						_fxLinks.Parameters["Ambient"].SetValue(scene.HoveredLink == link ? HoverAmbient : 0.0f);
-						foreach (var pass in _fxLinks.CurrentTechnique.Passes)
-						{
-							pass.Apply();
-							GraphicsDevice.SetVertexBuffer(_sphereVB);
-							GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
-						}
+						pass.Apply();
+						GraphicsDevice.SetVertexBuffer(_sphereVB);
+						GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
 					}
 				}
-			}*/
+			}
 			
 			#endregion
 
