@@ -33,7 +33,6 @@
         [DataMember]
         public List<PlayerColor> Colors { get; set; }
 
-		[DataMember]
 		public SimpleCamera Camera { get; set; }
 
         public MapVisual Visual { get; set; }
