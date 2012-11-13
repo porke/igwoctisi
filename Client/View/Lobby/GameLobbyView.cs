@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using Client.Input.Controls;
+    using Client.View.Controls;
     using Client.Model;
     using Common;
     using Input;
