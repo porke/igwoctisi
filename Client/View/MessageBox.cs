@@ -2,7 +2,7 @@
 {
     using System;
     using System.Linq;
-    using Client.Input.Controls;
+	using Client.View.Controls;
     using Common;
     using Input;
     using Nuclex.UserInterface;

@@ -19,21 +19,7 @@
             var mainMenu = new MainMenuView(this);
 
             ViewMgr.PushLayer(menuBackground);
-			ViewMgr.PushLayer(mainMenu);
-
-			// TODO: Testing stats window
-			//var stats = new EndgameData();
-			//stats.Players = new List<string>() { "Player 1", "Player 2", "Player 3", "Player 4" };
-			//var values = new List<int>() { 1, 2, 3, 4 };
-			//stats.Statistics = new List<GameStatistic>()
-			//    {
-			//        new GameStatistic() {StaticsticName = "aaa", StatisticPlayers = stats.Players, StatisticValues = values},
-			//        new GameStatistic() {StaticsticName = "bbb", StatisticPlayers = stats.Players, StatisticValues = values},
-			//        new GameStatistic() {StaticsticName = "ccc", StatisticPlayers = stats.Players, StatisticValues = values},
-			//        new GameStatistic() {StaticsticName = "ddd", StatisticPlayers = stats.Players, StatisticValues = values},
-			//        new GameStatistic() {StaticsticName = "eee", StatisticPlayers = stats.Players, StatisticValues = values}
-			//    };
-			//ViewMgr.PushLayer(new GameStats(this, stats));
+			ViewMgr.PushLayer(mainMenu);			
         }
 
         public override void OnEnter()
