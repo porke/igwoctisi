@@ -11,8 +11,5 @@
 
 		[DataMember]
 		public List<int> StatisticValues { get; set; }
-
-		[DataMember]
-		public List<string> StatisticPlayers { get; set; }
 	}
 }

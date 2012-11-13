@@ -1,6 +1,6 @@
 ﻿namespace Client.Renderer.Controls
 {
-	using Client.Input.Controls;
+	using Client.View.Controls;
 	using Nuclex.UserInterface.Visuals.Flat;
 
 	public class FlatIconControlRenderer : IFlatControlRenderer<IconControl>

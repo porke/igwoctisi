@@ -3,7 +3,7 @@
     using System;
     using Common;
     using Input;
-    using Input.Controls;
+    using View.Controls;
     using Nuclex.UserInterface;
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;

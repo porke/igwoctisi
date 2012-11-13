@@ -3,7 +3,7 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Client.Input.Controls;
+	using Client.View.Controls;
 	using Client.Model;
 	using Common;
 	using Input;
@@ -325,7 +325,7 @@
         {
             _commandList.Clear();
 
-			// Not using sort, because it's unstable
+			// Not using sort, because it'stat unstable
 			var orderedCmds = commands.OrderByDescending(cmd => (int)cmd.Type);
 			commands = new List<UserCommand>(orderedCmds);
 			foreach (var cmd in commands)

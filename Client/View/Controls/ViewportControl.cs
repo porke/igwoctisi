@@ -1,14 +1,13 @@
-﻿using System;
-using Client.Common.AnimationSystem;
-using Client.Model;
-using Client.Renderer;
-using Microsoft.Xna.Framework;
-using Nuclex.Input;
-using Nuclex.UserInterface.Controls;
-
-
-namespace Client.Input.Controls
+﻿namespace Client.View.Controls
 {
+	using System;
+	using Client.Common.AnimationSystem;
+	using Client.Model;
+	using Client.Renderer;
+	using Microsoft.Xna.Framework;
+	using Nuclex.Input;
+	using Nuclex.UserInterface.Controls;
+
 	public class ViewportControl : Control
 	{
 		#region Protected members
