@@ -69,7 +69,7 @@ namespace Client.Input.Controls
 		#endregion
 
 		public const float DragSpeedFactor = 1.0f / 10.0f;
-		public const float ZoomVelocityFactor = 1.0f / 1200.0f;
+		public const float ZoomVelocityFactor = 1.0f / 2400.0f;
 
 		public IRenderer Renderer { get; set; }
 		public Scene Scene { get; set; }
