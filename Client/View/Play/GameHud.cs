@@ -28,6 +28,8 @@
         private LabelControl _timer;
         private WrappableListControl _messageList;
         private CommandInputControl _chatMessage;
+		private ButtonControl btnSendCommands;
+		private ButtonControl btnDeleteCommand;
 
         protected void CreateChildControls()
         {
@@ -58,12 +60,12 @@
                 Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.45f, 0), new UniScalar(0.21f, 0), new UniScalar(0.3f, 0))
             };            
 
-            var btnDeleteOrder = new ButtonControl()
+            btnDeleteCommand = new ButtonControl()
             {
                 Text = "Delete",
 				Bounds = new UniRectangle(new UniScalar(0.12f, 0), new UniScalar(0.76f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
             };
-            btnDeleteOrder.Pressed += DeleteCommand_Pressed;
+            btnDeleteCommand.Pressed += DeleteCommand_Pressed;
 
             #endregion
 
@@ -168,12 +170,12 @@
             };
             btnLeaveGame.Pressed += LeaveGame_Pressed;
 
-            var btnSendOrders = new ButtonControl()
+            btnSendCommands = new ButtonControl()
             {
                 Text = "Send",
 				Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.76f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))                
             };
-            btnSendOrders.Pressed += SendCommands_Pressed;
+            btnSendCommands.Pressed += SendCommands_Pressed;
 
             #endregion
 
@@ -235,8 +237,8 @@
 					raiseDefenseTech,
 					raiseEconomyTech,
 
-                    btnDeleteOrder, 
-                    btnSendOrders,
+                    btnDeleteCommand, 
+                    btnSendCommands,
                     btnLeaveGame, 
                     
                     _messageList,
@@ -258,6 +260,9 @@
 
         private void SendCommands_Pressed(object sender, EventArgs e)
         {
+			btnSendCommands.Enabled = false;
+			btnDeleteCommand.Enabled = false;
+
 			PlayState.SendCommands();
         }
 
@@ -355,6 +360,12 @@
         {
             _messageList.AddItem(message);
         }
+
+		public void EnableOrderButtons()
+		{
+			btnDeleteCommand.Enabled = true;
+			btnSendCommands.Enabled = true;
+		}
 
         #endregion
 

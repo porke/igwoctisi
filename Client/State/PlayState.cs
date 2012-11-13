@@ -313,6 +313,7 @@
 						_clientPlayer.TechPoints = roundInfo.Tech.Points;
 
 						_gameHud.UpdateResourceData(_clientPlayer);
+						_gameHud.EnableOrderButtons();
 						_loadedMap.UpdatePlanetShowDetails(_clientPlayer);
 
 						// Now wait to the end of the round.
