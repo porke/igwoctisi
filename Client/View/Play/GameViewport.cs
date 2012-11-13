@@ -1,13 +1,12 @@
 ﻿namespace Client.View.Play
 {
-    using Client.State;
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Input;
-    using Model;
-    using Nuclex.Input;
-	using Client.Input.Controls;
-	using Nuclex.UserInterface;
 	using Client.Input;
+	using Client.Input.Controls;
+	using Client.State;
+	using Microsoft.Xna.Framework.Input;
+	using Model;
+	using Nuclex.Input;
+	using Nuclex.UserInterface;
 
     class GameViewport : BaseView
 	{
@@ -147,7 +146,7 @@
 			: base(state)
         {
             IsTransparent = false;
-			InputReceiver = new NuclexScreenInputReceiver(screen, false);//new GameInputReceiver(this);
+			InputReceiver = new NuclexScreenInputReceiver(screen, false);
             PlayState = state;
 			State = ViewState.Loaded;
 

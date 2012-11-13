@@ -125,6 +125,7 @@
     <Compile Include="Common\SystemExtensions.cs" />
     <Compile Include="Common\XnaExtensions.cs" />
     <Compile Include="Input\Controls\CommandInputControl.cs" />
+    <Compile Include="Input\Controls\IconControl.cs" />
     <Compile Include="Input\Controls\ViewportControl.cs" />
     <Compile Include="Input\Controls\WrappableListControl.cs" />
     <Compile Include="Input\Controls\WrappableLabelControl.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="Model\LobbyListInfo.cs" />
     <Compile Include="Network\INetwork.cs" />
     <Compile Include="Network\WsaNetwork.cs" />
+    <Compile Include="Renderer\Controls\FlatIconControlRenderer.cs" />
     <Compile Include="Renderer\Controls\FlatViewportControlRenderer.cs" />
     <Compile Include="Renderer\ICamera.cs" />
     <Compile Include="Renderer\IRenderer.cs" />

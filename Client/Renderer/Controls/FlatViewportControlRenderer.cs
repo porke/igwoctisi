@@ -1,5 +1,4 @@
-﻿
-using Nuclex.UserInterface.Visuals.Flat;
+﻿using Nuclex.UserInterface.Visuals.Flat;
 using Client.Input.Controls;
 
 
@@ -9,6 +8,8 @@ namespace Client.Renderer.Controls
 	{
 		public void Render(ViewportControl control, IFlatGuiGraphics graphics)
 		{
+			int a = 0;
+			++a;
 		}
 	}
 }

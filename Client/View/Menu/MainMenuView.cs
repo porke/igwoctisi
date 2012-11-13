@@ -54,7 +54,7 @@
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.6f, 40), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
             };
             btnEnterPlayState.Pressed += EnterPlayState_Pressed;
-
+		
             screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit });
 #if DEBUG
             screen.Desktop.Children.Add(btnEnterPlayState);
