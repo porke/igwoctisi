@@ -471,11 +471,7 @@
 			_gameHud = new GameHud(this);
 
 			ViewMgr.PushLayer(_gameViewport);
-			ViewMgr.PushLayer(_gameHud);
-			
-			// TODO: Testing stats window
-			//var stats = new EndgameData();
-			//ViewMgr.PushLayer(new GameStats(this, stats));
+			ViewMgr.PushLayer(_gameHud);			
 
 			Client.Network.OnRoundStarted += Network_OnRoundStarted;
 			Client.Network.OnRoundEnded += Network_OnRoundEnded;

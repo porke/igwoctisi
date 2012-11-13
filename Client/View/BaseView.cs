@@ -27,7 +27,10 @@
 		{
 			State = ViewState.Loading;
 			GameState = controller;
-			screen = new Screen(800, 600);
+
+			var graphicsDevice = GameState.Client.GraphicsDevice;
+			var pp = graphicsDevice.PresentationParameters;
+			screen = new Screen(pp.BackBufferWidth, pp.BackBufferHeight);
 		}
 		protected virtual void OnShow(double time)
 		{
