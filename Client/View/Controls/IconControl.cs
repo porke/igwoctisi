@@ -1,4 +1,4 @@
-﻿namespace Client.Input.Controls
+﻿namespace Client.View.Controls
 {
 	using Nuclex.UserInterface.Controls;
 

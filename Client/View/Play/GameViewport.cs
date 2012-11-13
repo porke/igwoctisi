@@ -1,7 +1,7 @@
 ﻿namespace Client.View.Play
 {
 	using Client.Input;
-	using Client.Input.Controls;
+	using Client.View.Controls;
 	using Client.State;
 	using Microsoft.Xna.Framework.Input;
 	using Model;
@@ -81,7 +81,7 @@
 				}
 				else if (button == MouseButtons.Right)
 				{
-					if (scene.SelectedPlanet != null)
+					if (scene.SelectedPlanet != 0)
 					{
 						UndeployFleet(_viewport.HoveredPlanet, count);
 					}

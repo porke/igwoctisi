@@ -429,7 +429,7 @@
 					{
 						if (_hudState == HudState.WaitingForRoundEnd)
 						{
-							// Create message box that will be shown until server's roundEnd or gameEnd message arrives.
+							// Create message box that will be shown until server'stat roundEnd or gameEnd message arrives.
 							var messageBox = new MessageBox(this, MessageBoxButtons.OK)
 							{
 								Title = "Round simulating",

@@ -211,7 +211,7 @@
                             nextPacketType = PacketType.Content;
                         }
 
-                        // If this message isn't a response to the client's request then check what it is, actually.
+                        // If this message isn't a response to the client'stat request then check what it is, actually.
                         else if (type == MessageContentType.Chat)
                         {
                             // Next packet should contain {username, message, time}
