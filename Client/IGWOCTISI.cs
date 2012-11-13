@@ -25,8 +25,8 @@ namespace Client
         {
             Window.Title = DefaultMainWindowTitle;
             Content.RootDirectory = "Content";
-            GraphicsManager.PreferredBackBufferWidth = 800;
-            GraphicsManager.PreferredBackBufferHeight = 600;
+            GraphicsManager.PreferredBackBufferWidth = 1280;
+            GraphicsManager.PreferredBackBufferHeight = 720;
 			GraphicsManager.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             IsMouseVisible = true;
         }
