@@ -21,7 +21,7 @@
 		protected SpriteBatch _spriteBatch;
 		protected SpriteFont _fontHud;
 		protected Effect _fxLinks, _fxPlanet;
-		protected VertexBuffer _sphereVB;
+		protected VertexBuffer _sphereVB, _sphereVB2;
 		protected Texture2D _txSpace;
 
 		protected void InitializeMapVisual(Map map)
@@ -51,6 +51,9 @@
 			var visual = new PlanetVisual();
 			var random = new Random(Guid.NewGuid().GetHashCode());
 
+			visual.Planet = planet;
+			visual.Effect = contentMgr.Load<Effect>("Effects\\Planet");
+			visual.VB = _sphereVB;
 			visual.Period = (float)(random.NextDouble() * 10.0 + 5.0);
 			visual.Yaw = (float)(random.NextDouble() * MathHelper.TwoPi);
 			visual.Pitch = (float)(random.NextDouble() * MathHelper.TwoPi);
@@ -109,6 +112,9 @@
 			var vertices = Utils.SphereVertices(3).Select(x => new Vertex(x.Position, x.Normal, Color.LightGreen, x.TextureCoordinate)).ToArray();
 			_sphereVB = new VertexBuffer(GraphicsDevice, Vertex.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
 			_sphereVB.SetData(vertices);
+
+			_sphereVB2 = new VertexBuffer(GraphicsDevice, Vertex.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
+			_sphereVB2.SetData(vertices);
 		}
 		public void Release()
 		{
@@ -120,6 +126,8 @@
 
             // Turn depth buffer on (SpriteBatch may turn it off).
 			GraphicsDevice.DepthStencilState = DepthStencilState.Default; // new DepthStencilState() { DepthBufferEnable = true };
+			var view = camera.GetView();
+			var projection = camera.Projection;
 
 			var map = scene.Map;
 
@@ -174,9 +182,21 @@
 
 			#region Planets
 
-
-
 			foreach (var planet in map.Planets)
+			{
+				if (planet.Visual == null)
+				{
+					InitializePlanetVisual(planet);
+				}
+				var planetarySystem = scene.Map.GetSystemByPlanetid(planet.Id);
+
+				var ambient = scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f;
+				var glow = planetarySystem != null ? planetarySystem.Color : Color.LightGray;
+
+				planet.Visual.Draw(GraphicsDevice, view, projection, time, ambient, glow);
+			}
+
+			/*foreach (var planet in map.Planets)
 			{
 				if (planet.Visual == null)
 				{
@@ -186,20 +206,6 @@
 
 				PlanetarySystem planetarySystem = scene.Map.GetSystemByPlanetid(planet.Id);
 
-				_fxPlanet.Parameters["Ambient"].SetValue(scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f);
-				_fxPlanet.Parameters["Diffuse"].SetValue(visual.DiffuseTexture);
-				_fxPlanet.Parameters["Clouds"].SetValue(visual.CloudsTexture);
-				_fxPlanet.Parameters["CloudsAlpha"].SetValue(visual.CloudsAlphaTexture);
-				_fxPlanet.Parameters["Glow"].SetValue(planetarySystem != null ? planetarySystem.Color.ToVector4() : Color.LightGray.ToVector4());
-
-				var localWorld = Matrix.CreateScale(planet.Radius) * 
-							Matrix.CreateRotationY((float)time / visual.Period * MathHelper.TwoPi) *
-							Matrix.CreateFromYawPitchRoll(visual.Yaw, visual.Pitch, visual.Roll) *
-							Matrix.CreateTranslation(planet.X, planet.Y, planet.Z);
-
-				_fxPlanet.Parameters["World"].SetValue(localWorld);
-				_fxPlanet.Parameters["View"].SetValue(camera.GetView());
-				_fxPlanet.Parameters["Projection"].SetValue(camera.Projection);
 				foreach (var pass in _fxPlanet.CurrentTechnique.Passes)
 				{
 					pass.Apply();
@@ -232,7 +238,7 @@
 						}
 					}
 				}
-			}
+			}*/
 			
 			#endregion
 
@@ -282,7 +288,7 @@
 
 			_spriteBatch.End();
 
-			#endregion
+			#endregion*/
 		}
 
 		#endregion
