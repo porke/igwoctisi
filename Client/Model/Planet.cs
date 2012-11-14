@@ -54,6 +54,8 @@
         public bool ShowDetails { get; set; }
 		public int FleetChange { get; set; }
         public int NumFleetsPresent { get; set; }
+
+		[XmlIgnore]
         public PlanetVisual Visual { get; set; }
         public Vector3 Position { get { return new Vector3(X, Y, Z); } }
 

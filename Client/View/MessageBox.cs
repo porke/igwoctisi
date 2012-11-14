@@ -2,7 +2,7 @@
 {
     using System;
     using System.Linq;
-    using Client.Input.Controls;
+	using Client.View.Controls;
     using Common;
     using Input;
     using Nuclex.UserInterface;
@@ -104,7 +104,6 @@
 
         public MessageBox(GameState gameState, MessageBoxButtons buttons) : base(gameState)
         {
-            screen = new Screen(800, 600);
             InputReceiver = new NuclexScreenInputReceiver(screen, true);
 
             CreateChildControls();

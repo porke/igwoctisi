@@ -8,10 +8,8 @@
     using Nuclex.UserInterface.Visuals.Flat;
     using Renderer;
     using State;
-	using Client.View;
-	using System.Reflection;
 
-    public abstract class GameClient : Game
+	public abstract class GameClient : Game
     {
         public GraphicsDeviceManager GraphicsManager { get; protected set; }
         public IRenderer Renderer { get; protected set; }
