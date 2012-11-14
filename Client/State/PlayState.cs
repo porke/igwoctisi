@@ -430,14 +430,11 @@
 						if (_hudState == HudState.WaitingForRoundEnd)
 						{
 							// Create message box that will be shown until server'stat roundEnd or gameEnd message arrives.
-							var messageBox = new MessageBox(this, MessageBoxButtons.OK)
+							var messageBox = new MessageBox(this, MessageBoxButtons.None)
 							{
 								Title = "Round simulating",
 								Message = "Waiting for server to simulate the turn."
-									+ Environment.NewLine + Environment.NewLine
-									+ "(This OK button will disappear)"
 							};
-							messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };//TODO to be removed (no OK button!!)
 							ViewMgr.PushLayer(messageBox);
 						}
 					}
