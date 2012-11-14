@@ -313,6 +313,7 @@
 						_clientPlayer.TechPoints = roundInfo.Tech.Points;
 
 						_gameHud.UpdateResourceData(_clientPlayer);
+						_gameHud.EnableOrderButtons();
 						_loadedMap.UpdatePlanetShowDetails(_clientPlayer);
 
 						// Now wait to the end of the round.
@@ -428,7 +429,7 @@
 					{
 						if (_hudState == HudState.WaitingForRoundEnd)
 						{
-							// Create message box that will be shown until server's roundEnd or gameEnd message arrives.
+							// Create message box that will be shown until server'stat roundEnd or gameEnd message arrives.
 							var messageBox = new MessageBox(this, MessageBoxButtons.None)
 							{
 								Title = "Round simulating",
