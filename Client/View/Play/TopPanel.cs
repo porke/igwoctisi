@@ -69,7 +69,7 @@
 		{
 			_timer = new LabelControl
 			{
-				Bounds = new UniRectangle(new UniScalar(1.0f, -96), new UniScalar(16), new UniScalar(), new UniScalar())
+				Bounds = new UniRectangle(new UniScalar(1.0f, -64), new UniScalar(16), new UniScalar(), new UniScalar())
 			};
 
 			_fleetIncomeAndCountValue = new LabelControl
@@ -114,12 +114,20 @@
 			};
 			_economicTech.Pressed += RaiseTech_Pressed;
 
+			var leaveGame = new ButtonControl
+			{
+				Text = "Leave",
+				Bounds = new UniRectangle(new UniScalar(1.0f, -192), new UniScalar(4), new UniScalar(64), new UniScalar(32))
+			};
+			leaveGame.Pressed += LeaveGame_Pressed;
+
 			Children.AddRange(
 				new Control[]
 				{
 					_offensiveTech,
 					_defensiveTech,
-					_economicTech
+					_economicTech,
+					leaveGame
 				});
 		}
 
@@ -140,7 +148,7 @@
 			var timerIcon = new IconControl
 			{
 				IconFrameName = "timerIcon",
-				Bounds = new UniRectangle(new UniScalar(1.0f, -128), new UniScalar(8), new UniScalar(24), new UniScalar(24))
+				Bounds = new UniRectangle(new UniScalar(1.0f, -96), new UniScalar(8), new UniScalar(24), new UniScalar(24))
 			};
 
 			Children.AddRange(

@@ -184,6 +184,7 @@
     <Compile Include="View\Play\Animations\AnimationExtensions.cs" />
     <Compile Include="View\Play\Animations\MoveAndAttack.cs" />
     <Compile Include="View\Play\Animations\Deploy.cs" />
+    <Compile Include="View\Play\BottomPanel.cs" />
     <Compile Include="View\Play\GameHud.cs" />
     <Compile Include="View\Play\GameStats.cs" />
     <Compile Include="View\Play\GameViewport.cs" />
