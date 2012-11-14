@@ -6,14 +6,14 @@
 	{
 		public IconControl()
 		{			
-			IconName = string.Empty;
+			IconFrameName = string.Empty;
 		}
 
 		public IconControl(string iconName)
 		{
-			IconName = iconName;
+			IconFrameName = iconName;
 		}
 
-		public string IconName { get; set; }
+		public string IconFrameName { get; set; }
 	}
 }
