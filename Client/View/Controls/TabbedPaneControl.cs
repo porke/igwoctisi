@@ -2,10 +2,10 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using Client.Common;
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
-	using Nuclex.UserInterface.Controls.Desktop;
 
 	public class TabbedPaneControl : Control
 	{
@@ -52,15 +52,20 @@
 				Text = tabText,
 				ActivatedTab = content
 			};
+
+			float tabWidth = tabText.Length * 12 + 10;
+			float maxTabWidth = (_tabHeaderPanel.Children.Count > 0) ? _tabHeaderPanel.Children.Max(bc => (bc as TabHeaderControl).Text.Length) * 8 : 0;
+			tabWidth = tabWidth > maxTabWidth ? tabWidth : maxTabWidth;
+
 			if (_tabHeaderPosition == TabHeaderPosition.Top)
 			{
-				tab.Bounds = new UniRectangle(new UniScalar(8 + 32 * TabCount), new UniScalar(8), new UniScalar(24), new UniScalar(24));
+				tab.Bounds = new UniRectangle(new UniScalar(8 + 32 * TabCount), new UniScalar(8), new UniScalar(tabWidth), new UniScalar(24));
 				_contentPanel.Bounds = new UniRectangle(new UniScalar(), new UniScalar(0.0f, 40), new UniScalar(1.0f, 0.0f), new UniScalar(1.0f, -40));
-				_tabHeaderPanel.Bounds.Right = new UniScalar(_tabHeaderPanel.Bounds.Right.Fraction, 40 * (TabCount + 1));
+				_tabHeaderPanel.Bounds.Right = new UniScalar(_tabHeaderPanel.Bounds.Right.Fraction, (tabWidth + 16) * (TabCount + 1));
 			}
 			else if (_tabHeaderPosition == TabHeaderPosition.Left)
 			{
-				tab.Bounds = new UniRectangle(new UniScalar(8), new UniScalar(8 + 32 * TabCount), new UniScalar(24), new UniScalar(24));
+				tab.Bounds = new UniRectangle(new UniScalar(8), new UniScalar(8 + 32 * TabCount), new UniScalar(tabWidth), new UniScalar(24));
 				_contentPanel.Bounds = new UniRectangle(new UniScalar(0.0f, 40), new UniScalar(), new UniScalar(1.0f, -40.0f), new UniScalar(1.0f, 0.0f));
 				_tabHeaderPanel.Bounds.Bottom = new UniScalar(_tabHeaderPanel.Bounds.Bottom.Fraction, 40 * (TabCount + 1));
 			}

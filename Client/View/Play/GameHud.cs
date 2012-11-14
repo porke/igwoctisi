@@ -16,11 +16,9 @@
 	{
 		#region Protected members
 
-        private WrappableListControl _messageList;
-        private CommandInputControl _chatMessage;
-
 		private TopPanel _topPanel;
 		private RightPanel _rightPanel;
+		private BottomPanel _bottomPanel;
 
         protected void CreateChildControls()
         {
@@ -32,38 +30,15 @@
 			_rightPanel.CommandDeleted += DeleteCommand_Pressed;
 			_rightPanel.CommandsSent += SendCommands_Pressed;
 
-            #region Message box & chat
-
-            _chatMessage = new CommandInputControl
-            {
-                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.93f, 0), new UniScalar(0.6f, 0), new UniScalar(0.05f, 0))
-            };
-            _chatMessage.OnCommandHandler += new EventHandler(ChatMessage_Execute);
-
-            _messageList = new WrappableListControl
-            {
-                SelectionMode = ListSelectionMode.None,
-                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.75f, 0), new UniScalar(0.675f, 0), new UniScalar(0.16f, 0))
-            };
-
-            var btnClearMessage = new ButtonControl
-            {
-                Text = "C",
-                Bounds = new UniRectangle(new UniScalar(0.925f, 0), new UniScalar(0.93f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
-            };
-            btnClearMessage.Pressed += ClearMessageList;
-
-            #endregion
+			_bottomPanel = new BottomPanel();
+			_bottomPanel.ChatMessageSent += ChatMessage_Execute;
 
             screen.Desktop.Children.AddRange(
                 new Control[] 
                 {
 					_topPanel,
 					_rightPanel,
-                    
-                    _messageList,
-                    _chatMessage,
-                    btnClearMessage,
+					_bottomPanel
                 });
         }        
 
@@ -93,10 +68,11 @@
 
         private void ChatMessage_Execute(object sender, EventArgs e)
         {
-            if (_chatMessage.Text.Trim().Length > 0)
+			var chatMessage = sender as CommandInputControl;
+            if (chatMessage.Text.Trim().Length > 0)
             {
-                PlayState.SendChatMessage(_chatMessage.Text);
-                _chatMessage.Text = string.Empty;
+                PlayState.SendChatMessage(chatMessage.Text);
+                chatMessage.Text = string.Empty;
             }
         }
 
@@ -131,14 +107,9 @@
 			_rightPanel.UpdateCommands(commands, selectedCommand);
         }
 
-        public void ClearMessageList(object sender, EventArgs args)
-        {
-            _messageList.Clear();
-        }
-
         public void AddMessage(string message)
         {
-            _messageList.AddItem(message);
+			_bottomPanel.AddMessage(message);
         }
 
 		public void EnableCommandButtons()
