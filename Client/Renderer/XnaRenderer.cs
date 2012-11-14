@@ -124,8 +124,6 @@
 		{
 			GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer | ClearOptions.Stencil, Color.Black, 1, 0);
 
-            // Turn depth buffer on (SpriteBatch may turn it off).
-			GraphicsDevice.DepthStencilState = DepthStencilState.Default; // new DepthStencilState() { DepthBufferEnable = true };
 			var view = camera.GetView();
 			var projection = camera.Projection;
 
@@ -134,6 +132,9 @@
 			_spriteBatch.Begin();
 			_spriteBatch.Draw(_txSpace, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
 			_spriteBatch.End();
+
+            // Turn depth buffer on (SpriteBatch may turn it off).
+			GraphicsDevice.DepthStencilState = DepthStencilState.Default; // new DepthStencilState() { DepthBufferEnable = true };
 
 			#region Links
 
