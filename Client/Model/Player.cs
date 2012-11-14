@@ -178,7 +178,7 @@
         #endregion
 
         /// <summary>
-        /// Add planet to the player. Planet's owner is changed to this player.
+        /// Add planet to the player. Planet'stat owner is changed to this player.
         /// </summary>
         /// <returns>true if player didn't own the planet before</returns>
         public bool TryAssignPlanet(Planet planet)
