@@ -7,7 +7,7 @@
 	{
 		public void Render(IconControl control, IFlatGuiGraphics graphics)
 		{
-			graphics.DrawElement(control.IconName, control.GetAbsoluteBounds());
+			graphics.DrawElement(control.IconFrameName, control.GetAbsoluteBounds());
 		}
 	}
 }
