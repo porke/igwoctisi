@@ -8,7 +8,6 @@ using Nuclex.UserInterface;
 using Nuclex.UserInterface.Controls;
 using Nuclex.UserInterface.Controls.Desktop;
 
-
 namespace Client.View.Lobby
 {
     class MainLobbyView : BaseView

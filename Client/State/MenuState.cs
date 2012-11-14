@@ -5,6 +5,8 @@
     using View;
     using View.Menu;
     using Client.Model;
+	using Client.View.Play;
+	using System.Collections.Generic;
 
     public class MenuState : GameState
     {
@@ -17,7 +19,7 @@
             var mainMenu = new MainMenuView(this);
 
             ViewMgr.PushLayer(menuBackground);
-			ViewMgr.PushLayer(mainMenu);
+			ViewMgr.PushLayer(mainMenu);			
         }
 
         public override void OnEnter()

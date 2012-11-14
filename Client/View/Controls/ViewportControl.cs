@@ -1,15 +1,13 @@
-﻿
-using Nuclex.UserInterface.Controls;
-using Client.Model;
-using Client.Renderer;
-using Microsoft.Xna.Framework;
-using Client.Common.AnimationSystem;
-using System;
-using Nuclex.Input;
-
-
-namespace Client.Input.Controls
+﻿namespace Client.View.Controls
 {
+	using System;
+	using Client.Common.AnimationSystem;
+	using Client.Model;
+	using Client.Renderer;
+	using Microsoft.Xna.Framework;
+	using Nuclex.Input;
+	using Nuclex.UserInterface.Controls;
+
 	public class ViewportControl : Control
 	{
 		#region Protected members
@@ -69,7 +67,7 @@ namespace Client.Input.Controls
 		#endregion
 
 		public const float DragSpeedFactor = 1.0f / 10.0f;
-		public const float ZoomVelocityFactor = 1.0f / 1200.0f;
+		public const float ZoomVelocityFactor = 1.0f / 2400.0f;
 
 		public IRenderer Renderer { get; set; }
 		public Scene Scene { get; set; }
@@ -108,9 +106,8 @@ namespace Client.Input.Controls
 			_lastMousePosition = _currentMousePosition;
 			_lastTime = _currentTime;
 			_currentTime = time;
-
-
 		}
+
 		public void Draw(double delta, double time)
 		{
 			Renderer.Draw(Scene.Map.Camera, Scene, delta, time);

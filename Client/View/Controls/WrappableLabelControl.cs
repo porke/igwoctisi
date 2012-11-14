@@ -1,8 +1,7 @@
-﻿namespace Client.Input.Controls
+﻿namespace Client.View.Controls
 {
     using System;
-    using System.ComponentModel;
-    using System.Text;
+	using System.Text;
     using Nuclex.UserInterface.Controls;
 
     public class WrappableLabelControl : LabelControl
