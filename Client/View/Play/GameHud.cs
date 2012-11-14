@@ -17,19 +17,13 @@
 		#region Protected members
 
 		private WrappableListControl _commandList;
-        private LabelControl _playerNameValue;
-        private LabelControl _fleetCountValue;
-        private LabelControl _fleetIncomeValue;
-		private LabelControl _techPointsValue;
-		private LabelControl _techAttackValue;
-		private LabelControl _techDefenseValue;
-		private LabelControl _techEconomyValue;
         private ListControl _playerList;
-        private LabelControl _timer;
         private WrappableListControl _messageList;
         private CommandInputControl _chatMessage;
 		private ButtonControl btnSendCommands;
 		private ButtonControl btnDeleteCommand;
+
+		private TopPanel _topPanel;
 
         protected void CreateChildControls()
         {
@@ -69,70 +63,13 @@
 
             #endregion
 
-            #region Resource values
-
-            var playerNameDesc = new LabelControl("Player:")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            _playerNameValue = new LabelControl()
-            {
-                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            var fleetCountDesc = new LabelControl("Deployable fleets:")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            _fleetCountValue = new LabelControl("0")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            var fleetIncomeDesc = new LabelControl("Fleets per turn:")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            _fleetIncomeValue = new LabelControl("0")
-            {                
-                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-			var techPointsDesc = new LabelControl("Tech points:")
-			{
-				Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.15f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-			};
-
-			_techPointsValue = new LabelControl("0")
-			{
-				Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.15f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-			};
-
-            #endregion
+			_topPanel = new TopPanel();
 
 			#region Technology section
 
 			var techHeader = new LabelControl("Technology")
 			{
 				Bounds = new UniRectangle(new UniScalar(0.06f, 0), new UniScalar(0.21f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-			};
-
-			_techAttackValue = new LabelControl("Att: 0")
-			{
-				Bounds = new UniRectangle(new UniScalar(0.02f, 0), new UniScalar(0.25f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-			};
-
-			_techDefenseValue = new LabelControl("Def: 0")
-			{
-				Bounds = new UniRectangle(new UniScalar(0.08f, 0), new UniScalar(0.25f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-			};
-
-			_techEconomyValue = new LabelControl("Eco: 0")
-			{
-				Bounds = new UniRectangle(new UniScalar(0.14f, 0), new UniScalar(0.25f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0))
 			};
 
 			var raiseAttackTech = new ButtonControl()
@@ -179,15 +116,6 @@
 
             #endregion
 
-            #region Timer
-
-            _timer = new LabelControl("0:00")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.89f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0), new UniScalar(0.07f, 0))               
-            };
-            
-            #endregion
-
             #region Message box & chat
 
             _chatMessage = new CommandInputControl
@@ -214,25 +142,15 @@
             screen.Desktop.Children.AddRange(
                 new Control[] 
                 {
+					_topPanel,
+
                     ordersHeader, 
                     _commandList, 
                     
                     playerListHeader,
                     _playerList,
 
-                    _playerNameValue,
-                    playerNameDesc,
-                    _fleetIncomeValue, 
-                    _fleetCountValue, 
-                    fleetCountDesc,
-                    fleetIncomeDesc,
-					techPointsDesc,
-					_techPointsValue,
-                    
 					techHeader,
-					_techAttackValue,
-					_techDefenseValue,
-					_techEconomyValue,
 					raiseAttackTech,
 					raiseDefenseTech,
 					raiseEconomyTech,
@@ -244,8 +162,6 @@
                     _messageList,
                     _chatMessage,
                     btnClearMessage,
-
-                    _timer
                 });
         }        
 
@@ -303,22 +219,12 @@
 
         public void UpdateResourceData(Player player)
         {
-            _playerNameValue.Text = player.Username;
-            _fleetCountValue.Text = Convert.ToString(player.DeployableFleets);
-            _fleetIncomeValue.Text = Convert.ToString(player.FleetIncomePerTurn);
-			_techPointsValue.Text = Convert.ToString(player.TechPoints);
-			_techAttackValue.Text = string.Format("Att: {0}", player.Technologies[TechnologyType.Offensive].CurrentLevel);
-			_techDefenseValue.Text = string.Format("Def: {0}", player.Technologies[TechnologyType.Defensive].CurrentLevel);
-			_techEconomyValue.Text = string.Format("Eco: {0}", player.Technologies[TechnologyType.Economic].CurrentLevel);
+			_topPanel.UpdateResources(player);
         }
 
         public void UpdateTimer(int secondsLeft)
         {
-            int mins = secondsLeft / 60;
-            int secs = secondsLeft % 60;
-
-            // Display Timer in format 0:00
-            _timer.Text = mins.ToString() + (secs < 10 ? ":0" : ":") + secs.ToString();
+			_topPanel.UpdateTimer(secondsLeft);
         }
 
         public void UpdateCommandList(List<UserCommand> commands, int selectedCommand = -1)

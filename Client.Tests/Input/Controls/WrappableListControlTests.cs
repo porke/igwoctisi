@@ -1,7 +1,7 @@
 ﻿namespace Client.Tests.Input.Controls
 {
     using System;
-    using Client.Input.Controls;
+    using Client.View.Controls;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Nuclex.UserInterface;
 
