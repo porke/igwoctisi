@@ -106,28 +106,11 @@
 
 			#endregion
 
-			#region Systems (until particle system)
+			#region Systems
 
-			_fxLinks.Parameters["Ambient"].SetValue(0.0f);
-			_fxLinks.Parameters["View"].SetValue(camera.GetView());
-			_fxLinks.Parameters["Projection"].SetValue(camera.Projection);
 			foreach (var planetarySystem in map.PlanetarySystems)
 			{
-				foreach (var point in planetarySystem.Bounds)
-				{
-					var world = Matrix.CreateScale(5) *
-						Matrix.CreateTranslation(point.X, point.Y, point.Z);
-					_fxLinks.Parameters["World"].SetValue(world);
-
-					foreach (var pass in _fxLinks.CurrentTechnique.Passes)
-					{
-						pass.Apply();
-						GraphicsDevice.SetVertexBuffer(_sphereVB);
-						GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
-					}
-
-					planetarySystem.Visual.Update(GraphicsDevice, camera, map, delta, time);
-				}
+				planetarySystem.Visual.Update(GraphicsDevice, camera, map, delta, time);
 			}
 
 			#endregion
