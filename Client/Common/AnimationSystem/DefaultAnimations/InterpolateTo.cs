@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-
-namespace Client.Common.AnimationSystem.DefaultAnimations
+﻿namespace Client.Common.AnimationSystem.DefaultAnimations
 {
+	using System;
+
 	public class InterpolateTo<T> : Animation<T>
 	{
 		private readonly Func<T, double> _startingValueGetter;
