@@ -121,6 +121,7 @@
     <Compile Include="Common\AsyncResult.cs" />
     <Compile Include="Common\SystemExtensions.cs" />
     <Compile Include="Common\XnaExtensions.cs" />
+    <Compile Include="Model\BackgroundLayer.cs" />
     <Compile Include="View\Controls\CommandInputControl.cs" />
     <Compile Include="View\Controls\IconControl.cs" />
     <Compile Include="View\Controls\ViewportControl.cs" />
