@@ -3,12 +3,11 @@
 	using Nuclex.UserInterface.Visuals.Flat;
 	using Client.View.Controls;
 
-	public class FlatViewportControlRenderer : IFlatControlRenderer<ViewportControl>
+	public class FlatImageCheckButtonControl : IFlatControlRenderer<ImageCheckButtonControl>
 	{
-		public void Render(ViewportControl control, IFlatGuiGraphics graphics)
+		public void Render(ImageCheckButtonControl control, IFlatGuiGraphics graphics)
 		{
 			// Implementation not required
-			
 		}
 	}
 }
