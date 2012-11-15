@@ -24,58 +24,6 @@
 		protected VertexBuffer _sphereVB, _sphereVB2;
 		protected Texture2D _txSpace;
 
-		protected void InitializeMapVisual(Map map)
-		{
-			var vertices = new VertexPositionColor[map.Links.Count * 2];
-			var color = Color.LightGreen;
-
-			for (var i = 0; i < map.Links.Count; ++i)
-			{
-				var link = map.Links[i];
-				var sourcePlanet = map.Planets.First(x => x.Id == link.SourcePlanet);
-				var targetPlanet = map.Planets.First(x => x.Id == link.TargetPlanet);
-
-				vertices[2 * i + 0] = new VertexPositionColor(new Vector3(sourcePlanet.X, sourcePlanet.Y, sourcePlanet.Z), color);
-				vertices[2 * i + 1] = new VertexPositionColor(new Vector3(targetPlanet.X, targetPlanet.Y, targetPlanet.Z), color);
-			}
-
-			var visual = new MapVisual();
-			visual.LinksVB = new VertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
-			visual.LinksVB.SetData(vertices);
-
-			map.Visual = visual;
-		}
-		protected void InitializePlanetVisual(Planet planet)
-		{
-			var contentMgr = Client.Content;
-			var visual = new PlanetVisual();
-			var random = new Random(Guid.NewGuid().GetHashCode());
-
-			visual.Planet = planet;
-			visual.Effect = contentMgr.Load<Effect>("Effects\\Planet");
-			visual.InfoFont = contentMgr.Load<SpriteFont>("Fonts\\HUD");
-			visual.VB = _sphereVB;
-			visual.Period = (float)(random.NextDouble() * 10.0 + 5.0);
-			visual.Yaw = (float)(random.NextDouble() * MathHelper.TwoPi);
-			visual.Pitch = (float)(random.NextDouble() * MathHelper.TwoPi);
-			visual.Roll = (float)(random.NextDouble() * MathHelper.TwoPi);
-			
-			if (!string.IsNullOrEmpty(planet.Diffuse))
-			{
-				visual.DiffuseTexture = contentMgr.Load<Texture2D>(planet.Diffuse);
-			}
-			if (!string.IsNullOrEmpty(planet.Clouds))
-			{
-				visual.CloudsTexture = contentMgr.Load<Texture2D>(planet.Clouds);
-			}
-			if (!string.IsNullOrEmpty(planet.CloudsAlpha))
-			{
-				visual.CloudsAlphaTexture = contentMgr.Load<Texture2D>(planet.CloudsAlpha);
-			}
-
-			planet.Visual = visual;
-		}
-
 		#endregion
 
 		#region IRenderer members
@@ -121,6 +69,10 @@
 		{
 			Client = null;
 		}
+		public void Update(Scene scene, double delta, double time)
+		{
+			scene.Visual.Update(delta, time);
+		}
 		public void Draw(ICamera camera, Scene scene, double delta, double time)
 		{
 			GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer | ClearOptions.Stencil, Color.Black, 1, 0);
@@ -139,11 +91,6 @@
 			_fxLinks.Parameters["World"].SetValue(Matrix.Identity);
 			_fxLinks.Parameters["View"].SetValue(camera.GetView());
 			_fxLinks.Parameters["Projection"].SetValue(camera.Projection);
-
-			if (map.Visual == null)
-			{
-				InitializeMapVisual(map);
-			}
 
 			_fxLinks.Parameters["Ambient"].SetValue(0.0f);
 			foreach (var pass in _fxLinks.CurrentTechnique.Passes)
@@ -182,10 +129,6 @@
 			// planets
 			foreach (var planet in map.Planets)
 			{
-				if (planet.Visual == null)
-				{
-					InitializePlanetVisual(planet);
-				}
 				var planetarySystem = scene.Map.GetSystemByPlanetid(planet.Id);
 
 				var ambient = scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f;
