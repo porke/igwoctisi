@@ -12,6 +12,13 @@
             asyncResult.BeginInvoke(() => contentMgr.Load<T>(assetName));
             return asyncResult;
         }
+		public static Vector2 ParseVector2(string s)
+		{
+			var components = s.Split(';');
+			return new Vector2(
+				float.Parse(components[0]),
+				float.Parse(components[1]));
+		}
 		public static Vector3 ParseVector3(string s)
 		{
 			var components = s.Split(';');
