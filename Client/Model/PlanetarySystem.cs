@@ -1,8 +1,9 @@
 ﻿namespace Client.Model
 {
-    using System;
-    using System.Runtime.Serialization;
-    using System.Xml.Serialization;
+	using System;
+	using System.Runtime.Serialization;
+	using System.Xml.Serialization;
+	using Client.Renderer;
 	using Microsoft.Xna.Framework;
 
     [Serializable] //XML
@@ -25,12 +26,12 @@
         [XmlArrayItem("PlanetId")]
         [DataMember]
         public int[] Planets { get; set; }
-
-		//[DataMember]
-		public Color Color { get; set; }
-
+		
 		[XmlArray("Bounds")]
 		[DataMember]
 		public Point3[] Bounds { get; set; }
+
+		[XmlIgnore]
+		public PlanetarySystemVisual Visual { get; set; }
     }
 }

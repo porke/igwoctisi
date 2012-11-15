@@ -42,6 +42,17 @@
 			var visual = new MapVisual();
 			visual.LinksVB = new VertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
 			visual.LinksVB.SetData(vertices);
+			
+			#region Particles for planetary systems
+
+			foreach (var planetarySystem in map.PlanetarySystems)
+			{
+				planetarySystem.Visual = new PlanetarySystemVisual(planetarySystem, Client, Client.Content, planetarySystem.Bounds);
+				//TODO uncomment: planetarySystem.Visual.Visible = false;
+				Client.Components.Add(planetarySystem.Visual.ParticleSystem);
+			}
+
+			#endregion
 
 			map.Visual = visual;
 		}
@@ -93,7 +104,8 @@
 		public void Initialize(GameClient client)
 		{
 			Client = client;
-			GraphicsDevice = Client.GraphicsDevice;
+			GraphicsDeviceService = (IGraphicsDeviceService)Client.Services.GetService(typeof(IGraphicsDeviceService));
+			GraphicsDevice = GraphicsDeviceService.GraphicsDevice;
 
 			var contentMgr = Client.Content;
 			_spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -134,7 +146,7 @@
 			_spriteBatch.End();
 
             // Turn depth buffer on (SpriteBatch may turn it off).
-			GraphicsDevice.DepthStencilState = DepthStencilState.Default; // new DepthStencilState() { DepthBufferEnable = true };
+			GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
 			#region Links
 
@@ -176,6 +188,8 @@
 						GraphicsDevice.SetVertexBuffer(_sphereVB);
 						GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
 					}
+
+					planetarySystem.Visual.Update(GraphicsDevice, camera, delta, time);
 				}
 			}
 
@@ -192,7 +206,7 @@
 				var planetarySystem = scene.Map.GetSystemByPlanetid(planet.Id);
 
 				var ambient = scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f;
-				var glow = planetarySystem != null ? planetarySystem.Color : Color.LightGray;
+				var glow = planetarySystem != null && planet.Owner != null ? planet.Owner.Color.XnaColor : Color.LightGray;
 
 				planet.Visual.Draw(GraphicsDevice, view, projection, time, ambient, glow);
 			}
@@ -272,12 +286,13 @@
 
 			_spriteBatch.End();
 
-			#endregion*/
+			#endregion
 		}
 
 		#endregion
 
 		public GameClient Client { get; protected set; }
 		public GraphicsDevice GraphicsDevice { get; protected set; }
+		public IGraphicsDeviceService GraphicsDeviceService { get; protected set; }
 	}
 }
