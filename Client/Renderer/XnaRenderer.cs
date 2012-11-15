@@ -48,7 +48,6 @@
 			foreach (var planetarySystem in map.PlanetarySystems)
 			{
 				planetarySystem.Visual = new PlanetarySystemVisual(planetarySystem, Client, Client.Content, planetarySystem.Bounds);
-				planetarySystem.Visual.Color = Color.LightGray;
 				Client.Components.Add(planetarySystem.Visual.ParticleSystem);
 			}
 
@@ -189,7 +188,7 @@
 						GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
 					}
 
-					planetarySystem.Visual.Update(GraphicsDevice, camera, delta, time);
+					planetarySystem.Visual.Update(GraphicsDevice, camera, map, delta, time);
 				}
 			}
 
