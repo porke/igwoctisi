@@ -11,9 +11,21 @@
 	using Nuclex.UserInterface.Controls;
 	using Nuclex.UserInterface.Controls.Desktop;
 	using State;
+	using Common.AnimationSystem.DefaultAnimations;
 
     class GameHud : BaseView
 	{
+		#region BaseView members
+
+		protected override void OnShow(double time)
+		{
+			_bottomPanel.Animate(this).SlideIn(2.0).AddCallback(x => State = ViewState.Visible);
+			_topPanel.Animate(this).SlideIn(1.5);
+			_rightPanel.Animate(this).SlideIn(1.0);
+		}
+
+		#endregion
+
 		#region Protected members
 
 		private TopPanel _topPanel;
