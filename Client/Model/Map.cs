@@ -1,16 +1,16 @@
 ﻿namespace Client.Model
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Runtime.Serialization;
-    using System.Xml;
-    using System.Xml.Serialization;
-    using Client.Renderer;
-	using Microsoft.Xna.Framework;
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Linq;
+	using System.Runtime.Serialization;
+	using System.Xml;
+	using System.Xml.Serialization;
 	using Client.Common;
 	using Client.Common.AnimationSystem;
+	using Client.Renderer;
+	using Microsoft.Xna.Framework;
 
     [DataContract]
     public class Map

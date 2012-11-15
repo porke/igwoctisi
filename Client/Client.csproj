@@ -77,9 +77,6 @@
     <Reference Include="Nuclex.Graphics">
       <HintPath>References\Nuclex.Graphics.dll</HintPath>
     </Reference>
-    <Reference Include="Nuclex.Graphics.SpecialEffects">
-      <HintPath>References\Nuclex.Graphics.SpecialEffects.dll</HintPath>
-    </Reference>
     <Reference Include="Nuclex.Input">
       <HintPath>References\Nuclex.Input.dll</HintPath>
     </Reference>
@@ -121,6 +118,9 @@
     <Compile Include="Common\AsyncResult.cs" />
     <Compile Include="Common\SystemExtensions.cs" />
     <Compile Include="Common\XnaExtensions.cs" />
+    <Compile Include="Renderer\Particles\ParticleSystems\FireParticleSystem.cs" />
+    <Compile Include="Renderer\Particles\ParticleSystems\PlanetarySystemConvexParticleSystem.cs" />
+    <Compile Include="Renderer\PlanetarySystemVisual.cs" />
     <Compile Include="View\Controls\TabHeaderControl.cs" />
     <Compile Include="View\Controls\CommandInputControl.cs" />
     <Compile Include="View\Controls\IconControl.cs" />
@@ -156,6 +156,10 @@
     <Compile Include="Network\WsaNetwork.cs" />
     <Compile Include="Renderer\Controls\FlatIconControlRenderer.cs" />
     <Compile Include="Renderer\Controls\FlatViewportControlRenderer.cs" />
+    <Compile Include="Renderer\Particles\ParticleEmitter.cs" />
+    <Compile Include="Renderer\Particles\ParticleSettings.cs" />
+    <Compile Include="Renderer\Particles\ParticleSystem.cs" />
+    <Compile Include="Renderer\Particles\ParticleVertex.cs" />
     <Compile Include="Renderer\ICamera.cs" />
     <Compile Include="Renderer\IRenderer.cs" />
     <Compile Include="Renderer\MapVisual.cs" />
