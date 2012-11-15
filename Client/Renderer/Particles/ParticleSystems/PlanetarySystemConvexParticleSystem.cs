@@ -50,10 +50,7 @@
 			settings.MaxVerticalVelocity = 5;
 
 			settings.Gravity = new Vector3(0, 0, 0);
-
-			settings.MinColor = new Color(255, 255, 255, 10);
-			settings.MaxColor = new Color(255, 255, 255, 40);
-
+			
 			settings.MinStartSize = 5;
 			settings.MaxStartSize = 10;
 

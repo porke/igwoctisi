@@ -48,7 +48,7 @@
 			foreach (var planetarySystem in map.PlanetarySystems)
 			{
 				planetarySystem.Visual = new PlanetarySystemVisual(planetarySystem, Client, Client.Content, planetarySystem.Bounds);
-				//TODO uncomment: planetarySystem.Visual.Visible = false;
+				planetarySystem.Visual.Color = Color.LightGray;
 				Client.Components.Add(planetarySystem.Visual.ParticleSystem);
 			}
 
