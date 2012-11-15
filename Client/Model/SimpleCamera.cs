@@ -38,8 +38,8 @@ namespace Client.Model
 		public float AspectRatio { get; set; }
 		public Matrix Projection
 		{
-			//get { return Matrix.CreatePerspectiveFieldOfView(FieldOfView, AspectRatio, NearPlane, FarPlane); }
-			get { return Matrix.CreateOrthographicOffCenter(-640, 640, -360, 360, NearPlane, FarPlane); }
+			get { return Matrix.CreatePerspectiveFieldOfView(FieldOfView, AspectRatio, NearPlane, FarPlane); }
+			//get { return Matrix.CreateOrthographicOffCenter(-640, 640, -360, 360, NearPlane, FarPlane); }
 		}
 
 		public Ray GetRay(Viewport viewport, Vector3 pointOnScreen)
