@@ -1,44 +1,25 @@
 ﻿namespace Client.View.Controls
 {
-	using Nuclex.UserInterface.Controls.Desktop;
-	using Nuclex.UserInterface;
 	using System;
+	using Nuclex.UserInterface;
+	using Nuclex.UserInterface.Controls.Desktop;
 
-	public class ImageCheckButtonControl : OptionControl
+	public class ImageChoiceControl : ChoiceControl
 	{
-		public ImageCheckButtonControl(string checkedFrame, string uncheckedFrame)
-		{
-			_checkedIcon = new IconControl()
-			{
-				Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0)),
-				IconFrameName = checkedFrame
-			};
-			
-			_uncheckedIcon = new IconControl
-			{
-				Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0)),
-				IconFrameName = uncheckedFrame
-			};
+		public string[] States = new string[8];
 
-			OnChanged();
-		}
-
-		protected override void OnChanged()
+		/// <summary>
+		/// Creates the image choice controls (associates appropriate styles)
+		/// </summary>
+		/// <param name="onFrameNames">Frame names in the given order: disabled, normal, highlighted, depressed</param>
+		/// <param name="offFrameNames">Frame names in the given order: disabled, normal, highlighted, depressed</param>
+		public ImageChoiceControl(string[] onFrameNames, string[] offFrameNames)
 		{
-			base.OnChanged();
-			Console.WriteLine(Selected);
-			Children.Clear();
-			if (!Selected)
+			for (int i = 0; i < 4; ++i)
 			{
-				Children.Add(_uncheckedIcon);
-			}
-			else
-			{
-				Children.Add(_checkedIcon);
+				States[i] = offFrameNames[i];
+				States[i + 4] = onFrameNames[i];
 			}
 		}
-
-		private IconControl _checkedIcon;
-		private IconControl _uncheckedIcon;
 	}
 }
