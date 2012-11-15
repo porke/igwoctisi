@@ -1,4 +1,4 @@
-<Map Name="Duel">
+<Map Name="Hexagon">
 	<Planets>
 		<!-- Uklad 1 -->
 		<Planet Id="1" Name="A1" BaseUnitsPerTurn="3" X="800" Y="1200" Z="0" Radius="30" Diffuse="Textures\\Planets\\EarthDiffuse" Clouds="Textures\\Planets\\EarthClouds" CloudsAlpha="Textures\\Planets\\EarthCloudsAlpha" />
@@ -295,6 +295,10 @@
 		<StartingData PlanetId="17" ColorId="5"/>
 		<StartingData PlanetId="21" ColorId="6"/>
 	</PlayerStartingData>
+
+	<Background>
+		<Layer Texture="Space" Origin="-960;-540" Size="1920;1080" />
+	</Background>
 
 	<Background>
 		<Layer Texture="Textures\\Space" Origin="-960;540" Size="1920;1080" Speed="0,1" />
