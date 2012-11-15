@@ -62,7 +62,7 @@
 	</PlayerStartingData>
 
 	<Background>
-		<Layer Texture="Space" Origin="-960;-540" Size="1920;1080" />
+		<Layer Texture="Textures\\Space" Origin="-960;540" Size="1920;1080" Speed="0,1" />
 	</Background>
 	
   <Colors>

@@ -58,6 +58,7 @@
 		private const string TextureAttribute = "Texture";
 		private const string OriginAttribute = "Origin";
 		private const string SizeAttribute = "Size";
+		private const string SpeedAttribute = "Speed";
 
         // Element names
         private const string MapElement = "Map";
@@ -153,6 +154,7 @@
 						layer.Texture = reader.GetAttribute(TextureAttribute);
 						layer.Origin = XnaExtensions.ParseVector2(reader.GetAttribute(OriginAttribute));
 						layer.Size = XnaExtensions.ParseVector2(reader.GetAttribute(SizeAttribute));
+						layer.Speed = float.Parse(reader.GetAttribute(SpeedAttribute));
 						Background.Add(layer);
 					}
 				} while (reader.ReadToNextSibling(BackgroundLayerElement));
