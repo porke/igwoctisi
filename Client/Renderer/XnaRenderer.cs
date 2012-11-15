@@ -27,8 +27,6 @@
 		protected VertexBuffer _sphereVB, _sphereVB2;
 		protected Texture2D _txSpace;
 
-				planetarySystem.Visual = new PlanetarySystemVisual(Client, Client.Content, planetarySystem.Bounds);
-				planetarySystem.Visual.Color = Color.LightGray;
 		#endregion
 
 		#region IRenderer members

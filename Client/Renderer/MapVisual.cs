@@ -38,7 +38,8 @@
 
 			foreach (var planetarySystem in map.PlanetarySystems)
 			{
-				planetarySystem.Visual = new PlanetarySystemVisual(client, client.Content, planetarySystem.Bounds);
+				planetarySystem.Visual = new PlanetarySystemVisual(client, planetarySystem);
+				planetarySystem.Visual.Color = Color.LightGray;
 				client.Components.Add(planetarySystem.Visual.ParticleSystem);
 			}
 		}
