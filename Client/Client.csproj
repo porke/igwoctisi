@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{5F90509B-9B49-411E-8560-18F90B6DA3FC}</ProjectGuid>
+    <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Client</RootNamespace>
+    <AssemblyName>IGWOCTISI_Client</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
+    <XnaPlatform>Windows</XnaPlatform>
+    <XnaProfile>HiDef</XnaProfile>
+    <XnaCrossPlatformGroupID>46d06ab2-591b-4628-8086-cf0ab0f56e9a</XnaCrossPlatformGroupID>
+    <XnaOutputType>Game</XnaOutputType>
+    <ApplicationIcon>Game.ico</ApplicationIcon>
+    <Thumbnail>GameThumbnail.png</Thumbnail>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+    <XnaCompressContent>false</XnaCompressContent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+    <XnaCompressContent>true</XnaCompressContent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Client.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="mscorlib" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.Graphics">
+      <HintPath>References\Nuclex.Graphics.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.Input">
+      <HintPath>References\Nuclex.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.Support">
+      <HintPath>References\Nuclex.Support.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.Support.Plugins">
+      <HintPath>References\Nuclex.Support.Plugins.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.UserInterface">
+      <HintPath>References\Nuclex.UserInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.5.5.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="SlimDX.DirectInput">
+      <HintPath>References\SlimDX.DirectInput.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Net" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\AnimationSystem\CompoundAnimation.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\InterpolateTo.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\Shake.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideOut.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideIn.cs" />
+    <Compile Include="Common\JsonLowercaseSerializer.cs" />
+    <Compile Include="Common\NuclexExtensions.cs" />
+    <Compile Include="Common\ObjectPool.cs" />
+    <Compile Include="Common\Utils.cs" />
+    <Compile Include="GameClient.cs" />
+    <Compile Include="Common\AsyncResult.cs" />
+    <Compile Include="Common\SystemExtensions.cs" />
+    <Compile Include="Common\XnaExtensions.cs" />
+    <Compile Include="Renderer\Particles\ParticleSystems\FireParticleSystem.cs" />
+    <Compile Include="Renderer\Particles\ParticleSystems\PlanetarySystemConvexParticleSystem.cs" />
+    <Compile Include="Renderer\PlanetarySystemVisual.cs" />
+    <Compile Include="View\Controls\TabHeaderControl.cs" />
+    <Compile Include="View\Controls\CommandInputControl.cs" />
+    <Compile Include="View\Controls\IconControl.cs" />
+    <Compile Include="View\Controls\TabbedPaneControl.cs" />
+    <Compile Include="View\Controls\ViewportControl.cs" />
+    <Compile Include="View\Controls\WrappableListControl.cs" />
+    <Compile Include="View\Controls\WrappableLabelControl.cs" />
+    <Compile Include="Input\IInput.cs" />
+    <Compile Include="Input\IInputReceiver.cs" />
+    <Compile Include="Input\NullInputReceiver.cs" />
+    <Compile Include="Input\NuclexScreenInputReceiver.cs" />
+    <Compile Include="View\Controls\PasswordInputControl.cs" />
+    <Compile Include="Input\XnaInput.cs" />
+    <Compile Include="Model\ChatMessage.cs" />
+    <Compile Include="Model\EndgameData.cs" />
+    <Compile Include="Model\GameStatistic.cs" />
+    <Compile Include="Model\Map.cs" />
+    <Compile Include="Model\NewRoundInfo.cs" />
+    <Compile Include="Model\PlanetarySystem.cs" />
+    <Compile Include="Model\PlanetLink.cs" />
+    <Compile Include="Model\Player.cs" />
+    <Compile Include="Model\PlayerColor.cs" />
+    <Compile Include="Model\Point3.cs" />
+    <Compile Include="Model\SimulationResult.cs" />
+    <Compile Include="Model\SpecificGameLobbyInfo.cs" />
+    <Compile Include="Model\Planet.cs" />
+    <Compile Include="Model\Scene.cs" />
+    <Compile Include="Model\StartingData.cs" />
+    <Compile Include="Model\Technology.cs" />
+    <Compile Include="Model\UserCommand.cs" />
+    <Compile Include="Model\LobbyListInfo.cs" />
+    <Compile Include="Network\INetwork.cs" />
+    <Compile Include="Network\WsaNetwork.cs" />
+    <Compile Include="Renderer\Controls\FlatIconControlRenderer.cs" />
+    <Compile Include="Renderer\Controls\FlatViewportControlRenderer.cs" />
+    <Compile Include="Renderer\Particles\ParticleEmitter.cs" />
+    <Compile Include="Renderer\Particles\ParticleSettings.cs" />
+    <Compile Include="Renderer\Particles\ParticleSystem.cs" />
+    <Compile Include="Renderer\Particles\ParticleVertex.cs" />
+    <Compile Include="Renderer\ICamera.cs" />
+    <Compile Include="Renderer\IRenderer.cs" />
+    <Compile Include="Renderer\MapVisual.cs" />
+    <Compile Include="Renderer\PlanetVisual.cs" />
+    <Compile Include="Renderer\SceneVisual.cs" />
+    <Compile Include="Model\SimpleCamera.cs" />
+    <Compile Include="Renderer\Spaceship.cs" />
+    <Compile Include="Renderer\Vertex.cs" />
+    <Compile Include="Renderer\XnaRenderer.cs" />
+    <Compile Include="State\GameState.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="IGWOCTISI.cs" />
+    <Compile Include="State\LobbyState.cs" />
+    <Compile Include="State\MenuState.cs" />
+    <Compile Include="State\PlayState.cs" />
+    <Compile Include="Common\AnimationSystem\Animation.cs" />
+    <Compile Include="Common\AnimationSystem\AnimationManager.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\MoveTo.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\Wait.cs" />
+    <Compile Include="Common\AnimationSystem\ITransformable.cs" />
+    <Compile Include="Common\AnimationSystem\Interpolators.cs" />
+    <Compile Include="View\Lobby\CreateGameView.cs" />
+    <Compile Include="View\Lobby\LobbyBackground.cs" />
+    <Compile Include="View\Lobby\MainLobbyView.cs" />
+    <Compile Include="View\Play\Animations\AnimationExtensions.cs" />
+    <Compile Include="View\Play\Animations\MoveAndAttack.cs" />
+    <Compile Include="View\Play\Animations\Deploy.cs" />
+    <Compile Include="View\Play\BottomPanel.cs" />
+    <Compile Include="View\Play\GameHud.cs" />
+    <Compile Include="View\Play\GameStats.cs" />
+    <Compile Include="View\Play\GameViewport.cs" />
+    <Compile Include="View\BaseView.cs" />
+    <Compile Include="View\Lobby\GameLobbyView.cs" />
+    <Compile Include="View\Menu\MenuBackground.cs" />
+    <Compile Include="View\MessageBox.cs" />
+    <Compile Include="View\Play\RightPanel.cs" />
+    <Compile Include="View\Play\TopPanel.cs" />
+    <Compile Include="View\SplashScreen.cs" />
+    <Compile Include="View\Menu\MainMenuView.cs" />
+    <Compile Include="View\ViewManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Game.ico" />
+    <Content Include="GameThumbnail.png">
+      <XnaPlatformSpecific>true</XnaPlatformSpecific>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Content\Content.contentproj">
+      <Name>Content</Name>
+      <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{8BA87393-35F1-4109-BE4B-BA4CDE1D3AD1}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Xna.Framework.4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft XNA Framework Redistributable 4.0</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
+  <!--
+      To modify your build process, add your task inside one of the targets below and uncomment it. 
+      Other similar extension points exist, see Microsoft.Common.targets.
+      <Target Name="BeforeBuild">
+      </Target>
+      <Target Name="AfterBuild">
+      </Target>
+    -->
+</Project>
