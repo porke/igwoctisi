@@ -24,57 +24,6 @@
 		protected VertexBuffer _sphereVB, _sphereVB2;
 		protected Texture2D _txSpace;
 
-		protected void InitializeMapVisual(Map map)
-		{
-			var vertices = new VertexPositionColor[map.Links.Count * 2];
-			var color = Color.LightGreen;
-
-			for (var i = 0; i < map.Links.Count; ++i)
-			{
-				var link = map.Links[i];
-				var sourcePlanet = map.Planets.First(x => x.Id == link.SourcePlanet);
-				var targetPlanet = map.Planets.First(x => x.Id == link.TargetPlanet);
-
-				vertices[2 * i + 0] = new VertexPositionColor(new Vector3(sourcePlanet.X, sourcePlanet.Y, sourcePlanet.Z), color);
-				vertices[2 * i + 1] = new VertexPositionColor(new Vector3(targetPlanet.X, targetPlanet.Y, targetPlanet.Z), color);
-			}
-
-			var visual = new MapVisual();
-			visual.LinksVB = new VertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
-			visual.LinksVB.SetData(vertices);
-
-			map.Visual = visual;
-		}
-		protected void InitializePlanetVisual(Planet planet)
-		{
-			var contentMgr = Client.Content;
-			var visual = new PlanetVisual();
-			var random = new Random(Guid.NewGuid().GetHashCode());
-
-			visual.Planet = planet;
-			visual.Effect = contentMgr.Load<Effect>("Effects\\Planet");
-			visual.VB = _sphereVB;
-			visual.Period = (float)(random.NextDouble() * 10.0 + 5.0);
-			visual.Yaw = (float)(random.NextDouble() * MathHelper.TwoPi);
-			visual.Pitch = (float)(random.NextDouble() * MathHelper.TwoPi);
-			visual.Roll = (float)(random.NextDouble() * MathHelper.TwoPi);
-			
-			if (!string.IsNullOrEmpty(planet.Diffuse))
-			{
-				visual.DiffuseTexture = contentMgr.Load<Texture2D>(planet.Diffuse);
-			}
-			if (!string.IsNullOrEmpty(planet.Clouds))
-			{
-				visual.CloudsTexture = contentMgr.Load<Texture2D>(planet.Clouds);
-			}
-			if (!string.IsNullOrEmpty(planet.CloudsAlpha))
-			{
-				visual.CloudsAlphaTexture = contentMgr.Load<Texture2D>(planet.CloudsAlpha);
-			}
-
-			planet.Visual = visual;
-		}
-
 		#endregion
 
 		#region IRenderer members
@@ -120,12 +69,13 @@
 		{
 			Client = null;
 		}
+		public void Update(Scene scene, double delta, double time)
+		{
+			scene.Visual.Update(delta, time);
+		}
 		public void Draw(ICamera camera, Scene scene, double delta, double time)
 		{
 			GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer | ClearOptions.Stencil, Color.Black, 1, 0);
-
-			var view = camera.GetView();
-			var projection = camera.Projection;
 
 			var map = scene.Map;
 
@@ -142,11 +92,6 @@
 			_fxLinks.Parameters["View"].SetValue(camera.GetView());
 			_fxLinks.Parameters["Projection"].SetValue(camera.Projection);
 
-			if (map.Visual == null)
-			{
-				InitializeMapVisual(map);
-			}
-
 			_fxLinks.Parameters["Ambient"].SetValue(0.0f);
 			foreach (var pass in _fxLinks.CurrentTechnique.Passes)
 			{
@@ -157,7 +102,7 @@
 
 			#endregion
 
-			#region Systems
+			#region Systems (until particle system)
 
 			_fxLinks.Parameters["Ambient"].SetValue(0.0f);
 			_fxLinks.Parameters["View"].SetValue(camera.GetView());
@@ -181,21 +126,18 @@
 
 			#endregion
 
-			#region Planets
-
+			// planets
 			foreach (var planet in map.Planets)
 			{
-				if (planet.Visual == null)
-				{
-					InitializePlanetVisual(planet);
-				}
 				var planetarySystem = scene.Map.GetSystemByPlanetid(planet.Id);
 
 				var ambient = scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f;
 				var glow = planetarySystem != null ? planetarySystem.Color : Color.LightGray;
 
-				planet.Visual.Draw(GraphicsDevice, view, projection, time, ambient, glow);
+				planet.Visual.Draw(GraphicsDevice, camera, time, ambient, glow);
 			}
+
+			#region Move indicators
 
 			var selectedPlanet = scene.Map.GetPlanetById(scene.SelectedPlanet);
 			if (selectedPlanet != null)
@@ -226,53 +168,16 @@
 			
 			#endregion
 
-			#region Spaceships (and also should there be planets and links)
-
+			// spacesheeps
 			scene.Visual.Draw(delta, time);
 
-            #endregion
-
-            #region Planets info
-
+            // planets info
             _spriteBatch.Begin();
-
 			foreach (var planet in scene.Map.Planets)
 			{
-				var planetScreen = camera.Project(GraphicsDevice.Viewport, new Vector3(planet.X, planet.Y, planet.Z));
-				var fleetText = planet.NumFleetsPresent.ToString();
-				var fleetIncome = string.Format("+{0}", planet.BaseUnitsPerTurn);
-				var ownerName = planet.Owner != null ? planet.Owner.Username : string.Empty;
-				var nameSize = _fontHud.MeasureString(planet.Name);
-				var fleetsSize = _fontHud.MeasureString(fleetText);
-				var ownerColor = planet.Owner != null ? planet.Owner.Color.XnaColor : Color.Gray;
-
-				var nameScreen = new Vector2(planetScreen.X - nameSize.X / 2.0f, planetScreen.Y - nameSize.Y / 2.0f);
-				_spriteBatch.DrawString(_fontHud, planet.Name, nameScreen + NameOffset, Color.Yellow);
-
-                var fleetsScreen = new Vector2(planetScreen.X - fleetsSize.X / 2.0f, planetScreen.Y - fleetsSize.Y / 2.0f);
-                if (planet.ShowDetails)
-                {                    
-                    _spriteBatch.DrawString(_fontHud, fleetText, fleetsScreen + FleetsOffset, Color.Yellow);
-                }
-
-                if (scene.HoveredPlanet == planet.Id)
-                {
-                    _spriteBatch.DrawString(_fontHud, fleetIncome, fleetsScreen + FleetIncomeOffset, Color.Yellow);
-                }
-
-				if (planet.FleetChange != 0)
-				{
-					var color = planet.FleetChange > 0 ? Color.Green : Color.Red;
-					var text = string.Format("{0}{1}", planet.FleetChange > 0 ? "+" : "", planet.FleetChange);
-					_spriteBatch.DrawString(_fontHud, text, fleetsScreen + FleetDeltaOffset, color);
-				}
-
-				_spriteBatch.DrawString(_fontHud, ownerName, nameScreen + OwnerNameOffset, ownerColor);
+				planet.Visual.DrawInfo(GraphicsDevice, _spriteBatch, camera, scene.HoveredPlanet == planet.Id);
 			}
-
 			_spriteBatch.End();
-
-			#endregion*/
 		}
 
 		#endregion
