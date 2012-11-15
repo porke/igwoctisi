@@ -28,10 +28,10 @@
 		public Player _lastOwner;
 
 
-		public PlanetarySystemVisual(PlanetarySystem planetarySystem, Game Game, ContentManager Content, Point3[] keyPoints)
+		public PlanetarySystemVisual(GameClient client, PlanetarySystem planetarySystem)
 		{
 			_planetarySystem = planetarySystem;
-			ParticleSystem = new PlanetarySystemConvexParticleSystem(Game, Content, keyPoints);
+			ParticleSystem = new PlanetarySystemConvexParticleSystem(client, client.Content, planetarySystem.Bounds);
 		}
 
 		public void Update(GraphicsDevice device, ICamera camera, Map map, double delta, double time)

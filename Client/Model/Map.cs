@@ -30,6 +30,9 @@
         [DataMember]
         public List<StartingData> PlayerStartingData { get; set; }
 
+		[DataMember]
+		public List<BackgroundLayer> Background { get; set; }
+
         [DataMember]
         public List<PlayerColor> Colors { get; set; }
 
@@ -52,6 +55,9 @@
         private const string IdAttribute = "Id";
 		private const string MinAttribute = "Min";
 		private const string MaxAttribute = "Max";
+		private const string TextureAttribute = "Texture";
+		private const string OriginAttribute = "Origin";
+		private const string SizeAttribute = "Size";
 
         // Element names
         private const string MapElement = "Map";
@@ -60,6 +66,8 @@
         private const string SystemsElement = "Systems";
         private const string PlayerStartingDataElement = "PlayerStartingData";
         private const string StartingDataElement = "StartingData";
+		private const string BackgroundElement = "Background";
+		private const string BackgroundLayerElement = "Layer";
         private const string ColorsElement = "Colors";
         private const string ColorElement = "Color";
 		private const string CameraElement = "Camera";
@@ -134,6 +142,21 @@
                     }
                 } while (reader.ReadToNextSibling(StartingDataElement));
 
+				// read background layers
+				reader.ReadToFollowing(BackgroundElement);
+				reader.ReadToDescendant(BackgroundLayerElement);
+				do
+				{
+					if (reader.HasAttributes)
+					{
+						var layer = new BackgroundLayer();
+						layer.Texture = reader.GetAttribute(TextureAttribute);
+						layer.Origin = XnaExtensions.ParseVector2(reader.GetAttribute(OriginAttribute));
+						layer.Size = XnaExtensions.ParseVector2(reader.GetAttribute(SizeAttribute));
+						Background.Add(layer);
+					}
+				} while (reader.ReadToNextSibling(BackgroundLayerElement));
+
                 // Read available colors
                 reader.ReadToFollowing(ColorsElement);
                 reader.ReadToDescendant(ColorElement);
@@ -169,6 +192,7 @@
             Links = new List<PlanetLink>();
             PlanetarySystems = new List<PlanetarySystem>();
             PlayerStartingData = new List<StartingData>();
+			Background = new List<BackgroundLayer>();
             Colors = new List<PlayerColor>();
         }
 		public void Update(double delta, double time)

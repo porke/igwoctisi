@@ -478,7 +478,7 @@
 			_clientPlayer = clientPlayer;
 
 			Scene = new Scene(_loadedMap);
-			Scene.Visual = new SceneVisual(Scene, loadedMap.Colors, Client.Content, ViewMgr.AnimationManager);
+			Scene.Visual = new SceneVisual(Client, Scene, ViewMgr.AnimationManager);
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
 
