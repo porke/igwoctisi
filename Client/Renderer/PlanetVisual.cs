@@ -28,9 +28,11 @@
         public Texture2D CloudsAlphaTexture { get; set; }
 		public VertexBuffer VB { get; set; }
 
-		public PlanetVisual(Planet planet, GraphicsDevice device, ContentManager contentMgr)
+		public PlanetVisual(GameClient client, Planet planet)
 		{
 			Planet = planet;
+			var device = client.GraphicsDevice;
+			var contentMgr = client.Content;
 
 			var random = new Random(Guid.NewGuid().GetHashCode());
 			Effect = contentMgr.Load<Effect>("Effects\\Planet");

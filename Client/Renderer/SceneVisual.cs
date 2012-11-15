@@ -50,17 +50,17 @@
 
 		#endregion
 
-		public SceneVisual(Scene scene, GraphicsDevice device, ContentManager content, AnimationManager AnimationManager)
+		public SceneVisual(GameClient client, Scene scene, AnimationManager AnimationManager)
 		{
 			Scene = scene;
-			Spaceship.SetupColorPools(scene.Map.Colors, content, AnimationManager);
+			Spaceship.SetupColorPools(scene.Map.Colors, client.Content, AnimationManager);
 			this.AnimationManager = AnimationManager;
 
 			// Install handlers
 			scene.AnimDeploys += new Action<IList<Tuple<Planet, int, Action>>>(Animation_Deploys);
 			scene.AnimMovesAndAttacks += new Action<List<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>>>(Animation_MovesAndAttacks);
 
-			scene.Map.Visual = new MapVisual(scene.Map, device, content);
+			scene.Map.Visual = new MapVisual(client, scene.Map);
 		}
 		public void AddSpaceship(Spaceship ship)
 		{

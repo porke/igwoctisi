@@ -27,16 +27,6 @@
 		protected VertexBuffer _sphereVB, _sphereVB2;
 		protected Texture2D _txSpace;
 
-			#region Particles for planetary systems
-
-			foreach (var planetarySystem in map.PlanetarySystems)
-			{
-				planetarySystem.Visual = new PlanetarySystemVisual(Client, Client.Content, planetarySystem.Bounds);
-				Client.Components.Add(planetarySystem.Visual.ParticleSystem);
-			}
-
-			#endregion
-
 		#endregion
 
 		#region IRenderer members
