@@ -26,9 +26,9 @@
 		private Color _color;
 
 
-		public PlanetarySystemVisual(PlanetarySystem planetarySystem,Game Game, ContentManager Content, Point3[] keyPoints)
+		public PlanetarySystemVisual(GameClient client, PlanetarySystem planetarySystem)
 		{
-			ParticleSystem = new PlanetarySystemConvexParticleSystem(Game, Content, keyPoints);
+			ParticleSystem = new PlanetarySystemConvexParticleSystem(client, client.Content, planetarySystem.Bounds);
 		}
 
 		public void Update(GraphicsDevice device, ICamera camera, double delta, double time)
