@@ -2,18 +2,27 @@
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 	using Client.Model;
 	using Client.View.Controls;
 	using Common;
+	using Common.AnimationSystem.DefaultAnimations;
 	using Input;
-	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
-	using Nuclex.UserInterface.Controls.Desktop;
 	using State;
 
     class GameHud : BaseView
 	{
+		#region BaseView members
+
+		protected override void OnShow(double time)
+		{
+			_bottomPanel.Animate(this).SlideIn(2.0).AddCallback(x => State = ViewState.Visible);
+			_topPanel.Animate(this).SlideIn(1.5);
+			_rightPanel.Animate(this).SlideIn(1.0);
+		}
+
+		#endregion
+
 		#region Protected members
 
 		private TopPanel _topPanel;
@@ -29,9 +38,11 @@
 			_rightPanel = new RightPanel();
 			_rightPanel.CommandDeleted += DeleteCommand_Pressed;
 			_rightPanel.CommandsSent += SendCommands_Pressed;
+			_rightPanel.Toggled += TabPanelToggle_Pressed;
 
 			_bottomPanel = new BottomPanel();
 			_bottomPanel.ChatMessageSent += ChatMessage_Execute;
+			_bottomPanel.Toggled += TabPanelToggle_Pressed;
 
             screen.Desktop.Children.AddRange(
                 new Control[] 
@@ -45,6 +56,12 @@
         #endregion
 
         #region Event handlers
+
+		private void TabPanelToggle_Pressed(object sender, EventArgs e)
+		{
+			var panel = sender as TabbedPaneControl;
+			panel.Animate(this).SlideOut();
+		}
 
         private void LeaveGame_Pressed(object sender, EventArgs e)
         {

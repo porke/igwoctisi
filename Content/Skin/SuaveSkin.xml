@@ -1,57 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 
-<!--
-
-Important:
-
-The "Suave" theme is based on a Windows XP theme created by Mohsin Naqi.
-
-Graphics were taken unmodified from that theme and put together to
-create the "Suave" skin by Markus Ewald (http://www.nuclex.org).
-
-The original artist has agreed to allow for unlimited usage of this theme as
-long as he is credited for his art. So if you decide to publish a project
-that uses the theme, please give due credit to the original artist!
-
->
-> Hello,
->
-> Go ahead and do whatever you want with it, you have my permission :) I only
-> want to be credited for the art.
->
-> Thank you
-> Mohsin
-> ~~~~~ Original Message ~~~~~ From: "Markus Ewald" <***spam protection=""***>
-> To: "Mohsin Naqi" <***spam protection=""***>
-> Sent: Friday, June 23, 2006 9:47 PM
-> Subject: Your Suave theme
->
->
-> > Hi!
-> >
-> > I really like your Suave theme because it doesn't look so serious and
-> > sterile as most other themes I've seen!
-> >
-> > I'm working on the CeGui# project
-> > (http://ceguisharp.sourceforge.net/index.php/Main_Page),
-> > an open source component used to display graphical user interfaces in
-> > computer games.
-> >
-> > Well, the existing themes we have are looking rather dull, so I'm hoping
-> > to come up with a new, good looking default theme for the library. Would
-> > it be okay with you if I created a CeGui# theme from your Suave theme?
-> >
-> > Of course all credits for the art go to you. My only requirement is that
-> > the CeGui# theme I create needs to be free anyone to use (hobbyists as
-> > well as commercial programmers).
-> >
-> > Do I have your ok?
-> >
-> > Thanks ahead, ;)
-> > -Markus-
-
--->
-
 <skin
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="../../skin.xsd"
@@ -519,40 +467,73 @@ that uses the theme, please give due credit to the original artist!
 		<region source="controls" hplacement="stretch" vplacement="stretch" x="1" y="104" w="60" h="15" />
 	</frame>
 
+	  <!-- 
+		Static UI icons
+	  -->
 	<frame name="techIcon">
-		<region source="controls" hplacement="left" vplacement="top" x="92" y="25" w="2" h="2" />
-		<region source="controls" hplacement="stretch" vplacement="top" x="94" y="25" w="60" h="2" />
-		<region source="controls" hplacement="right" vplacement="top" x="154" y="25" w="2" h="2" />
-		<region source="controls" hplacement="left" vplacement="stretch" x="92" y="27" w="2" h="19" />
-		<region source="controls" hplacement="stretch" vplacement="stretch" x="94" y="27" w="60" h="19" />
-		<region source="controls" hplacement="right" vplacement="stretch" x="154" y="27" w="2" h="19" />
-		<region source="controls" hplacement="left" vplacement="bottom" x="92" y="46" w="2" h="2" />
-		<region source="controls" hplacement="stretch" vplacement="bottom" x="94" y="46" w="60" h="2" />
-		<region source="controls" hplacement="right" vplacement="bottom" x="154" y="46" w="2" h="2" />
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="61" y="168" w="24" h="24" />
 	</frame>
 
 	<frame name="fleetIcon">
-		<region source="controls" hplacement="left" vplacement="top" x="92" y="25" w="2" h="2" />
-		<region source="controls" hplacement="stretch" vplacement="top" x="94" y="25" w="60" h="2" />
-		<region source="controls" hplacement="right" vplacement="top" x="154" y="25" w="2" h="2" />
-		<region source="controls" hplacement="left" vplacement="stretch" x="92" y="27" w="2" h="19" />
-		<region source="controls" hplacement="stretch" vplacement="stretch" x="94" y="27" w="60" h="19" />
-		<region source="controls" hplacement="right" vplacement="stretch" x="154" y="27" w="2" h="19" />
-		<region source="controls" hplacement="left" vplacement="bottom" x="92" y="46" w="2" h="2" />
-		<region source="controls" hplacement="stretch" vplacement="bottom" x="94" y="46" w="60" h="2" />
-		<region source="controls" hplacement="right" vplacement="bottom" x="154" y="46" w="2" h="2" />
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="34" y="168" w="24" h="24" />
 	</frame>
 
 	<frame name="timerIcon">
-		<region source="controls" hplacement="left" vplacement="top" x="92" y="25" w="2" h="2" />
-		<region source="controls" hplacement="stretch" vplacement="top" x="94" y="25" w="60" h="2" />
-		<region source="controls" hplacement="right" vplacement="top" x="154" y="25" w="2" h="2" />
-		<region source="controls" hplacement="left" vplacement="stretch" x="92" y="27" w="2" h="19" />
-		<region source="controls" hplacement="stretch" vplacement="stretch" x="94" y="27" w="60" h="19" />
-		<region source="controls" hplacement="right" vplacement="stretch" x="154" y="27" w="2" h="19" />
-		<region source="controls" hplacement="left" vplacement="bottom" x="92" y="46" w="2" h="2" />
-		<region source="controls" hplacement="stretch" vplacement="bottom" x="94" y="46" w="60" h="2" />
-		<region source="controls" hplacement="right" vplacement="bottom" x="154" y="46" w="2" h="2" />
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="89" y="168" w="24" h="24" />
+	</frame>
+
+	<!--
+		Panel choice buttons
+	-->
+	<frame name="commandsIconInactive">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="1" y="168" w="32" h="32" />
+	</frame>	  
+	  
+	<frame name="commandsIconActive">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="67" y="201" w="32" h="32" />
+	</frame>
+
+	<frame name="playersIconInactive">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="1" y="201" w="32" h="32" />
+	</frame>
+
+	<frame name="playersIconActive">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="34" y="201" w="32" h="32" />
+	</frame>
+
+	<!--
+		Image button frames
+	-->
+	<frame name="arrowDownNormal">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="129" y="73" w="8" h="32" />
+	</frame>
+
+	<frame name="arrowDownPressed">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="129" y="73" w="8" h="32" />
+	</frame>
+
+	<frame name="arrowUpNormal">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="129" y="73" w="8" h="32" />
+	</frame>
+
+	<frame name="arrowUpPressed">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="129" y="73" w="8" h="32" />
+	</frame>
+
+	<frame name="arrowRightNormal">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="92" y="73" w="32" h="8" />
+	</frame>
+
+	<frame name="arrowRightPressed">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="92" y="73" w="32" h="8" />
+	</frame>
+
+	<frame name="arrowLeftNormal">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="92" y="73" w="32" h="8" />
+	</frame>
+
+	<frame name="arrowLeftPressed">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="92" y="73" w="32" h="8" />
 	</frame>
   </frames>
 
