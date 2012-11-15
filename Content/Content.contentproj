@@ -119,71 +119,71 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\EarthClouds.jpg">
+    <Compile Include="Textures\Planets\EarthClouds.jpg">
       <Name>EarthClouds</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\EarthCloudsAlpha.jpg">
+    <Compile Include="Textures\Planets\EarthCloudsAlpha.jpg">
       <Name>EarthCloudsAlpha</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\EarthDiffuse.jpg">
+    <Compile Include="Textures\Planets\EarthDiffuse.jpg">
       <Name>EarthDiffuse</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\JupiterDiffuse.jpg">
+    <Compile Include="Textures\Planets\JupiterDiffuse.jpg">
       <Name>JupiterDiffuse</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\MarsDiffuse.jpg">
+    <Compile Include="Textures\Planets\MarsDiffuse.jpg">
       <Name>MarsDiffuse</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\MercuryDiffuse.jpg">
+    <Compile Include="Textures\Planets\MercuryDiffuse.jpg">
       <Name>MercuryDiffuse</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\MoonDiffuse.jpg">
+    <Compile Include="Textures\Planets\MoonDiffuse.jpg">
       <Name>MoonDiffuse</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\NeptuneDiffuse.jpg">
+    <Compile Include="Textures\Planets\NeptuneDiffuse.jpg">
       <Name>NeptuneDiffuse</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\PlutonDiffuse.jpg">
+    <Compile Include="Textures\Planets\PlutonDiffuse.jpg">
       <Name>PlutonDiffuse</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\SaturnDiffuse.jpg">
+    <Compile Include="Textures\Planets\SaturnDiffuse.jpg">
       <Name>SaturnDiffuse</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\UranusDiffuse.jpg">
+    <Compile Include="Textures\Planets\UranusDiffuse.jpg">
       <Name>UranusDiffuse</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\VenusDiffuse.jpg">
+    <Compile Include="Textures\Planets\VenusDiffuse.jpg">
       <Name>VenusDiffuse</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\PlanetDiffuse1.png">
+    <Compile Include="Textures\Planets\PlanetDiffuse1.png">
       <Name>PlanetDiffuse1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -206,6 +206,20 @@
   <ItemGroup>
     <Compile Include="Textures\Space.jpg">
       <Name>Space</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\FlareEffect.fx">
+      <Name>FlareEffect</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\FlareTexture.png">
+      <Name>FlareTexture</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
