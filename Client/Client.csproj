@@ -122,8 +122,10 @@
     <Compile Include="Common\SystemExtensions.cs" />
     <Compile Include="Common\XnaExtensions.cs" />
     <Compile Include="Model\BackgroundLayer.cs" />
+    <Compile Include="View\Controls\TabHeaderControl.cs" />
     <Compile Include="View\Controls\CommandInputControl.cs" />
     <Compile Include="View\Controls\IconControl.cs" />
+    <Compile Include="View\Controls\TabbedPaneControl.cs" />
     <Compile Include="View\Controls\ViewportControl.cs" />
     <Compile Include="View\Controls\WrappableListControl.cs" />
     <Compile Include="View\Controls\WrappableLabelControl.cs" />
@@ -183,6 +185,7 @@
     <Compile Include="View\Play\Animations\AnimationExtensions.cs" />
     <Compile Include="View\Play\Animations\MoveAndAttack.cs" />
     <Compile Include="View\Play\Animations\Deploy.cs" />
+    <Compile Include="View\Play\BottomPanel.cs" />
     <Compile Include="View\Play\GameHud.cs" />
     <Compile Include="View\Play\GameStats.cs" />
     <Compile Include="View\Play\GameViewport.cs" />
@@ -190,6 +193,8 @@
     <Compile Include="View\Lobby\GameLobbyView.cs" />
     <Compile Include="View\Menu\MenuBackground.cs" />
     <Compile Include="View\MessageBox.cs" />
+    <Compile Include="View\Play\RightPanel.cs" />
+    <Compile Include="View\Play\TopPanel.cs" />
     <Compile Include="View\SplashScreen.cs" />
     <Compile Include="View\Menu\MainMenuView.cs" />
     <Compile Include="View\ViewManager.cs" />

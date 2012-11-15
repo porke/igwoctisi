@@ -1,13 +1,13 @@
 ﻿namespace Client.View.Menu
 {
-    using System;
-    using Common;
-    using Input;
-    using View.Controls;
-    using Nuclex.UserInterface;
-    using Nuclex.UserInterface.Controls;
-    using Nuclex.UserInterface.Controls.Desktop;
-    using State;
+	using System;
+	using Common;
+	using Input;
+	using Nuclex.UserInterface;
+	using Nuclex.UserInterface.Controls;
+	using Nuclex.UserInterface.Controls.Desktop;
+	using State;
+	using View.Controls;
 
 	class MainMenuView : BaseView
     {
@@ -54,8 +54,8 @@
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.6f, 40), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
             };
             btnEnterPlayState.Pressed += EnterPlayState_Pressed;
-		
-            screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit });
+
+            screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit});
 #if DEBUG
             screen.Desktop.Children.Add(btnEnterPlayState);
 #endif

@@ -3,8 +3,8 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Client.View.Controls;
 	using Client.Model;
+	using Client.View.Controls;
 	using Common;
 	using Input;
 	using Nuclex.UserInterface;
@@ -16,236 +16,29 @@
 	{
 		#region Protected members
 
-		private WrappableListControl _commandList;
-        private LabelControl _playerNameValue;
-        private LabelControl _fleetCountValue;
-        private LabelControl _fleetIncomeValue;
-		private LabelControl _techPointsValue;
-		private LabelControl _techAttackValue;
-		private LabelControl _techDefenseValue;
-		private LabelControl _techEconomyValue;
-        private ListControl _playerList;
-        private LabelControl _timer;
-        private WrappableListControl _messageList;
-        private CommandInputControl _chatMessage;
-		private ButtonControl btnSendCommands;
-		private ButtonControl btnDeleteCommand;
+		private TopPanel _topPanel;
+		private RightPanel _rightPanel;
+		private BottomPanel _bottomPanel;
 
         protected void CreateChildControls()
         {
-            #region Player list section
+			_topPanel = new TopPanel();
+			_topPanel.TechRaised += RaiseTech_Pressed;
+			_topPanel.LeftGame += LeaveGame_Pressed;
 
-            var playerListHeader = new LabelControl("Players")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.875f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
-            };
+			_rightPanel = new RightPanel();
+			_rightPanel.CommandDeleted += DeleteCommand_Pressed;
+			_rightPanel.CommandsSent += SendCommands_Pressed;
 
-            _playerList = new ListControl()
-            {
-                SelectionMode = ListSelectionMode.None,
-                Bounds = new UniRectangle(new UniScalar(0.85f, 0), new UniScalar(0.1f, 0), new UniScalar(0.125f, 0), new UniScalar(0.2f, 0))
-            };
-
-            #endregion
-
-            #region Orders section
-
-            var ordersHeader = new LabelControl("Orders")
-            {                
-                Bounds = new UniRectangle(new UniScalar(0.075f, 0), new UniScalar(0.37f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            _commandList = new WrappableListControl()
-            {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.45f, 0), new UniScalar(0.21f, 0), new UniScalar(0.3f, 0))
-            };            
-
-            btnDeleteCommand = new ButtonControl()
-            {
-                Text = "Delete",
-				Bounds = new UniRectangle(new UniScalar(0.12f, 0), new UniScalar(0.76f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
-            };
-            btnDeleteCommand.Pressed += DeleteCommand_Pressed;
-
-            #endregion
-
-            #region Resource values
-
-            var playerNameDesc = new LabelControl("Player:")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            _playerNameValue = new LabelControl()
-            {
-                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            var fleetCountDesc = new LabelControl("Deployable fleets:")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            _fleetCountValue = new LabelControl("0")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            var fleetIncomeDesc = new LabelControl("Fleets per turn:")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-            _fleetIncomeValue = new LabelControl("0")
-            {                
-                Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-            };
-
-			var techPointsDesc = new LabelControl("Tech points:")
-			{
-				Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.15f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-			};
-
-			_techPointsValue = new LabelControl("0")
-			{
-				Bounds = new UniRectangle(new UniScalar(0.175f, 0), new UniScalar(0.15f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-			};
-
-            #endregion
-
-			#region Technology section
-
-			var techHeader = new LabelControl("Technology")
-			{
-				Bounds = new UniRectangle(new UniScalar(0.06f, 0), new UniScalar(0.21f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-			};
-
-			_techAttackValue = new LabelControl("Att: 0")
-			{
-				Bounds = new UniRectangle(new UniScalar(0.02f, 0), new UniScalar(0.25f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-			};
-
-			_techDefenseValue = new LabelControl("Def: 0")
-			{
-				Bounds = new UniRectangle(new UniScalar(0.08f, 0), new UniScalar(0.25f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
-			};
-
-			_techEconomyValue = new LabelControl("Eco: 0")
-			{
-				Bounds = new UniRectangle(new UniScalar(0.14f, 0), new UniScalar(0.25f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0))
-			};
-
-			var raiseAttackTech = new ButtonControl()
-			{
-				Text = "+",
-				Name = TechnologyType.Offensive.ToString(),
-				Bounds = new UniRectangle(new UniScalar(0.02f, 0), new UniScalar(0.32f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
-			};
-			raiseAttackTech.Pressed += RaiseTech_Pressed;
-
-			var raiseDefenseTech = new ButtonControl()
-			{
-				Text = "+",
-				Name = TechnologyType.Defensive.ToString(),
-				Bounds = new UniRectangle(new UniScalar(0.08f, 0), new UniScalar(0.32f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
-			};
-			raiseDefenseTech.Pressed += RaiseTech_Pressed;
-
-			var raiseEconomyTech = new ButtonControl()
-			{
-				Text = "+",
-				Name = TechnologyType.Economic.ToString(),
-				Bounds = new UniRectangle(new UniScalar(0.14f, 0), new UniScalar(0.32f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
-			};
-			raiseEconomyTech.Pressed += RaiseTech_Pressed;
-
-			#endregion
-
-			#region Game buttons
-
-			var btnLeaveGame = new ButtonControl()
-            {
-                Text = "Leave",
-                Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.93f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
-            };
-            btnLeaveGame.Pressed += LeaveGame_Pressed;
-
-            btnSendCommands = new ButtonControl()
-            {
-                Text = "Send",
-				Bounds = new UniRectangle(new UniScalar(0.01f, 0), new UniScalar(0.76f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))                
-            };
-            btnSendCommands.Pressed += SendCommands_Pressed;
-
-            #endregion
-
-            #region Timer
-
-            _timer = new LabelControl("0:00")
-            {
-                Bounds = new UniRectangle(new UniScalar(0.89f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0), new UniScalar(0.07f, 0))               
-            };
-            
-            #endregion
-
-            #region Message box & chat
-
-            _chatMessage = new CommandInputControl
-            {
-                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.93f, 0), new UniScalar(0.6f, 0), new UniScalar(0.05f, 0))
-            };
-            _chatMessage.OnCommandHandler += new EventHandler(ChatMessage_Execute);
-
-            _messageList = new WrappableListControl
-            {
-                SelectionMode = ListSelectionMode.None,
-                Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.75f, 0), new UniScalar(0.675f, 0), new UniScalar(0.16f, 0))
-            };
-
-            var btnClearMessage = new ButtonControl
-            {
-                Text = "C",
-                Bounds = new UniRectangle(new UniScalar(0.925f, 0), new UniScalar(0.93f, 0), new UniScalar(0.05f, 0), new UniScalar(0.05f, 0))
-            };
-            btnClearMessage.Pressed += ClearMessageList;
-
-            #endregion
+			_bottomPanel = new BottomPanel();
+			_bottomPanel.ChatMessageSent += ChatMessage_Execute;
 
             screen.Desktop.Children.AddRange(
                 new Control[] 
                 {
-                    ordersHeader, 
-                    _commandList, 
-                    
-                    playerListHeader,
-                    _playerList,
-
-                    _playerNameValue,
-                    playerNameDesc,
-                    _fleetIncomeValue, 
-                    _fleetCountValue, 
-                    fleetCountDesc,
-                    fleetIncomeDesc,
-					techPointsDesc,
-					_techPointsValue,
-                    
-					techHeader,
-					_techAttackValue,
-					_techDefenseValue,
-					_techEconomyValue,
-					raiseAttackTech,
-					raiseDefenseTech,
-					raiseEconomyTech,
-
-                    btnDeleteCommand, 
-                    btnSendCommands,
-                    btnLeaveGame, 
-                    
-                    _messageList,
-                    _chatMessage,
-                    btnClearMessage,
-
-                    _timer
+					_topPanel,
+					_rightPanel,
+					_bottomPanel
                 });
         }        
 
@@ -260,27 +53,26 @@
 
         private void SendCommands_Pressed(object sender, EventArgs e)
         {
-			btnSendCommands.Enabled = false;
-			btnDeleteCommand.Enabled = false;
-
 			PlayState.SendCommands();
         }
 
         private void DeleteCommand_Pressed(object sender, EventArgs e)
         {
-            if (_commandList.SelectedItems.Count > 0)
+			var commandList = sender as WrappableListControl;
+			if (commandList.SelectedItems.Count > 0)
             {
-                var selectedOrderIndex = _commandList.SelectedItems[0];
+				var selectedOrderIndex = commandList.SelectedItems[0];
 				PlayState.DeleteCommand(selectedOrderIndex);
             }
         }
 
         private void ChatMessage_Execute(object sender, EventArgs e)
         {
-            if (_chatMessage.Text.Trim().Length > 0)
+			var chatMessage = sender as CommandInputControl;
+            if (chatMessage.Text.Trim().Length > 0)
             {
-                PlayState.SendChatMessage(_chatMessage.Text);
-                _chatMessage.Text = string.Empty;
+                PlayState.SendChatMessage(chatMessage.Text);
+                chatMessage.Text = string.Empty;
             }
         }
 
@@ -297,74 +89,32 @@
 
         public void UpdatePlayerList(List<Player> players)
         {
-            _playerList.Items.Clear();
-            _playerList.Items.AddRange(players.Select(player => player.Username));
+			_rightPanel.UpdatePlayerList(players);
         }
 
         public void UpdateResourceData(Player player)
         {
-            _playerNameValue.Text = player.Username;
-            _fleetCountValue.Text = Convert.ToString(player.DeployableFleets);
-            _fleetIncomeValue.Text = Convert.ToString(player.FleetIncomePerTurn);
-			_techPointsValue.Text = Convert.ToString(player.TechPoints);
-			_techAttackValue.Text = string.Format("Att: {0}", player.Technologies[TechnologyType.Offensive].CurrentLevel);
-			_techDefenseValue.Text = string.Format("Def: {0}", player.Technologies[TechnologyType.Defensive].CurrentLevel);
-			_techEconomyValue.Text = string.Format("Eco: {0}", player.Technologies[TechnologyType.Economic].CurrentLevel);
+			_topPanel.UpdateResources(player);
         }
 
         public void UpdateTimer(int secondsLeft)
         {
-            int mins = secondsLeft / 60;
-            int secs = secondsLeft % 60;
-
-            // Display Timer in format 0:00
-            _timer.Text = mins.ToString() + (secs < 10 ? ":0" : ":") + secs.ToString();
+			_topPanel.UpdateTimer(secondsLeft);
         }
 
         public void UpdateCommandList(List<UserCommand> commands, int selectedCommand = -1)
         {
-            _commandList.Clear();
-
-			// Not using sort, because it'stat unstable
-			var orderedCmds = commands.OrderByDescending(cmd => (int)cmd.Type);
-			commands = new List<UserCommand>(orderedCmds);
-			foreach (var cmd in commands)
-            {
-                if (cmd.Type == UserCommand.CommandType.Deploy)
-                {
-                    _commandList.AddItem(string.Format("D: {0} to {1}", cmd.FleetCount, cmd.TargetPlanet.Name));
-                }
-                else if (cmd.Type == UserCommand.CommandType.Move)
-                {
-                    _commandList.AddItem(string.Format("M: {0} from {1} to {2}", cmd.FleetCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
-                }
-                else if (cmd.Type == UserCommand.CommandType.Attack)
-                {
-                    _commandList.AddItem(string.Format("A: {0} from {1} to {2}", cmd.FleetCount, cmd.SourcePlanet.Name, cmd.TargetPlanet.Name));
-                }
-				else if (cmd.Type == UserCommand.CommandType.Tech)
-				{
-					_commandList.AddItem(string.Format("T: Research {0} tech", cmd.TechType));
-				}
-            }
-
-            _commandList.SelectItem(selectedCommand);
-        }
-
-        public void ClearMessageList(object sender, EventArgs args)
-        {
-            _messageList.Clear();
+			_rightPanel.UpdateCommands(commands, selectedCommand);
         }
 
         public void AddMessage(string message)
         {
-            _messageList.AddItem(message);
+			_bottomPanel.AddMessage(message);
         }
 
-		public void EnableOrderButtons()
+		public void EnableCommandButtons()
 		{
-			btnDeleteCommand.Enabled = true;
-			btnSendCommands.Enabled = true;
+			_rightPanel.EnableCommandButtons();
 		}
 
         #endregion
