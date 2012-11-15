@@ -234,14 +234,6 @@ namespace Client.Renderer.Particles
 
 			EffectParameterCollection parameters = particleEffect.Parameters;
 
-			// Look up shortcuts for parameters that change every frame.
-			effectViewParameter = parameters["View"];
-			effectProjectionParameter = parameters["Projection"];
-			effectViewportScaleParameter = parameters["ViewportScale"];
-			effectTimeParameter = parameters["CurrentTime"];
-			effectMinColorParameter = parameters["MinColor"];
-			effectMaxColorParameter = parameters["MaxColor"];
-
 			// Set the values of parameters that do not change.
 			parameters["Duration"].SetValue((float)settings.Duration.TotalSeconds);
 			parameters["DurationRandomness"].SetValue(settings.DurationRandomness);
@@ -258,6 +250,15 @@ namespace Client.Renderer.Particles
 
 			parameters["EndSize"].SetValue(
 				new Vector2(settings.MinEndSize, settings.MaxEndSize));
+
+
+			// Look up shortcuts for parameters that change every frame.
+			effectViewParameter = parameters["View"];
+			effectProjectionParameter = parameters["Projection"];
+			effectViewportScaleParameter = parameters["ViewportScale"];
+			effectTimeParameter = parameters["CurrentTime"];
+			effectMinColorParameter = parameters["MinColor"];
+			effectMaxColorParameter = parameters["MaxColor"];
 
 			// Load the particle texture, and set it onto the effect.
 			Texture2D texture = content.Load<Texture2D>(settings.TexturePath);
@@ -495,12 +496,18 @@ namespace Client.Renderer.Particles
 
 		public void SetMinColor(Color color)
 		{
-			effectMinColorParameter.SetValue(color.ToVector4());
+			if (effectMinColorParameter == null)
+				settings.MinColor = color;
+			else
+				effectMinColorParameter.SetValue(color.ToVector4());
 		}
 
 		public void SetMaxColor(Color color)
 		{
-			effectMaxColorParameter.SetValue(color.ToVector4());
+			if (effectMinColorParameter == null)
+				settings.MaxColor = color;
+			else
+				effectMaxColorParameter.SetValue(color.ToVector4());
 		}
 
 		/// <summary>
