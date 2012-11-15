@@ -6,9 +6,6 @@
 	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Graphics;
 	using Model;
-	using Client.Renderer.Particles;
-	using System.Collections.Generic;
-	using Client.Renderer.Particles.ParticleSystems;
 
 	public class XnaRenderer : IRenderer
 	{
@@ -50,7 +47,8 @@
 
 			foreach (var planetarySystem in map.PlanetarySystems)
 			{
-				planetarySystem.Visual = new PlanetarySystemVisual(Client, Client.Content, planetarySystem.Bounds);
+				planetarySystem.Visual = new PlanetarySystemVisual(planetarySystem, Client, Client.Content, planetarySystem.Bounds);
+				//TODO uncomment: planetarySystem.Visual.Visible = false;
 				Client.Components.Add(planetarySystem.Visual.ParticleSystem);
 			}
 
@@ -148,7 +146,7 @@
 			_spriteBatch.End();
 
             // Turn depth buffer on (SpriteBatch may turn it off).
-			GraphicsDevice.DepthStencilState = DepthStencilState.Default; // new DepthStencilState() { DepthBufferEnable = true };
+			GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
 			#region Links
 
@@ -208,7 +206,7 @@
 				var planetarySystem = scene.Map.GetSystemByPlanetid(planet.Id);
 
 				var ambient = scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f;
-				var glow = planetarySystem != null ? planetarySystem.Color : Color.LightGray;
+				var glow = planetarySystem != null && planet.Owner != null ? planet.Owner.Color.XnaColor : Color.LightGray;
 
 				planet.Visual.Draw(GraphicsDevice, view, projection, time, ambient, glow);
 			}

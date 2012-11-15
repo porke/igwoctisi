@@ -13,7 +13,14 @@
 	{
 		public PlanetarySystemConvexParticleSystem(Game game, ContentManager content)
 			: base(game, content)
-		{ }
+		{
+		}
+
+		public void SetColor(Color color)
+		{
+			base.SetMinColor(color);
+			base.SetMaxColor(color);
+		}
 
 		protected override void InitializeSettings(ParticleSettings settings)
 		{
@@ -39,8 +46,8 @@
 			settings.MinStartSize = 5;
 			settings.MaxStartSize = 10;
 
-			settings.MinEndSize = 10;
-			settings.MaxEndSize = 40;
+			settings.MinEndSize = 80;
+			settings.MaxEndSize = 80;
 
 			// Use additive blending.
 			settings.BlendState = BlendState.Additive;

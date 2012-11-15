@@ -18,6 +18,7 @@ namespace Client.Renderer.Particles
 
 		// Settings class controls the appearance and animation of this particle system.
 		ParticleSettings settings = new ParticleSettings();
+		object settingNewParameterLocker = new object();
 
 
 		// For loading the effect and particle texture.
@@ -34,6 +35,8 @@ namespace Client.Renderer.Particles
 		EffectParameter effectProjectionParameter;
 		EffectParameter effectViewportScaleParameter;
 		EffectParameter effectTimeParameter;
+		EffectParameter effectMinColorParameter;
+		EffectParameter effectMaxColorParameter;
 
 
 		// An array of particles, treated as a circular queue.
@@ -236,6 +239,8 @@ namespace Client.Renderer.Particles
 			effectProjectionParameter = parameters["Projection"];
 			effectViewportScaleParameter = parameters["ViewportScale"];
 			effectTimeParameter = parameters["CurrentTime"];
+			effectMinColorParameter = parameters["MinColor"];
+			effectMaxColorParameter = parameters["MaxColor"];
 
 			// Set the values of parameters that do not change.
 			parameters["Duration"].SetValue((float)settings.Duration.TotalSeconds);
@@ -392,6 +397,9 @@ namespace Client.Renderer.Particles
 				device.SetVertexBuffer(vertexBuffer);
 				device.Indices = indexBuffer;
 
+				// Wait until particle effect parameters aren't updated.
+				lock (settingNewParameterLocker) { }
+
 				// Activate the particle effect.
 				foreach (EffectPass pass in particleEffect.CurrentTechnique.Passes)
 				{
@@ -485,6 +493,15 @@ namespace Client.Renderer.Particles
 			effectProjectionParameter.SetValue(projection);
 		}
 
+		public void SetMinColor(Color color)
+		{
+			effectMinColorParameter.SetValue(color.ToVector4());
+		}
+
+		public void SetMaxColor(Color color)
+		{
+			effectMaxColorParameter.SetValue(color.ToVector4());
+		}
 
 		/// <summary>
 		/// Adds a new particle to the system.

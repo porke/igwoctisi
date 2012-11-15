@@ -11,11 +11,24 @@
 	{
 		public ParticleSystem ParticleSystem { get; private set; }
 
+		public Color Color
+		{
+			get { return _color; } 
+			set { _color = value; UpdateColor(); }
+		}
+
+		public bool Visible
+		{
+			get { return ParticleSystem.Visible; }
+			set { ParticleSystem.Visible = value; }
+		}
+
 		private Point3[] _keyPoints;
 		private int _lastKeyPoint;
+		private Color _color;
 
 
-		public PlanetarySystemVisual(Game Game, ContentManager Content, Point3[] keyPoints)
+		public PlanetarySystemVisual(PlanetarySystem planetarySystem,Game Game, ContentManager Content, Point3[] keyPoints)
 		{
 			_keyPoints = keyPoints;
 			_lastKeyPoint = 0;
@@ -33,6 +46,12 @@
 			ParticleSystem.SetCamera(camera.GetView(), camera.Projection);
 			ParticleSystem.AddParticle(position1, velocity);
 			_lastKeyPoint = index;
+		}
+
+		private void UpdateColor()
+		{
+			ParticleSystem.SetMinColor(_color);
+			ParticleSystem.SetMaxColor(_color);
 		}
 	}
 }

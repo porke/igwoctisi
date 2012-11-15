@@ -26,10 +26,7 @@
         [XmlArrayItem("PlanetId")]
         [DataMember]
         public int[] Planets { get; set; }
-
-		//[DataMember]
-		public Color Color { get; set; }
-
+		
 		[XmlArray("Bounds")]
 		[DataMember]
 		public Point3[] Bounds { get; set; }

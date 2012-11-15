@@ -155,9 +155,6 @@
 				Camera.Max = XnaExtensions.ParseVector3(reader.GetAttribute(MaxAttribute));
 				Camera.SetPosition((Camera.Min + Camera.Max) / 2.0f);
             }
-
-			PlanetarySystems[0].Color = Color.Blue;
-			PlanetarySystems[1].Color = Color.Red;
         }
 
         [OnDeserialized]
