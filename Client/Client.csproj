@@ -121,8 +121,10 @@
     <Compile Include="Common\AsyncResult.cs" />
     <Compile Include="Common\SystemExtensions.cs" />
     <Compile Include="Common\XnaExtensions.cs" />
+    <Compile Include="Renderer\Controls\FlatImageCheckButtonControl.cs" />
     <Compile Include="View\Controls\CommandInputControl.cs" />
     <Compile Include="View\Controls\IconControl.cs" />
+    <Compile Include="View\Controls\ImageCheckButtonControl.cs" />
     <Compile Include="View\Controls\TabbedPaneControl.cs" />
     <Compile Include="View\Controls\ViewportControl.cs" />
     <Compile Include="View\Controls\WrappableListControl.cs" />

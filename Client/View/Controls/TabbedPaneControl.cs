@@ -21,12 +21,7 @@
 
 		#region Internal class - TabImageHeaderControl
 
-		private class TabImageHeaderControl : ButtonControl
-		{
-			public Control ActivatedTab { get; set; }
-			public string InactiveFrameName { get; set; }
-			public string ActiveFrameName { get; set; }
-		}
+		
 
 		#endregion
 

@@ -2,16 +2,13 @@
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 	using Client.Model;
 	using Client.View.Controls;
 	using Common;
-	using Input;
-	using Nuclex.UserInterface;
-	using Nuclex.UserInterface.Controls;
-	using Nuclex.UserInterface.Controls.Desktop;
-	using State;
 	using Common.AnimationSystem.DefaultAnimations;
+	using Input;
+	using Nuclex.UserInterface.Controls;
+	using State;
 
     class GameHud : BaseView
 	{
