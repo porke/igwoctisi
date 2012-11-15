@@ -55,7 +55,9 @@
             };
             btnEnterPlayState.Pressed += EnterPlayState_Pressed;
 
-            screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit});
+			var check = new ImageCheckButtonControl("topPanel", "button.normal");
+			check.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(64), new UniScalar(64));
+            screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit, check});
 #if DEBUG
             screen.Desktop.Children.Add(btnEnterPlayState);
 #endif
