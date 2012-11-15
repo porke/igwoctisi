@@ -3,26 +3,70 @@
     using Microsoft.Xna.Framework.Graphics;
 	using Client.Model;
 	using Microsoft.Xna.Framework;
+	using Microsoft.Xna.Framework.Content;
+	using System;
+	using Client.Common;
+	using System.Linq;
 
     public class PlanetVisual
     {
+		public static readonly Vector2 NameTextOffset = new Vector2(0, 25.0f);
+		public static readonly Vector2 FleetsTextOffset = new Vector2(0.0f, 42.0f);
+		public static readonly Vector2 FleetsIncomeTextOffset = new Vector2(21.0f, 42.0f);
+		public static readonly Vector2 FleetsDeltaTextOffset = new Vector2(21, -42.0f);
+		public static readonly Vector2 OwnerTextOffset = new Vector2(0, 59.0f);
+
 		public Planet Planet { get; set; }
         public float Period { get; set; }
         public float Yaw { get; set; }
         public float Pitch { get; set; }
         public float Roll { get; set; }
 		public Effect Effect { get; set; }
+		public SpriteFont InfoFont { get; set; }
         public Texture2D DiffuseTexture { get; set; }
         public Texture2D CloudsTexture { get; set; }
         public Texture2D CloudsAlphaTexture { get; set; }
 		public VertexBuffer VB { get; set; }
 
-		public void Draw(GraphicsDevice device, Matrix view, Matrix projection, double time, float ambient, Color glow)
+		public PlanetVisual(GameClient client, Planet planet)
+		{
+			Planet = planet;
+			var device = client.GraphicsDevice;
+			var contentMgr = client.Content;
+
+			var random = new Random(Guid.NewGuid().GetHashCode());
+			Effect = contentMgr.Load<Effect>("Effects\\Planet");
+			InfoFont = contentMgr.Load<SpriteFont>("Fonts\\HUD");
+			Period = (float)(random.NextDouble() * 10.0 + 5.0);
+			Yaw = (float)(random.NextDouble() * MathHelper.TwoPi);
+			Pitch = (float)(random.NextDouble() * MathHelper.TwoPi);
+			Roll = (float)(random.NextDouble() * MathHelper.TwoPi);
+
+			var vertices = Utils.SphereVertices(3).Select(x => new Vertex(x.Position, x.Normal, Color.LightGreen, x.TextureCoordinate)).ToArray();
+			VB = new VertexBuffer(device, Vertex.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
+			VB.SetData(vertices);
+
+			if (!string.IsNullOrEmpty(planet.Diffuse))
+			{
+				DiffuseTexture = contentMgr.Load<Texture2D>(planet.Diffuse);
+			}
+			if (!string.IsNullOrEmpty(planet.Clouds))
+			{
+				CloudsTexture = contentMgr.Load<Texture2D>(planet.Clouds);
+			}
+			if (!string.IsNullOrEmpty(planet.CloudsAlpha))
+			{
+				CloudsAlphaTexture = contentMgr.Load<Texture2D>(planet.CloudsAlpha);
+			}
+		}
+		public void Draw(GraphicsDevice device, ICamera camera, double time, float ambient, Color glow)
 		{
 			var localWorld = Matrix.CreateScale(Planet.Radius) *
 							Matrix.CreateRotationY((float)time / Period * MathHelper.TwoPi) *
 							Matrix.CreateFromYawPitchRoll(Yaw, Pitch, Roll) *
 							Matrix.CreateTranslation(Planet.X, Planet.Y, Planet.Z);
+			var view = camera.GetView();
+			var projection = camera.Projection;
 
 			Effect.Parameters["World"].SetValue(localWorld);
 			Effect.Parameters["View"].SetValue(view);
@@ -38,6 +82,42 @@
 				pass.Apply();
 				device.SetVertexBuffer(VB);
 				device.DrawPrimitives(PrimitiveType.TriangleList, 0, VB.VertexCount / 3);
+			}
+		}
+		public void DrawInfo(GraphicsDevice device, SpriteBatch batch, ICamera camera, bool showDetails)
+		{
+			var planetScreen = camera.Project(device.Viewport, Planet.Position);
+
+			// owner name
+			var ownerText = Planet.Owner != null ? Planet.Owner.Username : string.Empty;
+			var ownerTextSize = InfoFont.MeasureString(ownerText);
+			var ownerTextScreen = new Vector2(planetScreen.X - ownerTextSize.X/2.0f, planetScreen.Y - ownerTextSize.Y/2.0f);
+			var ownerTextColor = Planet.Owner != null ? Planet.Owner.Color.XnaColor : Color.Gray;
+			batch.DrawString(InfoFont, ownerText, ownerTextScreen + OwnerTextOffset, ownerTextColor);
+
+			// planet name
+			var nameTextSize = InfoFont.MeasureString(Planet.Name);
+			var nameTextScreen = new Vector2(planetScreen.X - nameTextSize.X / 2.0f, planetScreen.Y - nameTextSize.Y / 2.0f);
+			batch.DrawString(InfoFont, Planet.Name, nameTextScreen + NameTextOffset, Color.Yellow);
+
+			// number of fleets
+			var fleetsText = Planet.NumFleetsPresent.ToString();
+			var fleetsTextSize = InfoFont.MeasureString(fleetsText);
+			var fleetsTextScreen = new Vector2(planetScreen.X - fleetsTextSize.X / 2.0f, planetScreen.Y - fleetsTextSize.Y / 2.0f);
+			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen + FleetsTextOffset, Color.Yellow);
+
+			if (Planet.FleetChange != 0)
+			{
+				var changeText = string.Format("{0}{1}", Planet.FleetChange > 0 ? "+" : "", Planet.FleetChange);
+				var changeTextColor = Planet.FleetChange > 0 ? Color.Green : Color.Red;
+				batch.DrawString(InfoFont, changeText, fleetsTextScreen + FleetsDeltaTextOffset, changeTextColor);
+			}
+
+			if (showDetails)
+			{
+				// fleets income
+				var fleetsIncomeText = string.Format("+{0}", Planet.BaseUnitsPerTurn);
+				batch.DrawString(InfoFont, fleetsIncomeText, fleetsTextScreen + FleetsIncomeTextOffset, Color.White);
 			}
 		}
     }

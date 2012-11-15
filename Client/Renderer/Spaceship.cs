@@ -125,7 +125,6 @@
 
 			ScaleX = ScaleY = ScaleZ = 1;
 		}
-
 		public void Draw(SimpleCamera camera, double delta, double time)
 		{
 			foreach (ModelMesh mesh in Model.Meshes)
