@@ -27,7 +27,7 @@
 
 		public void UpdateResources(Player player)
 		{
-			_fleetIncomeAndCountValue.Text = string.Format("{0}/{1}", player.FleetIncomePerTurn, player.DeployableFleets);
+			_fleetIncomeAndCountValue.Text = string.Format("{0}/{1}", player.FleetIncomePerTurn - player.DeployableFleets, player.FleetIncomePerTurn);
 			_techPointsValue.Text = Convert.ToString(player.TechPoints);
 			_offensiveTech.Text = string.Format("Att: {0}", player.Technologies[TechnologyType.Offensive].CurrentLevel);
 			_defensiveTech.Text = string.Format("Def: {0}", player.Technologies[TechnologyType.Defensive].CurrentLevel);

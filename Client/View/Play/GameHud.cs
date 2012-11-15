@@ -38,9 +38,11 @@
 			_rightPanel = new RightPanel();
 			_rightPanel.CommandDeleted += DeleteCommand_Pressed;
 			_rightPanel.CommandsSent += SendCommands_Pressed;
+			_rightPanel.Toggled += TabPanelToggle_Pressed;
 
 			_bottomPanel = new BottomPanel();
 			_bottomPanel.ChatMessageSent += ChatMessage_Execute;
+			_bottomPanel.Toggled += TabPanelToggle_Pressed;
 
             screen.Desktop.Children.AddRange(
                 new Control[] 
@@ -54,6 +56,12 @@
         #endregion
 
         #region Event handlers
+
+		private void TabPanelToggle_Pressed(object sender, EventArgs e)
+		{
+			var panel = sender as TabbedPaneControl;
+			
+		}
 
         private void LeaveGame_Pressed(object sender, EventArgs e)
         {

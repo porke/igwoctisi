@@ -25,11 +25,19 @@
 
 		#endregion
 
+		#region Internal enum - TabHeaderPosition
+
 		public enum TabHeaderPosition
 		{
 			Top,
 			Left
 		}
+
+		#endregion
+
+		public event EventHandler Toggled;
+
+		public bool IsToggled { get; set; }
 
 		public Control ActiveTab
 		{
@@ -59,6 +67,22 @@
 			Children.AddRange(new Control[] { _tabHeaderPanel, _contentPanel });
 			_contentPanel.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0));
 			_tabHeaderPanel.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(TabHeaderWidth), new UniScalar(TabHeaderHeight));
+
+			string hideBtnFramePressed = (tabHeaderPosition == TabHeaderPosition.Left) ? "arrowRightPressed" : "arrowDownPressed";
+			string hideBtnFrameNormal = (tabHeaderPosition == TabHeaderPosition.Left) ? "arrowRightNormal" : "arrowDownNormal";
+			_hidePanelButton = new ImageButtonControl(hideBtnFrameNormal, hideBtnFrameNormal, hideBtnFrameNormal, hideBtnFramePressed);
+			_hidePanelButton.Pressed += TogglePanel;
+			_hidePanelButton.Text = string.Empty;
+
+			if (tabHeaderPosition == TabHeaderPosition.Left)
+			{
+				_hidePanelButton.Bounds = new UniRectangle(new UniScalar((TabHeaderWidth - HideButtonMaxSize) / 2), new UniScalar(1.0f, -TabPadding - HideButtonMinSize), new UniScalar(HideButtonMaxSize), new UniScalar(HideButtonMinSize));
+			}
+			else
+			{
+				_hidePanelButton.Bounds = new UniRectangle(new UniScalar(1.0f, -TabPadding - HideButtonMinSize), new UniScalar((TabHeaderWidth - HideButtonMaxSize) / 2), new UniScalar(HideButtonMinSize), new UniScalar(HideButtonMaxSize));
+			}
+			_tabHeaderPanel.Children.Add(_hidePanelButton);
 		}
 
 		public void AddTab(string tabText, Control content)
@@ -70,20 +94,20 @@
 			};
 
 			float tabWidth = tabText.Length * 12 + 10;
-			float maxTabWidth = (_tabHeaderPanel.Children.Count > 0) ? _tabHeaderPanel.Children.Max(bc => (bc as TabTextHeaderControl).Text.Length) * 8 : 0;
+			float maxTabWidth = (_tabHeaderPanel.Children.Count > 0) ? _tabHeaderPanel.Children.Max(bc => (bc as ButtonControl).Text.Length) * 8 : 0;
 			tabWidth = tabWidth > maxTabWidth ? tabWidth : maxTabWidth;
 
 			if (_tabHeaderPosition == TabHeaderPosition.Top)
 			{
 				tab.Bounds = new UniRectangle(new UniScalar(TabPadding + 32 * TabCount), new UniScalar(TabPadding), new UniScalar(tabWidth), new UniScalar(24));
 				_contentPanel.Bounds = new UniRectangle(new UniScalar(), new UniScalar(TabHeaderWidth), new UniScalar(1.0f, 0.0f), new UniScalar(1.0f, -TabHeaderHeight));
-				_tabHeaderPanel.Bounds.Right = new UniScalar(_tabHeaderPanel.Bounds.Right.Fraction, (tabWidth + 16) * (TabCount + 1));
+				_tabHeaderPanel.Bounds.Right = new UniScalar(_tabHeaderPanel.Bounds.Right.Fraction, (tabWidth + 16) * (TabCount + 1) + HideButtonMinSize + TabPadding);
 			}
 			else if (_tabHeaderPosition == TabHeaderPosition.Left)
 			{
 				tab.Bounds = new UniRectangle(new UniScalar(TabPadding), new UniScalar(TabPadding + 32 * TabCount), new UniScalar(tabWidth), new UniScalar(24));
 				_contentPanel.Bounds = new UniRectangle(new UniScalar(TabHeaderWidth), new UniScalar(), new UniScalar(1.0f, -TabHeaderHeight), new UniScalar(1.0f, 0.0f));
-				_tabHeaderPanel.Bounds.Bottom = new UniScalar(_tabHeaderPanel.Bounds.Bottom.Fraction, TabHeaderHeight * (TabCount + 1));
+				_tabHeaderPanel.Bounds.Bottom = new UniScalar(_tabHeaderPanel.Bounds.Bottom.Fraction, TabHeaderHeight * (TabCount + 1) + HideButtonMinSize + TabPadding);
 			}
 
 			tab.Pressed += SwitchTab;
@@ -103,7 +127,17 @@
 			ActiveTab = tabHeader.ActivatedTab;
 		}
 
+		private void TogglePanel(object sender, EventArgs args)
+		{
+			IsToggled = !IsToggled;
+			if (Toggled != null)
+			{
+				Toggled(this, args);
+			}
+		}
+
 		private TabHeaderPosition _tabHeaderPosition;
+		private ImageButtonControl _hidePanelButton;
 		private IconControl _tabHeaderPanel;
 		private IconControl _contentPanel;
 		private List<Control> _tabs = new List<Control>();
@@ -111,5 +145,7 @@
 		private const int TabPadding = 8;
 		private const int TabHeaderHeight = 40;
 		private const int TabHeaderWidth = 40;
+		private const int HideButtonMaxSize = 32;
+		private const int HideButtonMinSize = 8;
 	}
 }

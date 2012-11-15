@@ -118,13 +118,14 @@
     <Compile Include="Common\AsyncResult.cs" />
     <Compile Include="Common\SystemExtensions.cs" />
     <Compile Include="Common\XnaExtensions.cs" />
+    <Compile Include="Renderer\Controls\FlatImageButtonControlRenderer.cs" />
     <Compile Include="Renderer\Controls\FlatImageCheckButtonControl.cs" />
     <Compile Include="Renderer\Particles\ParticleSystems\FireParticleSystem.cs" />
     <Compile Include="Renderer\Particles\ParticleSystems\PlanetarySystemConvexParticleSystem.cs" />
     <Compile Include="Renderer\PlanetarySystemVisual.cs" />
-    <Compile Include="View\Controls\TabHeaderControl.cs" />
     <Compile Include="View\Controls\CommandInputControl.cs" />
     <Compile Include="View\Controls\IconControl.cs" />
+    <Compile Include="View\Controls\ImageButtonControl.cs" />
     <Compile Include="View\Controls\ImageCheckButtonControl.cs" />
     <Compile Include="View\Controls\TabbedPaneControl.cs" />
     <Compile Include="View\Controls\ViewportControl.cs" />
