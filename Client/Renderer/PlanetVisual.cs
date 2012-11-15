@@ -3,6 +3,10 @@
     using Microsoft.Xna.Framework.Graphics;
 	using Client.Model;
 	using Microsoft.Xna.Framework;
+	using Microsoft.Xna.Framework.Content;
+	using System;
+	using Client.Common;
+	using System.Linq;
 
     public class PlanetVisual
     {
@@ -24,6 +28,35 @@
         public Texture2D CloudsAlphaTexture { get; set; }
 		public VertexBuffer VB { get; set; }
 
+		public PlanetVisual(Planet planet, GraphicsDevice device, ContentManager contentMgr)
+		{
+			Planet = planet;
+
+			var random = new Random(Guid.NewGuid().GetHashCode());
+			Effect = contentMgr.Load<Effect>("Effects\\Planet");
+			InfoFont = contentMgr.Load<SpriteFont>("Fonts\\HUD");
+			Period = (float)(random.NextDouble() * 10.0 + 5.0);
+			Yaw = (float)(random.NextDouble() * MathHelper.TwoPi);
+			Pitch = (float)(random.NextDouble() * MathHelper.TwoPi);
+			Roll = (float)(random.NextDouble() * MathHelper.TwoPi);
+
+			var vertices = Utils.SphereVertices(3).Select(x => new Vertex(x.Position, x.Normal, Color.LightGreen, x.TextureCoordinate)).ToArray();
+			VB = new VertexBuffer(device, Vertex.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
+			VB.SetData(vertices);
+
+			if (!string.IsNullOrEmpty(planet.Diffuse))
+			{
+				DiffuseTexture = contentMgr.Load<Texture2D>(planet.Diffuse);
+			}
+			if (!string.IsNullOrEmpty(planet.Clouds))
+			{
+				CloudsTexture = contentMgr.Load<Texture2D>(planet.Clouds);
+			}
+			if (!string.IsNullOrEmpty(planet.CloudsAlpha))
+			{
+				CloudsAlphaTexture = contentMgr.Load<Texture2D>(planet.CloudsAlpha);
+			}
+		}
 		public void Draw(GraphicsDevice device, ICamera camera, double time, float ambient, Color glow)
 		{
 			var localWorld = Matrix.CreateScale(Planet.Radius) *
