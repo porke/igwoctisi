@@ -9,6 +9,7 @@
 	using Client.View;
 	using Model;
 	using View.Play;
+	using Client.Renderer.Particles;
 
 	class PlayState : GameState
 	{
@@ -412,6 +413,16 @@
 			Client.Network.OnOtherPlayerLeft -= Network_OnOtherPlayerLeft;
 			Client.Network.OnDisconnected -= Network_OnDisconnected;
 			Client.Network.OnChatMessageReceived -= Network_OnChatMessageReceived;
+			
+			// Remove particles
+			int i = 0;
+			while (i < Client.Components.Count)
+			{
+				if (Client.Components[i] is ParticleSystem)
+					Client.Components.RemoveAt(i);
+				else
+					i++;
+			}
 		}
 		public override void Update(double delta, double time)
 		{
@@ -467,7 +478,7 @@
 			_clientPlayer = clientPlayer;
 
 			Scene = new Scene(_loadedMap);
-			Scene.Visual = new SceneVisual(Scene, loadedMap.Colors, Client.Content, ViewMgr.AnimationManager);
+			Scene.Visual = new SceneVisual(Client, Scene, ViewMgr.AnimationManager);
 			_gameViewport = new GameViewport(this);
 			_gameHud = new GameHud(this);
 
