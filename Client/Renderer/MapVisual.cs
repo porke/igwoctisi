@@ -1,13 +1,13 @@
 ﻿namespace Client.Renderer
 {
 	using System.Linq;
-    using Microsoft.Xna.Framework.Graphics;
+	using Microsoft.Xna.Framework.Graphics;
 	using Client.Model;
 	using Microsoft.Xna.Framework.Content;
 	using Microsoft.Xna.Framework;
 	
-    public class MapVisual
-    {
+	public class MapVisual
+	{
 		public Map Map { get; protected set; }
         public VertexBuffer LinksVB { get; protected set; }
 
@@ -36,5 +36,5 @@
 				planet.Visual = new PlanetVisual(planet, device, contentMgr);
 			}
 		}
-    }
+	}
 }

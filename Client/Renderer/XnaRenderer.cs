@@ -6,6 +6,9 @@
 	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Graphics;
 	using Model;
+	using Client.Renderer.Particles;
+	using System.Collections.Generic;
+	using Client.Renderer.Particles.ParticleSystems;
 
 	public class XnaRenderer : IRenderer
 	{
@@ -23,6 +26,16 @@
 		protected Effect _fxLinks, _fxPlanet;
 		protected VertexBuffer _sphereVB, _sphereVB2;
 		protected Texture2D _txSpace;
+
+			#region Particles for planetary systems
+
+			foreach (var planetarySystem in map.PlanetarySystems)
+			{
+				planetarySystem.Visual = new PlanetarySystemVisual(Client, Client.Content, planetarySystem.Bounds);
+				Client.Components.Add(planetarySystem.Visual.ParticleSystem);
+			}
+
+			#endregion
 
 		#endregion
 
@@ -42,7 +55,8 @@
 		public void Initialize(GameClient client)
 		{
 			Client = client;
-			GraphicsDevice = Client.GraphicsDevice;
+			GraphicsDeviceService = (IGraphicsDeviceService)Client.Services.GetService(typeof(IGraphicsDeviceService));
+			GraphicsDevice = GraphicsDeviceService.GraphicsDevice;
 
 			var contentMgr = Client.Content;
 			_spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -121,6 +135,8 @@
 						GraphicsDevice.SetVertexBuffer(_sphereVB);
 						GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
 					}
+
+					planetarySystem.Visual.Update(GraphicsDevice, camera, delta, time);
 				}
 			}
 
@@ -184,5 +200,6 @@
 
 		public GameClient Client { get; protected set; }
 		public GraphicsDevice GraphicsDevice { get; protected set; }
+		public IGraphicsDeviceService GraphicsDeviceService { get; protected set; }
 	}
 }
