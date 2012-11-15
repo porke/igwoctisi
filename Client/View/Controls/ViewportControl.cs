@@ -106,8 +106,9 @@
 			_lastMousePosition = _currentMousePosition;
 			_lastTime = _currentTime;
 			_currentTime = time;
-		}
 
+			Renderer.Update(Scene, delta, time);
+		}
 		public void Draw(double delta, double time)
 		{
 			Renderer.Draw(Scene.Map.Camera, Scene, delta, time);
