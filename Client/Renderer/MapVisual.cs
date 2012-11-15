@@ -11,7 +11,7 @@
 		public Map Map { get; protected set; }
         public VertexBuffer LinksVB { get; protected set; }
 
-		public MapVisual(Map map, GraphicsDevice device, ContentManager contentMgr)
+		public MapVisual(GameClient client, Map map)
 		{
 			Map = map;
 
@@ -28,12 +28,18 @@
 				vertices[2 * i + 1] = new VertexPositionColor(new Vector3(targetPlanet.X, targetPlanet.Y, targetPlanet.Z), color);
 			}
 
-			LinksVB = new VertexBuffer(device, VertexPositionColor.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
+			LinksVB = new VertexBuffer(client.GraphicsDevice, VertexPositionColor.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
 			LinksVB.SetData(vertices);
 
 			foreach (var planet in Map.Planets)
 			{
-				planet.Visual = new PlanetVisual(planet, device, contentMgr);
+				planet.Visual = new PlanetVisual(client, planet);
+			}
+
+			foreach (var planetarySystem in map.PlanetarySystems)
+			{
+				planetarySystem.Visual = new PlanetarySystemVisual(client, client.Content, planetarySystem.Bounds);
+				client.Components.Add(planetarySystem.Visual.ParticleSystem);
 			}
 		}
 	}
