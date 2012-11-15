@@ -24,16 +24,42 @@
 		}
 		
 		private Color _color;
+		private PlanetarySystem _planetarySystem;
+		public Player _lastOwner;
 
 
-		public PlanetarySystemVisual(PlanetarySystem planetarySystem,Game Game, ContentManager Content, Point3[] keyPoints)
+		public PlanetarySystemVisual(PlanetarySystem planetarySystem, Game Game, ContentManager Content, Point3[] keyPoints)
 		{
+			_planetarySystem = planetarySystem;
 			ParticleSystem = new PlanetarySystemConvexParticleSystem(Game, Content, keyPoints);
 		}
 
-		public void Update(GraphicsDevice device, ICamera camera, double delta, double time)
+		public void Update(GraphicsDevice device, ICamera camera, Map map, double delta, double time)
 		{
 			ParticleSystem.SetCamera(camera.GetView(), camera.Projection);
+
+			// Update color due to 
+			var player = map.GetPlanetById(_planetarySystem.Planets[0]).Owner;
+			bool foundOwner = player != null;
+			if (player != null)
+			{
+				for (int i = 0; i < _planetarySystem.Planets.Length; ++i)
+				{
+					var planet = map.GetPlanetById(_planetarySystem.Planets[i]);
+					if (planet.Owner != player)
+						foundOwner = false;
+				}
+			}
+
+			if (foundOwner && _lastOwner != player)
+			{
+				// TODO animate color change
+				Color = player.Color.XnaColor;
+			}
+			else
+			{
+				Color = Color.FromNonPremultiplied(10, 10, 10, 255);
+			}
 		}
 	}
 }
