@@ -10,3 +10,4 @@ TestResults
 _ReSharper.*
 *.user
 Content/Textures/Thumbs.db
+*.smproj

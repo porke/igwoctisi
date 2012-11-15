@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using Microsoft.Xna.Framework;
 
 namespace Client.Model
 {
@@ -19,5 +20,10 @@ namespace Client.Model
 		[XmlAttribute("Z")]
 		[DataMember] //Json
 		public float Z { get; set; }
+
+		public Vector3 ToVector3()
+		{
+			return new Vector3(X, Y, Z);
+		}
 	}
 }
