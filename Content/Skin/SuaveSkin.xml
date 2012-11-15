@@ -482,12 +482,23 @@
 		<region source="controls" hplacement="stretch" vplacement="stretch" x="89" y="168" w="24" h="24" />
 	</frame>
 
-	<frame name="commandsIcon">
+	<!--
+		Panel choice buttons
+	-->
+	<frame name="commandsIconInactive">
 		<region source="controls" hplacement="stretch" vplacement="stretch" x="1" y="168" w="32" h="32" />
+	</frame>	  
+	  
+	<frame name="commandsIconActive">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="67" y="201" w="32" h="32" />
 	</frame>
 
-	<frame name="playersIcon">
+	<frame name="playersIconInactive">
 		<region source="controls" hplacement="stretch" vplacement="stretch" x="1" y="201" w="32" h="32" />
+	</frame>
+
+	<frame name="playersIconActive">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="34" y="201" w="32" h="32" />
 	</frame>
 
 	<!--
@@ -501,11 +512,27 @@
 		<region source="controls" hplacement="stretch" vplacement="stretch" x="129" y="73" w="8" h="32" />
 	</frame>
 
+	<frame name="arrowUpNormal">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="129" y="73" w="8" h="32" />
+	</frame>
+
+	<frame name="arrowUpPressed">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="129" y="73" w="8" h="32" />
+	</frame>
+
 	<frame name="arrowRightNormal">
 		<region source="controls" hplacement="stretch" vplacement="stretch" x="92" y="73" w="32" h="8" />
 	</frame>
 
 	<frame name="arrowRightPressed">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="92" y="73" w="32" h="8" />
+	</frame>
+
+	<frame name="arrowLeftNormal">
+		<region source="controls" hplacement="stretch" vplacement="stretch" x="92" y="73" w="32" h="8" />
+	</frame>
+
+	<frame name="arrowLeftPressed">
 		<region source="controls" hplacement="stretch" vplacement="stretch" x="92" y="73" w="32" h="8" />
 	</frame>
   </frames>

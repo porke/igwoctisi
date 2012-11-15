@@ -60,7 +60,7 @@
 		private void TabPanelToggle_Pressed(object sender, EventArgs e)
 		{
 			var panel = sender as TabbedPaneControl;
-			
+			panel.Animate(this).SlideOut();
 		}
 
         private void LeaveGame_Pressed(object sender, EventArgs e)

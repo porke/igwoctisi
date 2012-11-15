@@ -10,9 +10,18 @@
 
 	public class TabbedPaneControl : Control
 	{
+		#region Internal interface - TabHeaderContainer
+
+		private interface TabHeaderContainer
+		{
+			Control ActivatedTab { get; set; }
+		}
+
+		#endregion
+
 		#region Internal class - TabTextHeaderControl
 
-		private class TabTextHeaderControl : ButtonControl
+		private class TabTextHeaderControl : ButtonControl, TabHeaderContainer
 		{
 			public Control ActivatedTab { get; set; }
 		}
@@ -21,7 +30,21 @@
 
 		#region Internal class - TabImageHeaderControl
 
-		
+		private class TabImageHeaderControl : ImageChoiceControl, TabHeaderContainer
+		{
+			/// <summary>
+			/// Creates the image choice controls (associates appropriate styles)
+			/// </summary>
+			/// <param name="onFrameNames">Frame names in the given order: disabled, normal, highlighted, depressed</param>
+			/// <param name="offFrameNames">Frame names in the given order: disabled, normal, highlighted, depressed</param>
+			public TabImageHeaderControl(string[] onFrameNames, string[] offFrameNames)
+				: base(onFrameNames, offFrameNames)
+			{
+
+			}
+
+			public Control ActivatedTab { get; set; }
+		}
 
 		#endregion
 
@@ -120,9 +143,42 @@
 			}
 		}
 
+		public void AddTab(string[] onFrames, string[] offFrames, Control content)
+		{
+			// FIXIT: the tab width is actually calculated in a pretty ugly way
+			var tab = new TabImageHeaderControl(onFrames, offFrames)
+			{
+				ActivatedTab = content
+			};
+
+			float tabWidth = 32;
+			if (_tabHeaderPosition == TabHeaderPosition.Top)
+			{
+				tab.Bounds = new UniRectangle(new UniScalar(TabPadding + 32 * TabCount), new UniScalar(TabPadding), new UniScalar(tabWidth), new UniScalar(24));
+				_contentPanel.Bounds = new UniRectangle(new UniScalar(), new UniScalar(TabHeaderWidth), new UniScalar(1.0f, 0.0f), new UniScalar(1.0f, -TabHeaderHeight));
+				_tabHeaderPanel.Bounds.Right = new UniScalar(_tabHeaderPanel.Bounds.Right.Fraction, (tabWidth + 16) * (TabCount + 1) + HideButtonMinSize + TabPadding);
+			}
+			else if (_tabHeaderPosition == TabHeaderPosition.Left)
+			{
+				tab.Bounds = new UniRectangle(new UniScalar(TabPadding / 2), new UniScalar(TabPadding + 32 * TabCount), new UniScalar(tabWidth), new UniScalar(24));
+				_contentPanel.Bounds = new UniRectangle(new UniScalar(TabHeaderWidth), new UniScalar(), new UniScalar(1.0f, -TabHeaderHeight), new UniScalar(1.0f, 0.0f));
+				_tabHeaderPanel.Bounds.Bottom = new UniScalar(_tabHeaderPanel.Bounds.Bottom.Fraction, TabHeaderHeight * (TabCount + 1) + HideButtonMinSize + TabPadding);
+			}
+
+			tab.Changed += SwitchTab;
+			_tabHeaderPanel.Children.Add(tab);
+			_tabs.Add(content);
+
+			if (ActiveTab == null)
+			{
+				SwitchTab(tab, null);
+				(_tabHeaderPanel.Children[1] as TabImageHeaderControl).Selected = true;
+			}
+		}
+
 		private void SwitchTab(object sender, EventArgs e)
 		{
-			var tabHeader = sender as TabTextHeaderControl;
+			var tabHeader = sender as TabHeaderContainer;
 			_contentPanel.Children.Remove(ActiveTab);
 			ActiveTab = tabHeader.ActivatedTab;
 		}
