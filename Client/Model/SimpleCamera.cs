@@ -37,6 +37,7 @@ namespace Client.Model
 		public Matrix Projection
 		{
 			get { return Matrix.CreatePerspectiveFieldOfView(FieldOfView, AspectRatio, NearPlane, FarPlane); }
+			//get { return Matrix.CreateOrthographicOffCenter(-640, 640, -360, 360, NearPlane, FarPlane); }
 		}
 
 		public Ray GetRay(Viewport viewport, Vector3 pointOnScreen)
@@ -70,7 +71,7 @@ namespace Client.Model
 			this.SetPosition(Vector3.Backward * -1000);
 			LookAt = Vector3.Zero;
 			FieldOfView = MathHelper.ToRadians(45);
-			AspectRatio = 4.0f / 3.0f;
+			AspectRatio = 1280.0f/720.0f;
 			NearPlane = 1;
 			FarPlane = 10000;
         }

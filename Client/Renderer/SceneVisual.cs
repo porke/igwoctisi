@@ -73,6 +73,10 @@
 		{
 			UpdateSpaceSheeps();
 		}
+		public void DrawBackground(Viewport viewport, double delta, double time)
+		{
+			Scene.Map.Visual.DrawBackground(viewport, delta, time);
+		}
 		public void Draw(double delta, double time)
 		{
 			foreach (var ship in _spaceships)

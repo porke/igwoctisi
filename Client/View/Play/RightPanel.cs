@@ -1,15 +1,14 @@
 ﻿namespace Client.View.Play
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using Client.Common;
+	using Client.Model;
 	using Client.View.Controls;
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
-	using Nuclex.UserInterface.Controls.Arcade;
 	using Nuclex.UserInterface.Controls.Desktop;
-	using System;
-	using System.Collections.Generic;
-	using Client.Model;
-	using System.Linq;
 
 	class RightPanel : TabbedPaneControl
 	{
@@ -19,7 +18,7 @@
 		public RightPanel()
 			: base(new UniRectangle(new UniScalar(0.8f, 0), new UniScalar(64), new UniScalar(0.2f, 0), new UniScalar(0.3f, 0)), TabHeaderPosition.Left)
 		{
-			CreateOrdersTab();
+			CreateCommandsTab();
 			CreatePlayersTab();
 		}
 
@@ -99,10 +98,12 @@
 				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.9f, 0))
 			};
 
-			AddTab("P", _playerList);
+			var off = new string[] { "playersIconInactive", "playersIconInactive", "playersIconInactive", "playersIconInactive" };
+			var on = new string[] { "playersIconActive", "playersIconActive", "playersIconActive", "playersIconActive" };
+			AddTab(on, off, _playerList);
 		}
 
-		private void CreateOrdersTab()
+		private void CreateCommandsTab()
 		{
 			var panel = new LabelControl
 			{
@@ -128,7 +129,10 @@
 			_sendCommands.Pressed += SendCommands_Pressed;
 
 			panel.Children.AddRange(new Control[] { _commandList, _deleteCommand, _sendCommands });
-			AddTab("O", panel);
+
+			var off = new string[] { "commandsIconInactive", "commandsIconInactive", "commandsIconInactive", "commandsIconInactive" };
+			var on = new string[] { "commandsIconActive", "commandsIconActive", "commandsIconActive", "commandsIconActive" };
+			AddTab(on, off, panel);
 		}
 
 		private WrappableListControl _commandList;
