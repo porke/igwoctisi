@@ -38,7 +38,12 @@
 		
 		public static Spaceship Acquire(PlayerColor playerColor)
 		{
-			return pools[playerColor.Value].Get(spaceship => { spaceship.Visible = true; });
+			return pools[playerColor.Value].Get(spaceship =>
+			{
+				spaceship.Visible = true;
+				spaceship.ScaleX = spaceship.ScaleY = spaceship.ScaleZ = 1;
+				spaceship.Opacity = 1f;
+			});
 		}
 
 		public static void Recycle(Spaceship obj)
@@ -122,9 +127,6 @@
 			Texture = texture;
 			Model = model;
 			AnimationManager = animationManager;
-
-			ScaleX = ScaleY = ScaleZ = 1;
-			Opacity = 1;
 		}
 		public void Draw(SimpleCamera camera, double delta, double time)
 		{
@@ -136,6 +138,10 @@
 					effect.World = this.CalculateWorldTransform();
 					effect.View = camera.GetView();
 					effect.Projection = camera.Projection;
+					effect.PreferPerPixelLighting = true;
+
+					// Transparency
+					effect.GraphicsDevice.BlendState = BlendState.AlphaBlend;
 					effect.Alpha = Opacity;
 
 					//TODO set appriopriate texture for current PlayerColor: effect.Texture = this.Texture;

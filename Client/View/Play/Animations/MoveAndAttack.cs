@@ -50,25 +50,27 @@
 			ship.SetPosition(sourcePlanet.Position);
 			ship.LookAt(targetPlanet.Position, Vector3.Forward);
 			ship.Animate(animationManager)
-				//.MoveTo(targetPlanet.Position, 2, Interpolators.AccelerateDecelerate())
 				.Compound(2.0, c =>
 				{
+					// Move
 					c.InterpolateTo(targetPlanet.Position.X, 2.0, Interpolators.AccelerateDecelerate(),
 						(s) => s.X,
 						(s, x) => { s.X = (float)x; });
 					c.InterpolateTo(targetPlanet.Position.Y, 2.0, Interpolators.Decelerate(),
 						(s) => s.Y,
 						(s, y) => { s.Y = (float)y; });
-					c.InterpolateTo(targetPlanet.Position.Z, 1.5, Interpolators.OvershootInterpolator(),
+					c.InterpolateTo(targetPlanet.Position.Z, 1.5, Interpolators.Anticipate(),
 						(s) => s.Z,
 						(s, z) => { s.Z = (float)z; });
 
-					c.InterpolateTo(1, 0.4, Interpolators.Decelerate(),
+					// Fade in and fade out
+					c.Wait(0.4)
+					.InterpolateTo(1, 0.4, Interpolators.OvershootInterpolator(),
 						(s) => 0,
 						(s, o) => { s.Opacity = (float)o; }
 					)
-					.Wait(1.2)
-					.InterpolateTo(0, 0.4, Interpolators.Accelerate(),
+					.Wait(0.35)
+					.InterpolateTo(0, 0.8, Interpolators.Decelerate(1.4),
 						(s) => 1,
 						(s, o) => { s.Opacity = (float)o; }
 					);
