@@ -1,12 +1,12 @@
-﻿
-using Client.Common.AnimationSystem;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Client.Renderer;
-
-
-namespace Client.Model
+﻿namespace Client.Model
 {
+	using System.Runtime.Serialization;
+	using Client.Common.AnimationSystem;
+	using Client.Renderer;
+	using Microsoft.Xna.Framework;
+	using Microsoft.Xna.Framework.Graphics;
+
+	[DataContract]
     public class SimpleCamera : ICamera
 	{
 		#region ITransformable members
@@ -62,7 +62,9 @@ namespace Client.Model
 		public float NearPlane { get; set; }
 		public float FarPlane { get; set; }
 		
+		[DataMember]
 		public Vector3 Min { get; set; }
+		[DataMember]
 		public Vector3 Max { get; set; }
 		public Vector3 Force { get; set; }
         
