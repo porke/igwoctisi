@@ -6,6 +6,7 @@
     using Client.Renderer;
     using System.Collections.Generic;
     using System.Threading;
+	using Microsoft.Xna.Framework;
 
 
     public static class DeployAnimation
@@ -19,28 +20,33 @@
             camera.Animate(animationManager)
                 .Wait(0.25);
                 //.Shake(0.4);
-            
-            // Deploy one ship for one planet coming from the camera origin
-            foreach (var deploy in deploys)
-            {
-                Planet targetPlanet = deploy.Item1;
-                int newFleetsCount = deploy.Item2;
-                Action onDeployEnd = deploy.Item3;
 
-                var ship = Spaceship.Acquire(targetPlanet.Owner.Color);
-                scene.AddSpaceship(ship);
+			ThreadPool.QueueUserWorkItem(obj =>
+			{
+				var waiter = new ManualResetEvent(true);
+				foreach (var deploy in deploys)
+				{
+					Planet targetPlanet = deploy.Item1;
+					int newFleetsCount = deploy.Item2;
+					Action onDeployEnd = deploy.Item3;
 
-                ship.SetPosition(camera.GetPosition());
-				ship.LookAt(targetPlanet.Position);
-                ship.Animate(animationManager)
-                    .Wait(rand.NextDouble() % 0.5)
-                    .MoveTo(targetPlanet.Position, 0.75, Interpolators.Accelerate(2.5))
-                    .AddCallback(s =>
-                    {
-                        onDeployEnd.Invoke();
-                        Spaceship.Recycle(s);
-                    });
-            }
+					waiter.Reset();
+					var ship = Spaceship.Acquire(targetPlanet.Owner.Color);
+					scene.AddSpaceship(ship);
+
+					ship.SetPosition(camera.GetPosition());
+					ship.LookAt(targetPlanet.Position, Vector3.Up);
+					ship.Animate(animationManager)
+						.MoveTo(targetPlanet.Position, 1.25, Interpolators.Accelerate(2.5))
+						.AddCallback(s =>
+						{
+							onDeployEnd.Invoke();
+							Spaceship.Recycle(s);
+							waiter.Set();
+						});
+					waiter.WaitOne();
+				}
+			});
         }
     }
 }

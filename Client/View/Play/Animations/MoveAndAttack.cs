@@ -48,7 +48,7 @@
 			scene.AddSpaceship(ship);
 
 			ship.SetPosition(sourcePlanet.Position);
-			ship.LookAt(targetPlanet.Position);
+			ship.LookAt(targetPlanet.Position, Vector3.Forward);
 			ship.Animate(animationManager)
 				//.MoveTo(targetPlanet.Position, 2, Interpolators.AccelerateDecelerate())
 				.Compound(2.0, c =>
@@ -77,7 +77,7 @@
 			scene.AddSpaceship(ship);
 
 			ship.SetPosition(sourcePlanet.Position);
-			ship.LookAt(targetPlanet.Position);
+			ship.LookAt(targetPlanet.Position, Vector3.Forward);
 			ship.Animate(animationManager)
 				.MoveTo(targetPlanet.Position, 2, Interpolators.AccelerateDecelerate())
 				.AddCallback(s =>

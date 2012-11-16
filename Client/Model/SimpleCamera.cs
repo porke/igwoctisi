@@ -15,9 +15,7 @@ namespace Client.Model
 		public float Y { get; set; }
 		public float Z { get; set; }
 
-		public float RotationX { get; set; }
-		public float RotationY { get; set; }
-		public float RotationZ { get; set; }
+		public Matrix Rotation { get; set; }
 
 		public float ScaleX { get; set; }
 		public float ScaleY { get; set; }

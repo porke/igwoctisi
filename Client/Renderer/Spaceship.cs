@@ -6,6 +6,7 @@
 	using Client.Common.AnimationSystem;
 	using Client.Model;
 	using Common;
+	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Content;
 	using Microsoft.Xna.Framework.Graphics;
 	
@@ -95,9 +96,7 @@
 		public float Y { get; set; }
 		public float Z { get; set; }
 
-		public float RotationX { get; set; }
-		public float RotationY { get; set; }
-		public float RotationZ { get; set; }
+		public Matrix Rotation { get; set; }
 		
 		public float ScaleX { get; set; }
 		public float ScaleY { get; set; }
