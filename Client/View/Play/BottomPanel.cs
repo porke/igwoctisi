@@ -7,7 +7,7 @@
 	using System;
 	using Client.Common;
 
-	class BottomPanel : TabbedPaneControl
+	public class BottomPanel : TabbedPaneControl
 	{
 		public event EventHandler ChatMessageSent;
 
