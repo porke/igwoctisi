@@ -14,7 +14,7 @@
 		public Color Color
 		{
 			get { return _color; } 
-			set { _color = value; ParticleSystem.SetColor(value); }
+			set { _color = value; ParticleSystem.AnimateColorChange(value, 1.75f); }
 		}
 
 		public bool Visible
