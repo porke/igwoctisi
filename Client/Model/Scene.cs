@@ -85,7 +85,7 @@
 								return Tuple.Create<Planet, int, Action>(targetPlanet, sr.FleetCount,
 									() => //action called when one deploy animation ends
 										{
-											//targetPlanet.NumFleetsPresent += 1;
+											targetPlanet.NumFleetsPresent = sr.FleetCount;
 											deployAnimsCounter.Signal();
 										});
 							})
@@ -100,6 +100,10 @@
 								return Tuple.Create<Planet, Planet, SimulationResult, Action<SimulationResult>>(sourcePlanet, targetPlanet, sr,
 									(srDone) => //action called when one move or attack animation ends
 										{
+											// TODO add animation changes
+											sourcePlanet.NumFleetsPresent = sr.SourceLeft;
+											targetPlanet.NumFleetsPresent = sr.TargetLeft;
+
 											moveAndAttackAnimsCounter.Signal();
 										});
 							})

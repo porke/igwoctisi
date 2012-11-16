@@ -347,6 +347,7 @@
 						_hudState = HudState.AnimatingSimulationResult;
                         Scene.AnimateChanges(simResults, () =>
                         {
+							// Animation is done.
                             _hudState = HudState.WaitingForRoundStart;
                             Client.Network.BeginSetReady(null, null);
                         });
