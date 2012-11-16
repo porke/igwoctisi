@@ -17,7 +17,11 @@
 		private float _animationAmount;
 		private Vector3 _previousPosition;
 
-		private const float _timeFactor = 2.5f;
+		private Color _startingColor;
+		private Color _targetColor;
+		private float _colorChangeDuration, _colorChangePercentageLeft;
+
+		private const float _shootingParticlesTimeFactor = 2.5f;
 
 
 		public PlanetarySystemConvexParticleSystem(Game game, ContentManager content, Point3[] keyPoints)
@@ -27,10 +31,22 @@
 			_index = 0;
 		}
 
+		/// <summary>
+		/// Sets new color. Method works in an instant, it doesn't animate the color change.
+		/// </summary>
+		/// <param name="color"></param>
 		public void SetColor(Color color)
 		{
 			base.SetMinColor(color);
 			base.SetMaxColor(color);
+		}
+
+		public void AnimateColorChange(Color targetColor, float duration)
+		{
+			_colorChangeDuration = duration;
+			_startingColor = base.GetMinColor();
+			_targetColor = targetColor;
+			_colorChangePercentageLeft = 1.0f;
 		}
 
 		protected override void InitializeSettings(ParticleSettings settings)
@@ -65,6 +81,7 @@
 		{
 			base.Update(gameTime);
 
+			// Add new particle
 			int n = _keyPoints.Length;
 			int index = _index;
 
@@ -82,7 +99,7 @@
 			AddParticle(position, velocity);
 
 			_previousPosition = position;
-			_animationAmount += (float)gameTime.ElapsedGameTime.TotalSeconds * _timeFactor;
+			_animationAmount += (float)gameTime.ElapsedGameTime.TotalSeconds * _shootingParticlesTimeFactor;
 			if (_animationAmount >= 1.0f)
 			{
 				_animationAmount = 0;
@@ -90,6 +107,15 @@
 				_index++;
 				if (_index >= n)
 					_index = 0;
+			}
+
+			// Update color
+			if (_colorChangePercentageLeft > 0)
+			{
+				_colorChangePercentageLeft -= (float)gameTime.ElapsedGameTime.TotalSeconds / _colorChangeDuration;
+				float percentage = 1.0f - _colorChangePercentageLeft;
+
+				SetColor(Color.Lerp(_startingColor, _targetColor, percentage));
 			}
 		}
 	}

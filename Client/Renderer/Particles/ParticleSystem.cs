@@ -510,6 +510,22 @@ namespace Client.Renderer.Particles
 				effectMaxColorParameter.SetValue(color.ToVector4());
 		}
 
+		public Color GetMinColor()
+		{
+			if (effectMinColorParameter == null)
+				return settings.MinColor;
+			else
+				return new Color(effectMinColorParameter.GetValueVector4());
+		}
+
+		public Color GetMaxColor()
+		{
+			if (effectMaxColorParameter == null)
+				return settings.MaxColor;
+			else
+				return new Color(effectMaxColorParameter.GetValueVector4());
+		}
+
 		/// <summary>
 		/// Adds a new particle to the system.
 		/// </summary>
