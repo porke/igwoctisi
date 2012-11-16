@@ -186,6 +186,7 @@
         public void OnJsonDeserialized(StreamingContext context)
         {
             // TODO Make Player (& Planet) references to be the same objects?
+			Camera.SetPosition((Camera.Min + Camera.Max) / 2.0f);
         }
 
         public Map()
