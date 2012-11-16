@@ -2,13 +2,12 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
+	using System.Threading;
 	using Client.Common.AnimationSystem;
 	using Client.Model;
 	using Client.Renderer;
-	using System.Threading;
-	using System.Diagnostics;
-	using Microsoft.Xna.Framework;
-	
+
 	public static class MoveAndAttack
 	{
 		public static void AnimateMovesAndAttacks(this SceneVisual scene,

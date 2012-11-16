@@ -187,7 +187,7 @@
                     Game.Window.Title = IGWOCTISI.DefaultMainWindowTitle + " @ " + player.Username;
 
                     // TODO connect to the existing host if it exists
-                    string mapName = "TestMap";
+                    string mapName = "Hexagon";
                     string gameName = "TestGame";
                     Game.Network.BeginCreateGame(gameName, new Map(mapName), OnCreateGame_Debug, Tuple.Create(messageBox, mapName, gameName, player));
                 }

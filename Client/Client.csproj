@@ -108,7 +108,6 @@
     <Compile Include="Common\AnimationSystem\CompoundAnimation.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\Interpolate.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\InterpolateTo.cs" />
-    <Compile Include="Common\AnimationSystem\DefaultAnimations\Shake.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideOut.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideIn.cs" />
     <Compile Include="Common\JsonLowercaseSerializer.cs" />
@@ -120,12 +119,15 @@
     <Compile Include="Common\SystemExtensions.cs" />
     <Compile Include="Common\XnaExtensions.cs" />
     <Compile Include="Model\BackgroundLayer.cs" />
+    <Compile Include="Renderer\Controls\FlatImageButtonControlRenderer.cs" />
+    <Compile Include="Renderer\Controls\FlatImageChoiceControlRenderer.cs" />
     <Compile Include="Renderer\Particles\ParticleSystems\FireParticleSystem.cs" />
     <Compile Include="Renderer\Particles\ParticleSystems\PlanetarySystemConvexParticleSystem.cs" />
     <Compile Include="Renderer\PlanetarySystemVisual.cs" />
-    <Compile Include="View\Controls\TabHeaderControl.cs" />
     <Compile Include="View\Controls\CommandInputControl.cs" />
     <Compile Include="View\Controls\IconControl.cs" />
+    <Compile Include="View\Controls\ImageButtonControl.cs" />
+    <Compile Include="View\Controls\ImageCheckButtonControl.cs" />
     <Compile Include="View\Controls\TabbedPaneControl.cs" />
     <Compile Include="View\Controls\ViewportControl.cs" />
     <Compile Include="View\Controls\WrappableListControl.cs" />

@@ -9,5 +9,6 @@ namespace Client.Model
 		public string Texture { get; set; }
 		public Vector2 Origin { get; set; }
 		public Vector2 Size { get; set; }
+		public float Speed { get; set; }
 	}
 }
