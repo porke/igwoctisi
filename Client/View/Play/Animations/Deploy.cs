@@ -21,7 +21,7 @@
                 .Wait(0.25);
                 //.Shake(0.4);
 
-			float deploySpeedFactor = camera.Min.Z > 4500 ? 0.80f : 1.25f;
+			float deploySpeedFactor = camera.Z > 4500 ? 1.75f : 1.25f;
 			float deployDuration = deploySpeedFactor * Math.Abs(camera.Min.Z / 2000);
 
 			ThreadPool.QueueUserWorkItem(obj =>
