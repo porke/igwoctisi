@@ -16,7 +16,10 @@
         public static void AnimateDeploys(this SceneVisual scene, AnimationManager animationManager, SimpleCamera camera,
             IList<Tuple<Planet, int, Action>> deploys)
         {
+			bool performRotateShip = rand.Next() % 3 == 0;
+
             // Camera quake 5 arena 2
+			if (performRotateShip)
             camera.Animate(animationManager)
                 .Wait(0.25);
                 //.Shake(0.4);
@@ -42,7 +45,12 @@
 					ship.Animate(animationManager)
 						.Compound(deployDuration, c =>
 						{
+							// Move spaceship to the target deploy planet
 							c.MoveTo(targetPlanet.Position, deployDuration, Interpolators.Decelerate());
+
+							// Rotating that happens randomly...
+							if (performRotateShip)
+								c.Rotate(ship.GetLook(), 0, 360, 1, Interpolators.OvershootInterpolator());
 
 							// Fade in and fade out
 							c.InterpolateTo(1, deployDuration / 5, Interpolators.OvershootInterpolator(),
