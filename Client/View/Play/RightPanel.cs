@@ -10,7 +10,7 @@
 	using Nuclex.UserInterface.Controls;
 	using Nuclex.UserInterface.Controls.Desktop;
 
-	class RightPanel : TabbedPaneControl
+	public class RightPanel : TabbedPaneControl
 	{
 		public event EventHandler CommandDeleted;
 		public event EventHandler CommandsSent;

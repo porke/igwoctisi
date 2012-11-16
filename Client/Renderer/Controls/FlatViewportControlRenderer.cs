@@ -8,7 +8,6 @@
 		public void Render(ViewportControl control, IFlatGuiGraphics graphics)
 		{
 			// Implementation not required
-			
 		}
 	}
 }
