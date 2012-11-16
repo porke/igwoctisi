@@ -104,6 +104,7 @@
 
 		public bool Visible { get; set; }
 		public PlayerColor PlayerColor { get; private set; }
+		public float Opacity { get; set; }
 
 		#endregion
 
@@ -123,6 +124,7 @@
 			AnimationManager = animationManager;
 
 			ScaleX = ScaleY = ScaleZ = 1;
+			Opacity = 1;
 		}
 		public void Draw(SimpleCamera camera, double delta, double time)
 		{
@@ -134,9 +136,9 @@
 					effect.World = this.CalculateWorldTransform();
 					effect.View = camera.GetView();
 					effect.Projection = camera.Projection;
+					effect.Alpha = Opacity;
 
-					//effect.Texture = this.Texture;
-
+					//TODO set appriopriate texture for current PlayerColor: effect.Texture = this.Texture;
 				}
 				mesh.Draw();
 			}

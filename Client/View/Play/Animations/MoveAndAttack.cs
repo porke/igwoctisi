@@ -62,6 +62,16 @@
 					c.InterpolateTo(targetPlanet.Position.Z, 1.5, Interpolators.OvershootInterpolator(),
 						(s) => s.Z,
 						(s, z) => { s.Z = (float)z; });
+
+					c.InterpolateTo(1, 0.4, Interpolators.Decelerate(),
+						(s) => 0,
+						(s, o) => { s.Opacity = (float)o; }
+					)
+					.Wait(1.2)
+					.InterpolateTo(0, 0.4, Interpolators.Accelerate(),
+						(s) => 1,
+						(s, o) => { s.Opacity = (float)o; }
+					);
 				})
 				.AddCallback(s =>
 				{
