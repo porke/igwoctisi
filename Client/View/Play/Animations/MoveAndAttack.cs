@@ -7,6 +7,7 @@
 	using Client.Common.AnimationSystem;
 	using Client.Model;
 	using Client.Renderer;
+	using Microsoft.Xna.Framework;
 
 	public static class MoveAndAttack
 	{
