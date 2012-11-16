@@ -48,6 +48,12 @@
 			return animation.MoveTo<Spaceship>(targetPosition, duration, interpolator);
 		}
 
+		public static Rotate<Spaceship> Rotate(this Animation<Spaceship> animation, Vector3 rotateAxis, float startingAngle, float targetAngle,
+			float duration, Func<double, double> interpolator = null)
+		{
+			return animation.Rotate<Spaceship>(rotateAxis, startingAngle, targetAngle, duration, interpolator);
+		}
+
 		public static Wait<Spaceship> Wait(this Animation<Spaceship> animation, double duration)
 		{
 			return animation.Wait<Spaceship>(duration);
