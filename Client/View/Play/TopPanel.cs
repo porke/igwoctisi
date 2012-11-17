@@ -13,10 +13,13 @@
 		public event EventHandler TechRaised;
 		public event EventHandler LeftGame;
 
+		public static readonly UniVector DefaultPosition = new UniVector(new UniScalar(), new UniScalar());
+		public static readonly UniVector Size = new UniVector(new UniScalar(1.0f, 0.0f), new UniScalar(0.0f, 40));
+
 		public TopPanel()
 		{
 			IconFrameName = FrameName;
-			Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0.0f), new UniScalar(0.0f, 40));
+			Bounds = new UniRectangle(new UniVector(new UniScalar(), new UniScalar(-Size.Y.Offset)), Size);
 
 			CreateIcons();
 			CreateButtons();

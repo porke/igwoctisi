@@ -1,12 +1,9 @@
-﻿
-using Nuclex.UserInterface.Controls;
-using System;
-using Microsoft.Xna.Framework;
-using Nuclex.UserInterface;
-
-
-namespace Client.Common.AnimationSystem.DefaultAnimations
+﻿namespace Client.Common.AnimationSystem.DefaultAnimations
 {
+	using System;
+	using Nuclex.UserInterface;
+	using Nuclex.UserInterface.Controls;
+
 	public class SlideOut : Animation<Control>
 	{
 		#region Protected members

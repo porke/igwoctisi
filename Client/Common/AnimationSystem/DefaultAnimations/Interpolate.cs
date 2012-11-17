@@ -29,7 +29,7 @@
 		}
 	}
 
-	public static class InterpoalteExtensions
+	public static class InterpolateExtensions
 	{
 		public static Interpolate<T> Interpolate<T>(this Animation<T> animation, double duration,
 			Func<double, double> interpolator, Action<T, double> valueChanger)

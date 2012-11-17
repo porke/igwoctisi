@@ -85,6 +85,9 @@
 
 		#endregion		
 
+		public UniVector DefaultPosition { get; set; }
+		public UniVector TogglePosition { get; set; }
+		
 		public bool IsToggled { get; set; }
 
 		public Control ActiveTab

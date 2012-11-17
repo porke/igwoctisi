@@ -10,7 +10,6 @@
 		private float _startingAngle;
 		private float _targetAngle;
 
-
 		/// <summary>
 		/// 
 		/// </summary>
