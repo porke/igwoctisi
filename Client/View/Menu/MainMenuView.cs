@@ -13,6 +13,10 @@
 
 	class MainMenuView : BaseView
     {
+		public event EventHandler<EventArgs<string, string>> LoginPressed;
+		public event EventHandler<EventArgs<string, string>> EnterPlayStatePressed;
+		public event EventHandler<EventArgs> QuitPressed;
+
         #region Protected members
 
         protected CommandInputControl tbLogin;
@@ -27,7 +31,9 @@
 			string nickname = Environment.UserName;
 
 			if (otherProcessesCount > 0)
+			{
 				nickname += (otherProcessesCount + 1).ToString();
+			}
 
 			return nickname;
 		}
@@ -82,24 +88,31 @@
 
         protected void Login_Pressed(object sender, EventArgs e)
         {
-			MenuState.RequestLogin(tbLogin.Text, tbPassword.GetPassword());
+			if (LoginPressed != null)
+			{
+				LoginPressed(sender, LoginPressed.CreateArgs(tbLogin.Text, tbPassword.GetPassword()));
+			}			
         }
         protected void Quit_Pressed(object sender, EventArgs e)
         {
-			MenuState.QuitGame();
+			if (QuitPressed != null)
+			{
+				QuitPressed(sender, EventArgs.Empty);				
+			}			
         }
         protected void EnterPlayState_Pressed(object sender, EventArgs e)
         {
-            MenuState.EnterPlayState(tbLogin.Text, tbPassword.GetPassword());
+			if (EnterPlayStatePressed != null)
+			{
+				EnterPlayStatePressed(sender, EnterPlayStatePressed.CreateArgs(tbLogin.Text, tbPassword.GetPassword()));
+			}
         }
         #endregion
-
-		public MenuState MenuState { get; protected set; }
+	
 
 		public MainMenuView(MenuState state)
 			: base(state)
         {
-			MenuState = state;
             IsTransparent = true;
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 

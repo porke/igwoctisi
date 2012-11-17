@@ -4,6 +4,7 @@
     using Client.Model;
     using View;
     using View.Lobby;
+	using Common;
 
 	class LobbyState : GameState
     {
