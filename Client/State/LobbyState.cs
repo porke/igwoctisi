@@ -22,6 +22,21 @@
 			ViewMgr.PushLayer(menuBackground);
 			ViewMgr.PushLayer(lobbyMenu);
         }
+		
+		public LobbyState(IGWOCTISI game, Player player, SpecificGameLobbyInfo lobbyInfo, string mapName) : base(game)
+		{
+			_clientPlayer = player;
+			_gameLobby = lobbyInfo;
+			_map = mapName != null ? new Map(mapName) : null;
+
+			var gameLobbyView = new GameLobbyView(this, mapName != null);
+			var menuBackground = new LobbyBackground(this);
+
+			BindNetworkEvents();
+			gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
+			ViewMgr.PushLayer(menuBackground);
+			ViewMgr.PushLayer(gameLobbyView);
+		}
 
         public override void OnEnter()
         {

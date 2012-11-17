@@ -50,7 +50,7 @@
 
             var btnEnterPlayState = new ButtonControl
             {
-                Text = "Enter PlayState",
+                Text = "Join or Create Game",
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.6f, 40), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
             };
             btnEnterPlayState.Pressed += EnterPlayState_Pressed;
