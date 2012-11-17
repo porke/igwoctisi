@@ -1,6 +1,8 @@
 ﻿namespace Client.View.Menu
 {
 	using System;
+	using System.Diagnostics;
+	using System.Linq;
 	using Common;
 	using Input;
 	using Nuclex.UserInterface;
@@ -17,11 +19,24 @@
         protected PasswordInputControl tbPassword;
 		protected ButtonControl btnLogin, btnQuit;
 
+		private string GetOSUniqueNickName()
+		{
+			var currentProcess = Process.GetCurrentProcess();
+			int otherProcessesCount = Process.GetProcessesByName(currentProcess.ProcessName).Count() - 1;
+
+			string nickname = Environment.UserName;
+
+			if (otherProcessesCount > 0)
+				nickname += (otherProcessesCount + 1).ToString();
+
+			return nickname;
+		}
+
         protected void CreateChildControls()
         {
             tbLogin = new CommandInputControl
             {
-                Text = "infinite",
+				Text = GetOSUniqueNickName(),
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.4f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))                
             };
             tbLogin.OnCommandHandler += Login_Pressed;
