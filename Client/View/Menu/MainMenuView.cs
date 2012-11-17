@@ -19,7 +19,7 @@
         protected PasswordInputControl tbPassword;
 		protected ButtonControl btnLogin, btnQuit;
 
-		private string GetOSUniqueNickName()
+		private string GetOSUniqueUsername()
 		{
 			var currentProcess = Process.GetCurrentProcess();
 			int otherProcessesCount = Process.GetProcessesByName(currentProcess.ProcessName).Count() - 1;
@@ -36,7 +36,7 @@
         {
             tbLogin = new CommandInputControl
             {
-				Text = GetOSUniqueNickName(),
+				Text = GetOSUniqueUsername(),
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.4f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))                
             };
             tbLogin.OnCommandHandler += Login_Pressed;
