@@ -108,6 +108,7 @@
     <Compile Include="Common\AnimationSystem\CompoundAnimation.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\Interpolate.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\InterpolateTo.cs" />
+    <Compile Include="Common\AnimationSystem\DefaultAnimations\MoveControlTo.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\Rotate.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideOut.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideIn.cs" />

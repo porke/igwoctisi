@@ -3,7 +3,7 @@ using System;
 namespace Client.Common.AnimationSystem
 {
 	/// <summary>
-	/// If you inherit from this interface, then remember that Scale equals zero! You should mminimally change it to 1!
+	/// If you inherit from this interface, then remember that Scale equals zero! You should minimally change it to 1!
 	/// </summary>
 	public interface ITransformable
 	{

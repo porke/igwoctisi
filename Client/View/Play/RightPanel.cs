@@ -14,10 +14,13 @@
 	{
 		public event EventHandler CommandDeleted;
 		public event EventHandler CommandsSent;
-
+	
 		public RightPanel()
-			: base(new UniRectangle(new UniScalar(0.8f, 0), new UniScalar(64), new UniScalar(0.2f, 0), new UniScalar(0.3f, 0)), TabHeaderPosition.Left)
+			: base(new UniRectangle(new UniVector(new UniScalar(1.0f, 0), new UniScalar(64)), new UniVector(new UniScalar(0.2f, 0), new UniScalar(0.3f, 0))), TabHeaderPosition.Left)
 		{
+			TogglePosition = new UniVector(new UniScalar(1.0f, -40), new UniScalar(64));
+			DefaultPosition = new UniVector(new UniScalar(0.8f, 0), new UniScalar(64));
+
 			CreateCommandsTab();
 			CreatePlayersTab();
 			TabChanged += RightPanel_TabChanged;
