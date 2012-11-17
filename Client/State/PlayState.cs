@@ -6,10 +6,10 @@
 	using System.Threading;
 	using Client.Common;
 	using Client.Renderer;
+	using Client.Renderer.Particles;
 	using Client.View;
 	using Model;
 	using View.Play;
-	using Client.Renderer.Particles;
 
 	class PlayState : GameState
 	{

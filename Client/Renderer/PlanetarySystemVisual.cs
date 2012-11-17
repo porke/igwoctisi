@@ -4,7 +4,6 @@
 	using Client.Renderer.Particles;
 	using Client.Renderer.Particles.ParticleSystems;
 	using Microsoft.Xna.Framework;
-	using Microsoft.Xna.Framework.Content;
 	using Microsoft.Xna.Framework.Graphics;
 
 	public sealed class PlanetarySystemVisual

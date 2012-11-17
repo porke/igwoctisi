@@ -1,14 +1,10 @@
 ﻿namespace Client.Renderer
 {
-	using System;
 	using System.Linq;
 	using Client.Common;
 	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Graphics;
 	using Model;
-	using Client.Renderer.Particles;
-	using System.Collections.Generic;
-	using Client.Renderer.Particles.ParticleSystems;
 
 	public class XnaRenderer : IRenderer
 	{

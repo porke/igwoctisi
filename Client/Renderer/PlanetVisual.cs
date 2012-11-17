@@ -10,11 +10,11 @@
 
     public class PlanetVisual
     {
-		public static readonly Vector2 NameTextOffset = new Vector2(0, 25.0f);
+		public static readonly Vector2 NameTextOffset = new Vector2(0, -42.0f);
 		public static readonly Vector2 FleetsTextOffset = new Vector2(0.0f, 42.0f);
 		public static readonly Vector2 FleetsIncomeTextOffset = new Vector2(21.0f, 42.0f);
 		public static readonly Vector2 FleetsDeltaTextOffset = new Vector2(21, -42.0f);
-		public static readonly Vector2 OwnerTextOffset = new Vector2(0, 59.0f);
+		public static readonly Vector2 OwnerTextOffset = new Vector2(0, 25.0f);
 
 		public Planet Planet { get; set; }
         public float Period { get; set; }
@@ -86,25 +86,20 @@
 		}
 		public void DrawInfo(GraphicsDevice device, SpriteBatch batch, ICamera camera, bool showDetails)
 		{
-			var planetScreen = camera.Project(device.Viewport, Planet.Position);
-
-			// owner name
-			var ownerText = Planet.Owner != null ? Planet.Owner.Username : string.Empty;
-			var ownerTextSize = InfoFont.MeasureString(ownerText);
-			var ownerTextScreen = new Vector2(planetScreen.X - ownerTextSize.X/2.0f, planetScreen.Y - ownerTextSize.Y/2.0f);
-			var ownerTextColor = Planet.Owner != null ? Planet.Owner.Color.XnaColor : Color.Gray;
-			batch.DrawString(InfoFont, ownerText, ownerTextScreen + OwnerTextOffset, ownerTextColor);
-
-			// planet name
-			var nameTextSize = InfoFont.MeasureString(Planet.Name);
-			var nameTextScreen = new Vector2(planetScreen.X - nameTextSize.X / 2.0f, planetScreen.Y - nameTextSize.Y / 2.0f);
-			batch.DrawString(InfoFont, Planet.Name, nameTextScreen + NameTextOffset, Color.Yellow);
+			var planetScreen = camera.Project(device.Viewport, Planet.Position);				
 
 			// number of fleets
 			var fleetsText = Planet.NumFleetsPresent.ToString();
 			var fleetsTextSize = InfoFont.MeasureString(fleetsText);
 			var fleetsTextScreen = new Vector2(planetScreen.X - fleetsTextSize.X / 2.0f, planetScreen.Y - fleetsTextSize.Y / 2.0f);
 			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen + FleetsTextOffset, Color.Yellow);
+
+			// owner name
+			var ownerText = Planet.Owner != null ? Planet.Owner.Username : string.Empty;
+			var ownerTextSize = InfoFont.MeasureString(ownerText);
+			var ownerTextScreen = new Vector2(planetScreen.X - ownerTextSize.X / 2.0f, planetScreen.Y - ownerTextSize.Y / 2.0f);
+			var ownerTextColor = Planet.Owner != null ? Planet.Owner.Color.XnaColor : Color.Gray;
+			batch.DrawString(InfoFont, ownerText, ownerTextScreen + OwnerTextOffset, ownerTextColor);
 
 			if (Planet.FleetChange != 0)
 			{
@@ -115,6 +110,11 @@
 
 			if (showDetails)
 			{
+				// planet name
+				var nameTextSize = InfoFont.MeasureString(Planet.Name);
+				var nameTextScreen = new Vector2(planetScreen.X - nameTextSize.X / 2.0f, planetScreen.Y - nameTextSize.Y / 2.0f);
+				batch.DrawString(InfoFont, Planet.Name, nameTextScreen + NameTextOffset, Color.Yellow);
+
 				// fleets income
 				var fleetsIncomeText = string.Format("+{0}", Planet.BaseUnitsPerTurn);
 				batch.DrawString(InfoFont, fleetsIncomeText, fleetsTextScreen + FleetsIncomeTextOffset, Color.White);
