@@ -2,12 +2,9 @@
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 	using Client.Common.AnimationSystem;
 	using Client.Model;
-	using Microsoft.Xna.Framework.Content;
 	using Client.View.Play.Animations;
-	using System.Threading;
 	using Microsoft.Xna.Framework.Graphics;
 
 	public sealed class SceneVisual
@@ -26,7 +23,9 @@
 			{
 				// It is more efficient to use that type of loop than foreach/ForEach.
 				for (int i = 0, n = _spaceshipsToAdd.Count; i < n; ++i)
+				{
 					_spaceships.Add(_spaceshipsToAdd[i]);
+				}
 
 				_spaceshipsToAdd.Clear();
 			}

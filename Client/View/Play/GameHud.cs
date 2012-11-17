@@ -12,6 +12,12 @@
 
     class GameHud : BaseView
 	{
+		public event EventHandler<EventArgs<TechnologyType>> RaiseTechPressed;
+		public event EventHandler<EventArgs<string>> ChatMessageSent;
+		public event EventHandler<EventArgs<int>> DeleteCommandPressed;
+		public event EventHandler SendCommandsPressed;
+		public event EventHandler LeaveGamePressed;
+
 		#region BaseView members
 
 		protected override void OnShow(double time)
@@ -65,12 +71,18 @@
 
         private void LeaveGame_Pressed(object sender, EventArgs e)
         {
-			PlayState.LeaveGame();
+			if (LeaveGamePressed != null)
+			{
+				LeaveGamePressed(sender, EventArgs.Empty);
+			}
         }
 
         private void SendCommands_Pressed(object sender, EventArgs e)
         {
-			PlayState.SendCommands();
+			if (SendCommandsPressed != null)
+			{
+				SendCommandsPressed(sender, EventArgs.Empty);
+			}
         }
 
         private void DeleteCommand_Pressed(object sender, EventArgs e)
@@ -79,7 +91,10 @@
 			if (commandList.SelectedItems.Count > 0)
             {
 				var selectedOrderIndex = commandList.SelectedItems[0];
-				PlayState.DeleteCommand(selectedOrderIndex);
+				if (DeleteCommandPressed != null)
+				{
+					DeleteCommandPressed(sender, DeleteCommandPressed.CreateArgs(selectedOrderIndex));
+				}
             }
         }
 
@@ -88,7 +103,11 @@
 			var chatMessage = sender as CommandInputControl;
             if (chatMessage.Text.Trim().Length > 0)
             {
-                PlayState.SendChatMessage(chatMessage.Text);
+				if (ChatMessageSent != null)
+				{
+					ChatMessageSent(sender, ChatMessageSent.CreateArgs(chatMessage.Text));
+				}
+                
                 chatMessage.Text = string.Empty;
             }
         }
@@ -97,7 +116,11 @@
 		{
 			var senderName = (sender as Control).Name;			
 			var techType = (TechnologyType) Enum.Parse(typeof(TechnologyType), senderName);
-			PlayState.RaiseTechnology(techType);
+
+			if (RaiseTechPressed != null)
+			{
+				RaiseTechPressed(sender, RaiseTechPressed.CreateArgs(techType));				
+			}
 		}
 
         #endregion
@@ -136,11 +159,8 @@
 
         #endregion
 
-		public PlayState PlayState { get; protected set; }
-
         public GameHud(PlayState state) : base(state)
-        {
-			PlayState = state;
+        {		
             IsTransparent = true;            
             InputReceiver = new NuclexScreenInputReceiver(screen, false);            
 
