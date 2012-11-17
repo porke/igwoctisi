@@ -1,14 +1,12 @@
 ﻿namespace Client.State
 {
-    using System;
-    using System.Configuration;
-    using View;
-    using View.Menu;
-    using Client.Model;
-	using Client.View.Play;
-	using System.Collections.Generic;
+	using System;
+	using System.Configuration;
+	using Client.Model;
+	using View;
+	using View.Menu;
 
-    public class MenuState : GameState
+	public class MenuState : GameState
     {
         private const string DefaultHost = "localhost";
         private const int DefaultPort = 23456;
@@ -17,9 +15,12 @@
         {
             var menuBackground = new MenuBackground(this);
             var mainMenu = new MainMenuView(this);
+			mainMenu.LoginPressed += RequestLogin;
+			mainMenu.QuitPressed += QuitGame;
+			mainMenu.EnterPlayStatePressed += EnterPlayState;
 
             ViewMgr.PushLayer(menuBackground);
-			ViewMgr.PushLayer(mainMenu);			
+			ViewMgr.PushLayer(mainMenu);
         }
 
         public override void OnEnter()
@@ -35,13 +36,16 @@
 
         #region View event handlers
 
-        internal void QuitGame()
+        internal void QuitGame(object sender, EventArgs args)
         {
             Client.Network.BeginDisconnect(null, null);
             Client.Exit();
         }
-		internal void RequestLogin(string login, string password)
+		internal void RequestLogin(object sender, EventArgs<string, string> args)
         {
+			string login = args.Item1;
+			string password = args.Item2;
+
             int port = DefaultPort;
             string hostname = DefaultHost;
 
@@ -57,8 +61,11 @@
             Client.Network.BeginConnect(hostname, port, OnConnect, Tuple.Create<MessageBox, string, string>(messageBox, login, password));
 			ViewMgr.PushLayer(messageBox);
         }
-        internal void EnterPlayState(string login, string password)
+        internal void EnterPlayState(object sender, EventArgs<string, string> args)
         {
+			string login = args.Item1;
+			string password = args.Item2;
+
             int port = DefaultPort;
             string hostname = DefaultHost;
 

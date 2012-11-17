@@ -189,6 +189,7 @@
     <Compile Include="Common\AnimationSystem\DefaultAnimations\Wait.cs" />
     <Compile Include="Common\AnimationSystem\ITransformable.cs" />
     <Compile Include="Common\AnimationSystem\Interpolators.cs" />
+    <Compile Include="Common\EventHandlerExtension.cs" />
     <Compile Include="View\Lobby\CreateGameView.cs" />
     <Compile Include="View\Lobby\LobbyBackground.cs" />
     <Compile Include="View\Lobby\MainLobbyView.cs" />
