@@ -86,10 +86,8 @@
 		#endregion		
 
 		public UniVector DefaultPosition { get; set; }
-		public UniVector TogglePosition { get; set; }
-		
+		public UniVector TogglePosition { get; set; }		
 		public bool IsToggled { get; set; }
-
 		public Control ActiveTab
 		{
 			get
@@ -119,9 +117,8 @@
 			_contentPanel.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0));
 			_tabHeaderPanel.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(TabHeaderWidth), new UniScalar(TabHeaderHeight));
 
-			string hideBtnFramePressed = (tabHeaderPosition == TabHeaderPosition.Left) ? "arrowRightPressed" : "arrowDownPressed";
-			string hideBtnFrameNormal = (tabHeaderPosition == TabHeaderPosition.Left) ? "arrowRightNormal" : "arrowDownNormal";
-			_hidePanelButton = new ImageButtonControl(hideBtnFrameNormal, hideBtnFrameNormal, hideBtnFrameNormal, hideBtnFramePressed);
+			
+			_hidePanelButton = new ImageButtonControl();
 			_hidePanelButton.Pressed += TogglePanel;
 			_hidePanelButton.Text = string.Empty;
 
@@ -134,8 +131,10 @@
 				_hidePanelButton.Bounds = new UniRectangle(new UniScalar(1.0f, -TabPadding - HideButtonMinSize), new UniScalar((TabHeaderWidth - HideButtonMaxSize) / 2), new UniScalar(HideButtonMinSize), new UniScalar(HideButtonMaxSize));
 			}
 			_tabHeaderPanel.Children.Add(_hidePanelButton);
+			UpdateHideButtonStyle();
 		}
 
+		// TODO: fix awful code duplication in AddTab
 		public void AddTab(string tabText, Control content)
 		{
 			var tab = new TabTextHeaderControl
@@ -173,7 +172,7 @@
 
 		public void AddTab(string[] onFrames, string[] offFrames, Control content)
 		{
-			// FIXIT: the tab width is actually calculated in a pretty ugly way
+			// TODO: the tab width is actually calculated in a pretty ugly way
 			var tab = new TabImageHeaderControl(onFrames, offFrames)
 			{
 				ActivatedTab = content
@@ -223,9 +222,31 @@
 		private void TogglePanel(object sender, EventArgs args)
 		{
 			IsToggled = !IsToggled;
+			UpdateHideButtonStyle();
+
 			if (Toggled != null)
 			{
 				Toggled(this, args);
+			}
+		}
+
+		private void UpdateHideButtonStyle()
+		{			
+			string frameNormal;
+
+			if (_tabHeaderPosition == TabHeaderPosition.Left)
+			{
+				frameNormal = IsToggled ? "arrowLeftNormal" : "arrowRightNormal";
+			}
+			else
+			{
+				frameNormal = IsToggled ? "arrowUpNormal" : "arrowDownNormal";
+			}
+
+			// TODO: until there are no highlight and pressed icons, all are normal
+			for (int i = 0; i < _hidePanelButton.StateFrames.Length; ++i)
+			{
+				_hidePanelButton.StateFrames[i] = frameNormal;
 			}
 		}
 

@@ -8,6 +8,11 @@
 	{
 		public string[] StateFrames = new string[4];
 
+		public ImageButtonControl() : this(string.Empty, string.Empty, string.Empty, string.Empty)
+		{
+
+		}
+
 		public ImageButtonControl(string disabledFrame, string normalFrame, string highlighedFrame, string depressedFrame)
 		{
 			StateFrames[0] = disabledFrame;
