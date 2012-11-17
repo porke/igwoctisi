@@ -1,8 +1,9 @@
 ﻿namespace Client.View.Play
 {
+	using System;
 	using Client.Input;
-	using Client.View.Controls;
 	using Client.State;
+	using Client.View.Controls;
 	using Microsoft.Xna.Framework.Input;
 	using Model;
 	using Nuclex.Input;
@@ -10,6 +11,16 @@
 
     class GameViewport : BaseView
 	{
+		public event EventHandler PlanetsUnhovered;
+		public event EventHandler LinksUnhovered;
+		public event EventHandler<EventArgs<Planet>> PlanetHovered;
+		public event EventHandler<EventArgs<PlanetLink>> LinkHovered;
+		public event EventHandler<EventArgs<Planet>> PlanetSelected;
+		public event EventHandler<EventArgs<PlanetLink, int>> FleetMoved;
+		public event EventHandler<EventArgs<PlanetLink, int>> FleetMoveReverted;		
+		public event EventHandler<EventArgs<Planet, int>> FleetDeployReverted;
+		public event EventHandler<EventArgs<Planet, int>> FleetDeployed;
+
 		#region Protected members
 
 		protected ViewportControl _viewport;
@@ -101,39 +112,66 @@
 		}
 		private void SelectPlanet(Planet planet)
 		{
-			PlayState.SelectPlanet(planet);
+			if (PlanetSelected != null)
+			{
+				PlanetSelected(this, PlanetSelected.CreateArgs(planet));
+			}
 		}
 		private void DeployFleet(Planet destinationPlanet, int count)
         {
-			PlayState.DeployFleet(destinationPlanet, count);
+			if (FleetDeployed != null)
+			{
+				FleetDeployed(this, FleetDeployed.CreateArgs(destinationPlanet, count));
+			}
         }
         private void UndeployFleet(Planet destinationPlanet, int count)
         {
-			PlayState.UndeployFleet(destinationPlanet, count);
+			if (FleetDeployReverted != null)
+			{
+				FleetDeployReverted(this, FleetDeployReverted.CreateArgs(destinationPlanet, count));
+			}
         }
         private void HoverPlanet(Planet planet)
         {
-			PlayState.OnHoverPlanet(planet);
+			if (PlanetHovered != null)
+			{
+				PlanetHovered(this, PlanetHovered.CreateArgs(planet));
+			}
         }
         private void UnhoverPlanets()
         {
-			PlayState.UnhoverPlanets();
+			if (PlanetsUnhovered != null)
+			{
+				PlanetsUnhovered(this, EventArgs.Empty);
+			}			
         }
 		private void HoverLink(PlanetLink link)
 		{
-			PlayState.OnHoverLink(link);
+			if (LinkHovered != null)
+			{
+				LinkHovered(this, LinkHovered.CreateArgs(link));
+			}
 		}
 		private void UnhoverLinks()
 		{
-			PlayState.UnhoverLinks();
+			if (LinksUnhovered != null)
+			{
+				LinksUnhovered(this, EventArgs.Empty);
+			}
 		}
 		private void RevertMoveFleet(PlanetLink linkSelected, int count)
 		{
-            PlayState.RevertMoveFleet(linkSelected, count);
+			if (FleetMoveReverted != null)
+			{
+				FleetMoveReverted(this, FleetMoveReverted.CreateArgs(linkSelected, count));
+			}            
 		}
 		private void MoveFleet(PlanetLink linkSelected, int count)
         {
-            PlayState.MoveFleet(linkSelected, count);
+			if (FleetMoved != null)
+			{
+				FleetMoved(this, FleetMoved.CreateArgs(linkSelected, count));
+			}
         }
 
         #endregion

@@ -26,25 +26,30 @@
 
 		#endregion
 
-		#region View event handlers
+		#region View event handlers (viewport)
 		
-		internal void SelectPlanet(Planet selectedPlanet)
+		private void View_SelectPlanet(object sender, EventArgs<Planet> e)
 		{
+			var selectedPlanet = e.Item;
 			if (Scene.CanSelectPlanet(selectedPlanet, _clientPlayer))
 			{
 				Scene.SelectPlanet(selectedPlanet);
 			}
 		}
-		internal void OnHoverPlanet(Planet hoverPlanet)
+		private void View_OnHoverPlanet(object sender, EventArgs<Planet> e)
 		{
+			var hoverPlanet = e.Item;
 			Scene.HoveredPlanet = hoverPlanet.Id;
 		}
-		internal void UnhoverPlanets()
+		private void View_UnhoverPlanets(object sender, EventArgs e)
 		{
 			Scene.HoveredPlanet = 0;
 		}
-		internal void DeployFleet(Planet planet, int count)
+		private void View_DeployFleet(object sender, EventArgs<Planet, int> e)
 		{
+			var planet = e.Item1;
+			int count = e.Item2;
+
 			// Deploment is only possible on clients own planet
 			if (planet.Owner == null)
 			{
@@ -73,8 +78,11 @@
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 			_gameHud.UpdateResourceData(_clientPlayer);
 		}
-		internal void UndeployFleet(Planet planet, int count)
+		private void View_RevertDeployFleet(object sender, EventArgs<Planet, int> e)
 		{
+			var planet = e.Item1;
+			int count = e.Item2;
+
 			var command = _clientPlayer.Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
 			if (command == null)
 			{
@@ -86,16 +94,19 @@
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 			_gameHud.UpdateResourceData(_clientPlayer);
 		}
-		internal void OnHoverLink(PlanetLink hoverLink)
+		private void View_OnHoverLink(object sender, EventArgs<PlanetLink> e)
 		{
+			var hoverLink = e.Item;
 			Scene.HoveredLink = hoverLink;
 		}
-		internal void UnhoverLinks()
+		private void View_UnhoverLinks(object sender, EventArgs e)
 		{
 			Scene.HoveredLink = null;
 		}
-		internal void MoveFleet(PlanetLink link, int count)
+		private void View_MoveFleet(object sender, EventArgs<PlanetLink, int> e)
 		{
+			var link = e.Item1;
+			int count = e.Item2;
 			var source = Scene.Map.GetPlanetById(link.SourcePlanet);
 			var target = Scene.Map.GetPlanetById(link.TargetPlanet);
 
@@ -130,8 +141,10 @@
 			_clientPlayer.MoveFleet(source, target, count);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 		}
-		internal void RevertMoveFleet(PlanetLink link, int count)
+		private void View_RevertMoveFleet(object sender, EventArgs<PlanetLink, int> e)
 		{
+			var link = e.Item1;
+			int count = e.Item2;
 			var source = Scene.Map.GetPlanetById(link.SourcePlanet);
 			var target = Scene.Map.GetPlanetById(link.TargetPlanet);
 
@@ -152,7 +165,6 @@
 			_clientPlayer.RevertFleetMove(source, target, count);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 		}
-		
 
 		#endregion
 
@@ -511,6 +523,16 @@
 			_gameHud.DeleteCommandPressed += HUD_DeleteCommand;
 			_gameHud.SendCommandsPressed += HUD_SendCommands;
 			_gameHud.LeaveGamePressed += HUD_LeaveGame;
+
+			_gameViewport.PlanetsUnhovered += View_UnhoverPlanets;
+			_gameViewport.LinksUnhovered += View_UnhoverLinks;
+			_gameViewport.PlanetHovered += View_OnHoverPlanet;
+			_gameViewport.LinkHovered += View_OnHoverLink;
+			_gameViewport.PlanetSelected += View_SelectPlanet;
+			_gameViewport.FleetMoved += View_MoveFleet;
+			_gameViewport.FleetMoveReverted += View_RevertMoveFleet;
+			_gameViewport.FleetDeployReverted += View_RevertDeployFleet;
+			_gameViewport.FleetDeployed += View_DeployFleet;
 		}
 	}
 }

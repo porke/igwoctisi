@@ -1,11 +1,11 @@
 ﻿namespace Client.View.Play
 {
+	using System;
+	using Client.Common;
 	using Client.View.Controls;
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
 	using Nuclex.UserInterface.Controls.Desktop;
-	using System;
-	using Client.Common;
 
 	public class BottomPanel : TabbedPaneControl
 	{
