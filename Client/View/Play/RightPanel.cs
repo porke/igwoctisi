@@ -20,6 +20,7 @@
 		{
 			CreateCommandsTab();
 			CreatePlayersTab();
+			TabChanged += RightPanel_TabChanged;
 		}
 
 		#region Update functions
@@ -38,6 +39,13 @@
 
 		public void UpdateCommands(List<UserCommand> commands, int selectedCommand = -1)
 		{
+			// If this is the wring tab, save the command list, it will be updated once the command tab is activated
+			if (ActiveTab.Name != CommandsTabName)
+			{
+				_lastCommandListAndSelectedOrder = new Tuple<List<UserCommand>, int>(commands, selectedCommand);
+				return;
+			}
+
 			_commandList.Clear();
 
 			// Not using sort, because it's unstable
@@ -88,12 +96,25 @@
 			}
 		}
 
+		private void RightPanel_TabChanged(object sender, EventArgs e)
+		{
+			if ((sender as Control).Name.Equals(CommandsTabName))
+			{
+				if (_lastCommandListAndSelectedOrder != null)
+				{
+					UpdateCommands(_lastCommandListAndSelectedOrder.Item1, _lastCommandListAndSelectedOrder.Item2);
+					_lastCommandListAndSelectedOrder = null;
+				}
+			}
+		}
+
 		#endregion
 
 		private void CreatePlayersTab()
 		{
 			_playerList = new ListControl()
 			{
+				Name = PlayersTabName,
 				SelectionMode = ListSelectionMode.None,
 				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.9f, 0))
 			};
@@ -107,6 +128,7 @@
 		{
 			var panel = new LabelControl
 			{
+				Name = CommandsTabName,
 				Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0))
 			};
 			_commandList = new WrappableListControl()
@@ -139,5 +161,9 @@
 		private ListControl _playerList;
 		private ButtonControl _sendCommands;
 		private ButtonControl _deleteCommand;
+		private Tuple<List<UserCommand>, int> _lastCommandListAndSelectedOrder;
+
+		private const string CommandsTabName = "CommandsTab";
+		private const string PlayersTabName = "PlayersTab";
 	}
 }

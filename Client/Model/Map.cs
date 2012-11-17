@@ -10,9 +10,8 @@
 	using Client.Common;
 	using Client.Common.AnimationSystem;
 	using Client.Renderer;
-	using Microsoft.Xna.Framework;
 
-    [DataContract]
+	[DataContract]
     public class Map
     {
         [DataMember]

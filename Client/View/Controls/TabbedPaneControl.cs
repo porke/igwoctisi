@@ -10,6 +10,18 @@
 
 	public class TabbedPaneControl : Control
 	{
+		/// <summary>
+		/// Sender: This.
+		/// EventArgs: empty.
+		/// </summary>
+		public event EventHandler Toggled;
+		
+		/// <summary>
+		/// Sender: Activated tab.
+		/// EventArgs: empty.
+		/// </summary>
+		public event EventHandler TabChanged;
+
 		#region Internal interface - TabHeaderContainer
 
 		private interface TabHeaderContainer
@@ -23,6 +35,12 @@
 
 		private class TabTextHeaderControl : ButtonControl, TabHeaderContainer
 		{
+			public event EventHandler Activated
+			{
+				add { Pressed += value; }
+				remove { Pressed -= value; }
+			}
+
 			public Control ActivatedTab { get; set; }
 		}
 
@@ -40,10 +58,19 @@
 			public TabImageHeaderControl(string[] onFrameNames, string[] offFrameNames)
 				: base(onFrameNames, offFrameNames)
 			{
-
+				Changed += HandleChanged;
 			}
-
+			
+			public event EventHandler Activated;
 			public Control ActivatedTab { get; set; }
+
+			private void HandleChanged(object sender, EventArgs e)
+			{
+				if (Selected && Activated != null)
+				{
+					Activated(sender, e);
+				}
+			}
 		}
 
 		#endregion
@@ -56,9 +83,7 @@
 			Left
 		}
 
-		#endregion
-
-		public event EventHandler Toggled;
+		#endregion		
 
 		public bool IsToggled { get; set; }
 
@@ -133,7 +158,7 @@
 				_tabHeaderPanel.Bounds.Bottom = new UniScalar(_tabHeaderPanel.Bounds.Bottom.Fraction, TabHeaderHeight * (TabCount + 1) + HideButtonMinSize + TabPadding);
 			}
 
-			tab.Pressed += SwitchTab;
+			tab.Activated += SwitchTab;
 			_tabHeaderPanel.Children.Add(tab);
 			_tabs.Add(content);
 
@@ -165,7 +190,7 @@
 				_tabHeaderPanel.Bounds.Bottom = new UniScalar(_tabHeaderPanel.Bounds.Bottom.Fraction, TabHeaderHeight * (TabCount + 1) + HideButtonMinSize + TabPadding);
 			}
 
-			tab.Changed += SwitchTab;
+			tab.Activated += SwitchTab;
 			_tabHeaderPanel.Children.Add(tab);
 			_tabs.Add(content);
 
@@ -179,8 +204,17 @@
 		private void SwitchTab(object sender, EventArgs e)
 		{
 			var tabHeader = sender as TabHeaderContainer;
-			_contentPanel.Children.Remove(ActiveTab);
-			ActiveTab = tabHeader.ActivatedTab;
+
+			if (ActiveTab != tabHeader.ActivatedTab)
+			{
+				_contentPanel.Children.Remove(ActiveTab);
+				ActiveTab = tabHeader.ActivatedTab;
+
+				if (TabChanged != null)
+				{
+					TabChanged(ActiveTab, e);
+				}
+			}
 		}
 
 		private void TogglePanel(object sender, EventArgs args)
