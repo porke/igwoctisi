@@ -27,37 +27,7 @@
 		#endregion
 
 		#region View event handlers
-
-		internal void DeleteCommand(int orderIndex)
-		{
-			_clientPlayer.DeleteCommand(orderIndex);
-			_gameHud.UpdateCommandList(_clientPlayer.Commands, orderIndex);
-			_gameHud.UpdateResourceData(_clientPlayer);
-		}
-		internal void LeaveGame()
-		{
-			var messageBox = new MessageBox(this, MessageBoxButtons.None)
-			{
-				Message = "Leaving game..."
-			};
-			ViewMgr.PushLayer(messageBox);
-
-			Client.Network.BeginLeaveGame(OnLeaveGame, messageBox);
-		}
-		internal void SendCommands()
-		{
-			Client.Network.BeginSendCommands(_clientPlayer.Commands, OnSendOrders, null);
-			_clientPlayer.ClearCommandList();
-			_gameHud.UpdateCommandList(_clientPlayer.Commands);
-
-			InvokeOnMainThread((obj) =>
-			{
-				if (_secondsLeft > 0)
-				{
-					_secondsLeft = 0.001;
-				}
-			});
-		}
+		
 		internal void SelectPlanet(Planet selectedPlanet)
 		{
 			if (Scene.CanSelectPlanet(selectedPlanet, _clientPlayer))
@@ -182,12 +152,20 @@
 			_clientPlayer.RevertFleetMove(source, target, count);
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 		}
-		internal void SendChatMessage(string message)
+		
+
+		#endregion
+
+		#region Hud event handlers
+
+		private void HUD_SendChatMessage(object sender, EventArgs<string> arg)
 		{
+			var message = arg.Item;
 			Client.Network.BeginSendChatMessage(message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
 		}
-		internal void RaiseTechnology(TechnologyType techType)
+		private void HUD_RaiseTechnology(object sender, EventArgs<TechnologyType> arg)
 		{
+			var techType = arg.Item;
 			string reason = string.Empty;
 			if (_clientPlayer.CanRaiseTech(techType, ref reason))
 			{
@@ -199,6 +177,37 @@
 			{
 				_gameHud.AddMessage(reason);
 			}
+		}
+		private void HUD_DeleteCommand(object sender, EventArgs<int> arg)
+		{
+			int orderIndex = arg.Item;
+			_clientPlayer.DeleteCommand(orderIndex);
+			_gameHud.UpdateCommandList(_clientPlayer.Commands, orderIndex);
+			_gameHud.UpdateResourceData(_clientPlayer);
+		}
+		private void HUD_LeaveGame(object sender, EventArgs arg)
+		{
+			var messageBox = new MessageBox(this, MessageBoxButtons.None)
+			{
+				Message = "Leaving game..."
+			};
+			ViewMgr.PushLayer(messageBox);
+
+			Client.Network.BeginLeaveGame(OnLeaveGame, messageBox);
+		}
+		private void HUD_SendCommands(object sender, EventArgs arg)
+		{
+			Client.Network.BeginSendCommands(_clientPlayer.Commands, OnSendOrders, null);
+			_clientPlayer.ClearCommandList();
+			_gameHud.UpdateCommandList(_clientPlayer.Commands);
+
+			InvokeOnMainThread((obj) =>
+			{
+				if (_secondsLeft > 0)
+				{
+					_secondsLeft = 0.001;
+				}
+			});
 		}
 
 		#endregion
@@ -420,9 +429,13 @@
 			while (i < Client.Components.Count)
 			{
 				if (Client.Components[i] is ParticleSystem)
+				{
 					Client.Components.RemoveAt(i);
+				}
 				else
+				{
 					i++;
+				}
 			}
 		}
 		public override void Update(double delta, double time)
@@ -492,6 +505,12 @@
 			Client.Network.OnOtherPlayerLeft += Network_OnOtherPlayerLeft;
 			Client.Network.OnDisconnected += Network_OnDisconnected;
 			Client.Network.OnChatMessageReceived += Network_OnChatMessageReceived;
+
+			_gameHud.RaiseTechPressed += HUD_RaiseTechnology;
+			_gameHud.ChatMessageSent += HUD_SendChatMessage;
+			_gameHud.DeleteCommandPressed += HUD_DeleteCommand;
+			_gameHud.SendCommandsPressed += HUD_SendCommands;
+			_gameHud.LeaveGamePressed += HUD_LeaveGame;
 		}
 	}
 }

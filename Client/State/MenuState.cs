@@ -36,12 +36,12 @@
 
         #region View event handlers
 
-        internal void QuitGame(object sender, EventArgs args)
+        private void QuitGame(object sender, EventArgs args)
         {
             Client.Network.BeginDisconnect(null, null);
             Client.Exit();
         }
-		internal void RequestLogin(object sender, EventArgs<string, string> args)
+		private void RequestLogin(object sender, EventArgs<string, string> args)
         {
 			string login = args.Item1;
 			string password = args.Item2;
@@ -61,7 +61,7 @@
             Client.Network.BeginConnect(hostname, port, OnConnect, Tuple.Create<MessageBox, string, string>(messageBox, login, password));
 			ViewMgr.PushLayer(messageBox);
         }
-        internal void EnterPlayState(object sender, EventArgs<string, string> args)
+        private void EnterPlayState(object sender, EventArgs<string, string> args)
         {
 			string login = args.Item1;
 			string password = args.Item2;

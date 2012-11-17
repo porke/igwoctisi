@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using Client.Common;
-using Client.Input;
-using Client.Model;
-using Client.State;
-using Nuclex.UserInterface;
-using Nuclex.UserInterface.Controls;
-using Nuclex.UserInterface.Controls.Desktop;
-
-namespace Client.View.Lobby
+﻿namespace Client.View.Lobby
 {
+	using System;
+	using System.Collections.Generic;
+	using Client.Common;
+	using Client.Input;
+	using Client.Model;
+	using Client.State;
+	using Nuclex.UserInterface;
+	using Nuclex.UserInterface.Controls;
+	using Nuclex.UserInterface.Controls.Desktop;
+
     class MainLobbyView : BaseView
     {
         #region Protected members
@@ -84,6 +84,28 @@ namespace Client.View.Lobby
 
         #endregion
 
+		#region Update requests
+
+		public void RefreshGameList(List<LobbyListInfo> gameInfoList)
+		{
+			_gameInfoList = gameInfoList;
+			_gameList.Items.Clear();
+
+			foreach (var info in _gameInfoList)
+			{
+				_gameList.Items.Add(info.Name);
+			}
+
+			// Only first element should be selected
+			if (_gameList.Items.Count > 0)
+			{
+				_gameList.SelectedItems.Clear();
+				_gameList.SelectedItems.Add(0);
+			}
+		}
+
+		#endregion
+
 		public LobbyState LobbyState { get; protected set; }
 
 		public MainLobbyView(LobbyState state)
@@ -96,23 +118,6 @@ namespace Client.View.Lobby
 
             CreateChildControls();
 			State = ViewState.Loaded;
-        }
-        public void RefreshGameList(List<LobbyListInfo> gameInfoList)
-        {
-            _gameInfoList = gameInfoList;
-            _gameList.Items.Clear();
-
-            foreach (var info in _gameInfoList)
-            {
-                _gameList.Items.Add(info.Name);
-            }
-
-            // Only first element should be selected
-            if (_gameList.Items.Count > 0)
-            {
-                _gameList.SelectedItems.Clear();
-                _gameList.SelectedItems.Add(0);
-            }
-        }
+        }        
     }
 }
