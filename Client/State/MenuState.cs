@@ -51,7 +51,7 @@
             var messageBox = new MessageBox(this, MessageBoxButtons.None)
             {
                 Title = "Log in",
-                Message = string.Format("Connecting... {0}@{1}", login, password)
+                Message = "Connecting... {0}"
             };
 
             Client.Network.BeginConnect(hostname, port, OnConnect, Tuple.Create<MessageBox, string, string>(messageBox, login, password));
@@ -68,7 +68,7 @@
             var messageBox = new MessageBox(this, MessageBoxButtons.None)
             {
                 Title = "Log in",
-                Message = string.Format("Connecting... {0}@{1}", login, password)
+                Message = "Connecting..."
             };
 
             Client.Network.BeginConnect(hostname, port, OnConnect_Debug, Tuple.Create<MessageBox, string, string>(messageBox, login, password));
@@ -186,10 +186,7 @@
                     var player = network.EndLogin(ar);
                     Game.Window.Title = IGWOCTISI.DefaultMainWindowTitle + " @ " + player.Username;
 
-                    // TODO connect to the existing host if it exists
-                    string mapName = "Hexagon";
-                    string gameName = "TestGame";
-                    Game.Network.BeginCreateGame(gameName, new Map(mapName), OnCreateGame_Debug, Tuple.Create(messageBox, mapName, gameName, player));
+					network.BeginGetGameList(OnGetGameList_Debug, Tuple.Create(messageBox, player));
                 }
                 catch (Exception exc)
                 {
@@ -201,11 +198,74 @@
             });
         }
 
-        private void OnCreateGame_Debug(IAsyncResult result)
+		private void OnGetGameList_Debug(IAsyncResult ar)
+		{
+			InvokeOnMainThread(arg =>
+			{
+				var network = Client.Network;
+				var data = ar.AsyncState as Tuple<MessageBox, Player>;
+				var messageBox = data.Item1;
+				var player = data.Item2;
+
+				try
+				{
+					var games = Game.Network.EndGetGameList(ar);
+
+					if (games.Count > 0)
+					{
+						network.BeginJoinGameLobby(games[0].LobbyId, OnJoinGameLobby_Debug, Tuple.Create(messageBox, player));
+						messageBox.Message = "Joining to lobby \"" + games[0].Name + "\"...";
+					}
+					else
+					{
+						string mapName = "Hexagon";
+						string gameName = "TestGame";
+						network.BeginCreateGame(gameName, new Map(mapName), OnCreateGame_Debug, Tuple.Create(messageBox, mapName, gameName, player));
+					}
+				}
+				catch (Exception exc)
+				{
+					network.BeginDisconnect(OnDisconnect, null);
+					messageBox.Message = exc.Message;
+					messageBox.Buttons = MessageBoxButtons.OK;
+					messageBox.OkPressed += (sender, e) => ViewMgr.PopLayer();
+				}
+			});
+		}
+
+		private void OnJoinGameLobby_Debug(IAsyncResult ar)
+		{
+			InvokeOnMainThread(arg =>
+			{
+				var network = Client.Network;
+				var data = ar.AsyncState as Tuple<MessageBox, Player>;
+				var messageBox = data.Item1;
+				var player = data.Item2;
+
+				try
+				{
+					var lobbyInfo = network.EndJoinGameLobby(ar);
+
+					ViewMgr.PopLayer();     // pop MessageBox
+					ViewMgr.PopLayer();     // pop main lobby window
+
+					Game.ChangeState(new LobbyState(Game, player, lobbyInfo, null));
+				}
+				catch (Exception exc)
+				{
+					messageBox.Buttons = MessageBoxButtons.OK;
+					messageBox.OkPressed += (sender, e) => { ViewMgr.PopLayer(); };
+					messageBox.Message = exc.Message;
+				}
+			});
+		}
+
+        private void OnCreateGame_Debug(IAsyncResult ar)
         {
             InvokeOnMainThread(obj =>
             {
-                var data = result.AsyncState as Tuple<MessageBox, string, string, Player>;
+				var network = Client.Network;
+                var data = ar.AsyncState as Tuple<MessageBox, string, string, Player>;
                 var messageBox = data.Item1;
                 string mapName = data.Item2;
                 string gameName = data.Item3;
@@ -213,13 +273,16 @@
 
                 try
                 {
-                    Client.Network.EndCreateGame(result);
+                    network.EndCreateGame(ar);
 
                     ViewMgr.PopLayer();     // pop MessageBox
                     ViewMgr.PopLayer();     // pop main lobby window
 
-                    var map = new Map(mapName);
-                    Game.Network.BeginStartGame(OnGameStarted_Debug, Tuple.Create(messageBox, map, player));
+					Game.ChangeState(new LobbyState(Game, player, new SpecificGameLobbyInfo(gameName, player), mapName));
+
+					// OBSOLETE:
+                    //var map = new Map(mapName);
+                    //network.BeginStartGame(OnGameStarted_Debug, Tuple.Create(messageBox, map, player));
                 }
                 catch (Exception exc)
                 {
@@ -240,6 +303,7 @@
         {
             InvokeOnMainThread(obj =>
             {
+				var network = Client.Network;
                 var data = result.AsyncState as Tuple<MessageBox, Map, Player>;
                 var messageBox = data.Item1;
                 var map = data.Item2;
@@ -247,7 +311,7 @@
 
                 try
                 {
-                    Client.Network.EndStartGame(result);
+                    network.EndStartGame(result);
 
                     Game.ChangeState(new PlayState(Game, map, player));
                 }
