@@ -71,7 +71,7 @@
         
         public SimpleCamera()
         {
-			this.SetPosition(Vector3.Backward * -1000);
+			this.SetPosition(Vector3.Forward * 1000);
 			LookAt = Vector3.Zero;
 			FieldOfView = MathHelper.ToRadians(45);
 			AspectRatio = 1280.0f/720.0f;

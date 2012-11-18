@@ -117,7 +117,7 @@
 				var ambient = scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f;
 				var glow = planetarySystem != null && planet.Owner != null ? planet.Owner.Color.XnaColor : Color.LightGray;
 
-				planet.Visual.Draw(GraphicsDevice, camera, time, ambient, glow);
+				planet.Visual.Draw(GraphicsDevice, camera, delta, time, ambient, glow);
 			}
 
 			#region Move indicators

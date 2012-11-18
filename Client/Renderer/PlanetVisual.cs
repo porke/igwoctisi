@@ -7,8 +7,9 @@
 	using System;
 	using Client.Common;
 	using System.Linq;
+	using Client.Common.AnimationSystem;
 
-    public class PlanetVisual
+    public class PlanetVisual : ITransformable
     {
 		public static readonly Vector2 NameTextOffset = new Vector2(0, -42.0f);
 		public static readonly Vector2 FleetsTextOffset = new Vector2(0.0f, 42.0f);
@@ -16,11 +17,22 @@
 		public static readonly Vector2 FleetsDeltaTextOffset = new Vector2(21, -42.0f);
 		public static readonly Vector2 OwnerTextOffset = new Vector2(0, 25.0f);
 
+		#region ITransformable members
+
+		public float X { get; set; }
+		public float Y { get; set; }
+		public float Z { get; set; }
+
+		public Matrix Rotation { get; set; }
+
+		public float ScaleX { get; set; }
+		public float ScaleY { get; set; }
+		public float ScaleZ { get; set; }
+
+		#endregion
+
 		public Planet Planet { get; set; }
         public float Period { get; set; }
-        public float Yaw { get; set; }
-        public float Pitch { get; set; }
-        public float Roll { get; set; }
 		public Effect Effect { get; set; }
 		public SpriteFont InfoFont { get; set; }
         public Texture2D DiffuseTexture { get; set; }
@@ -38,9 +50,13 @@
 			Effect = contentMgr.Load<Effect>("Effects\\Planet");
 			InfoFont = contentMgr.Load<SpriteFont>("Fonts\\HUD");
 			Period = (float)(random.NextDouble() * 10.0 + 5.0);
-			Yaw = (float)(random.NextDouble() * MathHelper.TwoPi);
-			Pitch = (float)(random.NextDouble() * MathHelper.TwoPi);
-			Roll = (float)(random.NextDouble() * MathHelper.TwoPi);
+			Rotation = Matrix.CreateFromYawPitchRoll(
+				(float)(random.NextDouble() * MathHelper.TwoPi),
+				(float)(random.NextDouble() * MathHelper.TwoPi),
+				(float)(random.NextDouble() * MathHelper.TwoPi)
+			);
+			this.SetPosition(new Vector3(Planet.X, Planet.Y, Planet.Z));
+			this.SetScale(Planet.Radius);
 
 			var vertices = Utils.SphereVertices(3).Select(x => new Vertex(x.Position, x.Normal, Color.LightGreen, x.TextureCoordinate)).ToArray();
 			VB = new VertexBuffer(device, Vertex.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
@@ -59,12 +75,14 @@
 				CloudsAlphaTexture = contentMgr.Load<Texture2D>(planet.CloudsAlpha);
 			}
 		}
-		public void Draw(GraphicsDevice device, ICamera camera, double time, float ambient, Color glow)
+		public void Draw(GraphicsDevice device, ICamera camera, double delta, double time, float ambient, Color glow)
 		{
-			var localWorld = Matrix.CreateScale(Planet.Radius) *
-							Matrix.CreateRotationY((float)time / Period * MathHelper.TwoPi) *
-							Matrix.CreateFromYawPitchRoll(Yaw, Pitch, Roll) *
-							Matrix.CreateTranslation(Planet.X, Planet.Y, Planet.Z);
+			// Update scale, rotation and translation from model
+			Rotation *= Matrix.CreateRotationY((float)delta / Period * MathHelper.TwoPi);
+			this.SetPosition(new Vector3(Planet.X, Planet.Y, Planet.Z));
+			this.SetScale(Planet.Radius);
+
+			var localWorld = this.GetScaleMatrix() * this.Rotation * this.GetTranslationMatrix();
 			var view = camera.GetView();
 			var projection = camera.Projection;
 
@@ -120,5 +138,5 @@
 				batch.DrawString(InfoFont, fleetsIncomeText, fleetsTextScreen + FleetsIncomeTextOffset, Color.White);
 			}
 		}
-    }
+	}
 }
