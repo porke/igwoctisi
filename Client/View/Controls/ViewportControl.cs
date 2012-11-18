@@ -93,7 +93,7 @@
 				var dragForce = (_currentMousePosition - _lastMousePosition);
 				dragForce *= (float)Math.Tan(camera.FieldOfView) * Math.Abs(Vector3.Distance(camera.GetPosition(), camera.LookAt));
 				dragForce *= DragSpeedFactor;
-				camera.Force = new Vector3(dragForce.X, -dragForce.Y, camera.Force.Z);
+				camera.Force = new Vector3(dragForce.X, dragForce.Y, camera.Force.Z);
 			}
 
 			if (_wheelTicks != 0)
