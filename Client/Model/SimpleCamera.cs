@@ -1,6 +1,7 @@
 ﻿namespace Client.Model
 {
 	using System.Runtime.Serialization;
+	using Client.Common;
 	using Client.Common.AnimationSystem;
 	using Client.Renderer;
 	using Microsoft.Xna.Framework;
@@ -52,9 +53,9 @@
 
 		#endregion
 
-		public static readonly float DecelerationFactor = 5;
-		public static readonly float BoundsExceedFactor = 3;
-		public static readonly float ZoomExceedFactor = 5;
+		public const float DecelerationFactor = 5;
+		public const float BoundsExceedFactor = 3;
+		public const float ZoomExceedFactor = 5;
 		public static readonly Vector3 MaxForce = new Vector3(10000, 10000, 3000);
 
 		public Vector3 LookAt { get; protected set; }
@@ -92,6 +93,9 @@
 			var newPosition = oldPosition + Force * (float)delta;
 			this.SetPosition(newPosition);
 			this.LookAt += Force * (float)delta * new Vector3(1, 1, 0);
+
+			// Update camera rotation
+			this.LookAt(LookAt);
         }
     }
 }

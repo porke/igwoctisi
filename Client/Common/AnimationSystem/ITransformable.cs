@@ -1,7 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-namespace Client.Common.AnimationSystem
+﻿namespace Client.Common.AnimationSystem
 {
+	using System;
+	using Client.Common;
+	using Microsoft.Xna.Framework;
+
+
 	/// <summary>
 	/// If you inherit from this interface, then remember that Scale equals zero! You should minimally change it to 1!
 	/// </summary>
@@ -44,6 +47,12 @@ namespace Client.Common.AnimationSystem
 			return t.Rotation.Forward;
 		}
 
+		/// <summary>
+		/// Sets Rotation matrix based on position, lookAt point and up vector.
+		/// </summary>
+		/// <param name="t"></param>
+		/// <param name="lookAt">point to look at</param>
+		/// <param name="up">up vector</param>
 		public static void LookAt(this ITransformable t, Vector3 lookAt, Vector3 up)
 		{
 			var dir = lookAt - t.GetPosition();
@@ -58,6 +67,19 @@ namespace Client.Common.AnimationSystem
 				dir.X, dir.Y, dir.Z, 0,
 				0, 0, 0, 1
 			);
+		}
+
+		public static void LookAt(this ITransformable t, Vector3 lookAt)
+		{
+			var look = lookAt - t.GetPosition();
+			var up = look.GetUpVector();
+
+			LookAt(t, lookAt, up);
+		}
+
+		public static Vector3 GetUpVector(this ITransformable t, float roll = 0)
+		{
+			return t.GetLook().GetUpVector(roll);
 		}
 	}
 }
