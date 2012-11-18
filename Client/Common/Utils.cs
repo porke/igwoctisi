@@ -5,6 +5,7 @@
 	using System.Reflection;
 	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Graphics;
+	using System.Diagnostics;
 
 	public static class Utils
     {
@@ -157,4 +158,28 @@
             return result;
         }
     }
+
+	public static class MathExtensions
+	{
+		/// <summary>
+		/// Gets up vector for given look vector and roll rotation angle.
+		/// </summary>
+		/// <param name="lookAt">normalized look vector</param>
+		/// <param name="roll">radians</param>
+		/// <returns>normalized up vector</returns>
+		public static Vector3 GetUpVector(this Vector3 look, float roll = 0)
+		{
+			var right = Vector3.Cross(look, Vector3.Up);
+			var up = Vector3.Cross(right, look);
+			up.Normalize();
+			
+			if (roll != 0)
+			{
+				var rotation = Matrix.CreateFromAxisAngle(look, roll);
+				up = Vector3.TransformNormal(up, rotation);
+			}
+
+			return Vector3.Normalize(up);
+		}
+	}
 }
