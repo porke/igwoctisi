@@ -17,10 +17,8 @@
             _clientPlayer = player;
 
             var menuBackground = new LobbyBackground(this);
-            var lobbyMenu = new MainLobbyView(this);
-
 			ViewMgr.PushLayer(menuBackground);
-			ViewMgr.PushLayer(lobbyMenu);
+			EnterMainLobbyView();
         }
 		
 		public LobbyState(IGWOCTISI game, Player player, SpecificGameLobbyInfo lobbyInfo, string mapName) : base(game)
@@ -29,19 +27,17 @@
 			_gameLobby = lobbyInfo;
 			_map = mapName != null ? new Map(mapName) : null;
 
-			var gameLobbyView = new GameLobbyView(this, mapName != null);
 			var menuBackground = new LobbyBackground(this);
 
 			BindNetworkEvents();
-			gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
 			ViewMgr.PushLayer(menuBackground);
-			ViewMgr.PushLayer(gameLobbyView);
+			EnterGameLobbyView(_map != null);
 		}
 
         public override void OnEnter()
         {
             Client.Network.OnDisconnected += new Action<string>(OnDisconnected_EventHandler);
-			RefreshGameList(ViewMgr.PeekLayer());
+			MainLobby_RefreshGameList(ViewMgr.PeekLayer(), EventArgs.Empty);
         }
 
         public override void OnExit()
@@ -79,12 +75,15 @@
 
 		#region View event handlers
 
-        internal void LeaveGameLobby()
+        private void GameLobby_Leave(object sender, EventArgs e)
         {
-            Client.Network.BeginLeaveGame(OnLeaveGame, null);
+            Client.Network.BeginLeaveGame(Response_LeaveGame, null);
         }
-		internal void CreateGame(string gameName, string mapName)
+		private void CreateGame_Confirm(object sender, EventArgs<string, string> e)
         {
+			string gameName = e.Item1;
+			string mapName = e.Item2;
+
             var messageBox = new MessageBox(this, MessageBoxButtons.None)
             {
                 Title = "Join Game",
@@ -93,34 +92,35 @@
 			ViewMgr.PushLayer(messageBox);
 
             var map = new Map(mapName);
-            Client.Network.BeginCreateGame(gameName, map, OnCreateGame, Tuple.Create(messageBox, mapName, gameName));
+            Client.Network.BeginCreateGame(gameName, map, Response_CreateGame, Tuple.Create(messageBox, mapName, gameName));
         }
-		internal void CancelCreateGame()
+		private void CreateGame_Cancel(object sender, EventArgs e)
         {
 			ViewMgr.PopLayer();     // pop create game view
-			ViewMgr.PushLayer(new MainLobbyView(this));
+			EnterMainLobbyView();
         }
-		internal void EnterCreateGameView()
+		private void MainLobby_ShowCreateGameView(object sender, EventArgs e)
         {
 			ViewMgr.PopLayer();     // pop main lobby view
-			ViewMgr.PushLayer(new CreateGameView(this));
+			EnterCreateGameView();
         }
-		internal void Logout()
+		private void MainLobby_Logout(object sender, EventArgs e)
         {
-            var ar = Client.Network.BeginLogout(OnLogout, null);
+            var ar = Client.Network.BeginLogout(Response_Logout, null);
             ar.AsyncWaitHandle.WaitOne();
         }
-		internal void JoinGame(int lobbyId)
+		private void MainLobby_JoinGame(object sender, EventArgs<int> args)
         {
+			int lobbyId = args.Item;
             var messageBox = new MessageBox(this, MessageBoxButtons.None)
             {
                 Title = "Join Game",
                 Message = "Joining in..."
             };
 			ViewMgr.PushLayer(messageBox);
-            Client.Network.BeginJoinGameLobby(lobbyId, OnJoinLobby, messageBox);
+            Client.Network.BeginJoinGameLobby(lobbyId, Response_JoinLobby, messageBox);
         }
-		internal void BeginGame()
+		private void GameLobby_BeginGame(object sender, EventArgs e)
         {
             var messageBox = new MessageBox(this, MessageBoxButtons.None)
             {
@@ -129,10 +129,11 @@
             };
 			ViewMgr.PushLayer(messageBox);
 
-            Client.Network.BeginStartGame(OnGameStarted, messageBox);
+            Client.Network.BeginStartGame(Response_GameStarted, messageBox);
         }
-		internal void RefreshGameList(BaseView sender)
+		private void MainLobby_RefreshGameList(object sender, EventArgs e)
         {
+			var senderView = sender as BaseView;
             var messageBox = new MessageBox(this, MessageBoxButtons.None)
             {
                 Title = "Loading Main Lobby",
@@ -141,23 +142,25 @@
 
 			ViewMgr.PushLayer(messageBox);
 
-            var mainLobbyView = sender;
-            Client.Network.BeginGetGameList(OnGetGameList, Tuple.Create(mainLobbyView as MainLobbyView, messageBox));
+			var mainLobbyView = senderView;
+            Client.Network.BeginGetGameList(Response_GetGameList, Tuple.Create(mainLobbyView as MainLobbyView, messageBox));
         }
-		internal void SendChatMessage(string message)
+		private void GameLobby_SendChatMessage(object sender, EventArgs<string> e)
         {
+			string message = e.Item;
 			Client.Network.BeginSendChatMessage(message, (res) => { try { Client.Network.EndSendChatMessage(res); } catch { } }, null);
         }
-		internal void KickOtherPlayer(string username)
+		private void GameLobby_KickOtherPlayer(object sender, EventArgs<string> e)
         {
-            Client.Network.BeginKickPlayer(username, OnKickPlayer, username);
+			string username = e.Item;
+            Client.Network.BeginKickPlayer(username, Response_KickPlayer, username);
         }
 
         #endregion
 
-        #region Network async callbacks
+        #region Network responses
 
-        private void OnLogout(IAsyncResult result)
+        private void Response_Logout(IAsyncResult result)
         {
             InvokeOnMainThread(obj =>
             {
@@ -168,12 +171,12 @@
                 catch { }
                 finally
                 {
-                    Client.Network.BeginDisconnect(OnDisconnect, null);
+                    Client.Network.BeginDisconnect(Response_Disconnect, null);
                 }
             });
         }
                 
-        private void OnGetGameList(IAsyncResult result)
+        private void Response_GetGameList(IAsyncResult result)
         {
             var data = (Tuple<MainLobbyView, MessageBox>)result.AsyncState;
             var mainLobbyView = data.Item1;
@@ -196,7 +199,7 @@
             });
         }
 
-        private void OnJoinLobby(IAsyncResult result)
+        private void Response_JoinLobby(IAsyncResult result)
         {
             var messageBox = result.AsyncState as MessageBox;
             BindNetworkEvents();
@@ -209,10 +212,7 @@
 
 					ViewMgr.PopLayer(); // MessageBox
 					ViewMgr.PopLayer(); // MainLobbyView
-
-                    var gameLobbyView = new GameLobbyView(this, false);
-                    gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
-					ViewMgr.PushLayer(gameLobbyView);
+					EnterMainLobbyView();
                 }
                 catch (Exception exc)
                 {
@@ -223,7 +223,7 @@
             });
         }
 
-        private void OnLeaveGame(IAsyncResult result)
+        private void Response_LeaveGame(IAsyncResult result)
         {
             try
             {
@@ -238,12 +238,12 @@
                 InvokeOnMainThread(arg =>
                 {
 					ViewMgr.PopLayer(); // pop game lobby
-					ViewMgr.PushLayer(new MainLobbyView(this));
+					EnterMainLobbyView();
                 });
             }
         }
 
-        private void OnKickPlayer(IAsyncResult result)
+        private void Response_KickPlayer(IAsyncResult result)
         {
             try
             {
@@ -256,7 +256,7 @@
             }
         }
 
-        private void OnCreateGame(IAsyncResult result)
+        private void Response_CreateGame(IAsyncResult result)
         {
             BindNetworkEvents();
 
@@ -276,10 +276,7 @@
 
 					ViewMgr.PopLayer();     // pop MessageBox
 					ViewMgr.PopLayer();     // pop main lobby window
-
-                    var gameLobbyView = new GameLobbyView(this, true);
-                    gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
-					ViewMgr.PushLayer(gameLobbyView);
+					EnterGameLobbyView(true);
                 }
                 catch (Exception exc)
                 {
@@ -290,7 +287,7 @@
             });            
         }
 
-        private void OnGameStarted(IAsyncResult result)
+        private void Response_GameStarted(IAsyncResult result)
         {
             InvokeOnMainThread(obj =>
             {
@@ -311,7 +308,7 @@
             });
         }
 
-        private void OnDisconnect(IAsyncResult result)
+        private void Response_Disconnect(IAsyncResult result)
         {
             try
             {
@@ -386,7 +383,7 @@
                 UnbindNetworkEvents();
 
 				ViewMgr.PopLayer(); // GameLobbyView
-				ViewMgr.PushLayer(new MainLobbyView(this));
+				EnterMainLobbyView();
 
                 var messageBox = new MessageBox(this, MessageBoxButtons.OK)
                 {
@@ -408,5 +405,36 @@
         }
 
         #endregion
-    }
+
+		#region View enter functions (event binding)
+
+		private void EnterMainLobbyView()
+		{
+			var lobbyMenu = new MainLobbyView(this);
+			ViewMgr.PushLayer(lobbyMenu);
+			lobbyMenu.JoinGamePressed += MainLobby_JoinGame;
+			lobbyMenu.LogoutPressed += MainLobby_Logout;
+			lobbyMenu.RefreshPressed += MainLobby_RefreshGameList;
+			lobbyMenu.CreateGamePressed += MainLobby_ShowCreateGameView;
+		}
+		private void EnterCreateGameView()
+		{
+			var createGameView = new CreateGameView(this);
+			createGameView.CreateGameCancelled += CreateGame_Cancel;
+			createGameView.CreateGameConfirmed += CreateGame_Confirm;
+			ViewMgr.PushLayer(createGameView);
+		}
+		private void EnterGameLobbyView(bool isHost)
+		{
+			var gameLobbyView = new GameLobbyView(this, isHost);
+			gameLobbyView.ChatMessageSent += GameLobby_SendChatMessage;
+			gameLobbyView.BeginGamePressed += GameLobby_BeginGame;
+			gameLobbyView.GameLeavePressed += GameLobby_Leave;
+			gameLobbyView.PlayerKicked += GameLobby_KickOtherPlayer;
+			gameLobbyView.RefreshPlayerList(_gameLobby.Players, _gameLobby.HostName, _clientPlayer.Username);
+			ViewMgr.PushLayer(gameLobbyView);
+		}
+
+		#endregion
+	}
 }

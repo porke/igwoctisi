@@ -12,6 +12,9 @@
 
     class CreateGameView : BaseView
     {
+		public event EventHandler CreateGameCancelled;
+		public event EventHandler<EventArgs<string, string>> CreateGameConfirmed;
+
         #region Private members
 
         private ListControl _mapList;
@@ -85,22 +88,25 @@
 
         private void Cancel_Pressed(object sender, EventArgs args)
         {
-			LobbyState.CancelCreateGame();
+			if (CreateGameCancelled != null)
+			{
+				CreateGameCancelled(this, EventArgs.Empty);
+			}
         }
         private void CreateGame_Pressed(object sender, EventArgs args)
         {
             var mapName = _mapList.Items[_mapList.SelectedItems[0]];
-			LobbyState.CreateGame(_gameName.Text, mapName);
+			if (CreateGameConfirmed != null)
+			{
+				CreateGameConfirmed(this, CreateGameConfirmed.CreateArgs(_gameName.Text, mapName));
+			}
         }
 
         #endregion
 
-		public LobbyState LobbyState { get; protected set; }
-
 		public CreateGameView(LobbyState state)
             : base(state)
         {
-			LobbyState = state;
             IsTransparent = true;
             screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.25f, 0), new UniScalar(0.4f, 0), new UniScalar(0.5f, 0));
             InputReceiver = new NuclexScreenInputReceiver(screen, false);

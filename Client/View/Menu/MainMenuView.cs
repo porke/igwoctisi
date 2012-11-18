@@ -15,7 +15,7 @@
     {
 		public event EventHandler<EventArgs<string, string>> LoginPressed;
 		public event EventHandler<EventArgs<string, string>> EnterPlayStatePressed;
-		public event EventHandler<EventArgs> QuitPressed;
+		public event EventHandler QuitPressed;
 
         #region Protected members
 

@@ -7,9 +7,9 @@
 	class GameStatistic
 	{
 		[DataMember]
-		public string StaticsticName { get; set; }
+		public string Name { get; set; }
 
 		[DataMember]
-		public List<int> StatisticValues { get; set; }
+		public List<int> Values { get; set; }
 	}
 }

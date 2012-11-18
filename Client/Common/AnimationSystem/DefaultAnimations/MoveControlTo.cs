@@ -9,8 +9,6 @@
 		private UniVector _start;
 		private UniVector _end;
 
-		private UniVector _size;
-
 		public override void Begin()
 		{
 			base.Begin();

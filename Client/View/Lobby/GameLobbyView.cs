@@ -13,6 +13,11 @@
 
     class GameLobbyView : BaseView
     {
+		public event EventHandler GameLeavePressed;
+		public event EventHandler<EventArgs<string>> PlayerKicked;
+		public event EventHandler BeginGamePressed;
+		public event EventHandler<EventArgs<string>> ChatMessageSent;
+
         #region Protected members
 
         private WrappableListControl _messageList;
@@ -85,32 +90,45 @@
 
         private void BeginGame_Pressed(object sender, EventArgs e)
         {
-			LobbyState.BeginGame();
+			if (BeginGamePressed != null)
+			{
+				BeginGamePressed(this, EventArgs.Empty);
+			}
         }
         private void LeaveGame_Pressed(object sender, EventArgs e)
         {
-			LobbyState.LeaveGameLobby();
+			if (GameLeavePressed != null)
+			{
+				GameLeavePressed(this, EventArgs.Empty);
+			}
         }
         private void KickPlayer_Pressed(object sender, EventArgs e)
         {
             if (_playerList.SelectedItems.Count == 1)
             {
                 string username = _playerList.Items[_playerList.SelectedItems[0]];
-				LobbyState.KickOtherPlayer(username);
+
+				if (PlayerKicked != null)
+				{
+					PlayerKicked(this, PlayerKicked.CreateArgs(username));
+				}
             }
         }
         private void SendChatMessage_Pressed(object sender, EventArgs e)
         {
             if (_currentMessage.Text.Trim().Length > 0)
             {
-				LobbyState.SendChatMessage(_currentMessage.Text);
+				if (ChatMessageSent != null)
+				{
+					ChatMessageSent.CreateArgs(_currentMessage.Text);
+				}
                 _currentMessage.Text = "";
             }
         }
 
         #endregion
 
-        #region UpdateRequests
+        #region Update functions
 
         public void RefreshPlayerList(List<string> newPlayerList, string hostName, string clientName)
         {
@@ -142,12 +160,9 @@
 
         #endregion
 
-		public LobbyState LobbyState { get; protected set; }
-
 		public GameLobbyView(LobbyState state, bool showHostButtons)
             : base(state)
         {
-			LobbyState = state;
             IsTransparent = true;
             screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.25f, 0), new UniScalar(0.6f, 0), new UniScalar(0.5f, 0));
             InputReceiver = new NuclexScreenInputReceiver(screen, false);

@@ -13,8 +13,8 @@
 	{
 		private void CreateChildControls(EndgameData stats)
 		{
-			int windowGridColumnCount = stats.Players.Count + 1;
-			int windowGridRowCount = ((stats.Players.Count >= MinPlayerRowCount) ? stats.Players.Count : MinPlayerRowCount) + stats.Statistics.Count + 1;
+			int windowGridColumnCount = stats.Places.Count + 1;
+			int windowGridRowCount = ((stats.Places.Count >= MinPlayerRowCount) ? stats.Places.Count : MinPlayerRowCount) + stats.Statistics.Count + 1;
 
 			float windowWidthInPx = windowGridColumnCount * ColumnWidthInPx;
 			float windowHeightInPx = windowGridRowCount * RowHeightInPx + TitleBarHeightInPx;
@@ -47,10 +47,10 @@
 			statsWindow.Children.AddRange(new Control[] { standingLabel, roundsLabel, timeLabel, endTypeLabel });
 
 			// Create the player headings						
-			int firstStatsRow = (stats.Players.Count >= MinPlayerRowCount) ? stats.Players.Count : MinPlayerRowCount;
-			for (int plr = 0; plr < stats.Players.Count; ++plr)
+			int firstStatsRow = (stats.Places.Count >= MinPlayerRowCount) ? stats.Places.Count : MinPlayerRowCount;
+			for (int plr = 0; plr < stats.Places.Count; ++plr)
 			{
-				var item = stats.Players[plr];
+				var item = stats.Places[plr];
 				// Create standings label
 				var playerPlacesNameLabel = new LabelControl(string.Format("{0}. {1}", plr + 1, item))
 				{
@@ -76,15 +76,15 @@
 			for (int stat = 0; stat < stats.Statistics.Count; ++stat)
 			{
 				var statistic = stats.Statistics[stat];
-				var statNameLabel = new LabelControl(statistic.StaticsticName)
+				var statNameLabel = new LabelControl(statistic.Name)
 				{
 					Bounds = new UniRectangle(new UniScalar(0, BorderWidthInPx), new UniScalar(rowHeight * (firstStatsRow + stat + 1), TitleBarHeightInPx), new UniScalar(0.02f, 0), new UniScalar(0.05f, 0))
 				};
 				statsWindow.Children.Add(statNameLabel);
 
-				for (int plr = 0; plr < statistic.StatisticValues.Count; plr++)
+				for (int plr = 0; plr < statistic.Values.Count; plr++)
 				{
-					var statValueForPlayerLabel = new LabelControl(statistic.StatisticValues[plr].ToString())
+					var statValueForPlayerLabel = new LabelControl(statistic.Values[plr].ToString())
 					{
 						Bounds = new UniRectangle(new UniScalar((plr + 1) * columnWidth, BorderWidthInPx), new UniScalar(rowHeight * (firstStatsRow + stat + 1), TitleBarHeightInPx), new UniScalar(0.02f, 0), new UniScalar(0.05f, 0))
 					};

@@ -12,6 +12,11 @@
 
     class MainLobbyView : BaseView
     {
+		public event EventHandler LogoutPressed;
+		public event EventHandler RefreshPressed;
+		public event EventHandler CreateGamePressed;
+		public event EventHandler<EventArgs<int>> JoinGamePressed;
+
         #region Protected members
 
         private List<LobbyListInfo> _gameInfoList = new List<LobbyListInfo>();
@@ -62,24 +67,35 @@
 
         private void Logout_Pressed(object sender, EventArgs e)
         {
-			LobbyState.Logout();
+			if (LogoutPressed != null)
+			{
+				LogoutPressed(this, EventArgs.Empty);
+			}
         }
         private void Refresh_Pressed(object sender, EventArgs e)
         {
-			LobbyState.RefreshGameList(this);
+			if (RefreshPressed != null)
+			{
+				RefreshPressed(this, EventArgs.Empty);
+			}
         }
         private void JoinGame_Pressed(object sender, EventArgs e)
         {
             if (_gameList.SelectedItems.Count == 0) return;
 
-            int lobbyIndex = _gameList.SelectedItems[0];
-            int lobbyId = _gameInfoList[lobbyIndex].LobbyId;
-
-			LobbyState.JoinGame(lobbyId);
+			if (JoinGamePressed != null)
+			{
+				int lobbyIndex = _gameList.SelectedItems[0];
+				int lobbyId = _gameInfoList[lobbyIndex].LobbyId;
+				JoinGamePressed(this, JoinGamePressed.CreateArgs(lobbyId));
+			}
         }
         private void CreateGame_Pressed(object sender, EventArgs e)
         {
-			LobbyState.EnterCreateGameView();
+			if (CreateGamePressed != null)
+			{
+				CreateGamePressed(this, EventArgs.Empty);
+			}
         }
 
         #endregion
@@ -106,12 +122,9 @@
 
 		#endregion
 
-		public LobbyState LobbyState { get; protected set; }
-
 		public MainLobbyView(LobbyState state)
             : base(state)
         {
-			LobbyState = state;
             IsTransparent = true;
             screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.2f, 0), new UniScalar(0.6f, 0), new UniScalar(0.6f, 0));
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
