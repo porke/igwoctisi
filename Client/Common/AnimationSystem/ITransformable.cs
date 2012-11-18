@@ -42,6 +42,33 @@
 			return new Vector3(t.X, t.Y, t.Z);
 		}
 
+		public static Matrix GetTranslationMatrix(this ITransformable t)
+		{
+			return Matrix.CreateTranslation(t.X, t.Y, t.Z);
+		}
+
+		public static void SetScale(this ITransformable t, Vector3 scale)
+		{
+			t.ScaleX = scale.X;
+			t.ScaleY = scale.Y;
+			t.ScaleZ = scale.Z;
+		}
+
+		public static void SetScale(this ITransformable t, float scale)
+		{
+			t.ScaleX = t.ScaleY = t.ScaleZ = scale;
+		}
+
+		public static Vector3 GetScale(this ITransformable t)
+		{
+			return new Vector3(t.ScaleX, t.ScaleY, t.ScaleZ);
+		}
+
+		public static Matrix GetScaleMatrix(this ITransformable t)
+		{
+			return Matrix.CreateScale(t.ScaleX, t.ScaleY, t.ScaleZ);
+		}
+
 		public static Vector3 GetLook(this ITransformable t)
 		{
 			return t.Rotation.Forward;
