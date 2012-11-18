@@ -198,13 +198,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Effects\Glow.fx">
-      <Name>Glow</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Space.jpg">
       <Name>Space</Name>
       <Importer>TextureImporter</Importer>
