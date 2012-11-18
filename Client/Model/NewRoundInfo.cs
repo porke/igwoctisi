@@ -3,9 +3,8 @@
 	using System.Collections.Generic;
     using System.Linq;
 	using System.Runtime.Serialization;
-	using System;
 
-    /// <summary>
+	/// <summary>
     /// Data being received from server in RoundStart packet.
     /// </summary>
     [DataContract]

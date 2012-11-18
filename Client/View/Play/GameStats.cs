@@ -1,10 +1,9 @@
 ﻿namespace Client.View.Play
 {
-	using System.Linq;
+	using Client.Common;
 	using Client.Input;
 	using Client.Model;
 	using Client.State;
-	using Client.Common;
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
 	using Nuclex.UserInterface.Controls.Desktop;
@@ -14,7 +13,7 @@
 		private void CreateChildControls(EndgameData stats)
 		{
 			int windowGridColumnCount = stats.Places.Count + 1;
-			int windowGridRowCount = ((stats.Places.Count >= MinPlayerRowCount) ? stats.Places.Count : MinPlayerRowCount) + stats.Statistics.Count + 1;
+			int windowGridRowCount = ((stats.Places.Count >= MinPlayerRowCount) ? stats.Places.Count : MinPlayerRowCount) + stats.Stats.Count + 1;
 
 			float windowWidthInPx = windowGridColumnCount * ColumnWidthInPx;
 			float windowHeightInPx = windowGridRowCount * RowHeightInPx + TitleBarHeightInPx;
@@ -73,9 +72,9 @@
 			};
 			statsWindow.Children.Add(statHeaderLabel);
 
-			for (int stat = 0; stat < stats.Statistics.Count; ++stat)
+			for (int stat = 0; stat < stats.Stats.Count; ++stat)
 			{
-				var statistic = stats.Statistics[stat];
+				var statistic = stats.Stats[stat];
 				var statNameLabel = new LabelControl(statistic.Name)
 				{
 					Bounds = new UniRectangle(new UniScalar(0, BorderWidthInPx), new UniScalar(rowHeight * (firstStatsRow + stat + 1), TitleBarHeightInPx), new UniScalar(0.02f, 0), new UniScalar(0.05f, 0))
@@ -103,7 +102,7 @@
 			: base(state)
 		{
             IsTransparent = true;            
-            InputReceiver = new NuclexScreenInputReceiver(screen, false);
+            InputReceiver = new NuclexScreenInputReceiver(screen, true);
 
 			screen.Desktop.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0.0f), new UniScalar(1.0f, 0));
             CreateChildControls(stats);

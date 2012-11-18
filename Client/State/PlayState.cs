@@ -382,11 +382,11 @@
 			}
 		}
 
-		private void Network_OnGameEnded(/*game result here!*/)
+		private void Network_OnGameEnded(EndgameData stats)
 		{			
 			InvokeOnMainThread(obj =>
 			{
-				// TODO show game result and statistics		
+				ViewMgr.PushLayer(new GameStats(this, stats));
 			});
 		}
 

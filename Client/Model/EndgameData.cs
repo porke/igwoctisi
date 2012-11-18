@@ -2,9 +2,10 @@
 {
 	using System.Runtime.Serialization;
 	using System.Collections.Generic;
+using System;
 
 	[DataContract]
-	class EndgameData
+	public class EndgameData
 	{
 		[DataMember]
 		public List<string> Places { get; set; }
@@ -16,7 +17,7 @@
 		public int Time { get; set; }
 
 		[DataMember]
-		public List<GameStatistic> Statistics { get; set; }
+		public List<GameStatistic> Stats { get; set; }
 
 		[DataMember]
 		public string EndType { get; set; }

@@ -86,7 +86,7 @@
         /// <summary>
         /// Arguments: currently none.
         /// </summary>
-        event Action OnGameEnded;
+        event Action<EndgameData> OnGameEnded;
 
         /// <summary>
         /// Argument: disconnection reason (may be empty)
