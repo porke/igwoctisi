@@ -25,7 +25,7 @@
         public event Action<Map> OnGameStarted;
         public event Func<NewRoundInfo, bool> OnRoundStarted;
         public event Func<List<SimulationResult>, bool> OnRoundEnded;
-        public event Action OnGameEnded;
+        public event Action<EndgameData> OnGameEnded;
         public event Action<string> OnDisconnected;
         
         #endregion
@@ -347,10 +347,11 @@
                         }
                         else if (nextContentType == MessageContentType.GameEnd)
                         {
+							var endgameData = JsonLowercaseSerializer.DeserializeObject<EndgameData>(jsonLine);
+
                             if (OnGameEnded != null)
                             {
-                                // TODO implement end of game!
-                                OnGameEnded.Invoke();
+                                OnGameEnded.Invoke(endgameData);
                             }
                         }
 

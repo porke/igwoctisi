@@ -4,7 +4,7 @@
 	using System.Collections.Generic;
 
 	[DataContract]
-	class GameStatistic
+	public class GameStatistic
 	{
 		[DataMember]
 		public string Name { get; set; }
