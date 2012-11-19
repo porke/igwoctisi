@@ -7,9 +7,12 @@
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
 	using Nuclex.UserInterface.Controls.Desktop;
+	using System;
 
 	class GameStats : BaseView
 	{
+		public event EventHandler LeavePressed;
+
 		private void CreateChildControls(EndgameData stats)
 		{
 			int windowGridColumnCount = stats.Places.Count + 1;
@@ -91,10 +94,26 @@
 				}
 			}
 
+			var btnLeave = new ButtonControl
+			{
+				Text = "Leave",
+				Bounds = new UniRectangle(new UniScalar(0.75f, 0), new UniScalar(0.15f, 0), new UniScalar(0.2f, 0), new UniScalar(0.15f, 0))
+			};
+			btnLeave.Pressed += Leave_Pressed;
+			statsWindow.Children.Add(btnLeave);
+
 			screen.Desktop.Children.Add(statsWindow);
 		}
 
 		#region Event handlers
+
+		private void Leave_Pressed(object sender, EventArgs e)
+		{
+			if (LeavePressed != null)
+			{
+				LeavePressed(this, EventArgs.Empty);
+			}
+		}
 
 		#endregion
 
