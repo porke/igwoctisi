@@ -120,7 +120,7 @@
             {
 				if (ChatMessageSent != null)
 				{
-					ChatMessageSent.CreateArgs(_currentMessage.Text);
+					ChatMessageSent(this, ChatMessageSent.CreateArgs(_currentMessage.Text));
 				}
                 _currentMessage.Text = "";
             }
@@ -149,8 +149,8 @@
         }
 
         public void ChatMessageReceived(ChatMessage message)
-        {            
-            _messageList.AddItem(string.Format("<{0}/{1}>: {2}", message.Username, message.Time, message.Message));
+        {
+			_messageList.AddItem(string.Format("[{0}] {1}: {2}", message.Time, message.Username, message.Message));
         }
 
         public void AddHostMessage(string message, string time)
