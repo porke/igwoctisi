@@ -416,7 +416,7 @@
 		{
 			InvokeOnMainThread(obj =>
 			{
-				_gameHud.AddMessage(string.Format("<{0}/{1}>: {2}", msg.Username, msg.Time, msg.Message));
+				_gameHud.AddMessage(string.Format("[{0}] {1}: {2}", msg.Time, msg.Username, msg.Message));
 			}, msg);
 		}
 
