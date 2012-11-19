@@ -1,55 +1,65 @@
-﻿namespace Client.Renderer
+﻿
+namespace Client.Renderer
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
 	using Client.Common.AnimationSystem;
 	using Client.Model;
 	using Common;
 	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Content;
 	using Microsoft.Xna.Framework.Graphics;
-	
+
+	public enum SpaceshipModelType
+	{
+		LittleSpaceship,
+		ArmedCruiser,
+		EEOmegaClassDestroyer,
+		Dreadnought
+	}
+
 	public class Spaceship : ITransformable
 	{
 		#region Pooling
 
 		/// <summary>
-		/// Dictionary key is the color value.
+		/// Dictionary key is the model type.
 		/// </summary>
-		private static Dictionary<int, ObjectPool<Spaceship>> pools = new Dictionary<int,ObjectPool<Spaceship>>();
+		private static Dictionary<int, ObjectPool<Spaceship>> pools = new Dictionary<int, ObjectPool<Spaceship>>();
 		
-		public static void SetupColorPools(ICollection<PlayerColor> colors, ContentManager Content, AnimationManager AnimationManager)
+		public static void SetupModelPools(ContentManager Content, AnimationManager AnimationManager)
 		{
-			foreach (var color in colors)
+			var modelTypes = Enum.GetValues(typeof(SpaceshipModelType)).Cast<SpaceshipModelType>();
+
+			foreach (var type in modelTypes)
 			{
-				if (!pools.ContainsKey(color.Value))
-				{
-					var factory = new SpaceshipFactory(color);
-					var pool = new ObjectPool<Spaceship>(100, factory);
+				var factory = new SpaceshipFactory(type);
+				var pool = new ObjectPool<Spaceship>(100, factory);
 
-					factory.Content = Content;
-					factory.AnimationManager = AnimationManager;
+				factory.Content = Content;
+				factory.AnimationManager = AnimationManager;
 
-					pools.Add(color.Value, pool);
-				}
+				pools.Add((int)type, pool);
 			}
 		}
 		
-		public static Spaceship Acquire(PlayerColor playerColor)
+		public static Spaceship Acquire(SpaceshipModelType modelType, PlayerColor playerColor)
 		{
-			return pools[playerColor.Value].Get(spaceship =>
+			return pools[(int)modelType].Get(spaceship =>
 			{
 				spaceship.Visible = true;
 				spaceship.ScaleX = spaceship.ScaleY = spaceship.ScaleZ = 1;
 				spaceship.Opacity = 1f;
+				spaceship.PlayerColor = playerColor;
 			});
 		}
 
 		public static void Recycle(Spaceship obj)
 		{
 			obj.Visible = false;
-			pools[obj.PlayerColor.Value].Put(obj);
+			pools[(int)obj.ModelType].Put(obj);
 		}
 
 		#endregion
@@ -69,17 +79,17 @@
 			private ContentManager _contentManager;
 			private static Model _model;
 			private Texture2D _texture;
-			private PlayerColor _color;
+			private SpaceshipModelType _modelType;
 					   
-			public SpaceshipFactory(PlayerColor color)
+			public SpaceshipFactory(SpaceshipModelType modelType)
 			{
-				_color = color;
+				_modelType = modelType;
 			}
 
 			public Spaceship Fetch()
 			{
 				Debug.Assert(_contentManager != null, "ContentManager can't be null!", "SpaceshipFactory should have ContentManager already installed on Fetching new Spaceship.");
-				return new Spaceship(_color, _texture, _model, AnimationManager);
+				return new Spaceship(_modelType, _model, _texture, AnimationManager);
 			}
 
 			private void OnInstallContentManager()
@@ -110,22 +120,23 @@
 		public bool Visible { get; set; }
 		public PlayerColor PlayerColor { get; private set; }
 		public float Opacity { get; set; }
+		public SpaceshipModelType ModelType { get; set; }
 
 		#endregion
 
 		#region Private Fields
 
-		private Texture2D Texture { get; set; }
 		private Model Model { get; set; }
+		private Texture2D Texture { get; set; }
 		private AnimationManager AnimationManager;
 
 		#endregion
 
-		private Spaceship(PlayerColor playerColor, Texture2D texture, Model model, AnimationManager animationManager)
+		private Spaceship(SpaceshipModelType modelType, Model model, Texture2D texture, AnimationManager animationManager)
 		{
-			PlayerColor = playerColor;
-			Texture = texture;
+			ModelType = modelType;
 			Model = model;
+			Texture = texture;
 			AnimationManager = animationManager;
 		}
 		public void Draw(SimpleCamera camera, double delta, double time)
@@ -143,8 +154,6 @@
 					// Transparency
 					effect.GraphicsDevice.BlendState = BlendState.AlphaBlend;
 					effect.Alpha = Opacity;
-
-					//TODO set appriopriate texture for current PlayerColor: effect.Texture = this.Texture;
 				}
 				mesh.Draw();
 			}

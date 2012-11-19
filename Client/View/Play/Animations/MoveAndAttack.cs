@@ -44,7 +44,8 @@
 		private static void AnimateMove(Planet sourcePlanet, Planet targetPlanet, SimulationResult simResult,
 			SceneVisual scene, AnimationManager animationManager, SimpleCamera camera, ManualResetEvent waiter)
 		{
-			var ship = Spaceship.Acquire(sourcePlanet.Owner.Color);
+			var player = sourcePlanet.Owner;
+			var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, player.Color);
 			scene.AddSpaceship(ship);
 
 			ship.SetPosition(sourcePlanet.Position);
@@ -85,7 +86,7 @@
 		private static void AnimateAttack(Planet sourcePlanet, Planet targetPlanet, SimulationResult simResult,
 			SceneVisual scene, AnimationManager animationManager, SimpleCamera camera, ManualResetEvent waiter)
 		{
-			var ship = Spaceship.Acquire(sourcePlanet.Owner.Color);
+			var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, sourcePlanet.Owner.Color);
 			scene.AddSpaceship(ship);
 
 			ship.SetPosition(sourcePlanet.Position);

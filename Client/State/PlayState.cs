@@ -502,6 +502,7 @@
 		{
 			_loadedMap = loadedMap;
 			_clientPlayer = clientPlayer;
+			_clientPlayer.IsClientPlayer = true;
 
 			Scene = new Scene(_loadedMap);
 			Scene.Visual = new SceneVisual(Client, Scene, ViewMgr.AnimationManager);

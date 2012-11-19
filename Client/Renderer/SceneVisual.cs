@@ -49,11 +49,11 @@
 
 		#endregion
 
-		public SceneVisual(GameClient client, Scene scene, AnimationManager AnimationManager)
+		public SceneVisual(GameClient client, Scene scene, AnimationManager animationManager)
 		{
 			Scene = scene;
-			Spaceship.SetupColorPools(scene.Map.Colors, client.Content, AnimationManager);
-			this.AnimationManager = AnimationManager;
+			AnimationManager = animationManager;
+			Spaceship.SetupModelPools(client.Content, animationManager);
 
 			// Install handlers
 			scene.AnimDeploys += new Action<IList<Tuple<Planet, int, Action>>>(Animation_Deploys);

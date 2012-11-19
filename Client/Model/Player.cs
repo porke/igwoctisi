@@ -3,6 +3,8 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Runtime.Serialization;
+using Client.Renderer;
+	using Client.Common;
     
     [DataContract]
     public class Player
@@ -23,8 +25,9 @@
 		public int TechPoints { get; set; }
         public int DeployableFleets { get; set; }
         public bool CanDeployFleets { get { return DeployableFleets > 0; } }
-        public int FleetIncomePerTurn {get; set;}
+		public int FleetIncomePerTurn { get; set; }
 
+		public bool IsClientPlayer { get; set; }
         public List<UserCommand> Commands { get; private set; }
         public PlayerColor Color { get; set; }
 		public Dictionary<TechnologyType, Technology> Technologies { get; private set; }
@@ -38,7 +41,7 @@
         #endregion
 
         public Player(string username, PlayerColor color)
-        {			
+        {
             Username = username;
             Color = color;
             Commands = new List<UserCommand>();

@@ -80,33 +80,33 @@
 			var deploys = simResults
 				.Where(sr => sr.Type == SimulationResult.MoveType.Deploy)
 				.Select(sr =>
-							{
-								var targetPlanet = Map.GetPlanetById(sr.TargetId);
-								return Tuple.Create<Planet, int, Action>(targetPlanet, sr.FleetCount,
-									() => //action called when one deploy animation ends
-										{
-											targetPlanet.NumFleetsPresent = sr.FleetCount;
-											deployAnimsCounter.Signal();
-										});
-							})
+				{
+					var targetPlanet = Map.GetPlanetById(sr.TargetId);
+					return Tuple.Create<Planet, int, Action>(targetPlanet, sr.FleetCount,
+						() => //action called when one deploy animation ends
+						{
+							targetPlanet.NumFleetsPresent = sr.TargetLeft;
+							deployAnimsCounter.Signal();
+						});
+				})
 				.ToList();
 
 			var movesAndAttacks = simResults
 				.Where(sr => sr.Type == SimulationResult.MoveType.Move || sr.Type == SimulationResult.MoveType.Attack)
 				.Select(sr =>
-							{
-								var sourcePlanet = Map.GetPlanetById(sr.SourceId);
-								var targetPlanet = Map.GetPlanetById(sr.TargetId);
-								return Tuple.Create<Planet, Planet, SimulationResult, Action<SimulationResult>>(sourcePlanet, targetPlanet, sr,
-									(srDone) => //action called when one move or attack animation ends
-										{
-											// TODO add animation changes
-											sourcePlanet.NumFleetsPresent = sr.SourceLeft;
-											targetPlanet.NumFleetsPresent = sr.TargetLeft;
+				{
+					var sourcePlanet = Map.GetPlanetById(sr.SourceId);
+					var targetPlanet = Map.GetPlanetById(sr.TargetId);
+					return Tuple.Create<Planet, Planet, SimulationResult, Action<SimulationResult>>(sourcePlanet, targetPlanet, sr,
+						(srDone) => //action called when one move or attack animation ends
+						{
+							// TODO add animation changes
+							sourcePlanet.NumFleetsPresent = sr.SourceLeft;
+							targetPlanet.NumFleetsPresent = sr.TargetLeft;
 
-											moveAndAttackAnimsCounter.Signal();
-										});
-							})
+							moveAndAttackAnimsCounter.Signal();
+						});
+				})
 				.ToList();
 
 			// Start playing animations and call callback when all of them are done.
