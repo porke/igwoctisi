@@ -403,7 +403,7 @@
             finally
             {
                 if (OnDisconnected != null)
-                {
+                { 
                     OnDisconnected.Invoke("Connection ended.");
                 }
 

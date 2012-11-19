@@ -17,7 +17,7 @@
 				{
 					stateIndex = 3;
 				}
-				else if (control.MouseHovering || control.HasFocus)
+				else if (control.MouseHovering)
 				{
 					stateIndex = 2;
 				}
