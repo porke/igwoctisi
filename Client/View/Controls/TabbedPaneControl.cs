@@ -111,7 +111,7 @@
 		{
 			Bounds = bounds;
 			_tabHeaderPosition = tabHeaderPosition;
-			_tabHeaderPanel = new IconControl("topPanel");
+			_tabHeaderPanel = new IconControl(_tabHeaderPosition == TabHeaderPosition.Top ? "tabTop" : "tabLeft");
 			_contentPanel = new IconControl("topPanel");
 			Children.AddRange(new Control[] { _tabHeaderPanel, _contentPanel });
 			_contentPanel.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0));
@@ -236,18 +236,17 @@
 
 			if (_tabHeaderPosition == TabHeaderPosition.Left)
 			{
-				frameNormal = IsToggled ? "arrowLeftNormal" : "arrowRightNormal";
+				frameNormal = IsToggled ? "arrowLeft" : "arrowRight";
 			}
 			else
 			{
-				frameNormal = IsToggled ? "arrowUpNormal" : "arrowDownNormal";
+				frameNormal = IsToggled ? "arrowUp" : "arrowDown";
 			}
 
-			// TODO: until there are no highlight and pressed icons, all are normal
-			for (int i = 0; i < _hidePanelButton.StateFrames.Length; ++i)
-			{
-				_hidePanelButton.StateFrames[i] = frameNormal;
-			}
+			_hidePanelButton.StateFrames[0] = string.Format("{0}{1}", frameNormal, "Normal");
+			_hidePanelButton.StateFrames[1] = string.Format("{0}{1}", frameNormal, "Normal");
+			_hidePanelButton.StateFrames[2] = string.Format("{0}{1}", frameNormal, "Pressed");
+			_hidePanelButton.StateFrames[3] = string.Format("{0}{1}", frameNormal, "Hover");
 		}
 
 		private TabHeaderPosition _tabHeaderPosition;

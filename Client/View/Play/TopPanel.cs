@@ -7,6 +7,8 @@
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
 	using Nuclex.UserInterface.Controls.Desktop;
+	using System.Linq;
+	using System.Collections.Generic;
 
 	public class TopPanel : IconControl
 	{
@@ -32,9 +34,10 @@
 		{
 			_fleetIncomeAndCountValue.Text = string.Format("{0}/{1}", player.FleetIncomePerTurn - player.DeployableFleets, player.FleetIncomePerTurn);
 			_techPointsValue.Text = Convert.ToString(player.TechPoints);
-			_offensiveTech.Text = string.Format("Att: {0}", player.Technologies[TechnologyType.Offensive].CurrentLevel);
-			_defensiveTech.Text = string.Format("Def: {0}", player.Technologies[TechnologyType.Defensive].CurrentLevel);
-			_economicTech.Text = string.Format("Eco: {0}", player.Technologies[TechnologyType.Economic].CurrentLevel);
+
+			List<int> levels = player.Technologies.Values.Select(t => t.CurrentLevel).ToList();
+			levels.Insert(0, 0);
+			UpdateTechLevelButtonIcons(levels.ToArray());			
 		}
 
 		public void UpdateTimer(int secondsLeft)
@@ -96,21 +99,21 @@
 
 		private void CreateButtons()
 		{
-			_offensiveTech = new ButtonControl
+			_offensiveTech = new ImageButtonControl
 			{
 				Name = TechnologyType.Offensive.ToString(),
 				Bounds = new UniRectangle(new UniScalar(224), new UniScalar(4), new UniScalar(48), new UniScalar(32))
 			};
 			_offensiveTech.Pressed += RaiseTech_Pressed;
 
-			_defensiveTech = new ButtonControl
+			_defensiveTech = new ImageButtonControl
 			{
 				Name = TechnologyType.Defensive.ToString(),
 				Bounds = new UniRectangle(new UniScalar(280), new UniScalar(4), new UniScalar(48), new UniScalar(32))
 			};
 			_defensiveTech.Pressed += RaiseTech_Pressed;
 
-			_economicTech = new ButtonControl
+			_economicTech = new ImageButtonControl
 			{
 				Name = TechnologyType.Economic.ToString(),
 				Bounds = new UniRectangle(new UniScalar(334), new UniScalar(4), new UniScalar(48), new UniScalar(32))
@@ -124,6 +127,7 @@
 			};
 			leaveGame.Pressed += LeaveGame_Pressed;
 
+			UpdateTechLevelButtonIcons(new int[] { 0, 0, 0, 0 });
 			Children.AddRange(
 				new Control[]
 				{
@@ -152,7 +156,7 @@
 			{
 				IconFrameName = "timerIcon",
 				Bounds = new UniRectangle(new UniScalar(1.0f, -96), new UniScalar(8), new UniScalar(24), new UniScalar(24))
-			};
+			};			
 
 			Children.AddRange(
 				new Control[] 
@@ -163,12 +167,27 @@
 				});
 		}
 
+		private void UpdateTechLevelButtonIcons(int[] levels)
+		{
+			var technologies = Enum.GetNames(typeof(TechnologyType));
+			var offensiveLvl = string.Format("{0}{1}_normal", technologies[(int)TechnologyType.Offensive].ToLowerInvariant(), levels[(int)TechnologyType.Offensive]);
+			var economicLvl = string.Format("{0}{1}_normal", technologies[(int)TechnologyType.Economic].ToLowerInvariant(), levels[(int)TechnologyType.Economic]);
+			var defensiveLvl = string.Format("{0}{1}_normal", technologies[(int)TechnologyType.Defensive].ToLowerInvariant(), levels[(int)TechnologyType.Defensive]);
+
+			for (int i = 0; i < _offensiveTech.StateFrames.Length; ++i)
+			{
+				_offensiveTech.StateFrames[i] = offensiveLvl;
+				_defensiveTech.StateFrames[i] = defensiveLvl;
+				_economicTech.StateFrames[i] = economicLvl;
+			}
+		}
+
 		private LabelControl _fleetIncomeAndCountValue;
 		private LabelControl _timer;
 		private LabelControl _techPointsValue;
-		private ButtonControl _offensiveTech;
-		private ButtonControl _defensiveTech;
-		private ButtonControl _economicTech;
+		private ImageButtonControl _offensiveTech;
+		private ImageButtonControl _defensiveTech;
+		private ImageButtonControl _economicTech;
 
 		private const string FrameName = "topPanel";
 	}
