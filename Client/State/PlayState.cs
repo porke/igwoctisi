@@ -386,7 +386,9 @@
 		{			
 			InvokeOnMainThread(obj =>
 			{
-				ViewMgr.PushLayer(new GameStats(this, stats));
+				var statsWindow = new GameStats(this, stats);
+				//statsWindow.LeavePressed += 
+				ViewMgr.PushLayer(statsWindow);
 			});
 		}
 
