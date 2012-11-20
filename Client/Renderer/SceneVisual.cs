@@ -38,11 +38,11 @@
 
 		#region Event handlers
 
-		protected void Animation_Deploys(IList<Tuple<Planet, int, Action>> deploys)
+		private void Animation_Deploys(IList<Tuple<Planet, int, Action>> deploys)
 		{
 			this.AnimateDeploys(AnimationManager, Scene.Map.Camera, deploys);
 		}
-		protected void Animation_MovesAndAttacks(IList<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>> movesAndAttacks)
+		private void Animation_MovesAndAttacks(IList<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>> movesAndAttacks)
 		{
 			this.AnimateMovesAndAttacks(movesAndAttacks, AnimationManager, Scene.Map.Camera);
 		}

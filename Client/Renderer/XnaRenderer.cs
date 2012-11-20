@@ -79,7 +79,7 @@
 
 			var map = scene.Map;
 
-            // Turn depth buffer on (SpriteBatch may turn it off).
+            // Turn depth and stencil buffers on (SpriteBatch may turn it off).
 			GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
 			scene.Visual.DrawBackground(GraphicsDevice.Viewport, delta, time);

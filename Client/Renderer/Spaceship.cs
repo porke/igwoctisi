@@ -77,7 +77,7 @@ namespace Client.Renderer
 			public AnimationManager AnimationManager { get; set; }
 
 			private ContentManager _contentManager;
-			private static Model _model;
+			private Model _model;
 			private Texture2D _texture;
 			private SpaceshipModelType _modelType;
 					   
