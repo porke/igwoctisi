@@ -1,4 +1,3 @@
-
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
@@ -7,8 +6,8 @@ Texture Clouds;
 Texture CloudsAlpha;
 float Ambient = 0.0f;
 float4 Glow;
-float PlanetOpacity = 1.0f;
-float PlanetGrayScale = 0;
+float PlanetOpacity = 1.0f;	// 0.0 - 1.0
+float PlanetGrayScale = 0;	// 0 or 1
 
 
 sampler DiffuseSampler = sampler_state
@@ -72,16 +71,12 @@ VertexShaderOutput Glow_VertexShader(VertexShaderInput input)
     output.Position = mul(viewPosition, Projection);
 	output.Normal = mul(input.Normal, World);
 	output.UV = input.UV;
-
-    // TODO: add your vertex shader code here.
-
+	
     return output;
 }
 
 float4 Glow_PixelShader(VertexShaderOutput input) : COLOR0
 {
-    // TODO: add your pixel shader code here.
-
 	return Glow;
 }
 
@@ -95,20 +90,17 @@ VertexShaderOutput Surface_VertexShader(VertexShaderInput input)
 	output.Normal = mul(input.Normal, World);
 	output.UV = input.UV;
 
-    // TODO: add your vertex shader code here.
-
     return output;
 }
 
 float4 Surface_PixelShader(VertexShaderOutput input) : COLOR0
 {
-    // TODO: add your pixel shader code here.
-
 	float4 diffuse = tex2D(DiffuseSampler, input.UV);
 
-	diffuse.rgb = PlanetGrayScale * dot(diffuse.rgb, float3(0.3, 0.59, 0.11));
+	if (PlanetGrayScale > 0)
+		diffuse.rgb = PlanetGrayScale * dot(diffuse.rgb, float3(0.3, 0.59, 0.11));
 
-	float4 color = diffuse*(1.0f + Ambient);
+	float4 color = diffuse * (1.0f + Ambient);
 	color.w = PlanetOpacity;
 	return color;
 }
@@ -123,21 +115,17 @@ VertexShaderOutput Clouds_VertexShader(VertexShaderInput input)
     output.Position = mul(viewPosition, Projection);
 	output.Normal = mul(input.Normal, World);
 	output.UV = input.UV;
-
-    // TODO: add your vertex shader code here.
-
+	
     return output;
 }
 
 float4 Clouds_PixelShader(VertexShaderOutput input) : COLOR0
 {
-    // TODO: add your pixel shader code here.
-
 	float4 clouds = tex2D(CloudsSampler, input.UV);
 	float cloudsAlpha = 1.0 - tex2D(CloudsAlphaSampler, input.UV).x;
 
 	float4 color = clouds;
-	color.w = clouds.w * cloudsAlpha * PlanetOpacity;
+	color.w = clouds.w * cloudsAlpha;// * PlanetOpacity;
     return color;
 }
 
@@ -148,7 +136,8 @@ technique Planet
 		ZEnable = true;
 		ZWriteEnable = true;
 		AlphaBlendEnable = true;
-		
+		SrcBlend = SrcAlpha;
+		DestBlend = InvSrcAlpha;
 		
 		StencilEnable = true;
 		StencilMask = 0xFF;
