@@ -7,6 +7,7 @@ Texture Clouds;
 Texture CloudsAlpha;
 float Ambient = 0.0f;
 float4 Glow;
+float PlanetOpacity = 1.0f;
 
 
 sampler DiffuseSampler = sampler_state
@@ -105,7 +106,7 @@ float4 Surface_PixelShader(VertexShaderOutput input) : COLOR0
 	float4 diffuse = tex2D(DiffuseSampler, input.UV);
 
 	float4 color = diffuse*(1.0f + Ambient);
-	color.w = 1.0;
+	color.w = PlanetOpacity;
 	return color;
 }
 
@@ -133,7 +134,7 @@ float4 Clouds_PixelShader(VertexShaderOutput input) : COLOR0
 	float cloudsAlpha = 1.0 - tex2D(CloudsAlphaSampler, input.UV).x;
 
 	float4 color = clouds;
-	color.w = clouds.w * cloudsAlpha;
+	color.w = clouds.w * cloudsAlpha * PlanetOpacity;
     return color;
 }
 
@@ -143,7 +144,7 @@ technique Planet
     {
 		ZEnable = true;
 		ZWriteEnable = true;
-		AlphaBlendEnable = false;
+		AlphaBlendEnable = true;
 		
 		
 		StencilEnable = true;
@@ -167,7 +168,7 @@ technique Planet
 		StencilEnable = true;
 		StencilMask = 0xFF;
 		StencilWriteMask = 0xFF;
-		StencilFail = Keep;
+		StencilFail = IncrSat;
 		StencilZFail = Keep;
 		StencilPass = Keep;
 		StencilFunc = Equal;

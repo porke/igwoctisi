@@ -84,6 +84,17 @@
 
 			scene.Visual.DrawBackground(GraphicsDevice.Viewport, delta, time);
 
+			// planets
+			foreach (var planet in map.Planets)
+			{
+				var planetarySystem = scene.Map.GetSystemByPlanetid(planet.Id);
+
+				var ambient = scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f;
+				var glow = planetarySystem != null && planet.Owner != null ? planet.Owner.Color.XnaColor : Color.LightGray;
+
+				planet.Visual.Draw(GraphicsDevice, camera, delta, time, ambient, glow);
+			}
+
 			#region Links
 
 			_fxLinks.Parameters["World"].SetValue(Matrix.Identity);
@@ -109,17 +120,7 @@
 
 			#endregion
 
-			// planets
-			foreach (var planet in map.Planets)
-			{
-				var planetarySystem = scene.Map.GetSystemByPlanetid(planet.Id);
-
-				var ambient = scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f;
-				var glow = planetarySystem != null && planet.Owner != null ? planet.Owner.Color.XnaColor : Color.LightGray;
-
-				planet.Visual.Draw(GraphicsDevice, camera, delta, time, ambient, glow);
-			}
-
+			
 			#region Move indicators
 
 			var selectedPlanet = scene.Map.GetPlanetById(scene.SelectedPlanet);
