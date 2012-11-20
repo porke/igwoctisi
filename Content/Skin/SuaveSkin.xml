@@ -460,7 +460,19 @@
       <region source="controls" hplacement="right" vplacement="bottom" x="154" y="70" w="2" h="2" />
     </frame>
 
-	<!--
+	<frame name="closeButtonNormal">
+		<region source="controls" hplacement="left" vplacement="top" x="76" y="1" w="14" h="14" />
+	</frame>
+
+	<frame name="closeButtonHover">
+		<region source="controls" hplacement="left" vplacement="top" x="76" y="16" w="14" h="14" />
+	</frame>
+
+	<frame name="closeButtonPushed">
+		<region source="controls" hplacement="left" vplacement="top" x="76" y="31" w="14" h="14" />
+	</frame>
+
+	  <!--
 		The nine patch used for top panel.
 	-->
 	<frame name="topPanel">
@@ -495,15 +507,15 @@
 		Static UI icons
 	  -->
 	<frame name="techIcon">
-		<region source="hud_icons" hplacement="stretch" vplacement="stretch" x="100" y="99" w="24" h="24" />
+		<region source="hud_icons" hplacement="left" vplacement="top" x="100" y="99" w="24" h="24" />
 	</frame>
 
 	<frame name="fleetIcon">
-		<region source="hud_icons" hplacement="stretch" vplacement="stretch" x="74" y="66" w="24" h="24" />
+		<region source="hud_icons" hplacement="left" vplacement="top" x="74" y="66" w="24" h="24" />
 	</frame>
 
 	<frame name="timerIcon">
-		<region source="hud_icons" hplacement="stretch" vplacement="stretch" x="100" y="66" w="24" h="24" />
+		<region source="hud_icons" hplacement="left" vplacement="top" x="100" y="66" w="24" h="24" />
 	</frame>
 
 	<!--

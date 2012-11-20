@@ -11,10 +11,10 @@
 	{
 		#region Protected members
 
-		protected Scene Scene { get; set; }
-		protected readonly AnimationManager AnimationManager;
-		protected readonly List<Spaceship> _spaceships = new List<Spaceship>();
-		protected readonly List<Spaceship> _spaceshipsToAdd = new List<Spaceship>();
+		private Scene Scene { get; set; }
+		private readonly AnimationManager AnimationManager;
+		private readonly List<Spaceship> _spaceships = new List<Spaceship>();
+		private readonly List<Spaceship> _spaceshipsToAdd = new List<Spaceship>();
 
 		public void UpdateSpaceSheeps()
 		{

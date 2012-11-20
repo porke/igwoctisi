@@ -33,18 +33,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\SplashScreen1.png">
-      <Name>SplashScreen1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\SplashScreen2.png">
-      <Name>SplashScreen2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Fonts\Menu.spritefont">
       <Name>Menu</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -86,11 +74,13 @@
       <Name>Dreadnought</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\OmegaDestroyer.fbx">
       <Name>OmegaDestroyer</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <None Include="Skin\SuaveSkin.xml">
       <Name>SuaveSkin</Name>

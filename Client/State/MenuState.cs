@@ -5,8 +5,8 @@
 	using Client.Model;
 	using View;
 	using View.Menu;
-	using Client.View.Play;
 	using System.Collections.Generic;
+	using Client.View.Play;
 
 	public class MenuState : GameState
     {
@@ -22,7 +22,7 @@
 			mainMenu.EnterPlayStatePressed += EnterPlayState;
 
             ViewMgr.PushLayer(menuBackground);
-			ViewMgr.PushLayer(mainMenu);			
+			ViewMgr.PushLayer(mainMenu);
         }
 
         public override void OnEnter()
