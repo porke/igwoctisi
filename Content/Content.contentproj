@@ -82,6 +82,16 @@
       <ProcessorParameters_Scale>3.5</ProcessorParameters_Scale>
       <ProcessorParameters_RotationY>180</ProcessorParameters_RotationY>
     </Compile>
+    <Compile Include="Models\Dreadnought.fbx">
+      <Name>Dreadnought</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\OmegaDestroyer.fbx">
+      <Name>OmegaDestroyer</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
     <None Include="Skin\SuaveSkin.xml">
       <Name>SuaveSkin</Name>
       <Importer>XmlImporter</Importer>

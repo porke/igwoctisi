@@ -14,10 +14,10 @@ namespace Client.Renderer
 
 	public enum SpaceshipModelType
 	{
-		LittleSpaceship,
-		ArmedCruiser,
-		EEOmegaClassDestroyer,
-		Dreadnought
+		LittleSpaceship,	//Level1
+		//ArmedCruiser,		//Level2
+		OmegaDestroyer,		//Level2
+		Dreadnought			//Level3
 	}
 
 	public class Spaceship : ITransformable
@@ -94,7 +94,7 @@ namespace Client.Renderer
 
 			private void OnInstallContentManager()
 			{
-				_model = Content.Load<Model>(@"Models\LittleSpaceship");
+				_model = Content.Load<Model>(@"Models\" + _modelType.ToString());
 			}
 
 			public void OnTextureLoad(IAsyncResult ar)
