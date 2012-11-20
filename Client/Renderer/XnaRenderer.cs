@@ -1,5 +1,6 @@
 ﻿namespace Client.Renderer
 {
+	using System.Collections.Generic;
 	using System.Linq;
 	using Client.Common;
 	using Microsoft.Xna.Framework;
@@ -22,6 +23,7 @@
 		protected Effect _fxLinks, _fxPlanet;
 		protected VertexBuffer _sphereVB, _sphereVB2;
 		protected Texture2D _txSpace;
+		private Dictionary<int, bool> _planetsDetailsShowing = new Dictionary<int,bool>();
 
 		#endregion
 
@@ -95,6 +97,9 @@
 				bool grayPlanet = planet.Owner != scene.ClientPlayer
 					&& planet.NeighbourPlanets.All(p => p.Owner != scene.ClientPlayer);
 				planet.Visual.Draw(GraphicsDevice, camera, delta, time, ambient, glow, grayPlanet);
+
+				// cache that information
+				_planetsDetailsShowing[planet.Id] = !grayPlanet;
 			}
 
 			#region Links
@@ -161,7 +166,10 @@
             _spriteBatch.Begin();
 			foreach (var planet in scene.Map.Planets)
 			{
-				planet.Visual.DrawInfo(GraphicsDevice, _spriteBatch, camera, scene.HoveredPlanet == planet.Id);
+				if (_planetsDetailsShowing[planet.Id])
+				{
+					planet.Visual.DrawInfo(GraphicsDevice, _spriteBatch, camera, scene.HoveredPlanet == planet.Id);
+				}
 			}
 			_spriteBatch.End();
 		}
