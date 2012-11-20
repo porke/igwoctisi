@@ -8,6 +8,7 @@ Texture CloudsAlpha;
 float Ambient = 0.0f;
 float4 Glow;
 float PlanetOpacity = 1.0f;
+float PlanetGrayScale = 0;
 
 
 sampler DiffuseSampler = sampler_state
@@ -104,6 +105,8 @@ float4 Surface_PixelShader(VertexShaderOutput input) : COLOR0
     // TODO: add your pixel shader code here.
 
 	float4 diffuse = tex2D(DiffuseSampler, input.UV);
+
+	diffuse.rgb = PlanetGrayScale * dot(diffuse.rgb, float3(0.3, 0.59, 0.11));
 
 	float4 color = diffuse*(1.0f + Ambient);
 	color.w = PlanetOpacity;
