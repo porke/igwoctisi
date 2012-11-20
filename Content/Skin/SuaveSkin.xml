@@ -511,134 +511,159 @@
 	-->
 	  <!-- Right panel tab icons -->
 	  <frame name="commandsIconActive">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="0" y="0" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="0" w="32" h="32" />
 	  </frame>
 
 	  <frame name="commandsIconHover">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="0" y="33" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="32" w="32" h="32" />
 	  </frame>
 
 	  <frame name="commandsIconInactive">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="0" y="66" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="64" w="32" h="32" />
 	  </frame>
 
 	  <frame name="commandsIconPushed">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="0" y="99" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="32" w="32" h="32" />
 	  </frame>
 
 	  <frame name="playersIconActive">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="33" y="0" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="33" y="0" w="32" h="32" />
 	  </frame>
 
 	  <frame name="playersIconHover">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="33" y="33" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="33" y="32" w="32" h="32" />
 	  </frame>
 
 	  <frame name="playersIconInactive">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="33" y="66" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="33" y="64" w="32" h="32" />
 	  </frame>
 
 	  <frame name="playersIconPushed">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="33" y="99" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="33" y="32" w="32" h="32" />
 	  </frame>
 
 	  <!-- Arrow icons -->
 	  <frame name="arrowLeftNormal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="66" y="0" w="32" h="8" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="249" w="32" h="19" />
 	  </frame>
 
 	  <frame name="arrowLeftPressed">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="66" y="9" w="32" h="8" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="249" w="32" h="19" />
 	  </frame>
 
 	  <frame name="arrowLeftHover">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="66" y="18" w="32" h="8" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="249" w="32" h="19" />
 	  </frame>
 
 	  <frame name="arrowRightNormal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="66" y="27" w="32" h="8" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="230" w="32" h="19" />
 	  </frame>
 
 	  <frame name="arrowRightPressed">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="66" y="36" w="32" h="8" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="230" w="32" h="19" />
 	  </frame>
 
 	  <frame name="arrowRightHover">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="66" y="45" w="32" h="8" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="230" w="32" h="19" />
 	  </frame>
 
 	  <frame name="arrowUpNormal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="98" y="0" w="8" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="268" w="19" h="32" />
 	  </frame>
 
 	  <frame name="arrowUpPressed">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="107" y="0" w="8" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="268" w="19" h="32" />
 	  </frame>
 
 	  <frame name="arrowUpHover">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="116" y="0" w="8" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="268" w="19" h="32" />
 	  </frame>
 
 	  <frame name="arrowDownNormal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="98" y="33" w="8" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="300" w="19" h="32" />
 	  </frame>
 
 	  <frame name="arrowDownPressed">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="107" y="33" w="8" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="300" w="19" h="32" />
 	  </frame>
 
 	  <frame name="arrowDownHover">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="116" y="33" w="8" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="300" w="19" h="32" />
 	  </frame>
 
+	  <frame name="chatIconActive">
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="332" w="32" h="32" />
+	  </frame>
+
+	  <frame name="chatIconHover">
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="332" w="32" h="32" />
+	  </frame>
+
+	  <frame name="chatIconInactive">
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="332" w="32" h="32" />
+	  </frame>
+
+	  <frame name="chatIconPushed">
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="332" w="32" h="32" />
+	  </frame>
 	  
 	  <!-- Technology buttons-->
 	  <frame name="offensive0_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="125" y="0" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="125" y="0" w="32" h="32" />
 	  </frame>
 
 	  <frame name="offensive1_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="158" y="0" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="158" y="0" w="32" h="32" />
 	  </frame>
 
 	  <frame name="offensive2_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="191" y="0" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="191" y="0" w="32" h="32" />
 	  </frame>
 
 	  <frame name="offensive3_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="224" y="0" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="224" y="0" w="32" h="32" />
 	  </frame>
 
 	  <frame name="defensive0_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="125" y="99" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="125" y="99" w="32" h="32" />
 	  </frame>
 
 	  <frame name="defensive1_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="158" y="99" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="158" y="99" w="32" h="32" />
 	  </frame>
 
 	  <frame name="defensive2_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="191" y="99" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="191" y="99" w="32" h="32" />
 	  </frame>
 
 	  <frame name="defensive3_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="224" y="99" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="224" y="99" w="32" h="32" />
 	  </frame>
 
 	  <frame name="economic0_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="0" y="132" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="132" w="32" h="32" />
 	  </frame>
 
 	  <frame name="economic1_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="0" y="165" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="165" w="32" h="32" />
 	  </frame>
 
 	  <frame name="economic2_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="0" y="198" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="198" w="32" h="32" />
 	  </frame>
 
 	  <frame name="economic3_normal">
-		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="99" y="198" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="99" y="198" w="32" h="32" />
+	  </frame>
+
+	  <frame name="chat_tab_background">
+		  <region source="hud_icons" hplacement="stretch" vplacement="top" x="257" y="0" w="40" h="40" />
+	  </frame>
+	  <frame name="hud_background">
+		  <region source="hud_icons" hplacement="stretch" vplacement="top" x="257" y="40" w="40" h="40" />
+		  <region source="hud_icons" hplacement="right" vplacement="top" x="257" y="40" w="1" h="40" />
+		  <region source="hud_icons" hplacement="stretch" vplacement="stretch" x="257" y="80" w="40" h="40" />
+		  <region source="hud_icons" hplacement="right" vplacement="stretch" x="257" y="80" w="1" h="40" />
 	  </frame>
 
   </frames>

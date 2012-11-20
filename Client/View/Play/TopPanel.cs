@@ -1,14 +1,14 @@
 ﻿namespace Client.View.Play
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using Client.Common;
 	using Client.Model;
 	using Client.View.Controls;
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
 	using Nuclex.UserInterface.Controls.Desktop;
-	using System.Linq;
-	using System.Collections.Generic;
 
 	public class TopPanel : IconControl
 	{
@@ -189,6 +189,6 @@
 		private ImageButtonControl _defensiveTech;
 		private ImageButtonControl _economicTech;
 
-		private const string FrameName = "topPanel";
+		private const string FrameName = "hud_background";
 	}
 }

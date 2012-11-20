@@ -122,8 +122,8 @@
 				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.9f, 0))
 			};
 
-			var off = new string[] { "playersIconInactive", "playersIconInactive", "playersIconInactive", "playersIconInactive" };
-			var on = new string[] { "playersIconActive", "playersIconActive", "playersIconActive", "playersIconActive" };
+			var off = new string[] { "playersIconInactive", "playersIconInactive", "playersIconHover", "playersIconInactive" };
+			var on = new string[] { "playersIconActive", "playersIconActive", "playersIconHover", "playersIconActive" };
 			AddTab(on, off, _playerList);
 		}
 
@@ -155,8 +155,8 @@
 
 			panel.Children.AddRange(new Control[] { _commandList, _deleteCommand, _sendCommands });
 
-			var off = new string[] { "commandsIconInactive", "commandsIconInactive", "commandsIconInactive", "commandsIconInactive" };
-			var on = new string[] { "commandsIconActive", "commandsIconActive", "commandsIconActive", "commandsIconActive" };
+			var off = new string[] { "commandsIconInactive", "commandsIconInactive", "commandsIconHover", "commandsIconInactive" };
+			var on = new string[] { "commandsIconActive", "commandsIconActive", "commandsIconHover", "commandsIconActive" };
 			AddTab(on, off, panel);
 		}
 

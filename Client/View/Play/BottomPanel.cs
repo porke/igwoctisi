@@ -42,7 +42,8 @@
 			btnClearMessage.Pressed += ClearMessageList;
 			panel.Children.AddRange(new Control[] { _chatMessage, _messageList, btnClearMessage });
 
-			AddTab("Chat", panel);
+			var chatIcon = new string[] { "chatIconActive", "chatIconActive", "chatIconActive", "chatIconActive" };
+			AddTab(chatIcon, chatIcon, panel);
 		}
 
 		#region Update functions
@@ -50,6 +51,12 @@
 		public void AddMessage(string message)
 		{
 			_messageList.AddItem(message);
+		}
+
+		public void ToggleChatButtonFlash()
+		{
+			var chatButton = _tabHeaderPanel.Children[1] as ImageButtonControl;
+			// TODO: make flash
 		}
 
 		#endregion

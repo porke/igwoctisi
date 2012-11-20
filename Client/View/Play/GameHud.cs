@@ -162,7 +162,20 @@
         public void AddMessage(string message)
         {
 			_bottomPanel.AddMessage(message);
+			BottomFlashAnimate();
         }
+
+		private void BottomFlashAnimate()
+		{
+			if (_bottomPanel.IsToggled)
+			{
+				_bottomPanel.Animate(this).Wait(1.0f).AddCallback((ctrl) =>
+				{
+					_bottomPanel.ToggleChatButtonFlash();
+					BottomFlashAnimate();
+				});
+			}
+		}
 
 		public void EnableCommandButtons()
 		{
