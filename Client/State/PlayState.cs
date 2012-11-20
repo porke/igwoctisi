@@ -387,7 +387,7 @@
 			InvokeOnMainThread(obj =>
 			{
 				var statsWindow = new GameStats(this, stats);
-				//statsWindow.LeavePressed += 
+				statsWindow.LeavePressed += HUD_LeaveGame;
 				ViewMgr.PushLayer(statsWindow);
 			});
 		}

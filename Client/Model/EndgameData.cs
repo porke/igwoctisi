@@ -1,8 +1,7 @@
 ﻿namespace Client.Model
 {
-	using System.Runtime.Serialization;
 	using System.Collections.Generic;
-using System;
+	using System.Runtime.Serialization;
 
 	[DataContract]
 	public class EndgameData
@@ -21,6 +20,5 @@ using System;
 
 		[DataMember]
 		public string EndType { get; set; }
-
 	}
 }

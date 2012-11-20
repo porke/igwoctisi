@@ -27,6 +27,7 @@
 			float columnWidth = 1.0f / (float)windowGridColumnCount;
 			var statsWindow = new WindowControl()
 			{
+				EnableDragging = false,
 				Title = WindowTitle,
 				Bounds = new UniRectangle(new UniScalar(windowXPosition, 0), new UniScalar(windowYPosition, 0), new UniScalar(windowWidthInPx), new UniScalar(windowHeightInPx))
 			};
@@ -97,7 +98,8 @@
 
 			var btnLeave = new ImageButtonControl
 			{
-				Bounds = new UniRectangle(new UniScalar(0.9f, 0), new UniScalar(0.05f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0))
+				StateFrames = new string[] { "closeButtonNormal", "closeButtonNormal", "closeButtonHover", "closeButtonPushed" },
+				Bounds = new UniRectangle(new UniScalar(0.95f, 0), new UniScalar(0.04f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0))
 			};
 			btnLeave.Pressed += Leave_Pressed;
 			statsWindow.Children.Add(btnLeave);
@@ -120,7 +122,7 @@
 		public GameStats(GameState state, EndgameData stats)
 			: base(state)
 		{
-            IsTransparent = true;            
+            IsTransparent = false;            
             InputReceiver = new NuclexScreenInputReceiver(screen, true);
 
 			screen.Desktop.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0.0f), new UniScalar(1.0f, 0));
