@@ -1,13 +1,14 @@
 ﻿namespace Client.View.Play
 {
+	using System;
 	using Client.Common;
 	using Client.Input;
 	using Client.Model;
 	using Client.State;
+	using Client.View.Controls;
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
 	using Nuclex.UserInterface.Controls.Desktop;
-	using System;
 
 	class GameStats : BaseView
 	{
@@ -94,10 +95,9 @@
 				}
 			}
 
-			var btnLeave = new ButtonControl
+			var btnLeave = new ImageButtonControl
 			{
-				Text = "Leave",
-				Bounds = new UniRectangle(new UniScalar(0.75f, 0), new UniScalar(0.15f, 0), new UniScalar(0.2f, 0), new UniScalar(0.15f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.9f, 0), new UniScalar(0.05f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0))
 			};
 			btnLeave.Pressed += Leave_Pressed;
 			statsWindow.Children.Add(btnLeave);
