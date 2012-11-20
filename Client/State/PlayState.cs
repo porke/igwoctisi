@@ -278,7 +278,7 @@
 					var locker = new ManualResetEvent(false);
 					InvokeOnMainThread(obj =>
 					{
-						Scene.Initialize(roundInfo, _players);
+						Scene.Initialize(roundInfo, _players, _clientPlayer);
 						Scene.Map.UpdatePlanetShowDetails(_clientPlayer);
 						_gameHud.UpdateResourceData(_clientPlayer);
 						_gameHud.UpdatePlayerList(_players);

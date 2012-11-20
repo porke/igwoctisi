@@ -6,6 +6,7 @@
     using Client.Renderer;
     using Microsoft.Xna.Framework;
     using Newtonsoft.Json;
+using System.Collections.Generic;
 
     [Serializable]
     [DataContract]
@@ -61,5 +62,14 @@
 
         [XmlIgnore, JsonIgnore]
         public Player Owner { get; set; }
-    }
+
+		[XmlIgnore, JsonIgnore]
+		public List<Planet> NeighbourPlanets { get; private set; }
+
+
+		internal void SetNeighbours(System.Collections.Generic.List<Planet> neighbourPlanets)
+		{
+			NeighbourPlanets = neighbourPlanets;
+		}
+	}
 }

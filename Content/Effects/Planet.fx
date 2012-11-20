@@ -132,7 +132,7 @@ float4 Clouds_PixelShader(VertexShaderOutput input) : COLOR0
 	float cloudsAlpha = 1.0 - tex2D(CloudsAlphaSampler, input.UV).x;
 
 	float4 color = clouds;
-	color.w = clouds.w * cloudsAlpha;// * PlanetOpacity;
+	color.w = clouds.w * cloudsAlpha * PlanetOpacity;
     return color;
 }
 

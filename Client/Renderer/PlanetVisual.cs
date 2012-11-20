@@ -75,7 +75,7 @@
 				CloudsAlphaTexture = contentMgr.Load<Texture2D>(planet.CloudsAlpha);
 			}
 		}
-		public void Draw(GraphicsDevice device, ICamera camera, double delta, double time, float ambient, Color glow)
+		public void Draw(GraphicsDevice device, ICamera camera, double delta, double time, float ambient, Color glow, bool grayPlanet)
 		{
 			// Update scale, rotation and translation from model
 			Rotation *= Matrix.CreateRotationY((float)delta / Period * MathHelper.TwoPi);
@@ -94,6 +94,8 @@
 			Effect.Parameters["CloudsAlpha"].SetValue(CloudsAlphaTexture);
 			Effect.Parameters["Ambient"].SetValue(ambient);
 			Effect.Parameters["Glow"].SetValue(glow.ToVector4());
+			Effect.Parameters["PlanetOpacity"].SetValue(grayPlanet ? 0.3f : 1.0f);
+			Effect.Parameters["PlanetGrayScale"].SetValue(grayPlanet ? 1 : 0);
 
 			foreach (var pass in Effect.CurrentTechnique.Passes)
 			{

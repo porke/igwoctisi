@@ -92,7 +92,9 @@
 				var ambient = scene.SelectedPlanet == planet.Id || scene.HoveredPlanet == planet.Id ? HoverAmbient : 0.0f;
 				var glow = planetarySystem != null && planet.Owner != null ? planet.Owner.Color.XnaColor : Color.LightGray;
 
-				planet.Visual.Draw(GraphicsDevice, camera, delta, time, ambient, glow);
+				bool grayPlanet = planet.Owner != scene.ClientPlayer
+					&& planet.NeighbourPlanets.All(p => p.Owner != scene.ClientPlayer);
+				planet.Visual.Draw(GraphicsDevice, camera, delta, time, ambient, glow, grayPlanet);
 			}
 
 			#region Links
