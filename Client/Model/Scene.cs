@@ -15,6 +15,7 @@
 
 		public int SelectedPlanet { get; private set; }
 		public Map Map { get; private set; }
+		public Player ClientPlayer { get; private set; }
 
 		private List<Player> _players;
 
@@ -127,9 +128,10 @@
 				endCallback.Invoke();
 			}));
 		}
-		public void Initialize(NewRoundInfo roundInfo, List<Player> players)
+		public void Initialize(NewRoundInfo roundInfo, List<Player> players, Player clientPlayer)
 		{
 			_players = players;
+			ClientPlayer = clientPlayer;
 
 			// Assign planets to the players and vice versa.
 			foreach (var data in Map.PlayerStartingData)
