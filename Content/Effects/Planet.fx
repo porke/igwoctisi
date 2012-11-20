@@ -77,7 +77,14 @@ VertexShaderOutput Glow_VertexShader(VertexShaderInput input)
 
 float4 Glow_PixelShader(VertexShaderOutput input) : COLOR0
 {
-	return Glow;
+	float4 color = Glow;
+
+	if (PlanetGrayScale > 0)
+		color.rgb = PlanetGrayScale * dot(color.rgb, float3(0.3, 0.59, 0.11));
+
+	color.w = sqrt(PlanetOpacity);
+
+	return color;
 }
 
 VertexShaderOutput Surface_VertexShader(VertexShaderInput input)
@@ -154,8 +161,9 @@ technique Planet
 	{
 		ZEnable = true;
 		ZWriteEnable = true;
-		AlphaBlendEnable = false;
-
+		AlphaBlendEnable = true;		
+		SrcBlend = SrcAlpha;
+		DestBlend = InvSrcAlpha;
 		
 		StencilEnable = true;
 		StencilMask = 0xFF;
