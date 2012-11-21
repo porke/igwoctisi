@@ -43,7 +43,8 @@
 			panel.Children.AddRange(new Control[] { _chatMessage, _messageList, btnClearMessage });
 
 			var chatIcon = new string[] { "chatIconPulsing", "chatIconActive", "chatIconHover", "chatIconPushed" };
-			AddTab(chatIcon, chatIcon, panel);
+			var chatIconPulse = new string[] { "chatIconPulsing", "chatIconPulsing", "chatIconPulsing", "chatIconPulsing" };
+			AddTab(chatIcon, chatIconPulse, panel);
 		}
 
 		#region Update functions
@@ -56,7 +57,7 @@
 		public void ToggleChatButtonFlash()
 		{
 			var chatButton = _tabHeaderPanel.Children[1] as TabImageHeaderControl;
-			Utils.SwapRef(ref chatButton.States[0], ref chatButton.States[1]);
+			chatButton.Selected = IsToggled ? !chatButton.Selected : true;
 		}
 
 		#endregion
