@@ -60,6 +60,7 @@
 			scene.AnimMovesAndAttacks += new Action<List<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>>>(Animation_MovesAndAttacks);
 
 			scene.Map.Visual = new MapVisual(client, scene.Map);
+			scene.Map.Visual.Initialize();
 		}
 		public void AddSpaceship(Spaceship ship)
 		{
