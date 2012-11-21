@@ -66,7 +66,6 @@
       <Name>LittleSpaceship</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ProcessorParameters_Scale>3.5</ProcessorParameters_Scale>
       <ProcessorParameters_RotationY>180</ProcessorParameters_RotationY>
     </Compile>
@@ -74,13 +73,11 @@
       <Name>Dreadnought</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\OmegaDestroyer.fbx">
       <Name>OmegaDestroyer</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\Arrow.x">
       <Name>Arrow</Name>
@@ -89,7 +86,6 @@
       <ProcessorParameters_Scale>80</ProcessorParameters_Scale>
       <ProcessorParameters_RotationX>90</ProcessorParameters_RotationX>
       <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <None Include="Skin\SuaveSkin.xml">
       <Name>SuaveSkin</Name>
