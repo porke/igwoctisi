@@ -12,16 +12,18 @@
 		#region Protected members
 
 		protected SpriteBatch _spriteBatch;
+		protected Effect _fxLinks;
 		protected Tuple<BackgroundLayer, Texture2D>[] _layers;
+		protected VertexBuffer LinksVB;
 
 		#endregion
 
 		public Map Map { get; protected set; }
-        public VertexBuffer LinksVB { get; protected set; }
 
 		public MapVisual(GameClient client, Map map)
 		{
 			Map = map;
+			var contentMgr = client.Content;
 
 			var vertices = new VertexPositionColor[map.Links.Count * 2];
 			var color = Color.LightGreen;
@@ -42,6 +44,8 @@
 			_spriteBatch = new SpriteBatch(client.GraphicsDevice);
 			_layers = Map.Background.Select(x => Tuple.Create(x, client.Content.Load<Texture2D>(x.Texture))).ToArray();
 
+			_fxLinks = contentMgr.Load<Effect>("Effects\\Links");
+
 			foreach (var planet in Map.Planets)
 			{
 				planet.Visual = new PlanetVisual(client, planet);
@@ -61,8 +65,16 @@
 				planet.Visual.Initialize();
 			}
 		}
-		public void DrawBackground(Viewport viewport, double delta, double time)
+		public void Update(double delta, double time)
 		{
+			foreach (var planetarySystem in Map.PlanetarySystems)
+			{
+				planetarySystem.Visual.Update(Map, delta, time);
+			}
+		}
+		public void DrawBackground(GraphicsDevice device, ICamera camera, double delta, double time)
+		{
+			var viewport = device.Viewport;
 			_spriteBatch.Begin();
 
 			foreach (var pair in _layers)
@@ -79,6 +91,21 @@
 			}
 
 			_spriteBatch.End();
+		}
+		public void DrawIndicators(GraphicsDevice device, ICamera camera, double delta, double time)
+		{
+			_fxLinks.Parameters["World"].SetValue(Matrix.Identity);
+			_fxLinks.Parameters["View"].SetValue(camera.GetView());
+			_fxLinks.Parameters["Projection"].SetValue(camera.Projection);
+
+			// links
+			_fxLinks.Parameters["Ambient"].SetValue(0.0f);
+			foreach (var pass in _fxLinks.CurrentTechnique.Passes)
+			{
+				pass.Apply();
+				device.SetVertexBuffer(LinksVB);
+				device.DrawPrimitives(PrimitiveType.LineList, 0, LinksVB.VertexCount / 2);
+			}
 		}
 	}
 }

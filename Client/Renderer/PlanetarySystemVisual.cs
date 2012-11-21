@@ -32,9 +32,9 @@
 			_planetarySystem = planetarySystem;
 			ParticleSystem = new PlanetarySystemConvexParticleSystem(client, client.Content, planetarySystem.Bounds);
 		}
-
-		public void Update(GraphicsDevice device, ICamera camera, Map map, double delta, double time)
+		public void Update(Map map, double delta, double time)
 		{
+			var camera = map.Camera;
 			ParticleSystem.SetCamera(camera.GetView(), camera.Projection);
 
 			// Update color due to 
