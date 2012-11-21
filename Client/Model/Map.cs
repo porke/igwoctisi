@@ -100,10 +100,7 @@
                         Planets.Add(planet);
                     }
                 } while (reader.ReadToNextSibling(typeof(Planet).Name));
-
-                // Read links and find neighbouring planets
-				var neighbours = new Dictionary<int, List<Planet>>();
-
+				
                 reader.ReadToFollowing(LinksElement);
                 reader.ReadToDescendant(typeof(PlanetLink).Name);
                 var linkSerializer = new XmlSerializer(typeof(PlanetLink));
@@ -114,56 +111,11 @@
                     if (planetLink != null)
                     {
                         Links.Add(planetLink);
-
-						#region Configure neighbour planets based on links
-						var sourcePlanet = Planets.First(p => p.Id == planetLink.SourcePlanet);
-						var targetPlanet = Planets.First(p => p.Id == planetLink.TargetPlanet);
-
-						List<Planet> sourceNeighbours = null;
-						List<Planet> targetNeighbours = null;
-
-						if (neighbours.Keys.Contains(sourcePlanet.Id))
-						{
-							sourceNeighbours = neighbours[sourcePlanet.Id];
-						}
-						else
-						{
-							sourceNeighbours = new List<Planet>();
-							neighbours[sourcePlanet.Id] = sourceNeighbours;
-						}
-
-						if (!sourceNeighbours.Contains(targetPlanet))
-						{
-							sourceNeighbours.Add(targetPlanet);
-						}
-
-
-						if (neighbours.Keys.Contains(targetPlanet.Id))
-						{
-							targetNeighbours = neighbours[targetPlanet.Id];
-						}
-						else
-						{
-							targetNeighbours = new List<Planet>();
-							neighbours[targetPlanet.Id] = targetNeighbours;
-						}
-
-						if (!targetNeighbours.Contains(sourcePlanet))
-						{
-							targetNeighbours.Add(sourcePlanet);
-						}
-						#endregion
 					}
                 } while (reader.ReadToNextSibling(typeof(PlanetLink).Name));
 
-				foreach (var pair in neighbours)
-				{
-					int planetId = pair.Key;
-					var neighbourPlanets = pair.Value;
-
-					var planet = Planets.First(p => p.Id == planetId);
-					planet.SetNeighbours(neighbourPlanets);
-				}
+                // Read links and find neighbouring planets
+				LoadNeighbours();
 
                 // Read systems
                 reader.ReadToFollowing(SystemsElement);
@@ -231,11 +183,69 @@
             }
         }
 
+		private void LoadNeighbours()
+		{
+			var neighbours = new Dictionary<int, List<Planet>>();
+
+			foreach (var planetLink in Links)
+			{
+				#region Configure neighbour planets based on links
+				var sourcePlanet = Planets.First(p => p.Id == planetLink.SourcePlanet);
+				var targetPlanet = Planets.First(p => p.Id == planetLink.TargetPlanet);
+
+				List<Planet> sourceNeighbours = null;
+				List<Planet> targetNeighbours = null;
+
+				if (neighbours.Keys.Contains(sourcePlanet.Id))
+				{
+					sourceNeighbours = neighbours[sourcePlanet.Id];
+				}
+				else
+				{
+					sourceNeighbours = new List<Planet>();
+					neighbours[sourcePlanet.Id] = sourceNeighbours;
+				}
+
+				if (!sourceNeighbours.Contains(targetPlanet))
+				{
+					sourceNeighbours.Add(targetPlanet);
+				}
+
+
+				if (neighbours.Keys.Contains(targetPlanet.Id))
+				{
+					targetNeighbours = neighbours[targetPlanet.Id];
+				}
+				else
+				{
+					targetNeighbours = new List<Planet>();
+					neighbours[targetPlanet.Id] = targetNeighbours;
+				}
+
+				if (!targetNeighbours.Contains(sourcePlanet))
+				{
+					targetNeighbours.Add(sourcePlanet);
+				}
+				#endregion
+			}
+
+			foreach (var pair in neighbours)
+			{
+				int planetId = pair.Key;
+				var neighbourPlanets = pair.Value;
+
+				var planet = Planets.First(p => p.Id == planetId);
+				planet.SetNeighbours(neighbourPlanets);
+			}
+		}
+
         [OnDeserialized]
         public void OnJsonDeserialized(StreamingContext context)
         {
             // TODO Make Player (& Planet) references to be the same objects?
 			Camera.SetPosition((Camera.Min + Camera.Max) / 2.0f);
+
+			LoadNeighbours();
         }
 
         public Map()
