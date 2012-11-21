@@ -54,6 +54,13 @@
 				client.Components.Add(planetarySystem.Visual.ParticleSystem);
 			}
 		}
+		internal void Initialize()
+		{
+			foreach (var planet in Map.Planets)
+			{
+				planet.Visual.Initialize();
+			}
+		}
 		public void DrawBackground(Viewport viewport, double delta, double time)
 		{
 			_spriteBatch.Begin();

@@ -131,8 +131,12 @@
 			#region Move indicators
 
 			var selectedPlanet = scene.Map.GetPlanetById(scene.SelectedPlanet);
+
 			if (selectedPlanet != null)
 			{
+				//selectedPlanet.Visual.DrawIndicators(GraphicsDevice, camera, delta, time);
+
+				
 				foreach (var link in map.Links.Where(x => x.SourcePlanet == selectedPlanet.Id || x.TargetPlanet == selectedPlanet.Id))
 				{
 					var sourcePlanet = map.GetPlanetById(link.SourcePlanet);

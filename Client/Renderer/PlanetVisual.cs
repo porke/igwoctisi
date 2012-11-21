@@ -8,6 +8,7 @@
 	using Client.Common;
 	using System.Linq;
 	using Client.Common.AnimationSystem;
+using System.Collections.Generic;
 
     public class PlanetVisual : ITransformable
     {
@@ -39,6 +40,8 @@
         public Texture2D CloudsTexture { get; set; }
         public Texture2D CloudsAlphaTexture { get; set; }
 		public VertexBuffer VB { get; set; }
+
+		private List<IndicatorVisual> _indicators;
 
 		public PlanetVisual(GameClient client, Planet planet)
 		{
@@ -74,6 +77,20 @@
 			{
 				CloudsAlphaTexture = contentMgr.Load<Texture2D>(planet.CloudsAlpha);
 			}
+
+			_indicators = new List<IndicatorVisual>();
+			var indicatorModel = contentMgr.Load<Model>(@"Models\Arrow");
+			foreach (var neighbour in planet.NeighbourPlanets)
+			{
+				_indicators.Add(new IndicatorVisual(indicatorModel, planet, neighbour));
+			}
+		}
+		public void Initialize()
+		{
+			foreach (var indicator in _indicators)
+			{
+				indicator.Initialize();
+			}
 		}
 		public void Draw(GraphicsDevice device, ICamera camera, double delta, double time, float ambient, Color glow, bool grayPlanet)
 		{
@@ -102,6 +119,13 @@
 				pass.Apply();
 				device.SetVertexBuffer(VB);
 				device.DrawPrimitives(PrimitiveType.TriangleList, 0, VB.VertexCount / 3);
+			}
+		}
+		public void DrawIndicators(GraphicsDevice device, ICamera camera, double delta, double time)
+		{
+			foreach (var indicator in _indicators)
+			{
+				indicator.Draw(device, camera, delta, time);
 			}
 		}
 		public void DrawInfo(GraphicsDevice device, SpriteBatch batch, ICamera camera, bool showDetails)

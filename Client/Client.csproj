@@ -125,6 +125,7 @@
     <Compile Include="Renderer\Controls\FlatImageButtonControlRenderer.cs" />
     <Compile Include="Renderer\Controls\FlatImageChoiceControlRenderer.cs" />
     <Compile Include="Renderer\Controls\FlatRightPanelRenderer.cs" />
+    <Compile Include="Renderer\IndicatorVisual.cs" />
     <Compile Include="Renderer\Particles\ParticleSystems\FireParticleSystem.cs" />
     <Compile Include="Renderer\Particles\ParticleSystems\PlanetarySystemConvexParticleSystem.cs" />
     <Compile Include="Renderer\PlanetarySystemVisual.cs" />
