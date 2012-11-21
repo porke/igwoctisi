@@ -33,7 +33,7 @@
 
 		#region Internal class - TabTextHeaderControl
 
-		private class TabTextHeaderControl : ButtonControl, TabHeaderContainer
+		protected internal class TabTextHeaderControl : ButtonControl, TabHeaderContainer
 		{
 			public event EventHandler Activated
 			{
@@ -48,7 +48,7 @@
 
 		#region Internal class - TabImageHeaderControl
 
-		private class TabImageHeaderControl : ImageChoiceControl, TabHeaderContainer
+		protected internal class TabImageHeaderControl : ImageChoiceControl, TabHeaderContainer
 		{
 			/// <summary>
 			/// Creates the image choice controls (associates appropriate styles)
