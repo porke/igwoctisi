@@ -33,6 +33,7 @@ namespace Client.Renderer
 		{
 			var modelTypes = Enum.GetValues(typeof(SpaceshipModelType)).Cast<SpaceshipModelType>();
 
+			pools = new Dictionary<int, ObjectPool<Spaceship>>();
 			foreach (var type in modelTypes)
 			{
 				var factory = new SpaceshipFactory(type);
