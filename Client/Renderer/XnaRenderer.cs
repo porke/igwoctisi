@@ -101,6 +101,7 @@
 				// cache that information
 				_planetsDetailsShowing[planet.Id] = !grayPlanet;
 			}
+			GraphicsDevice.Clear(ClearOptions.Stencil, Color.Black, 1, 0);
 
 			#region Links
 
