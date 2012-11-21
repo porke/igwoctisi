@@ -460,6 +460,7 @@
       <region source="controls" hplacement="right" vplacement="bottom" x="154" y="70" w="2" h="2" />
     </frame>
 
+	<!-- Close button -->
 	<frame name="closeButtonNormal">
 		<region source="controls" hplacement="left" vplacement="top" x="76" y="1" w="14" h="14" />
 	</frame>
@@ -472,50 +473,18 @@
 		<region source="controls" hplacement="left" vplacement="top" x="76" y="31" w="14" h="14" />
 	</frame>
 
-	  <!--
-		The nine patch used for top panel.
-	-->
-	<frame name="topPanel">
-		<region source="controls" hplacement="stretch" vplacement="stretch" x="6" y="25" w="32" h="18" />
-	</frame>
-
-	<frame name="tabTop">
-		<region source="controls" hplacement="left" vplacement="top" x="1" y="1" w="5" h="23" />
-		<region source="controls" hplacement="stretch" vplacement="top" x="6" y="1" w="32" h="23" />
-		<region source="controls" hplacement="right" vplacement="top" x="38" y="1" w="5" h="23" />
-		<region source="controls" hplacement="left" vplacement="stretch" x="1" y="6" w="5" h="16"/>
-		<region source="controls" hplacement="stretch" vplacement="stretch" x="5" y="5" w="32" h="1" />				
-		<region source="controls" hplacement="right" vplacement="stretch" x="38" y="4" w="5" h="16"/>		
-		<region source="controls" hplacement="left" vplacement="bottom" x="1" y="45" w="5" h="1"/>
-		<region source="controls" hplacement="stretch" vplacement="bottom" x="4" y="23" w="32" h="1" />
-		<region source="controls" hplacement="right" vplacement="bottom" x="37" y="45" w="5" h="1"/>
-	</frame>
-
-	<frame name="tabLeft">
-		<region source="controls" hplacement="left" vplacement="top" x="1" y="1" w="5" h="23" />
-		<region source="controls" hplacement="stretch" vplacement="top" x="6" y="1" w="32" h="23" />		
-		<region source="controls" hplacement="left" vplacement="stretch" x="1" y="6" w="5" h="16"/>
-		<region source="controls" hplacement="stretch" vplacement="stretch" x="5" y="5" w="32" h="1" />
-		<region source="controls" hplacement="right" vplacement="stretch" x="38" y="4" w="5" h="16"/>
-		<region source="controls" hplacement="left" vplacement="bottom" x="1" y="45" w="5" h="1"/>		
-		<region source="controls" hplacement="right" vplacement="bottom" x="37" y="45" w="5" h="1"/>
-		<region source="controls" hplacement="stretch" vplacement="bottom" x="4" y="23" w="32" h="1" />
-		<region source="controls" hplacement="right" vplacement="top" x="36" y="1" w="5" h="23" />
-	</frame>
 
 	  <!-- 
 		Static UI icons
 	  -->
-	<frame name="techIcon">
-		<region source="hud_icons" hplacement="left" vplacement="top" x="100" y="99" w="24" h="24" />
-	</frame>
-
 	<frame name="fleetIcon">
-		<region source="hud_icons" hplacement="left" vplacement="top" x="74" y="66" w="24" h="24" />
+		<region source="hud_icons" hplacement="left" vplacement="top" x="100" y="0" w="24" h="24" />
 	</frame>
-
 	<frame name="timerIcon">
-		<region source="hud_icons" hplacement="left" vplacement="top" x="100" y="66" w="24" h="24" />
+		<region source="hud_icons" hplacement="left" vplacement="top" x="100" y="24" w="24" h="24" />
+	</frame>
+	<frame name="techIcon">
+		<region source="hud_icons" hplacement="left" vplacement="top" x="100" y="48" w="24" h="24" />
 	</frame>
 
 	<!--
@@ -556,7 +525,7 @@
 
 	  <!-- Arrow icons -->
 	  <frame name="arrowLeftNormal">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="249" w="32" h="19" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="64" y="249" w="32" h="19" />
 	  </frame>
 
 	  <frame name="arrowLeftPressed">
@@ -564,11 +533,11 @@
 	  </frame>
 
 	  <frame name="arrowLeftHover">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="249" w="32" h="19" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="32" y="249" w="32" h="19" />
 	  </frame>
 
 	  <frame name="arrowRightNormal">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="230" w="32" h="19" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="64" y="230" w="32" h="19" />
 	  </frame>
 
 	  <frame name="arrowRightPressed">
@@ -576,11 +545,11 @@
 	  </frame>
 
 	  <frame name="arrowRightHover">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="230" w="32" h="19" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="32" y="230" w="32" h="19" />
 	  </frame>
 
 	  <frame name="arrowUpNormal">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="268" w="19" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="64" y="268" w="19" h="32" />
 	  </frame>
 
 	  <frame name="arrowUpPressed">
@@ -588,11 +557,11 @@
 	  </frame>
 
 	  <frame name="arrowUpHover">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="268" w="19" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="32" y="268" w="19" h="32" />
 	  </frame>
 
 	  <frame name="arrowDownNormal">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="300" w="19" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="64" y="300" w="19" h="32" />
 	  </frame>
 
 	  <frame name="arrowDownPressed">
@@ -600,23 +569,27 @@
 	  </frame>
 
 	  <frame name="arrowDownHover">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="300" w="19" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="32" y="300" w="19" h="32" />
 	  </frame>
 
 	  <frame name="chatIconActive">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="332" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="64" y="0" w="32" h="32" />
 	  </frame>
 
 	  <frame name="chatIconHover">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="332" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="64" y="32" w="32" h="32" />
 	  </frame>
 
 	  <frame name="chatIconInactive">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="332" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="64" y="64" w="32" h="32" />
 	  </frame>
 
 	  <frame name="chatIconPushed">
-		  <region source="hud_icons" hplacement="left" vplacement="top" x="0" y="332" w="32" h="32" />
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="64" y="32" w="32" h="32" />
+	  </frame>
+	  
+	  <frame name="chatIconPulsing">
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="64" y="96" w="32" h="32" />
 	  </frame>
 	  
 	  <!-- Technology buttons-->
@@ -669,7 +642,9 @@
 	  </frame>
 
 	  <frame name="chat_tab_background">
+		  <region source="hud_icons" hplacement="left" vplacement="top" x="299" y="0" w="8" h="40" />
 		  <region source="hud_icons" hplacement="stretch" vplacement="top" x="257" y="0" w="40" h="40" />
+		  <region source="hud_icons" hplacement="right" vplacement="top" x="307" y="0" w="8" h="40" />
 	  </frame>
 	  <frame name="hud_background">
 		  <region source="hud_icons" hplacement="stretch" vplacement="top" x="257" y="40" w="40" h="40" />

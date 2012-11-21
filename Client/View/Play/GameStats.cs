@@ -99,7 +99,7 @@
 			var btnLeave = new ImageButtonControl
 			{
 				StateFrames = new string[] { "closeButtonNormal", "closeButtonNormal", "closeButtonHover", "closeButtonPushed" },
-				Bounds = new UniRectangle(new UniScalar(0.95f, 0), new UniScalar(0.04f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.95f, 0), new UniScalar(0.04f, 0), new UniScalar(0.05f, 0), new UniScalar(0.03f, 0))
 			};
 			btnLeave.Pressed += Leave_Pressed;
 			statsWindow.Children.Add(btnLeave);
