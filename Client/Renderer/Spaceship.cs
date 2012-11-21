@@ -140,7 +140,7 @@ namespace Client.Renderer
 			Texture = texture;
 			AnimationManager = animationManager;
 		}
-		public void Draw(SimpleCamera camera, double delta, double time)
+		public void Draw(ICamera camera, double delta, double time)
 		{
 			foreach (ModelMesh mesh in Model.Meshes)
 			{

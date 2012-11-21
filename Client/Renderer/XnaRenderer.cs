@@ -11,11 +11,7 @@
 	{
 		#region Protected members
 
-		protected const float HoverAmbient = 1.0f;
-		protected const float LinkJointSize = 15.0f;
 		protected SpriteBatch _spriteBatch;
-		protected Effect _fxLinks;
-		protected VertexBuffer _sphereVB;
 		private Dictionary<int, bool> _planetsDetailsShowing = new Dictionary<int,bool>();
 
 		#endregion
@@ -41,7 +37,6 @@
 
 			var contentMgr = Client.Content;
 			_spriteBatch = new SpriteBatch(GraphicsDevice);
-			_fxLinks = contentMgr.Load<Effect>("Effects\\Links");
 
 			var quadVertices = new[] {
 				new VertexPositionColor(new Vector3(0, 0, 0), Color.Red),
@@ -49,10 +44,6 @@
 				new VertexPositionColor(new Vector3(1, 1, 0), Color.Red),
 				new VertexPositionColor(new Vector3(1, 0, 0), Color.Red)
 			};
-
-			var vertices = Utils.SphereVertices(3).Select(x => new Vertex(x.Position, x.Normal, Color.LightGreen, x.TextureCoordinate)).ToArray();
-			_sphereVB = new VertexBuffer(GraphicsDevice, Vertex.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
-			_sphereVB.SetData(vertices);
 		}
 		public void Release()
 		{
@@ -71,7 +62,7 @@
             // Turn depth and stencil buffers on (SpriteBatch may turn it off).
 			GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-			scene.Visual.DrawBackground(GraphicsDevice.Viewport, delta, time);
+			scene.Visual.DrawBackground(GraphicsDevice, camera, delta, time);
 
 			// planets
 			foreach (var planet in map.Planets)
@@ -90,69 +81,11 @@
 			}
 			GraphicsDevice.Clear(ClearOptions.Stencil, Color.Black, 1, 0);
 
-			#region Links
-
-			_fxLinks.Parameters["World"].SetValue(Matrix.Identity);
-			_fxLinks.Parameters["View"].SetValue(camera.GetView());
-			_fxLinks.Parameters["Projection"].SetValue(camera.Projection);
-
-			_fxLinks.Parameters["Ambient"].SetValue(0.0f);
-			foreach (var pass in _fxLinks.CurrentTechnique.Passes)
-			{
-				pass.Apply();
-				GraphicsDevice.SetVertexBuffer(map.Visual.LinksVB);
-				GraphicsDevice.DrawPrimitives(PrimitiveType.LineList, 0, map.Visual.LinksVB.VertexCount / 2);
-			}
-
-			#endregion
-
-			#region Systems
-
-			foreach (var planetarySystem in map.PlanetarySystems)
-			{
-				planetarySystem.Visual.Update(GraphicsDevice, camera, map, delta, time);
-			}
-
-			#endregion
-
-			
-			#region Move indicators
-
-			var selectedPlanet = scene.Map.GetPlanetById(scene.SelectedPlanet);
-
-			if (selectedPlanet != null)
-			{
-				//selectedPlanet.Visual.DrawIndicators(GraphicsDevice, camera, delta, time);
-
-				
-				foreach (var link in map.Links.Where(x => x.SourcePlanet == selectedPlanet.Id || x.TargetPlanet == selectedPlanet.Id))
-				{
-					var sourcePlanet = map.GetPlanetById(link.SourcePlanet);
-					var targetPlanet = map.GetPlanetById(link.TargetPlanet);
-
-					var linkWorld = Matrix.CreateScale(LinkJointSize) *
-						Matrix.CreateTranslation(
-						(sourcePlanet.X + targetPlanet.X) / 2.0f,
-						(sourcePlanet.Y + targetPlanet.Y) / 2.0f,
-						(sourcePlanet.Z + targetPlanet.Z) / 2.0f);
-
-					_fxLinks.Parameters["World"].SetValue(linkWorld);
-					_fxLinks.Parameters["View"].SetValue(camera.GetView());
-					_fxLinks.Parameters["Projection"].SetValue(camera.Projection);
-					_fxLinks.Parameters["Ambient"].SetValue(scene.HoveredLink == link ? HoverAmbient : 0.0f);
-					foreach (var pass in _fxLinks.CurrentTechnique.Passes)
-					{
-						pass.Apply();
-						GraphicsDevice.SetVertexBuffer(_sphereVB);
-						GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
-					}
-				}
-			}
-			
-			#endregion
+			// links & move indicators
+			scene.Visual.DrawIndicators(GraphicsDevice, camera, delta, time);
 
 			// spacesheeps
-			scene.Visual.Draw(delta, time);
+			scene.Visual.Draw(GraphicsDevice, camera, delta, time);
 
             // planets info
             _spriteBatch.Begin();
@@ -167,6 +100,9 @@
 		}
 
 		#endregion
+
+		public const float HoverAmbient = 1.0f;
+		public const float LinkJointSize = 15.0f;
 
 		public GameClient Client { get; protected set; }
 		public GraphicsDevice GraphicsDevice { get; protected set; }
