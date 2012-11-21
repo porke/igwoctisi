@@ -13,16 +13,9 @@
 
 		protected const float HoverAmbient = 1.0f;
 		protected const float LinkJointSize = 15.0f;
-		protected readonly Vector2 NameOffset = new Vector2(0.0f, 25.0f);
-		protected readonly Vector2 FleetsOffset = new Vector2(0.0f, 42.0f);
-		protected readonly Vector2 FleetIncomeOffset = new Vector2(21.0f, 42.0f);
-		protected readonly Vector2 FleetDeltaOffset = new Vector2(21.0f, -42.0f);
-		protected readonly Vector2 OwnerNameOffset = new Vector2(0.0f, 59.0f);
 		protected SpriteBatch _spriteBatch;
-		protected SpriteFont _fontHud;
-		protected Effect _fxLinks, _fxPlanet;
-		protected VertexBuffer _sphereVB, _sphereVB2;
-		protected Texture2D _txSpace;
+		protected Effect _fxLinks;
+		protected VertexBuffer _sphereVB;
 		private Dictionary<int, bool> _planetsDetailsShowing = new Dictionary<int,bool>();
 
 		#endregion
@@ -48,10 +41,7 @@
 
 			var contentMgr = Client.Content;
 			_spriteBatch = new SpriteBatch(GraphicsDevice);
-			_fontHud = contentMgr.Load<SpriteFont>("Fonts\\HUD");
 			_fxLinks = contentMgr.Load<Effect>("Effects\\Links");
-			_fxPlanet = contentMgr.Load<Effect>("Effects\\Planet");
-			_txSpace = contentMgr.Load<Texture2D>("Textures\\Space");
 
 			var quadVertices = new[] {
 				new VertexPositionColor(new Vector3(0, 0, 0), Color.Red),
@@ -63,9 +53,6 @@
 			var vertices = Utils.SphereVertices(3).Select(x => new Vertex(x.Position, x.Normal, Color.LightGreen, x.TextureCoordinate)).ToArray();
 			_sphereVB = new VertexBuffer(GraphicsDevice, Vertex.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
 			_sphereVB.SetData(vertices);
-
-			_sphereVB2 = new VertexBuffer(GraphicsDevice, Vertex.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
-			_sphereVB2.SetData(vertices);
 		}
 		public void Release()
 		{
