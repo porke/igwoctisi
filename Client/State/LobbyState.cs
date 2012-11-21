@@ -212,7 +212,7 @@
 
 					ViewMgr.PopLayer(); // MessageBox
 					ViewMgr.PopLayer(); // MainLobbyView
-					EnterMainLobbyView();
+					EnterGameLobbyView(false);
                 }
                 catch (Exception exc)
                 {
