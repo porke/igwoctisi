@@ -70,7 +70,7 @@
 				var layer = pair.Item1;
 				var texture = pair.Item2;
 
-				var worldCamera = new Vector2(Map.Camera.X, Map.Camera.Y);
+				var worldCamera = new Vector2(Map.Camera.X, -Map.Camera.Y);
 				var halfView = new Vector2(viewport.Width, viewport.Height) / 2.0f;
 				var worldOrigin = layer.Origin + worldCamera*(layer.Speed - 1.0f);
 				var screenOrigin = (worldOrigin + worldCamera) * new Vector2(1, -1) + halfView;
