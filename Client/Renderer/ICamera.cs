@@ -12,6 +12,7 @@ namespace Client.Renderer
 		Vector3 Up { get; }
 		float AspectRatio { get; set; }
 		Matrix Projection { get; }
+		float FieldOfView { get; set; }
 
 		Ray GetRay(Viewport viewport, Vector3 pointOnScreen);
 	}

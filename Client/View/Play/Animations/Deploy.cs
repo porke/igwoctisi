@@ -1,17 +1,14 @@
-﻿using System.Linq;
-
-namespace Client.View.Play.Animations
+﻿namespace Client.View.Play.Animations
 {
-    using System;
-    using Client.Common.AnimationSystem;
-    using Client.Model;
-    using Client.Renderer;
-    using System.Collections.Generic;
-    using System.Threading;
-	using Microsoft.Xna.Framework;
+	using System;
+	using System.Collections.Generic;
+	using System.Threading;
+	using Client.Common.AnimationSystem;
+	using Client.Model;
+	using Client.Renderer;
 
-	using DeployFunction = System.Action<Client.Model.Planet, int, System.Action, Client.Model.Player,
-		Client.Renderer.SceneVisual, Client.Common.AnimationSystem.AnimationManager, Client.Model.SimpleCamera>;
+	using DeployFunction = System.Action<Client.Model.Planet, int, System.Threading.ManualResetEvent, Client.Model.Player,
+			Client.Renderer.SceneVisual, Client.Common.AnimationSystem.AnimationManager, Client.Model.SimpleCamera>;
 
     public static class DeployAnimation
     {
@@ -22,15 +19,24 @@ namespace Client.View.Play.Animations
         {
 			ThreadPool.QueueUserWorkItem(obj =>
 			{
+				var waiter = new ManualResetEvent(true);
 				foreach (var deploy in deploys)
 				{
 					Planet targetPlanet = deploy.Item1;
 					int newFleetsCount = deploy.Item2;
 					Action onDeployEnd = deploy.Item3;
 					Player player = targetPlanet.Owner;
-					
-					var deployFuncton = GetDeployFunction(newFleetsCount);
-					deployFuncton.Invoke(targetPlanet, newFleetsCount, onDeployEnd, player, scene, animationManager, camera);
+
+					waiter.Reset();
+					camera.Animate(animationManager)
+						.MoveToDeploy(targetPlanet)
+						.AddCallback(action =>
+						{
+							var deployFuncton = GetDeployFunction(newFleetsCount);
+							deployFuncton.Invoke(targetPlanet, newFleetsCount, waiter, player, scene, animationManager, camera);
+						});
+					waiter.WaitOne();
+					onDeployEnd.Invoke();
 				}
 			});
         }
@@ -74,21 +80,20 @@ namespace Client.View.Play.Animations
 		private static Dictionary<int, DeployFunction> _deployFunctionsWithMinimums = new Dictionary<int, DeployFunction>()
 		{
 			#region Deploy 1-5 fleets
-			{1, (Planet targetPlanet, int newFleetsCount, Action onDeployEnd, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
+			{1, (Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
 			{
 				bool performShipRotate = rand.Next() % 3 == 0;
-
-				// Camera quake 5 arena 2
-				if (performShipRotate)
-				camera.Animate(animationManager)
-					.Wait(0.25);
-					//.Shake(0.4);
-
 				float deploySpeedFactor = camera.Z > 4500 ? 1.75f : 1.25f;
 				float deployDuration = deploySpeedFactor * Math.Abs(camera.Min.Z / 2000);
 
 				var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, player.Color);
 				scene.AddSpaceship(ship);
+				
+				// Camera quake 5 arena 2
+				if (performShipRotate)
+				camera.Animate(animationManager)
+					.Wait(0.25)
+					.Shake(0.4, 40);
 
 				ship.Animate(animationManager)
 					.Compound(deployDuration, c =>
@@ -116,72 +121,72 @@ namespace Client.View.Play.Animations
 					})
 					.AddCallback(s =>
 					{
-						onDeployEnd.Invoke();
+						waiter.Set();
 						Spaceship.Recycle(s);
 					});
 			}},
 			#endregion
 
 			#region Deploy 6-15 fleets
-			{6, (Planet targetPlanet, int newFleetsCount, Action onDeployEnd, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
+			{6, (Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
 			{
-				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, onDeployEnd, player, scene, animationManager, camera);
+				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, waiter, player, scene, animationManager, camera);
 			}},
 			#endregion
 
 			#region Deploy 16-20 fleets
-			{16, (Planet targetPlanet, int newFleetsCount, Action onDeployEnd, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
+			{16, (Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
 			{
-				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, onDeployEnd, player, scene, animationManager, camera);
+				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, waiter, player, scene, animationManager, camera);
 			}},
 			#endregion
 
 			#region Deploy 21-30 fleets
-			{21, (Planet targetPlanet, int newFleetsCount, Action onDeployEnd, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
+			{21, (Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
 			{
-				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, onDeployEnd, player, scene, animationManager, camera);
+				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, waiter, player, scene, animationManager, camera);
 			}},
 			#endregion
 
 			#region Deploy 31-50 fleets
-			{31, (Planet targetPlanet, int newFleetsCount, Action onDeployEnd, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
+			{31, (Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
 			{
-				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, onDeployEnd, player, scene, animationManager, camera);
+				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, waiter, player, scene, animationManager, camera);
 			}},
 			#endregion
 
 			#region Deploy 51-70 fleets
-			{51, (Planet targetPlanet, int newFleetsCount, Action onDeployEnd, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
+			{51, (Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
 			{
-				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, onDeployEnd, player, scene, animationManager, camera);
+				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, waiter, player, scene, animationManager, camera);
 			}},
 			#endregion
 
 			#region Deploy 71-80 fleets
-			{71, (Planet targetPlanet, int newFleetsCount, Action onDeployEnd, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
+			{71, (Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
 			{
-				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, onDeployEnd, player, scene, animationManager, camera);
+				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, waiter, player, scene, animationManager, camera);
 			}},
 			#endregion
 
 			#region Deploy 81-100 fleets
-			{81, (Planet targetPlanet, int newFleetsCount, Action onDeployEnd, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
+			{81, (Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
 			{
-				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, onDeployEnd, player, scene, animationManager, camera);
+				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, waiter, player, scene, animationManager, camera);
 			}},
 			#endregion
 
 			#region Deploy 101-120 fleets
-			{101, (Planet targetPlanet, int newFleetsCount, Action onDeployEnd, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
+			{101, (Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
 			{
-				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, onDeployEnd, player, scene, animationManager, camera);
+				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, waiter, player, scene, animationManager, camera);
 			}},
 			#endregion
 
 			#region Deploy 121->+inf fleets
-			{121, (Planet targetPlanet, int newFleetsCount, Action onDeployEnd, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
+			{121, (Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
 			{
-				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, onDeployEnd, player, scene, animationManager, camera);
+				_deployFunctionsWithMinimums[1].Invoke(targetPlanet, newFleetsCount, waiter, player, scene, animationManager, camera);
 			}},
 			#endregion
 		};
