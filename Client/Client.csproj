@@ -195,6 +195,7 @@
     <Compile Include="View\Lobby\LobbyBackground.cs" />
     <Compile Include="View\Lobby\MainLobbyView.cs" />
     <Compile Include="View\Play\Animations\AnimationExtensions.cs" />
+    <Compile Include="View\Play\Animations\CameraMovement.cs" />
     <Compile Include="View\Play\Animations\MoveAndAttack.cs" />
     <Compile Include="View\Play\Animations\Deploy.cs" />
     <Compile Include="View\Play\BottomPanel.cs" />

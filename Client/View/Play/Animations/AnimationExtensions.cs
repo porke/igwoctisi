@@ -28,9 +28,10 @@
 			return animation.Wait<SimpleCamera>(duration);
 		}
 
-		public static void Shake(this Animation<SimpleCamera> camera, float duration)
+		public static MoveTo<SimpleCamera> MoveTo(this Animation<SimpleCamera> animation, Vector3 targetPosition, double duration,
+			Func<double, double> interpolator = null)
 		{
-			//TODO camera shake animation
+			return animation.MoveTo<SimpleCamera>(targetPosition, duration, interpolator);
 		}
 
 		#endregion

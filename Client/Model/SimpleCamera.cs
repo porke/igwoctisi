@@ -21,7 +21,7 @@
 		public float ScaleX { get; set; }
 		public float ScaleY { get; set; }
 		public float ScaleZ { get; set; }
-
+		
 		#endregion
 
 		#region ICamera members
@@ -40,6 +40,7 @@
 			get { return Matrix.CreatePerspectiveFieldOfView(FieldOfView, AspectRatio, NearPlane, FarPlane); }
 			//get { return Matrix.CreateOrthographicOffCenter(-640, 640, -360, 360, NearPlane, FarPlane); }
 		}
+		public float FieldOfView { get; set; }
 
 		public Ray GetRay(Viewport viewport, Vector3 pointOnScreen)
 		{
@@ -59,7 +60,6 @@
 		public static readonly Vector3 MaxForce = new Vector3(10000, 10000, 3000);
 
 		public Vector3 LookAt { get; protected set; }
-		public float FieldOfView { get; set; }
 		public float NearPlane { get; set; }
 		public float FarPlane { get; set; }
 		
@@ -97,5 +97,12 @@
 			// Update camera rotation
 			this.LookAt(LookAt);
         }
+		public void InstantMoveTo(Vector3 newPos)
+		{
+			var moveVect = newPos - this.GetPosition();
+
+			this.LookAt += new Vector3(newPos.X - X, newPos.Y - Y, 0);
+			this.SetPosition(newPos);
+		}
     }
 }
