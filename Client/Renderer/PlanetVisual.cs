@@ -139,7 +139,7 @@
 			var fleetsText = Planet.NumFleetsPresent.ToString();
 			var fleetsTextSize = InfoFont.MeasureString(fleetsText);
 			var fleetsTextScreen = new Vector2(planetScreen.X - fleetsTextSize.X / 2.0f, planetScreen.Y - fleetsTextSize.Y / 2.0f);
-			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen + FleetsTextOffset, Color.Yellow);
+			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen + FleetsTextOffset, Color.LightSteelBlue);
 
 			// owner name
 			var ownerText = Planet.Owner != null ? Planet.Owner.Username : string.Empty;
