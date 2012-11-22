@@ -126,7 +126,7 @@
 			// The FleetChange can be negative, hence the absolute value
 			if (Math.Abs(source.FleetChange - count) > source.NumFleetsPresent - 1)
 			{
-				if (source.NumFleetsPresent == 1
+				if (source.NumFleetsPresent < 1
 					|| source.FleetChange + source.NumFleetsPresent == 1)
 				{
 					_gameHud.AddMessage("Cannot move fleet: there must be at least one fleet remaining.");
@@ -212,14 +212,6 @@
 			Client.Network.BeginSendCommands(_clientPlayer.Commands, OnSendOrders, null);
 			_clientPlayer.ClearCommandList();
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
-
-			InvokeOnMainThread((obj) =>
-			{
-				if (_secondsLeft > 0)
-				{
-					_secondsLeft = 0.001;
-				}
-			});
 		}
 
 		#endregion

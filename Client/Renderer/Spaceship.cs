@@ -95,7 +95,11 @@ namespace Client.Renderer
 
 			private void OnInstallContentManager()
 			{
+				var sw = new Stopwatch();
+				sw.Start();
+				Debug.WriteLine("Loading " + _modelType.ToString());
 				_model = Content.Load<Model>(@"Models\" + _modelType.ToString());
+				Debug.WriteLine("Finished loading " + _modelType.ToString() + " in " + sw.ElapsedMilliseconds + " ms.");
 			}
 
 			public void OnTextureLoad(IAsyncResult ar)
