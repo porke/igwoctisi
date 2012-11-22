@@ -86,7 +86,7 @@
 			{1, (Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player, SceneVisual scene, AnimationManager animationManager, SimpleCamera camera) =>
 			{
 				bool performShipRotate = rand.Next() % 3 == 0;
-				float deploySpeedFactor = camera.Z > 4500 ? 1.75f : 1.25f;
+				float deploySpeedFactor = camera.Z > 4500 ? 1.45f : 1.05f;
 				float deployDuration = deploySpeedFactor * Math.Abs(camera.Min.Z / 2000);
 
 				var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, player.Color);
