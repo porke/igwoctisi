@@ -21,11 +21,14 @@ namespace Client.Common.AnimationSystem
 		{
 			lock (_animations)
 			{
-				foreach (var newAnim in _animationsToAdd)
+				lock (_animationsToAdd)
 				{
-					_animations.Add(newAnim);
+					foreach (var newAnim in _animationsToAdd)
+					{
+						_animations.Add(newAnim);
+					}
+					_animationsToAdd.Clear();
 				}
-				_animationsToAdd.Clear();
 
 				for (int i = 0; i < _animations.Count; )
 				{
