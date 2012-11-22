@@ -79,13 +79,12 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Arrow.x">
+    <Compile Include="Models\Arrow.fbx">
       <Name>Arrow</Name>
-      <Importer>XImporter</Importer>
+      <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
-      <ProcessorParameters_Scale>80</ProcessorParameters_Scale>
-      <ProcessorParameters_RotationX>90</ProcessorParameters_RotationX>
-      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
+      <ProcessorParameters_Scale>100</ProcessorParameters_Scale>
+      <ProcessorParameters_RotationY>-270</ProcessorParameters_RotationY>
     </Compile>
     <None Include="Skin\SuaveSkin.xml">
       <Name>SuaveSkin</Name>

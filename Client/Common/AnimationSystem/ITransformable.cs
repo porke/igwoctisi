@@ -82,18 +82,7 @@
 		/// <param name="up">up vector</param>
 		public static void LookAt(this ITransformable t, Vector3 lookAt, Vector3 up)
 		{
-			var dir = lookAt - t.GetPosition();
-			dir.Normalize();
-
-			Vector3 right = Vector3.Cross(up, dir);
-			right.Normalize();
-
-			t.Rotation = new Matrix(
-				right.X, right.Y, right.Z, 0,
-				up.X, up.Y, up.Z, 0,
-				dir.X, dir.Y, dir.Z, 0,
-				0, 0, 0, 1
-			);
+			t.Rotation = MathUtils.LookAt(t.GetPosition(), lookAt, up);
 		}
 
 		public static void LookAt(this ITransformable t, Vector3 lookAt)

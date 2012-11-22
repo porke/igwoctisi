@@ -92,7 +92,7 @@
 
 			_spriteBatch.End();
 		}
-		public void DrawIndicators(GraphicsDevice device, ICamera camera, double delta, double time)
+		public void DrawLinks(GraphicsDevice device, ICamera camera, double delta, double time)
 		{
 			_fxLinks.Parameters["World"].SetValue(Matrix.Identity);
 			_fxLinks.Parameters["View"].SetValue(camera.GetView());

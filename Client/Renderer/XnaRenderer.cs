@@ -23,10 +23,11 @@
 			var ray = camera.GetRay(GraphicsDevice.Viewport, new Vector3(screenPosition, 0));
 			return ray.Intersects(new BoundingSphere(position, radius)) != null;
 		}
-		public bool RayLinkIntersection(ICamera camera, Vector2 screenPosition, Vector3 linkSource, Vector3 linkTarget)
+		public bool RayLinkIntersection(ICamera camera, Vector2 screenPosition, Planet sourcePlanet, Planet targetPlanet)
 		{
 			var ray = camera.GetRay(GraphicsDevice.Viewport, new Vector3(screenPosition, 0));
-			return ray.Intersects(new BoundingSphere((linkSource + linkTarget) / 2.0f, LinkJointSize)) != null;
+			var indicator = sourcePlanet.Visual.GetIndicator(targetPlanet.Id);
+			return indicator.IsIntersected(ray);
 		}
 
 		public void Initialize(GameClient client)
@@ -79,10 +80,11 @@
 				// cache that information
 				_planetsDetailsShowing[planet.Id] = !grayPlanet;
 			}
-			GraphicsDevice.Clear(ClearOptions.Stencil, Color.Black, 1, 0);
 
 			// links & move indicators
 			scene.Visual.DrawIndicators(GraphicsDevice, camera, delta, time);
+
+			GraphicsDevice.Clear(ClearOptions.Stencil, Color.Black, 1, 0);
 
 			// spacesheeps
 			scene.Visual.Draw(GraphicsDevice, camera, delta, time);
@@ -102,7 +104,6 @@
 		#endregion
 
 		public const float HoverAmbient = 1.0f;
-		public const float LinkJointSize = 15.0f;
 
 		public GameClient Client { get; protected set; }
 		public GraphicsDevice GraphicsDevice { get; protected set; }

@@ -113,6 +113,7 @@
     <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideOut.cs" />
     <Compile Include="Common\AnimationSystem\DefaultAnimations\SlideIn.cs" />
     <Compile Include="Common\JsonLowercaseSerializer.cs" />
+    <Compile Include="Common\MathUtils.cs" />
     <Compile Include="Common\NuclexExtensions.cs" />
     <Compile Include="Common\ObjectPool.cs" />
     <Compile Include="Common\Utils.cs" />
