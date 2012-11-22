@@ -81,7 +81,7 @@
             GameInvalidId,  //Server
             GameFull,       //Server
             GameCreateFailed,//Server
-            GameInvalidCommand,//Server
+            InvalidCommand,//Server
 			CommandsAlreadySent,//Server
         }
 
