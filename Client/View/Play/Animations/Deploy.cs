@@ -2,6 +2,7 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.ComponentModel;
 	using System.Threading;
 	using Client.Common.AnimationSystem;
 	using Client.Model;
@@ -17,7 +18,8 @@
         public static void AnimateDeploys(this SceneVisual scene, AnimationManager animationManager, SimpleCamera camera,
             IList<Tuple<Planet, int, Action>> deploys)
         {
-			ThreadPool.QueueUserWorkItem(obj =>
+			var bw = new BackgroundWorker();
+			bw.DoWork += new DoWorkEventHandler((sender, workArgs) =>
 			{
 				var waiter = new ManualResetEvent(true);
 				foreach (var deploy in deploys)
@@ -39,6 +41,7 @@
 					onDeployEnd.Invoke();
 				}
 			});
+			bw.RunWorkerAsync();
         }
 		
 		private static DeployFunction GetDeployFunction(int newFleetsCount)
