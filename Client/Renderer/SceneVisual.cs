@@ -101,16 +101,16 @@
 		}
 		public void DrawIndicators(GraphicsDevice device, ICamera camera, double delta, double time)
 		{
-			Scene.Map.Visual.DrawIndicators(device, camera, delta, time);
+			Scene.Map.Visual.DrawLinks(device, camera, delta, time);
 
 			// move indicators
 			var selectedPlanet = Scene.Map.GetPlanetById(Scene.SelectedPlanet);
 
 			if (selectedPlanet != null)
 			{
-				//selectedPlanet.Visual.DrawIndicators(GraphicsDevice, camera, delta, time);
-
-
+				selectedPlanet.Visual.DrawIndicators(device, camera, delta, time, Scene.HoveredLink);
+				
+				/*
 				foreach (var link in Scene.Map.Links.Where(x => x.SourcePlanet == selectedPlanet.Id || x.TargetPlanet == selectedPlanet.Id))
 				{
 					var sourcePlanet = Scene.Map.GetPlanetById(link.SourcePlanet);
@@ -130,7 +130,7 @@
 						device.SetVertexBuffer(_sphereVB);
 						device.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
 					}
-				}
+				}*/
 			}
 		}
 	}

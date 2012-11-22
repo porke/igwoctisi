@@ -8,7 +8,7 @@
 	using Client.Common;
 	using System.Linq;
 	using Client.Common.AnimationSystem;
-using System.Collections.Generic;
+	using System.Collections.Generic;
 
     public class PlanetVisual : ITransformable
     {
@@ -121,11 +121,14 @@ using System.Collections.Generic;
 				device.DrawPrimitives(PrimitiveType.TriangleList, 0, VB.VertexCount / 3);
 			}
 		}
-		public void DrawIndicators(GraphicsDevice device, ICamera camera, double delta, double time)
+		public void DrawIndicators(GraphicsDevice device, ICamera camera, double delta, double time, PlanetLink hoveredLink)
 		{
 			foreach (var indicator in _indicators)
 			{
-				indicator.Draw(device, camera, delta, time);
+				bool hovered = hoveredLink != null
+					&& indicator.TargetPlanet.Id == hoveredLink.TargetPlanet;
+
+				indicator.Draw(device, camera, delta, time, hovered);
 			}
 		}
 		public void DrawInfo(GraphicsDevice device, SpriteBatch batch, ICamera camera, bool showDetails)
@@ -163,6 +166,10 @@ using System.Collections.Generic;
 				var fleetsIncomeText = string.Format("+{0}", Planet.BaseUnitsPerTurn);
 				batch.DrawString(InfoFont, fleetsIncomeText, fleetsTextScreen + FleetsIncomeTextOffset, Color.White);
 			}
+		}
+		public IndicatorVisual GetIndicator(int targetPlanetId)
+		{
+			return _indicators.First(iv => iv.TargetPlanet.Id == targetPlanetId);
 		}
 	}
 }

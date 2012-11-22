@@ -62,10 +62,8 @@
 			{
 				var sourcePlanet = Map.GetPlanetById(link.SourcePlanet);
 				var targetPlanet = Map.GetPlanetById(link.TargetPlanet);
-				var sourcePos = new Vector3(sourcePlanet.X, sourcePlanet.Y, sourcePlanet.Z);
-				var targetPos = new Vector3(targetPlanet.X, targetPlanet.Y, targetPlanet.Z);
 
-				if (renderer.RayLinkIntersection(Map.Camera, clickPosition, sourcePos, targetPos))
+				if (renderer.RayLinkIntersection(Map.Camera, clickPosition, sourcePlanet, targetPlanet))
 				{
 					return link;
 				}
