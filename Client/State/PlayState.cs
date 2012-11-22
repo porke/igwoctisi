@@ -458,16 +458,8 @@
 
 					lock (_hudStateLocker)
 					{
-						if (_hudState == HudState.WaitingForRoundEnd)
-						{
-							// Create message box that will be shown until server'stat roundEnd or gameEnd message arrives.
-							var messageBox = new MessageBox(this, MessageBoxButtons.None)
-							{
-								Title = "Round simulating",
-								Message = "Waiting for server to simulate the turn."
-							};
-							ViewMgr.PushLayer(messageBox);
-						}
+						_hudState = HudState.WaitingForRoundEnd;
+						HUD_SendCommands(null, EventArgs.Empty);
 					}
 				}
 				else
