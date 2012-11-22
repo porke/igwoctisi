@@ -110,6 +110,7 @@
 
                     if (planetLink != null)
                     {
+						planetLink.OnXmlDeserialized();
                         Links.Add(planetLink);
 					}
                 } while (reader.ReadToNextSibling(typeof(PlanetLink).Name));

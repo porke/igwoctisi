@@ -67,6 +67,10 @@
 				{
 					return link;
 				}
+				else if (renderer.RayLinkIntersection(Map.Camera, clickPosition, targetPlanet, sourcePlanet))
+				{
+					return link.OppositeLink;
+				}
 			}
 			return null;
 		}
