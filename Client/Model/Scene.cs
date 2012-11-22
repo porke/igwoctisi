@@ -6,6 +6,7 @@
 	using Client.Renderer;
 	using Microsoft.Xna.Framework;
 	using System.Threading;
+	using System.ComponentModel;
 
 	public class Scene
 	{		
@@ -118,17 +119,19 @@
 
 			AnimDeploys(deploys);
 
-			ThreadPool.QueueUserWorkItem(new WaitCallback(obj =>
+			var bw = new BackgroundWorker();
+			bw.DoWork += new DoWorkEventHandler((sender, workArgs) =>
 			{
 				// First deploy all fleets
 				deployAnimsCounter.Wait();
-				
+
 				// Then move and attack
 				AnimMovesAndAttacks(movesAndAttacks);
 				moveAndAttackAnimsCounter.Wait();
 
 				endCallback.Invoke();
-			}));
+			});
+			bw.RunWorkerAsync();
 		}
 		public void Initialize(NewRoundInfo roundInfo, List<Player> players, Player clientPlayer)
 		{

@@ -8,18 +8,26 @@ namespace Client.Common.AnimationSystem
 		#region Protected members
 
 		protected List<Animation> _animations;
+		protected Queue<Animation> _animationsToAdd;
 
 		#endregion
 
 		public AnimationManager()
 		{
 			_animations = new List<Animation>();
+			_animationsToAdd = new Queue<Animation>();
 		}
 		public void Update(double delta)
 		{
 			lock (_animations)
 			{
-				for (var i = 0; i < _animations.Count; )
+				foreach (var newAnim in _animationsToAdd)
+				{
+					_animations.Add(newAnim);
+				}
+				_animationsToAdd.Clear();
+
+				for (int i = 0; i < _animations.Count; )
 				{
 					var animation = _animations[i];
 					if (animation.IsCompleted)
@@ -37,10 +45,10 @@ namespace Client.Common.AnimationSystem
 		}
 		public void AddAnimation(Animation animation)
 		{
-			lock (_animations)
+			lock (_animationsToAdd)
 			{
 				animation.Begin();
-				_animations.Add(animation);
+				_animationsToAdd.Enqueue(animation);
 			}
 		}
 	}
