@@ -111,7 +111,7 @@
 		{
 			Bounds = bounds;
 			_tabHeaderPosition = tabHeaderPosition;
-			_tabHeaderPanel = new IconControl(_tabHeaderPosition == TabHeaderPosition.Left ? "hud_background" : "chat_tab_background");
+			_tabHeaderPanel = new IconControl(_tabHeaderPosition == TabHeaderPosition.Left ? "right_tab_background" : "chat_tab_background");
 			_contentPanel = new IconControl("hud_background");
 			Children.AddRange(new Control[] { _tabHeaderPanel, _contentPanel });
 			_contentPanel.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0));
