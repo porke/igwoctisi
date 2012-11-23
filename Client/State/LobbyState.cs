@@ -4,6 +4,7 @@
     using Client.Model;
     using View;
     using View.Lobby;
+	using Client.View.Menu;
 
 	class LobbyState : GameState
     {
@@ -16,7 +17,7 @@
         {
             _clientPlayer = player;
 
-            var menuBackground = new LobbyBackground(this);
+            var menuBackground = new MenuBackground(this);
 			ViewMgr.PushLayer(menuBackground);
 			EnterMainLobbyView();
         }

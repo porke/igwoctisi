@@ -66,7 +66,10 @@ using System.Collections.Generic;
 		[XmlIgnore, JsonIgnore]
 		public List<Planet> NeighbourPlanets { get; private set; }
 
-
+		public Planet()
+		{
+			NeighbourPlanets = new List<Planet>();
+		}
 		internal void SetNeighbours(System.Collections.Generic.List<Planet> neighbourPlanets)
 		{
 			NeighbourPlanets = neighbourPlanets;

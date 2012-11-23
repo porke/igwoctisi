@@ -32,7 +32,7 @@ VertexShaderOutput Glow_VertexShader(VertexShaderInput input)
 {
     VertexShaderOutput output;
 
-	float4 position = input.Position;// * float4(1.05, 1.05, 1.05, 1.0);
+	float4 position = input.Position * float4(1.1, 1.1, 1.1, 1.0);
     float4 worldPosition = mul(position, World);
     float4 viewPosition = mul(worldPosition, View);
     output.Position = mul(viewPosition, Projection);

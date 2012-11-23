@@ -21,7 +21,7 @@ namespace Client.Renderer
 	{
 		public static Matrix GetView(this ICamera camera)
 		{
-			return Matrix.Invert(Matrix.CreateWorld(camera.GetPosition(), camera.Forward, camera.GetUpVector()));
+			return Matrix.Invert(Matrix.CreateWorld(camera.GetPosition(), camera.Forward, camera.Up));//camera.GetUpVector()));
 		}
 		public static Vector3 Project(this ICamera camera, Viewport viewport, Vector3 worldVector)
 		{

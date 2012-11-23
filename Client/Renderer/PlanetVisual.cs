@@ -54,7 +54,7 @@
 			Effect = contentMgr.Load<Effect>("Effects\\Planet");
 			GlowEffect = contentMgr.Load<Effect>("Effects\\Glow");
 			InfoFont = contentMgr.Load<SpriteFont>("Fonts\\HUD");
-			Period = (float)(random.NextDouble() * 10.0 + 5.0);
+			Period = (float)(random.NextDouble() * 10.0 + 10.0);
 			Rotation = Matrix.CreateFromYawPitchRoll(
 				(float)(random.NextDouble() * MathHelper.TwoPi),
 				(float)(random.NextDouble() * MathHelper.TwoPi),
@@ -115,6 +115,8 @@
 			Effect.Parameters["Glow"].SetValue(glow.ToVector4());
 			Effect.Parameters["PlanetOpacity"].SetValue(grayPlanet ? 0.3f : 1.0f);
 			Effect.Parameters["PlanetGrayScale"].SetValue(grayPlanet ? 1 : 0);
+
+			
 
 			foreach (var pass in Effect.CurrentTechnique.Passes)
 			{

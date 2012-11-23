@@ -149,15 +149,6 @@
 
 			RenderGlow(camera, scene, delta, time);
 
-			if (Keyboard.GetState().IsKeyDown(Keys.LeftAlt))
-			{
-				var tmp = GraphicsDevice.Viewport;
-				_spriteBatch.Begin();
-				_spriteBatch.Draw(Keyboard.GetState().IsKeyDown(Keys.LeftControl) ? _rtBlur : _rtGlow, tmp.Bounds, Color.White);
-				_spriteBatch.End();
-				return;
-			}
-
 			var map = scene.Map;
 
             // Turn depth and stencil buffers on (SpriteBatch may turn it off).
