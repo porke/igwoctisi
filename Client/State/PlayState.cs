@@ -10,7 +10,6 @@
 	using Client.View;
 	using Model;
 	using View.Play;
-	using System.Diagnostics;
 
 	class PlayState : GameState
 	{
@@ -272,7 +271,6 @@
 					InvokeOnMainThread(obj =>
 					{
 						Scene.Initialize(roundInfo, _players, _clientPlayer);
-						Scene.Map.UpdatePlanetShowDetails(_clientPlayer);
 						_gameHud.UpdateResourceData(_clientPlayer);
 						_gameHud.UpdatePlayerList(_players);
 						locker.Set();
@@ -329,7 +327,6 @@
 
 						_gameHud.UpdateResourceData(_clientPlayer);
 						_gameHud.EnableCommandButtons();
-						_loadedMap.UpdatePlanetShowDetails(_clientPlayer);
 
 						// Now wait to the end of the round.
 						_hudState = HudState.WaitingForRoundEnd;

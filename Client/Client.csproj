@@ -131,6 +131,7 @@
     <Compile Include="Renderer\Particles\ParticleSystems\PlanetarySystemConvexParticleSystem.cs" />
     <Compile Include="Renderer\PlanetarySystemVisual.cs" />
     <Compile Include="View\Controls\CommandInputControl.cs" />
+    <Compile Include="View\Controls\ExtendedListControl.cs" />
     <Compile Include="View\Controls\IconControl.cs" />
     <Compile Include="View\Controls\ImageButtonControl.cs" />
     <Compile Include="View\Controls\ImageCheckButtonControl.cs" />

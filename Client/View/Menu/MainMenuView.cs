@@ -108,13 +108,13 @@
 			}
         }
         #endregion
-	
 
 		public MainMenuView(MenuState state)
 			: base(state)
         {
             IsTransparent = true;
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
+			screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.45f, 0), new UniScalar(0.25f, 0), new UniScalar(0.6f, 0), new UniScalar(0.75f, 0));
 
             CreateChildControls();
 			State = ViewState.Loaded;
