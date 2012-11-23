@@ -11,25 +11,23 @@
 
 		public class ExtendedListRow : Control
 		{
+			public ExtendedListRow()
+			{
+				Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar());
+			}
+
 			public void AddSegment(Control control, UniScalar width)
 			{
 				var leftBorder = GetLastElementHorizontalEnd();
-				control.Bounds = new UniRectangle(leftBorder, new UniScalar(), width, new UniScalar());
+				control.Bounds = new UniRectangle(leftBorder, new UniScalar(), width, new UniScalar(1.0f, 0));
 				Children.Add(control);
-			}
-
-			public void SetElementHeight(UniScalar height)
-			{
-				for (int i = 0; i < Children.Count; ++i)
-				{
-					Children[i].Bounds.Top = i * height;
-					Children[i].Bounds.Bottom = i * (height + 1);
-				}
 			}
 
 			private UniScalar GetLastElementHorizontalEnd()
 			{
-				return Children.OrderBy((control) => control.Bounds.Right).Last().Bounds.Right;				
+				if (Children.Count == 0) return UniScalar.Zero;
+
+				return Children.OrderBy((control) => control.Bounds.Right.Fraction).Last().Bounds.Right;				
 			}
 		}
 
@@ -44,7 +42,9 @@
 
 		public void AddRow(ExtendedListRow row)
 		{
-			Children.Add(row);
+			row.Bounds.Top = new UniScalar(_elementHeight.Fraction * Children.Count, _elementHeight.Offset * Children.Count);
+			row.Bounds.Bottom = row.Bounds.Top + _elementHeight;
+			Children.Add(row);						
 		}
 
 		private UniScalar _elementHeight;
