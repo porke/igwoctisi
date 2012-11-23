@@ -81,6 +81,8 @@ namespace Client.Renderer
 			private Model _model;
 			private Texture2D _texture;
 			private SpaceshipModelType _modelType;
+			private float _calculatedLength;
+			private BoundingBox _bbox;
 					   
 			public SpaceshipFactory(SpaceshipModelType modelType)
 			{
@@ -90,12 +92,17 @@ namespace Client.Renderer
 			public Spaceship Fetch()
 			{
 				Debug.Assert(_contentManager != null, "ContentManager can't be null!", "SpaceshipFactory should have ContentManager already installed on Fetching new Spaceship.");
-				return new Spaceship(_modelType, _model, _texture, AnimationManager);
+				return new Spaceship(_modelType, _calculatedLength, _bbox, _model, _texture, AnimationManager);
 			}
 
 			private void OnInstallContentManager()
 			{
-				_model = Content.Load<Model>(@"Models\" + _modelType.ToString());
+				if (_model == null)
+				{
+					_model = Content.Load<Model>(@"Models\" + _modelType.ToString());
+					_bbox = MathUtils.GetModelBoundingBox(_model, Matrix.Identity);
+					_calculatedLength = (_bbox.Max - _bbox.Min).Z;
+				}
 			}
 
 			public void OnTextureLoad(IAsyncResult ar)
@@ -122,6 +129,8 @@ namespace Client.Renderer
 		public PlayerColor PlayerColor { get; private set; }
 		public float Opacity { get; set; }
 		public SpaceshipModelType ModelType { get; set; }
+		public float Length { get; private set; }
+		public BoundingBox BoundingBox { get; private set; }
 
 		#endregion
 
@@ -133,9 +142,12 @@ namespace Client.Renderer
 
 		#endregion
 
-		private Spaceship(SpaceshipModelType modelType, Model model, Texture2D texture, AnimationManager animationManager)
+		private Spaceship(SpaceshipModelType modelType, float calculatedLength, BoundingBox bbox,
+			Model model, Texture2D texture, AnimationManager animationManager)
 		{
 			ModelType = modelType;
+			Length = calculatedLength;
+			BoundingBox = bbox;
 			Model = model;
 			Texture = texture;
 			AnimationManager = animationManager;
