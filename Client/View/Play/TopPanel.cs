@@ -170,12 +170,14 @@
 		private void UpdateTechLevelButtonIcons(int[] levels)
 		{
 			var technologies = Enum.GetNames(typeof(TechnologyType));
-			var offensiveLvl = string.Format("{0}{1}_normal", technologies[(int)TechnologyType.Offensive].ToLowerInvariant(), levels[(int)TechnologyType.Offensive]);
-			var economicLvl = string.Format("{0}{1}_normal", technologies[(int)TechnologyType.Economic].ToLowerInvariant(), levels[(int)TechnologyType.Economic]);
-			var defensiveLvl = string.Format("{0}{1}_normal", technologies[(int)TechnologyType.Defensive].ToLowerInvariant(), levels[(int)TechnologyType.Defensive]);
 
 			for (int i = 0; i < _offensiveTech.StateFrames.Length; ++i)
 			{
+				var state = (i % 2 != 0) ? "normal" : "hover";
+				var offensiveLvl = string.Format("{0}{1}_{2}", technologies[(int)TechnologyType.Offensive].ToLowerInvariant(), levels[(int)TechnologyType.Offensive], state);
+				var economicLvl = string.Format("{0}{1}_{2}", technologies[(int)TechnologyType.Economic].ToLowerInvariant(), levels[(int)TechnologyType.Economic], state);
+				var defensiveLvl = string.Format("{0}{1}_{2}", technologies[(int)TechnologyType.Defensive].ToLowerInvariant(), levels[(int)TechnologyType.Defensive], state);
+
 				_offensiveTech.StateFrames[i] = offensiveLvl;
 				_defensiveTech.StateFrames[i] = defensiveLvl;
 				_economicTech.StateFrames[i] = economicLvl;
