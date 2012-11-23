@@ -47,11 +47,15 @@
 			var player = sourcePlanet.Owner;
 			var sourcePosition = sourcePlanet.Visual.GetPosition();
 			var targetPosition = targetPlanet.Visual.GetPosition();
+			var direction = Vector3.Normalize(targetPosition - sourcePosition);
+			sourcePosition += direction * sourcePlanet.Radius;
+			targetPosition -= direction * targetPlanet.Radius;
+
 			var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, player.Color);
 
-			float shipSpeedFactor = 0.015f;
+			const float shipSpeedFactor = 0.015f;
 			float moveDuration = (targetPosition - sourcePosition).Length() * shipSpeedFactor;
-
+			float fadeDuration = ship.Length * shipSpeedFactor;
 
 			scene.AddSpaceship(ship);
 			ship.SetPosition(sourcePosition);
@@ -63,13 +67,12 @@
 					c.MoveTo(targetPlanet.Visual.GetPosition(), moveDuration, Interpolators.AccelerateDecelerate());
 
 					// Fade in and fade out
-					c.Wait(0.4)
-					.InterpolateTo(1, 0.8, Interpolators.Accelerate(),
+					c.InterpolateTo(1, fadeDuration, Interpolators.Accelerate(),
 						(s) => 0,
 						(s, o) => { s.Opacity = (float)o; }
 					)
-					.Wait(moveDuration - 0.4 - 2 * 0.8 - 0.4)
-					.InterpolateTo(0, 0.8, Interpolators.Decelerate(1.4),
+					.Wait(moveDuration - 2 * fadeDuration)
+					.InterpolateTo(0, fadeDuration, Interpolators.Decelerate(1.4),
 						(s) => 1,
 						(s, o) => { s.Opacity = (float)o; }
 					);
@@ -84,13 +87,15 @@
 		private static void AnimateAttack(Planet sourcePlanet, Planet targetPlanet, SimulationResult simResult,
 			SceneVisual scene, AnimationManager animationManager, SimpleCamera camera, ManualResetEvent waiter)
 		{
+			var sourcePosition = sourcePlanet.Visual.GetPosition();
+			var targetPosition = targetPlanet.Visual.GetPosition();
 			var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, sourcePlanet.Owner.Color);
+			
 			scene.AddSpaceship(ship);
-
-			ship.SetPosition(sourcePlanet.Position);
-			ship.LookAt(targetPlanet.Position, Vector3.Forward);
+			ship.SetPosition(sourcePosition);
+			ship.LookAt(targetPosition, Vector3.Forward);
 			ship.Animate(animationManager)
-				.MoveTo(targetPlanet.Position, 2, Interpolators.AccelerateDecelerate())
+				.MoveTo(targetPosition, 2, Interpolators.AccelerateDecelerate())
 				.AddCallback(s =>
 				{
 					Spaceship.Recycle(s);
