@@ -32,10 +32,6 @@
 				Bounds = new UniRectangle(new UniScalar(windowXPosition, 0), new UniScalar(windowYPosition, 0), new UniScalar(windowWidthInPx), new UniScalar(windowHeightInPx))
 			};
 
-			var standingLabel = new LabelControl(PlacesLabelText)
-			{
-				Bounds = new UniRectangle(new UniScalar(0.0f, BorderWidthInPx), new UniScalar(0.0f, TitleBarHeightInPx), new UniScalar(0.02f, 0), new UniScalar(0.05f, 0))
-			};
 			var roundsLabel = new LabelControl(string.Format(RoundsLabelText, stats.Rounds))
 			{
 				Bounds = new UniRectangle(new UniScalar(0.5f, BorderWidthInPx), new UniScalar(0.0f, TitleBarHeightInPx), new UniScalar(0.02f, 0), new UniScalar(0.05f, 0))
@@ -48,7 +44,7 @@
 			{				
 				Bounds = new UniRectangle(new UniScalar(0.5f, BorderWidthInPx), new UniScalar(2 * rowHeight, TitleBarHeightInPx), new UniScalar(0.07f, 0), new UniScalar(0.05f, 0))
 			};
-			statsWindow.Children.AddRange(new Control[] { standingLabel, roundsLabel, timeLabel, endTypeLabel });
+			statsWindow.Children.AddRange(new Control[] { roundsLabel, timeLabel, endTypeLabel });
 
 			// Create the player headings						
 			int firstStatsRow = (stats.Places.Count >= MinPlayerRowCount) ? stats.Places.Count : MinPlayerRowCount;
@@ -71,12 +67,6 @@
 			}
 			
 			// Create the stats table
-			var statHeaderLabel = new LabelControl(StatisticNameHeader)
-			{
-				Bounds = new UniRectangle(new UniScalar(0.0f, BorderWidthInPx + columnWidth / 2), new UniScalar(firstStatsRow * rowHeight, TitleBarHeightInPx), new UniScalar(0.02f, 0), new UniScalar(0.05f, 0))
-			};
-			statsWindow.Children.Add(statHeaderLabel);
-
 			for (int stat = 0; stat < stats.Stats.Count; ++stat)
 			{
 				var statistic = stats.Stats[stat];
@@ -122,7 +112,7 @@
 		public GameStats(GameState state, EndgameData stats)
 			: base(state)
 		{
-            IsTransparent = false;            
+            IsTransparent = true;
             InputReceiver = new NuclexScreenInputReceiver(screen, true);
 
 			screen.Desktop.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0.0f), new UniScalar(1.0f, 0));
@@ -130,9 +120,7 @@
 			State = ViewState.Loaded;
 		}
 
-		private const string StatisticNameHeader = "Statistic name";
 		private const string WindowTitle = "Statistics";
-		private const string PlacesLabelText = "Places";
 		private const string RoundsLabelText = "Rounds: {0}";
 		private const string TimeLabelText = "Time: {0}";
 		private const string EndgameTypeLabelText = "Endgame type: {0}";

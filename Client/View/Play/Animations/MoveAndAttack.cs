@@ -45,32 +45,30 @@
 			SceneVisual scene, AnimationManager animationManager, SimpleCamera camera, ManualResetEvent waiter)
 		{
 			var player = sourcePlanet.Owner;
+			var sourcePosition = sourcePlanet.Visual.GetPosition();
+			var targetPosition = targetPlanet.Visual.GetPosition();
 			var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, player.Color);
-			scene.AddSpaceship(ship);
 
-			ship.SetPosition(sourcePlanet.Position);
-			ship.LookAt(targetPlanet.Position, Vector3.Forward);
+			float shipSpeedFactor = 0.015f;
+			float moveDuration = (targetPosition - sourcePosition).Length() * shipSpeedFactor;
+
+
+			scene.AddSpaceship(ship);
+			ship.SetPosition(sourcePosition);
+			ship.LookAt(targetPosition, Vector3.Forward);
 			ship.Animate(animationManager)
-				.Compound(2.0, c =>
+				.Compound(moveDuration, c =>
 				{
 					// Move
-					c.InterpolateTo(targetPlanet.Position.X, 2.0, Interpolators.AccelerateDecelerate(),
-						(s) => s.X,
-						(s, x) => { s.X = (float)x; });
-					c.InterpolateTo(targetPlanet.Position.Y, 2.0, Interpolators.Decelerate(),
-						(s) => s.Y,
-						(s, y) => { s.Y = (float)y; });
-					c.InterpolateTo(targetPlanet.Position.Z, 1.5, Interpolators.Anticipate(),
-						(s) => s.Z,
-						(s, z) => { s.Z = (float)z; });
+					c.MoveTo(targetPlanet.Visual.GetPosition(), moveDuration, Interpolators.AccelerateDecelerate());
 
 					// Fade in and fade out
 					c.Wait(0.4)
-					.InterpolateTo(1, 0.4, Interpolators.OvershootInterpolator(),
+					.InterpolateTo(1, 0.8, Interpolators.Accelerate(),
 						(s) => 0,
 						(s, o) => { s.Opacity = (float)o; }
 					)
-					.Wait(0.35)
+					.Wait(moveDuration - 0.4 - 2 * 0.8 - 0.4)
 					.InterpolateTo(0, 0.8, Interpolators.Decelerate(1.4),
 						(s) => 1,
 						(s, o) => { s.Opacity = (float)o; }
