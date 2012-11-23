@@ -35,6 +35,7 @@
 		public Planet Planet { get; set; }
         public float Period { get; set; }
 		public Effect Effect { get; set; }
+		public Effect GlowEffect { get; set; }
 		public SpriteFont InfoFont { get; set; }
         public Texture2D DiffuseTexture { get; set; }
         public Texture2D CloudsTexture { get; set; }
@@ -51,6 +52,7 @@
 
 			var random = new Random(Guid.NewGuid().GetHashCode());
 			Effect = contentMgr.Load<Effect>("Effects\\Planet");
+			GlowEffect = contentMgr.Load<Effect>("Effects\\Glow");
 			InfoFont = contentMgr.Load<SpriteFont>("Fonts\\HUD");
 			Period = (float)(random.NextDouble() * 10.0 + 5.0);
 			Rotation = Matrix.CreateFromYawPitchRoll(
@@ -129,6 +131,26 @@
 					&& indicator.TargetPlanet.Id == hoveredLink.TargetPlanet;
 
 				indicator.Draw(device, camera, delta, time, hovered);
+			}
+		}
+		public void DrawGlow(GraphicsDevice device, ICamera camera, double delta, double time, Color glow, bool grayPlanet)
+		{
+			var localWorld = this.GetScaleMatrix() * this.Rotation * this.GetTranslationMatrix();
+			var view = camera.GetView();
+			var projection = camera.Projection;
+
+			GlowEffect.Parameters["World"].SetValue(localWorld);
+			GlowEffect.Parameters["View"].SetValue(view);
+			GlowEffect.Parameters["Projection"].SetValue(projection);
+			GlowEffect.Parameters["Glow"].SetValue(glow.ToVector4());
+			GlowEffect.Parameters["PlanetOpacity"].SetValue(grayPlanet ? 0.3f : 1.0f);
+			GlowEffect.Parameters["PlanetGrayScale"].SetValue(grayPlanet ? 1 : 0);
+
+			foreach (var pass in GlowEffect.CurrentTechnique.Passes)
+			{
+				pass.Apply();
+				device.SetVertexBuffer(VB);
+				device.DrawPrimitives(PrimitiveType.TriangleList, 0, VB.VertexCount / 3);
 			}
 		}
 		public void DrawInfo(GraphicsDevice device, SpriteBatch batch, ICamera camera, bool showDetails)

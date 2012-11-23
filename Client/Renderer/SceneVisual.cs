@@ -101,8 +101,6 @@
 		}
 		public void DrawIndicators(GraphicsDevice device, ICamera camera, double delta, double time)
 		{
-			Scene.Map.Visual.DrawLinks(device, camera, delta, time);
-
 			// move indicators
 			var selectedPlanet = Scene.Map.GetPlanetById(Scene.SelectedPlanet);
 
@@ -131,6 +129,22 @@
 						device.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
 					}
 				}*/
+			}
+		}
+		public void DrawGlow(GraphicsDevice device, ICamera camera, double delta, double time)
+		{
+			Scene.Map.Visual.DrawLinks(device, camera, delta, time);
+
+			// planets
+			foreach (var planet in Scene.Map.Planets)
+			{
+				var planetarySystem = Scene.Map.GetSystemByPlanetid(planet.Id);
+
+				var glow = planetarySystem != null && planet.Owner != null ? planet.Owner.Color.XnaColor : Color.LightGray;
+
+				bool grayPlanet = planet.Owner != Scene.ClientPlayer
+					&& planet.NeighbourPlanets.All(p => p.Owner != Scene.ClientPlayer);
+				planet.Visual.DrawGlow(device, camera, delta, time, glow, grayPlanet);
 			}
 		}
 	}
