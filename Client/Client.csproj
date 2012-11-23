@@ -123,6 +123,7 @@
     <Compile Include="Common\XnaExtensions.cs" />
     <Compile Include="Model\BackgroundLayer.cs" />
     <Compile Include="Renderer\Controls\FlatBottomPanelRenderer.cs" />
+    <Compile Include="Renderer\Controls\FlatExtendedListControl.cs" />
     <Compile Include="Renderer\Controls\FlatImageButtonControlRenderer.cs" />
     <Compile Include="Renderer\Controls\FlatImageChoiceControlRenderer.cs" />
     <Compile Include="Renderer\Controls\FlatRightPanelRenderer.cs" />

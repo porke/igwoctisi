@@ -400,7 +400,7 @@
         {
             InvokeOnMainThread(obj =>
             {
-                UnbindNetworkEvents();
+                UnbindNetworkEvents();				
                 Game.ChangeState(new PlayState(Game, map, _clientPlayer));
             });
         }

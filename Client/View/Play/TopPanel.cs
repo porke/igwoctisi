@@ -14,6 +14,7 @@
 	{
 		public event EventHandler TechRaised;
 		public event EventHandler LeftGame;
+		public event EventHandler CommandsSent;
 
 		public static readonly UniVector DefaultPosition = new UniVector(new UniScalar(), new UniScalar());
 		public static readonly UniVector Size = new UniVector(new UniScalar(1.0f, 0.0f), new UniScalar(0.0f, 40));
@@ -29,6 +30,11 @@
 		}
 
 		#region Update functions
+
+		public void EnableSendButton()
+		{
+			_sendCommands.Enabled = true;			
+		}
 
 		public void UpdateResources(Player player)
 		{
@@ -66,6 +72,15 @@
 			if (LeftGame != null)
 			{
 				LeftGame(sender, e);
+			}
+		}
+
+		private void SendCommands_Pressed(object sender, EventArgs e)
+		{
+			if (CommandsSent != null)
+			{
+				CommandsSent(this, e);
+				_sendCommands.Enabled = false;
 			}
 		}
 
@@ -127,6 +142,13 @@
 			};
 			leaveGame.Pressed += LeaveGame_Pressed;
 
+			_sendCommands = new ButtonControl()
+			{
+				Text = "End turn",
+				Bounds = new UniRectangle(new UniScalar(1.0f, -260), new UniScalar(4), new UniScalar(64), new UniScalar(32))
+			};
+			_sendCommands.Pressed += SendCommands_Pressed;
+
 			UpdateTechLevelButtonIcons(new int[] { 0, 0, 0, 0 });
 			Children.AddRange(
 				new Control[]
@@ -134,7 +156,8 @@
 					_offensiveTech,
 					_defensiveTech,
 					_economicTech,
-					leaveGame
+					leaveGame,
+					_sendCommands
 				});
 		}
 
@@ -190,6 +213,7 @@
 		private ImageButtonControl _offensiveTech;
 		private ImageButtonControl _defensiveTech;
 		private ImageButtonControl _economicTech;
+		private ButtonControl _sendCommands;
 
 		private const string FrameName = "hud_background";
 	}

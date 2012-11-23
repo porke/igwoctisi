@@ -42,10 +42,10 @@
 			_topPanel = new TopPanel();
 			_topPanel.TechRaised += RaiseTech_Pressed;
 			_topPanel.LeftGame += LeaveGame_Pressed;
+			_topPanel.CommandsSent += SendCommands_Pressed;
 
 			_rightPanel = new RightPanel();
-			_rightPanel.CommandDeleted += DeleteCommand_Pressed;
-			_rightPanel.CommandsSent += SendCommands_Pressed;
+			_rightPanel.CommandDeleted += DeleteCommand_Pressed;			
 			_rightPanel.Toggled += PanelToggle_Pressed;
 
 			_bottomPanel = new BottomPanel();
@@ -94,6 +94,7 @@
 			if (SendCommandsPressed != null)
 			{
 				SendCommandsPressed(sender, EventArgs.Empty);
+				_rightPanel.SetEnableButtons(false);
 			}
         }
 
@@ -179,7 +180,8 @@
 
 		public void EnableCommandButtons()
 		{
-			_rightPanel.EnableCommandButtons();
+			_rightPanel.SetEnableButtons(true);
+			_topPanel.EnableSendButton();
 		}
 
         #endregion
