@@ -117,7 +117,7 @@
 							(s) => 0,
 							(s, o) => { s.Opacity = (float)o; })
 						.Wait(deployDuration / 5 * 2)
-						.InterpolateTo(0, deployDuration / 5 * 2, Interpolators.Decelerate(1.4),
+						.InterpolateTo(0, deployDuration / 5, Interpolators.Decelerate(1.4),
 							(s) => 1,
 							(s, o) => { s.Opacity = (float)o; });
 
