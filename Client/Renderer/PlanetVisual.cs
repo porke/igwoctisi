@@ -1,14 +1,13 @@
 ﻿namespace Client.Renderer
 {
-    using Microsoft.Xna.Framework.Graphics;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Client.Common;
+	using Client.Common.AnimationSystem;
 	using Client.Model;
 	using Microsoft.Xna.Framework;
-	using Microsoft.Xna.Framework.Content;
-	using System;
-	using Client.Common;
-	using System.Linq;
-	using Client.Common.AnimationSystem;
-	using System.Collections.Generic;
+	using Microsoft.Xna.Framework.Graphics;
 
     public class PlanetVisual : ITransformable
     {
@@ -115,8 +114,6 @@
 			Effect.Parameters["Glow"].SetValue(glow.ToVector4());
 			Effect.Parameters["PlanetOpacity"].SetValue(grayPlanet ? 0.3f : 1.0f);
 			Effect.Parameters["PlanetGrayScale"].SetValue(grayPlanet ? 1 : 0);
-
-			
 
 			foreach (var pass in Effect.CurrentTechnique.Passes)
 			{

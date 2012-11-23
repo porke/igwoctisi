@@ -1,12 +1,12 @@
 ﻿namespace Client.Model
 {
-    using System;
-    using System.Runtime.Serialization;
-    using System.Xml.Serialization;
-    using Client.Renderer;
-    using Microsoft.Xna.Framework;
-    using Newtonsoft.Json;
-using System.Collections.Generic;
+	using System;
+	using System.Collections.Generic;
+	using System.Runtime.Serialization;
+	using System.Xml.Serialization;
+	using Client.Renderer;
+	using Microsoft.Xna.Framework;
+	using Newtonsoft.Json;
 
     [Serializable]
     [DataContract]
@@ -70,7 +70,7 @@ using System.Collections.Generic;
 		{
 			NeighbourPlanets = new List<Planet>();
 		}
-		internal void SetNeighbours(System.Collections.Generic.List<Planet> neighbourPlanets)
+		internal void SetNeighbours(List<Planet> neighbourPlanets)
 		{
 			NeighbourPlanets = neighbourPlanets;
 		}

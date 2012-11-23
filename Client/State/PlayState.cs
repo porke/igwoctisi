@@ -10,6 +10,7 @@
 	using Client.View;
 	using Model;
 	using View.Play;
+	using System.Diagnostics;
 
 	class PlayState : GameState
 	{

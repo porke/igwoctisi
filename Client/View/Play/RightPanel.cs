@@ -16,7 +16,7 @@
 		public event EventHandler CommandsSent;
 	
 		public RightPanel()
-			: base(new UniRectangle(new UniVector(new UniScalar(1.0f, 0), new UniScalar(64)), new UniVector(new UniScalar(0.2f, 0), new UniScalar(0.3f, 0))), TabHeaderPosition.Left)
+			: base(new UniRectangle(new UniVector(new UniScalar(1.0f, 0), new UniScalar(64)), new UniVector(new UniScalar(0.2f, 0), new UniScalar(0.6f, 0))), TabHeaderPosition.Left)
 		{
 			TogglePosition = new UniVector(new UniScalar(1.0f, -40), new UniScalar(64));
 			DefaultPosition = new UniVector(new UniScalar(0.8f, 0), new UniScalar(64));
@@ -119,7 +119,7 @@
 			{
 				Name = PlayersTabName,
 				SelectionMode = ListSelectionMode.None,
-				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.9f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.93f, 0))
 			};
 
 			var off = new string[] { "playersIconInactive", "playersIconInactive", "playersIconHover", "playersIconInactive" };
@@ -136,20 +136,20 @@
 			};
 			_commandList = new WrappableListControl()
 			{
-				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.75f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.83f, 0))
 			};
 
 			_deleteCommand = new ButtonControl()
 			{
 				Text = "Delete",
-				Bounds = new UniRectangle(new UniScalar(0.55f, 0), new UniScalar(0.82f, 0), new UniScalar(0.4f, 0), new UniScalar(0.15f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.55f, 0), new UniScalar(0.9f, 0), new UniScalar(0.4f, 0), new UniScalar(0.08f, 0))
 			};
 			_deleteCommand.Pressed += DeleteCommand_Pressed;
 
 			_sendCommands = new ButtonControl()
 			{
 				Text = "Send",
-				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.82f, 0), new UniScalar(0.4f, 0), new UniScalar(0.15f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.4f, 0), new UniScalar(0.08f, 0))
 			};
 			_sendCommands.Pressed += SendCommands_Pressed;
 

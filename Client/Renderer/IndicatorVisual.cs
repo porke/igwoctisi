@@ -1,11 +1,10 @@
 ﻿namespace Client.Renderer
 {
+	using Client.Common;
 	using Client.Common.AnimationSystem;
 	using Client.Model;
 	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Graphics;
-	using Client.Common;
-	using System;
 
 	public class IndicatorVisual
 	{
