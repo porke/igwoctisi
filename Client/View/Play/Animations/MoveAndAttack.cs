@@ -8,6 +8,7 @@
 	using Client.Model;
 	using Client.Renderer;
 	using Microsoft.Xna.Framework;
+	using System.ComponentModel;
 
 	public static class MoveAndAttack
 	{
@@ -15,7 +16,8 @@
 			IList<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>> movesAndAttacks,
 			AnimationManager animationManager, SimpleCamera camera)
 		{
-			ThreadPool.QueueUserWorkItem(obj =>
+			var bw = new BackgroundWorker();
+			bw.DoWork += new DoWorkEventHandler((sender, workArgs) =>
 			{
 				var waiter = new ManualResetEvent(true);
 				foreach (var tpl in movesAndAttacks)
@@ -39,6 +41,7 @@
 					callback.Invoke(simResult);
 				}
 			});
+			bw.RunWorkerAsync();
 		}
 
 		private static void AnimateMove(Planet sourcePlanet, Planet targetPlanet, SimulationResult simResult,
