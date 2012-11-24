@@ -5,6 +5,7 @@
 	using Client.Model;
 	using View;
 	using View.Menu;
+	using Client.View.Play;
 
 	public class MenuState : GameState
     {
@@ -21,6 +22,18 @@
 
             ViewMgr.PushLayer(menuBackground);
 			ViewMgr.PushLayer(mainMenu);
+
+			// TODO: lookup for tweaking the stats window
+			//var stats = new EndgameData();
+			//stats.Places.Add("asad1");
+			//stats.Places.Add("asad2");
+			//stats.Places.Add("asad3");
+			//stats.Time = 666;
+			//stats.Stats.Add(new GameStatistic() {Name = "xyz", Values = new System.Collections.Generic.List<int>() {1, 2, 3}});
+			//stats.Stats.Add(new GameStatistic() { Name = "xyza", Values = new System.Collections.Generic.List<int>() { 1, 2, 3 } });
+			//stats.Stats.Add(new GameStatistic() { Name = "xyzcz", Values = new System.Collections.Generic.List<int>() { 1, 2, 3 } });
+			//var statsWindow = new GameStats(this, stats, "asad2");
+			//ViewMgr.PushLayer(statsWindow);
         }
 
         public override void OnEnter()

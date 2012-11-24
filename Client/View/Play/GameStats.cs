@@ -14,7 +14,7 @@
 	{
 		public event EventHandler LeavePressed;
 
-		private void CreateChildControls(EndgameData stats)
+		private void CreateChildControls(string clientName, EndgameData stats)
 		{
 			int windowGridColumnCount = stats.Places.Count + 1;
 			int windowGridRowCount = ((stats.Places.Count >= MinPlayerRowCount) ? stats.Places.Count : MinPlayerRowCount) + stats.Stats.Count + 1;
@@ -28,44 +28,34 @@
 			var statsWindow = new WindowControl()
 			{
 				EnableDragging = false,
-				Title = WindowTitle,
+				Title = string.Format(WindowTitle, clientName.Equals(stats.Places[0]) ? "won" : "lost"),
 				Bounds = new UniRectangle(new UniScalar(windowXPosition, 0), new UniScalar(windowYPosition, 0), new UniScalar(windowWidthInPx), new UniScalar(windowHeightInPx))
 			};
 
-			var roundsLabel = new LabelControl(string.Format(RoundsLabelText, stats.Rounds))
+			var span = new TimeSpan(0, 0, 0, stats.Time);
+			var hoursLbl = span.Hours > 0 ? Convert.ToString(span.Hours) + "h " : string.Empty;
+			var minutesLbl = span.Hours > 0 || span.Minutes > 0 ? Convert.ToString(span.Minutes) + "m " : string.Empty;
+			var secondsLbl = span.Seconds + "s";
+			var roundsLabel = new LabelControl(string.Format(TopLabelText, stats.Rounds, hoursLbl, minutesLbl, secondsLbl, 12345656))
 			{
-				Bounds = new UniRectangle(new UniScalar(0.5f, BorderWidthInPx), new UniScalar(0.0f, TitleBarHeightInPx), new UniScalar(0.02f, 0), new UniScalar(0.05f, 0))
-			};
-			var timeLabel = new LabelControl(string.Format(TimeLabelText, stats.Time))
-			{
-				Bounds = new UniRectangle(new UniScalar(0.5f, BorderWidthInPx), new UniScalar(rowHeight, TitleBarHeightInPx), new UniScalar(0.07f, 0), new UniScalar(0.05f, 0))
-			};
-			var endTypeLabel = new LabelControl(string.Format(EndgameTypeLabelText, stats.EndType))
-			{				
-				Bounds = new UniRectangle(new UniScalar(0.5f, BorderWidthInPx), new UniScalar(2 * rowHeight, TitleBarHeightInPx), new UniScalar(0.07f, 0), new UniScalar(0.05f, 0))
-			};
-			statsWindow.Children.AddRange(new Control[] { roundsLabel, timeLabel, endTypeLabel });
+				Bounds = new UniRectangle(new UniScalar(0.0f, BorderWidthInPx), new UniScalar(0.0f, TitleBarHeightInPx), new UniScalar(1.0f, 0), new UniScalar(0.4f, 0))
+			};			
+			statsWindow.Children.AddRange(new Control[] {roundsLabel });
 
-			// Create the player headings						
-			int firstStatsRow = (stats.Places.Count >= MinPlayerRowCount) ? stats.Places.Count : MinPlayerRowCount;
+			// Create player headings
+			int firstStatsRow = (stats.Places.Count >= MinPlayerRowCount) ? stats.Places.Count : MinPlayerRowCount;			
 			for (int plr = 0; plr < stats.Places.Count; ++plr)
 			{
 				var item = stats.Places[plr];
-				// Create standings label
-				var playerPlacesNameLabel = new LabelControl(string.Format("{0}. {1}", plr + 1, item))
-				{
-					Bounds = new UniRectangle(new UniScalar(0.1f, BorderWidthInPx), new UniScalar(rowHeight * plr, TitleBarHeightInPx), new UniScalar(0.02f, 0), new UniScalar(0.05f, 0))
-				};
-				statsWindow.Children.Add(playerPlacesNameLabel);
 
 				// Create first row of the stats table								
-				var playerStatsNameLabel = new LabelControl(item)
+				var playerStatsNameLabel = new LabelControl(string.Format("{0}. {1}", plr + 1, item))
 				{
 					Bounds = new UniRectangle(new UniScalar((plr + 1) * columnWidth, BorderWidthInPx), new UniScalar(firstStatsRow * rowHeight, TitleBarHeightInPx), new UniScalar(0.02f, 0), new UniScalar(0.05f, 0))
 				};
 				statsWindow.Children.Add(playerStatsNameLabel);
 			}
-			
+
 			// Create the stats table
 			for (int stat = 0; stat < stats.Stats.Count; ++stat)
 			{
@@ -86,9 +76,9 @@
 				}
 			}
 
-			var btnLeave = new ImageButtonControl
+			var btnLeave = new ButtonControl
 			{
-				StateFrames = new string[] { "closeButtonNormal", "closeButtonNormal", "closeButtonHover", "closeButtonPushed" },
+				Text = "Leave",
 				Bounds = new UniRectangle(new UniScalar(0.95f, 0), new UniScalar(0.02f, 0), new UniScalar(0.05f, 0), new UniScalar(0.1f, 0))
 			};
 			btnLeave.Pressed += Leave_Pressed;
@@ -109,23 +99,22 @@
 
 		#endregion
 
-		public GameStats(GameState state, EndgameData stats)
+		public GameStats(GameState state, EndgameData stats, string clientUsername)
 			: base(state)
 		{
             IsTransparent = true;
             InputReceiver = new NuclexScreenInputReceiver(screen, true);
 
 			screen.Desktop.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0.0f), new UniScalar(1.0f, 0));
-            CreateChildControls(stats);
+			CreateChildControls(clientUsername, stats);
 			State = ViewState.Loaded;
 		}
 
-		private const string WindowTitle = "Statistics";
-		private const string RoundsLabelText = "Rounds: {0}";
-		private const string TimeLabelText = "Time: {0}";
-		private const string EndgameTypeLabelText = "Endgame type: {0}";
+		private const string WindowTitle = "You have {0} the game";
+		private const string TopLabelText = "You played for {0} rounds which lasted {1}{2}{3} in total.\n" +
+											"You finished the game on the {4} place.";
 
-		private const int TitleBarHeightInPx = 28;
+		private const int TitleBarHeightInPx = 0;
 		private const int BorderWidthInPx = 8;
 		private const int RowHeightInPx = 24;
 		private const int ColumnWidthInPx = 128;
