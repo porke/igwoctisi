@@ -376,7 +376,7 @@
 		{			
 			InvokeOnMainThread(obj =>
 			{
-				var statsWindow = new GameStats(this, stats);
+				var statsWindow = new GameStats(this, stats, _clientPlayer.Username);
 				statsWindow.LeavePressed += HUD_LeaveGame;
 				ViewMgr.PushLayer(statsWindow);
 			});

@@ -6,6 +6,12 @@
 	[DataContract]
 	public class EndgameData
 	{
+		public EndgameData()
+		{
+			Stats = new List<GameStatistic>();
+			Places = new List<string>();
+		}
+
 		[DataMember]
 		public List<string> Places { get; set; }
 
