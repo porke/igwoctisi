@@ -11,6 +11,7 @@
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
 	using State;
+	using System.Diagnostics;
 
     class GameHud : BaseView
 	{
@@ -50,14 +51,14 @@
 
 			_bottomPanel = new BottomPanel();
 			_bottomPanel.ChatMessageSent += ChatMessage_Execute;
-			_bottomPanel.Toggled += PanelToggle_Pressed;
+			_bottomPanel.Toggled += PanelToggle_Pressed;			
 
             screen.Desktop.Children.AddRange(
                 new Control[] 
                 {
 					_topPanel,
 					_rightPanel,
-					_bottomPanel
+					_bottomPanel,
                 });
         }        
 
@@ -165,6 +166,29 @@
 			_bottomPanel.AddMessage(message);
 			BottomFlashAnimate();
         }
+
+		public void SetNotification(string message)
+		{
+			var notification = new NotificationPanel();			
+			screen.Desktop.Children.Add(notification);
+			notification.BringToFront();
+			notification.SetNotification(message);
+			
+			// Enqueuing the notification animation in the standard way (Move, Wait, Move) does not seem to work - 
+			// the panel disappears instantly after Wait finishes
+			notification.Animate(this)
+						.MoveControlTo(notification.DefaultPosition)
+						.Wait(notification.Timeout)
+						.AddCallback((c) =>
+						{
+							notification.Animate(this)
+										.MoveControlTo(notification.TogglePosition)
+										.AddCallback((ctrl) =>
+										{
+											screen.Desktop.Children.Remove(notification);
+										});
+						 });			
+		}
 
 		private void BottomFlashAnimate()
 		{
