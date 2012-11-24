@@ -3,7 +3,6 @@ float4x4 View;
 float4x4 Projection;
 float Ambient = 0.0f;
 
-// TODO: add effect parameters here.
 
 struct VertexShaderInput
 {
@@ -32,15 +31,12 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
     float4 viewPosition = mul(worldPosition, View);
     output.Position = mul(viewPosition, Projection);
 	output.Color = input.Color;
-    // TODO: add your vertex shader code here.
 
     return output;
 }
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-    // TODO: add your pixel shader code here.
-
 	float4 color = input.Color*(1.0f + Ambient);
 	color.w = 0.1f;
     return color;
