@@ -210,6 +210,7 @@
     <Compile Include="View\Lobby\GameLobbyView.cs" />
     <Compile Include="View\Menu\MenuBackground.cs" />
     <Compile Include="View\MessageBox.cs" />
+    <Compile Include="View\Play\NotificationPanel.cs" />
     <Compile Include="View\Play\RightPanel.cs" />
     <Compile Include="View\Play\TopPanel.cs" />
     <Compile Include="View\SplashScreen.cs" />

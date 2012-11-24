@@ -53,19 +53,19 @@
 			// Deploment is only possible on clients own planet
 			if (planet.Owner == null)
 			{
-				_gameHud.AddMessage("Cannot deploy fleet: you have to own the target planet.");
+				_gameHud.SetNotification("Cannot deploy fleet: you have to own the target planet.");
 				return;
 			}
 			if (!planet.Owner.Username.Equals(_clientPlayer.Username))
 			{
-				_gameHud.AddMessage("Cannot deploy fleet: you have to own the target planet.");
+				_gameHud.SetNotification("Cannot deploy fleet: you have to own the target planet.");
 				return;
 			}
 			if (_clientPlayer.DeployableFleets < count)
 			{
 				if (_clientPlayer.DeployableFleets == 0)
 				{
-					_gameHud.AddMessage("Cannot deploy fleet: Not enough deployable fleets.");
+					_gameHud.SetNotification("Cannot deploy fleet: Not enough deployable fleets.");
 					return;
 				}
 				else
@@ -86,7 +86,7 @@
 			var command = _clientPlayer.Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
 			if (command == null)
 			{
-				_gameHud.AddMessage("Cannot revert deploy: no fleets deployed to selected planet.");
+				_gameHud.SetNotification("Cannot revert deploy: no fleets deployed to selected planet.");
 				return;
 			}
 
@@ -119,7 +119,7 @@
 
 			if (source.Owner == null || !_clientPlayer.Username.Equals(source.Owner.Username))
 			{
-				_gameHud.AddMessage("Cannot move fleet: fleets can be sent only from owned planets.");
+				_gameHud.SetNotification("Cannot move fleet: fleets can be sent only from owned planets.");
 				return;
 			}
 
@@ -129,7 +129,7 @@
 				if (source.NumFleetsPresent < 1
 					|| source.FleetChange + source.NumFleetsPresent == 1)
 				{
-					_gameHud.AddMessage("Cannot move fleet: there must be at least one fleet remaining.");
+					_gameHud.SetNotification("Cannot move fleet: there must be at least one fleet remaining.");
 					return;
 				}
 				else
@@ -158,7 +158,7 @@
 			var targetCommand = _clientPlayer.Commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
 			if (targetCommand == null)
 			{
-				_gameHud.AddMessage("Cannot revert fleet move: no fleets moving.");
+				_gameHud.SetNotification("Cannot revert fleet move: no fleets moving.");
 				return;
 			}			
 
@@ -187,7 +187,7 @@
 			}
 			else
 			{
-				_gameHud.AddMessage(reason);
+				_gameHud.SetNotification(reason);
 			}
 		}
 		private void HUD_DeleteCommand(object sender, EventArgs<int> arg)
@@ -388,7 +388,7 @@
 			{
 				_players.RemoveAll(player => player.Username.Equals(username));
 				_gameHud.UpdatePlayerList(_players);
-				_gameHud.AddMessage(string.Format("Player {0} has left.", username));
+				_gameHud.SetNotification(string.Format("Player {0} has left.", username));
 			});
 		}
 
