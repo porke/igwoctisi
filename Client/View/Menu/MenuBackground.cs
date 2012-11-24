@@ -1,16 +1,15 @@
 ﻿namespace Client.View.Menu
 {
-    using System;
-    using System.Linq;
-    using Common;
-    using Input;
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Content;
-    using Microsoft.Xna.Framework.Graphics;
-    using State;
-	using Client.Renderer;
-	using Client.Model;
+	using System.Linq;
 	using Client.Common.AnimationSystem;
+	using Client.Model;
+	using Client.Renderer;
+	using Common;
+	using Input;
+	using Microsoft.Xna.Framework;
+	using Microsoft.Xna.Framework.Graphics;
+	using State;
+	using System;
 
     public class MenuBackground : BaseView
     {
@@ -50,12 +49,12 @@
 			_spriteBatch = new SpriteBatch(device);
 			_texBackground = contentMgr.Load<Texture2D>("Textures\\MenuBackground");
 
-			_camera = new SimpleCamera();
-			_camera.SetPosition(Vector3.Backward * 10);
+			_camera = new SimpleCamera();			
+			_camera.SetPosition(Vector3.Backward * 10);			
 
 			var planet = new Planet
 			{
-				X = 0,
+				X = -2.5f,
 				Y = 0,
 				Z = 0,
 				Radius = 3,

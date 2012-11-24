@@ -68,13 +68,17 @@
             };
             btnQuit.Pressed += Quit_Pressed;
 
-
             var btnEnterPlayState = new ButtonControl
             {
                 Text = "Join or Create Game",
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.6f, 40), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
             };
             btnEnterPlayState.Pressed += EnterPlayState_Pressed;
+
+			var testList = new ExtendedListControl(new UniScalar(0.1f, 0), "hud_background")
+			{
+				Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0))
+			};			
 
             screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit});
 #if DEBUG
@@ -108,13 +112,13 @@
 			}
         }
         #endregion
-	
 
 		public MainMenuView(MenuState state)
 			: base(state)
         {
             IsTransparent = true;
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
+			screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.45f, 0), new UniScalar(0.25f, 0), new UniScalar(0.55f, 0), new UniScalar(0.75f, 0));
 
             CreateChildControls();
 			State = ViewState.Loaded;

@@ -52,7 +52,6 @@
         [DataMember]
         public string CloudsAlpha { get; set; }
 
-        public bool ShowDetails { get; set; }
 		public int FleetChange { get; set; }
         public int NumFleetsPresent { get; set; }
 
