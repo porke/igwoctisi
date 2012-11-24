@@ -2,8 +2,6 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 
-// TODO: add effect parameters here.
-
 struct VertexShaderInput
 {
     float4 Position : POSITION;
@@ -32,15 +30,11 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
     output.Position = mul(viewPosition, Projection);
 	output.Diffuse = input.Diffuse;
 
-    // TODO: add your vertex shader code here.
-
     return output;
 }
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-    // TODO: add your pixel shader code here.
-
     return float4(input.Diffuse);
 }
 
@@ -48,8 +42,6 @@ technique Technique1
 {
     pass Pass1
     {
-        // TODO: set renderstates here.
-
         VertexShader = compile vs_2_0 VertexShaderFunction();
         PixelShader = compile ps_2_0 PixelShaderFunction();
     }

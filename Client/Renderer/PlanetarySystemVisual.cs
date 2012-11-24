@@ -52,7 +52,6 @@
 
 			if (foundOwner && _lastOwner != player)
 			{
-				// TODO animate color change
 				Color = player.Color.XnaColor;
 			}
 			else
