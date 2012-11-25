@@ -13,7 +13,7 @@
 	public static class MoveAndAttack
 	{
 		public static void AnimateMovesAndAttacks(this SceneVisual scene,
-			IList<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>> movesAndAttacks,
+			IList<Tuple<Planet, Planet, SimulationResult, Action, Action<SimulationResult>>> movesAndAttacks,
 			AnimationManager animationManager, SimpleCamera camera)
 		{
 			var bw = new BackgroundWorker();
@@ -25,9 +25,11 @@
 					var sourcePlanet = tpl.Item1;
 					var targetPlanet = tpl.Item2;
 					var simResult = tpl.Item3;
-					var callback = tpl.Item4;
+					var onActionStart = tpl.Item4;
+					var onActinEnd = tpl.Item5;
 
 					waiter.Reset();
+					onActionStart();
 					camera.Animate(animationManager)
 						.MoveToAttack(sourcePlanet, targetPlanet)
 						.AddCallback(action =>
@@ -42,7 +44,7 @@
 							}
 						});
 					waiter.WaitOne();
-					callback.Invoke(simResult);
+					onActinEnd.Invoke(simResult);
 				}
 			});
 			bw.RunWorkerAsync();
