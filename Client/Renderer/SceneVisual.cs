@@ -13,14 +13,14 @@
 	public sealed class SceneVisual
 	{
 		#region Private members
-
-
+		
 		private Scene Scene { get; set; }
 		private Effect _fxLinks;
 		private VertexBuffer _sphereVB;
 		private readonly AnimationManager AnimationManager;
 		private readonly List<Spaceship> _spaceships = new List<Spaceship>();
 		private readonly List<Spaceship> _spaceshipsToAdd = new List<Spaceship>();
+		private Vector3 _cameraOldPosition;
 
 		public void UpdateSpaceSheeps()
 		{
@@ -44,6 +44,10 @@
 
 		#region Event handlers
 
+		private void Animation_SaveCameraPosition()
+		{
+			_cameraOldPosition = Scene.Map.Camera.GetPosition();
+		}
 		private void Animation_Deploys(IList<Tuple<Planet, int, Action>> deploys)
 		{
 			this.AnimateDeploys(AnimationManager, Scene.Map.Camera, deploys);
@@ -51,6 +55,10 @@
 		private void Animation_MovesAndAttacks(IList<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>> movesAndAttacks)
 		{
 			this.AnimateMovesAndAttacks(movesAndAttacks, AnimationManager, Scene.Map.Camera);
+		}
+		private void Animation_CameraBack()
+		{
+			this.AnimateCameraBack(AnimationManager, Scene.Map.Camera, _cameraOldPosition);
 		}
 
 		#endregion
@@ -70,8 +78,10 @@
 			_sphereVB.SetData(vertices);
 
 			// Install handlers
+			scene.SaveCameraPosition += new Action(Animation_SaveCameraPosition);
 			scene.AnimDeploys += new Action<IList<Tuple<Planet, int, Action>>>(Animation_Deploys);
 			scene.AnimMovesAndAttacks += new Action<List<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>>>(Animation_MovesAndAttacks);
+			scene.AnimCameraBack += new Action(Animation_CameraBack);
 
 			scene.Map.Visual = new MapVisual(client, scene.Map);
 			scene.Map.Visual.Initialize();

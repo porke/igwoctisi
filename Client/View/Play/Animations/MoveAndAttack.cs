@@ -28,15 +28,19 @@
 					var callback = tpl.Item4;
 
 					waiter.Reset();
-					if (simResult.Type == SimulationResult.MoveType.Move)
-					{
-						AnimateMove(sourcePlanet, targetPlanet, simResult, scene, animationManager, camera, waiter);
-					}
-					else
-					{
-						Debug.Assert(simResult.Type == SimulationResult.MoveType.Attack);
-						AnimateAttack(sourcePlanet, targetPlanet, simResult, scene, animationManager, camera, waiter);
-					}
+					camera.Animate(animationManager)
+						.MoveToAttack(sourcePlanet, targetPlanet)
+						.AddCallback(action =>
+						{
+							if (simResult.Type == SimulationResult.MoveType.Move)
+							{
+								AnimateMove(sourcePlanet, targetPlanet, simResult, scene, animationManager, camera, waiter);
+							}
+							else
+							{
+								AnimateAttack(sourcePlanet, targetPlanet, simResult, scene, animationManager, camera, waiter);
+							}
+						});
 					waiter.WaitOne();
 					callback.Invoke(simResult);
 				}
