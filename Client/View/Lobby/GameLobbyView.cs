@@ -1,17 +1,18 @@
 ﻿namespace Client.View.Lobby
 {
-    using System;
-    using System.Collections.Generic;
-    using Client.View.Controls;
-    using Client.Model;
-    using Common;
-    using Input;
-    using Nuclex.UserInterface;
-    using Nuclex.UserInterface.Controls;
-    using Nuclex.UserInterface.Controls.Desktop;
-    using State;
+	using System;
+	using System.Collections.Generic;
+	using Client.Model;
+	using Client.View.Controls;
+	using Common;
+	using Common.AnimationSystem.DefaultAnimations;
+	using Input;
+	using Nuclex.UserInterface;
+	using Nuclex.UserInterface.Controls;
+	using Nuclex.UserInterface.Controls.Desktop;
+	using State;
 
-    class GameLobbyView : BaseView
+	class GameLobbyView : BaseView
     {
 		public event EventHandler GameLeavePressed;
 		public event EventHandler<EventArgs<string>> PlayerKicked;
@@ -158,7 +159,34 @@
             _messageList.AddItem(string.Format("({0}): {1}", time, message));
         }
 
+		public void KickReceived()
+		{
+			_leaveByKick = true;
+		}
+
         #endregion
+
+		#region BaseView members
+
+		protected override void OnHide(double time)
+		{
+			State = ViewState.FadeOut;
+
+			if (_leaveByKick)
+			{
+				screen.Desktop.Animate(this)
+							  .MoveControlTo(new UniVector(new UniScalar(-screen.Desktop.Bounds.Right .Fraction, 0.0f), screen.Desktop.Bounds.Top))
+							  .AddCallback(x => State = ViewState.Hidden);
+			}
+			else
+			{
+				screen.Desktop.Animate(this)
+							  .MoveControlTo(new UniVector(new UniScalar(1.0f, 0.0f), screen.Desktop.Bounds.Top))
+							  .AddCallback(x => State = ViewState.Hidden);
+			}
+		}
+
+		#endregion
 
 		public GameLobbyView(LobbyState state, bool showHostButtons)
             : base(state)
@@ -170,5 +198,7 @@
             CreateChildControls(showHostButtons);
 			State = ViewState.Loaded;
         }
+
+		private bool _leaveByKick = false;
     }
 }
