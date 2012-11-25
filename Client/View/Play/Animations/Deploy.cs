@@ -13,7 +13,7 @@
         private static Random rand = new Random();
 
         public static void AnimateDeploys(this SceneVisual scene, AnimationManager animationManager, SimpleCamera camera,
-            IList<Tuple<Planet, int, Action>> deploys)
+			IList<Tuple<Planet, int, Action, Action>> deploys)
         {
 			var bw = new BackgroundWorker();
 			bw.DoWork += new DoWorkEventHandler((sender, workArgs) =>
@@ -23,10 +23,12 @@
 				{
 					Planet targetPlanet = deploy.Item1;
 					int newFleetsCount = deploy.Item2;
-					Action onDeployEnd = deploy.Item3;
+					Action onDeployStart = deploy.Item3;
+					Action onDeployEnd = deploy.Item4;
 					Player player = targetPlanet.Owner;
 
 					waiter.Reset();
+					onDeployStart();
 					camera.Animate(animationManager)
 						.MoveToDeploy(targetPlanet)
 						.AddCallback(action =>

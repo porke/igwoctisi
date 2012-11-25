@@ -48,11 +48,11 @@
 		{
 			_cameraOldPosition = Scene.Map.Camera.GetPosition();
 		}
-		private void Animation_Deploys(IList<Tuple<Planet, int, Action>> deploys)
+		private void Animation_Deploys(IList<Tuple<Planet, int, Action, Action>> deploys)
 		{
 			this.AnimateDeploys(AnimationManager, Scene.Map.Camera, deploys);
 		}
-		private void Animation_MovesAndAttacks(IList<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>> movesAndAttacks)
+		private void Animation_MovesAndAttacks(IList<Tuple<Planet, Planet, SimulationResult, Action, Action<SimulationResult>>> movesAndAttacks)
 		{
 			this.AnimateMovesAndAttacks(movesAndAttacks, AnimationManager, Scene.Map.Camera);
 		}
@@ -79,8 +79,8 @@
 
 			// Install handlers
 			scene.SaveCameraPosition += new Action(Animation_SaveCameraPosition);
-			scene.AnimDeploys += new Action<IList<Tuple<Planet, int, Action>>>(Animation_Deploys);
-			scene.AnimMovesAndAttacks += new Action<List<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>>>(Animation_MovesAndAttacks);
+			scene.AnimDeploys += new Action<IList<Tuple<Planet, int, Action, Action>>>(Animation_Deploys);
+			scene.AnimMovesAndAttacks += new Action<List<Tuple<Planet, Planet, SimulationResult, Action, Action<SimulationResult>>>>(Animation_MovesAndAttacks);
 			scene.AnimCameraBack += new Action(Animation_CameraBack);
 
 			scene.Map.Visual = new MapVisual(client, scene.Map);

@@ -361,12 +361,21 @@
 
                         // Begin animation and wait until it is done.
 						_hudState = HudState.AnimatingSimulationResult;
-                        Scene.AnimateChanges(simResults, () =>
-                        {
-							// Animation is done.
-                            _hudState = HudState.WaitingForRoundStart;
-                            Client.Network.BeginSetReady(null, null);
-                        });
+						List<UserCommand> commands = null;
+						commands = Scene.AnimateChanges(simResults,
+							 (startedCommandIndex) =>
+							 {
+								 _gameHud.UpdateCommandList(commands, startedCommandIndex);
+							 },
+							 () =>
+							 {
+								 // Animation is done.
+								 commands.Clear();
+								 _gameHud.UpdateCommandList(commands, -1);
+								 _hudState = HudState.WaitingForRoundStart;
+								 Client.Network.BeginSetReady(null, null);
+							 });
+						_gameHud.UpdateCommandList(commands, commands.Count > 0 ? 0 : -1);
 					});
 
 					// We have consumed that packet.
