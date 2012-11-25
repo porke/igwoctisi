@@ -8,7 +8,7 @@
 
     public class PasswordInputControl : CommandInputControl
     {
-        private string _value;
+        private string _value = "";
         public event EventHandler Activated;
         private object locker = new object();
 		private HMACSHA256 _hash;

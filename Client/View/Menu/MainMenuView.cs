@@ -51,6 +51,9 @@
             {
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.5f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))
             };
+#if DEBUG
+			tbPassword.SetPassword("passw0rld");
+#endif
             tbPassword.OnCommandHandler += Login_Pressed;
 
             btnLogin = new ButtonControl
@@ -91,10 +94,11 @@
 
         protected void Login_Pressed(object sender, EventArgs e)
         {
-			if (LoginPressed != null)
+			if (LoginPressed != null && tbPassword.GetPassword().Length > 0)
 			{
+
 				LoginPressed(sender, LoginPressed.CreateArgs(tbLogin.Text, tbPassword.GetHashedPassword()));
-			}			
+			}
         }
         protected void Quit_Pressed(object sender, EventArgs e)
         {
@@ -105,7 +109,7 @@
         }
         protected void EnterPlayState_Pressed(object sender, EventArgs e)
         {
-			if (EnterPlayStatePressed != null)
+			if (EnterPlayStatePressed != null && tbPassword.GetPassword().Length > 0)
 			{
 				EnterPlayStatePressed(sender, EnterPlayStatePressed.CreateArgs(tbLogin.Text, tbPassword.GetHashedPassword()));
 			}
