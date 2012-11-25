@@ -10,6 +10,7 @@
 	using Client.View;
 	using Model;
 	using View.Play;
+	using System.Diagnostics;
 
 	class PlayState : GameState
 	{
@@ -213,6 +214,10 @@
 			_clientPlayer.ClearCommandList();
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 		}
+		private void HUD_ShowLadder(object sender, EventArgs arg)
+		{
+			Process.Start("http://www.google.com");
+		}
 
 		#endregion
 
@@ -378,6 +383,7 @@
 			{
 				var statsWindow = new GameStats(this, stats, _clientPlayer.Username);
 				statsWindow.LeavePressed += HUD_LeaveGame;
+				statsWindow.LadderPressed += HUD_ShowLadder;
 				ViewMgr.PushLayer(statsWindow);
 			});
 		}

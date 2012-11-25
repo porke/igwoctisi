@@ -1,10 +1,10 @@
 ﻿namespace Client.State
 {
-    using System;
-    using Client.Model;
-    using View;
-    using View.Lobby;
+	using System;
+	using Client.Model;
 	using Client.View.Menu;
+	using View;
+	using View.Lobby;
 
 	class LobbyState : GameState
     {

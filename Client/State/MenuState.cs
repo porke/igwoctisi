@@ -24,16 +24,17 @@
 			ViewMgr.PushLayer(mainMenu);
 
 			// TODO: lookup for tweaking the stats window
-			//var stats = new EndgameData();
-			//stats.Places.Add("asad1");
-			//stats.Places.Add("asad2");
-			//stats.Places.Add("asad3");
-			//stats.Time = 666;
-			//stats.Stats.Add(new GameStatistic() {Name = "xyz", Values = new System.Collections.Generic.List<int>() {1, 2, 3}});
-			//stats.Stats.Add(new GameStatistic() { Name = "xyza", Values = new System.Collections.Generic.List<int>() { 1, 2, 3 } });
-			//stats.Stats.Add(new GameStatistic() { Name = "xyzcz", Values = new System.Collections.Generic.List<int>() { 1, 2, 3 } });
-			//var statsWindow = new GameStats(this, stats, "asad2");
-			//ViewMgr.PushLayer(statsWindow);
+			var stats = new EndgameData();
+			stats.Places.Add("asad1");
+			stats.Places.Add("asad2");
+			stats.Places.Add("asad3");
+			stats.Places.Add("asad4");
+			stats.Time = 666;
+			stats.Stats.Add(new GameStatistic() { Name = "xyz", Values = new System.Collections.Generic.List<int>() { 888, 2, 888, 4, 5, 6, 7, 8 } });
+			stats.Stats.Add(new GameStatistic() { Name = "xyza", Values = new System.Collections.Generic.List<int>() { 666, 2, 3, 4, 5, 6, 7, 8 } });
+			stats.Stats.Add(new GameStatistic() { Name = "xyzcz", Values = new System.Collections.Generic.List<int>() { 1, 999, 3, 4, 5, 6, 7, 8 } });
+			var statsWindow = new GameStats(this, stats, "asad2");
+			ViewMgr.PushLayer(statsWindow);
         }
 
         public override void OnEnter()
