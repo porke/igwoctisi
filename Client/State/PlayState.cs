@@ -370,12 +370,19 @@
 							 () =>
 							 {
 								 // Animation is done.
-								 commands.Clear();
-								 _gameHud.UpdateCommandList(commands, -1);
-								 _hudState = HudState.WaitingForRoundStart;
-								 Client.Network.BeginSetReady(null, null);
+								 InvokeOnMainThread(arg =>
+								 {
+									 commands.Clear();
+									 _gameHud.UpdateCommandList(commands, -1);
+									 _hudState = HudState.WaitingForRoundStart;
+									 Client.Network.BeginSetReady(null, null);
+								 });
 							 });
-						_gameHud.UpdateCommandList(commands, commands.Count > 0 ? 0 : -1);
+
+						InvokeOnMainThread(arg =>
+						{
+							_gameHud.UpdateCommandList(commands, commands.Count > 0 ? 0 : -1);
+						});
 					});
 
 					// We have consumed that packet.
