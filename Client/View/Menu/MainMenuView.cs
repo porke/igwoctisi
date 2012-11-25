@@ -51,7 +51,6 @@
             {
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.5f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))
             };
-            tbPassword.SetPassword("pswd");
             tbPassword.OnCommandHandler += Login_Pressed;
 
             btnLogin = new ButtonControl
@@ -94,7 +93,7 @@
         {
 			if (LoginPressed != null)
 			{
-				LoginPressed(sender, LoginPressed.CreateArgs(tbLogin.Text, tbPassword.GetPassword()));
+				LoginPressed(sender, LoginPressed.CreateArgs(tbLogin.Text, tbPassword.GetHashedPassword()));
 			}			
         }
         protected void Quit_Pressed(object sender, EventArgs e)
@@ -108,7 +107,7 @@
         {
 			if (EnterPlayStatePressed != null)
 			{
-				EnterPlayStatePressed(sender, EnterPlayStatePressed.CreateArgs(tbLogin.Text, tbPassword.GetPassword()));
+				EnterPlayStatePressed(sender, EnterPlayStatePressed.CreateArgs(tbLogin.Text, tbPassword.GetHashedPassword()));
 			}
         }
         #endregion
