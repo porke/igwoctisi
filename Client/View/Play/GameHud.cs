@@ -11,9 +11,8 @@
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
 	using State;
-	using System.Diagnostics;
 
-    class GameHud : BaseView
+	class GameHud : BaseView
 	{
 		public event EventHandler<EventArgs<TechnologyType>> RaiseTechPressed;
 		public event EventHandler<EventArgs<string>> ChatMessageSent;

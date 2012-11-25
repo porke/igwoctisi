@@ -240,13 +240,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Skin\HudIcons.png">
-      <Name>HudIcons</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Effects\Blur.fx">
       <Name>Blur</Name>
       <Importer>EffectImporter</Importer>
@@ -263,6 +256,13 @@
   <ItemGroup>
     <Compile Include="Textures\MenuBackground.jpg">
       <Name>MenuBackground</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Skin\HudIcons.png">
+      <Name>HudIcons</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

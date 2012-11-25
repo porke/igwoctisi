@@ -8,7 +8,9 @@
     using Nuclex.UserInterface;
     using Nuclex.UserInterface.Controls;
     using Nuclex.UserInterface.Controls.Desktop;
-    using State;
+	using Common.AnimationSystem;
+	using Common.AnimationSystem.DefaultAnimations;
+	using State;
 
     class CreateGameView : BaseView
     {
@@ -88,6 +90,7 @@
 
         private void Cancel_Pressed(object sender, EventArgs args)
         {
+			_createGamePressed = false;
 			if (CreateGameCancelled != null)
 			{
 				CreateGameCancelled(this, EventArgs.Empty);
@@ -96,6 +99,7 @@
         private void CreateGame_Pressed(object sender, EventArgs args)
         {
             var mapName = _mapList.Items[_mapList.SelectedItems[0]];
+			_createGamePressed = true;
 			if (CreateGameConfirmed != null)
 			{
 				CreateGameConfirmed(this, CreateGameConfirmed.CreateArgs(_gameName.Text, mapName));
@@ -103,6 +107,28 @@
         }
 
         #endregion
+
+		#region BaseView members
+
+		protected override void OnHide(double time)
+		{
+			State = ViewState.FadeOut;
+
+			if (_createGamePressed)
+			{
+				screen.Desktop.Animate(this)
+							  .MoveControlTo(new UniVector(new UniScalar(-screen.Desktop.Bounds.Right.Fraction, 0.0f), screen.Desktop.Bounds.Top))
+							  .AddCallback(x => State = ViewState.Hidden);
+			}
+			else
+			{
+				screen.Desktop.Animate(this)
+							  .MoveControlTo(new UniVector(new UniScalar(1.0f, 0.0f), screen.Desktop.Bounds.Top))
+							  .AddCallback(x => State = ViewState.Hidden);
+			}
+		}
+
+		#endregion
 
 		public CreateGameView(LobbyState state)
             : base(state)
@@ -114,5 +140,7 @@
             CreateChildControls();
 			State = ViewState.Loaded;
         }
+
+		private bool _createGamePressed = false;
     }
 }
