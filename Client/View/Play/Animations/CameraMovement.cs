@@ -85,18 +85,17 @@
 			float a1, a2, b1, b2;
 			var p1TowardsCam = p1 + p1ToCam;
 			var p2TowardsCam = p2 + p2ToCam;
-
 			a1 = (p1TowardsCam.Z - p1.Z) / (p1TowardsCam.X - p1.X);
 			b1 = (p1TowardsCam.Z - p1.Z / p1.X) / (1 - p1TowardsCam.X / p1.X);
-
 			a2 = (p2TowardsCam.Z - p2.Z) / (p2TowardsCam.X - p2.X);
 			b2 = (p2TowardsCam.Z - p2.Z / p2.X) / (1 - p2TowardsCam.X / p2.X);
 
+			bool anyNaN = float.IsNaN(a1) || float.IsNaN(a2) || float.IsNaN(b1) || float.IsNaN(b2);
 			var pCamOld = camera.GetPosition();
 			var pCam = new Vector3(
 				0.5f * (p1.X + p2.X),
 				0.5f * (p1.Y + p2.Y), 
-				float.IsNaN(a1) ? camera.Max.Z : MathHelper.Min(-(b1 - a1/a2*b2)/(1-a1/a2), camera.Max.Z)
+				anyNaN ? camera.Max.Z : MathHelper.Min(-(b1 - a1/a2*b2)/(1-a1/a2), camera.Max.Z)
 			);
 
 			animation.Interpolate<SimpleCamera>(0.5f, Interpolators.Decelerate(),
