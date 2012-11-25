@@ -6,6 +6,8 @@
 	using Client.Input;
 	using Client.Model;
 	using Client.State;
+	using Common.AnimationSystem;
+	using Common.AnimationSystem.DefaultAnimations;
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
 	using Nuclex.UserInterface.Controls.Desktop;
@@ -122,7 +124,17 @@
 
 		#endregion
 
-		public MainLobbyView(LobbyState state)
+		#region BaseView members
+
+		protected override void OnReturnTo(double time)
+		{
+			screen.Desktop.Bounds = new UniRectangle(new UniScalar(-0.8f, 0), new UniScalar(0.2f, 0), new UniScalar(0.6f, 0), new UniScalar(0.6f, 0));
+			screen.Desktop.Animate(this).MoveControlTo(new UniVector(new UniScalar(0.2f, 0), new UniScalar(0.2f, 0))).AddCallback(x => State = ViewState.Visible);
+		}
+
+		#endregion
+
+		public MainLobbyView(LobbyState state, ViewState initialState)
             : base(state)
         {
             IsTransparent = true;
@@ -130,7 +142,7 @@
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();
-			State = ViewState.Loaded;
+			State = initialState;
         }        
     }
 }
