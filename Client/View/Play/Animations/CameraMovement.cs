@@ -36,7 +36,7 @@
 			var targetPosition2 = new Vector3(planet.Visual.X, planet.Visual.Y, camera.Max.Z);
 			var firstMoveDiff = targetPosition1 - startingPosition;
 
-			const float cameraSpeedFactor = 0.001f;
+			const float cameraSpeedFactor = 0.0005f;
 			float duration1 = cameraSpeedFactor * (targetPosition1 - startingPosition).Length();
 			float duration2 = cameraSpeedFactor * (targetPosition2 - targetPosition1).Length();
 
@@ -72,7 +72,7 @@
 			var camera = animation.Context;
 			var p1 = sourcePlanet.Visual.GetPosition();
 			var p2 = targetPlanet.Visual.GetPosition();
-			float desiredFov = camera.FieldOfView + MathHelper.ToRadians(5);
+			float desiredFov = camera.FieldOfView + MathHelper.ToRadians(10);
 
 			var p1ToP2 = Vector3.Normalize(p2 - p1);
 			var p1ToCamRotation = Matrix.CreateRotationY(desiredFov);
@@ -82,13 +82,12 @@
 			var p2ToCamRotation = Matrix.Invert(p1ToCamRotation);
 			var p2ToCam = Vector3.Transform(p2ToP1, p2ToCamRotation);
 
-			float a1, a2, b1, b2;
 			var p1TowardsCam = p1 + p1ToCam;
 			var p2TowardsCam = p2 + p2ToCam;
-			a1 = (p1TowardsCam.Z - p1.Z) / (p1TowardsCam.X - p1.X);
-			b1 = (p1TowardsCam.Z - p1.Z / p1.X) / (1 - p1TowardsCam.X / p1.X);
-			a2 = (p2TowardsCam.Z - p2.Z) / (p2TowardsCam.X - p2.X);
-			b2 = (p2TowardsCam.Z - p2.Z / p2.X) / (1 - p2TowardsCam.X / p2.X);
+			float a1 = (p1TowardsCam.Z - p1.Z) / (p1TowardsCam.X - p1.X);
+			float b1 = (p1TowardsCam.Z - p1.Z / p1.X) / (1 - p1TowardsCam.X / p1.X);
+			float a2 = (p2TowardsCam.Z - p2.Z) / (p2TowardsCam.X - p2.X);
+			float b2 = (p2TowardsCam.Z - p2.Z / p2.X) / (1 - p2TowardsCam.X / p2.X);
 
 			bool anyNaN = float.IsNaN(a1) || float.IsNaN(a2) || float.IsNaN(b1) || float.IsNaN(b2);
 			var pCamOld = camera.GetPosition();
