@@ -23,6 +23,11 @@
 		#region Events for SceneVisual
 
 		/// <summary>
+		/// Arguments: none
+		/// </summary>
+		internal event Action SaveCameraPosition;
+
+		/// <summary>
 		/// Arguments: [{targetPlanet, newFleetsCount, onEndCallback}]
 		/// </summary>
 		internal event Action<List<Tuple<Planet, int, Action>>> AnimDeploys;
@@ -31,6 +36,11 @@
 		/// Arguments: [{simResult, onEndCallback}]
 		/// </summary>
 		internal event Action<List<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>>> AnimMovesAndAttacks;
+
+		/// <summary>
+		/// Arguments: none
+		/// </summary>
+		internal event Action AnimCameraBack;
 
 		#endregion
 
@@ -117,6 +127,7 @@
 			deployAnimsCounter = new CountdownEvent(deploys.Count);
 			moveAndAttackAnimsCounter = new CountdownEvent(movesAndAttacks.Count);
 
+			SaveCameraPosition();
 			AnimDeploys(deploys);
 
 			var bw = new BackgroundWorker();
@@ -128,6 +139,9 @@
 				// Then move and attack
 				AnimMovesAndAttacks(movesAndAttacks);
 				moveAndAttackAnimsCounter.Wait();
+
+				// Move camera to the old position
+				AnimCameraBack();
 
 				endCallback.Invoke();
 			});
