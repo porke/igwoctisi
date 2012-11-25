@@ -92,7 +92,9 @@
 
 			// Collect data
 			var deploys = simResults
-				.Where(sr => sr.Type == SimulationResult.MoveType.Deploy)
+				.Where(sr => sr.Type == SimulationResult.MoveType.Deploy
+					&& sr.ShouldPlayerSeeAnimation(this)
+				)
 				.Select(sr =>
 				{
 					var targetPlanet = Map.GetPlanetById(sr.TargetId);
@@ -106,7 +108,9 @@
 				.ToList();
 
 			var movesAndAttacks = simResults
-				.Where(sr => sr.Type == SimulationResult.MoveType.Move || sr.Type == SimulationResult.MoveType.Attack)
+				.Where(sr => (sr.Type == SimulationResult.MoveType.Move || sr.Type == SimulationResult.MoveType.Attack)
+					&& sr.ShouldPlayerSeeAnimation(this)
+				)
 				.Select(sr =>
 				{
 					var sourcePlanet = Map.GetPlanetById(sr.SourceId);
@@ -127,25 +131,36 @@
 			deployAnimsCounter = new CountdownEvent(deploys.Count);
 			moveAndAttackAnimsCounter = new CountdownEvent(movesAndAttacks.Count);
 
-			SaveCameraPosition();
-			AnimDeploys(deploys);
-
 			var bw = new BackgroundWorker();
 			bw.DoWork += new DoWorkEventHandler((sender, workArgs) =>
 			{
-				// First deploy all fleets
-				deployAnimsCounter.Wait();
+				SaveCameraPosition();
 
-				// Then move and attack
-				AnimMovesAndAttacks(movesAndAttacks);
-				moveAndAttackAnimsCounter.Wait();
+				// First deploy all fleets
+				if (deploys.Count > 0)
+				{
+					AnimDeploys(deploys);
+					deployAnimsCounter.Wait();
+				}
+
+				// Then show moves and attacks
+				if (movesAndAttacks.Count > 0)
+				{
+					AnimMovesAndAttacks(movesAndAttacks);
+					moveAndAttackAnimsCounter.Wait();
+				}
 
 				// Move camera to the old position
 				AnimCameraBack();
 
 				endCallback.Invoke();
 			});
-			bw.RunWorkerAsync();
+
+			// Don't try to animate if nothing happens
+			if (deploys.Count + movesAndAttacks.Count > 0)
+			{
+				bw.RunWorkerAsync();
+			}
 		}
 		public void Initialize(NewRoundInfo roundInfo, List<Player> players, Player clientPlayer)
 		{
