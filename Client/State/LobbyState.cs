@@ -1,10 +1,10 @@
 ﻿namespace Client.State
 {
-    using System;
-    using Client.Model;
-    using View;
-    using View.Lobby;
+	using System;
+	using Client.Model;
 	using Client.View.Menu;
+	using View;
+	using View.Lobby;
 
 	class LobbyState : GameState
     {
@@ -19,7 +19,7 @@
 
             var menuBackground = new MenuBackground(this);
 			ViewMgr.PushLayer(menuBackground);
-			EnterMainLobbyView();
+			EnterMainLobbyView(null);
         }
 		
 		public LobbyState(IGWOCTISI game, Player player, SpecificGameLobbyInfo lobbyInfo, string mapName) : base(game)
@@ -97,8 +97,8 @@
         }
 		private void CreateGame_Cancel(object sender, EventArgs e)
         {
-			ViewMgr.PopLayer();     // pop create game view
-			EnterMainLobbyView();
+			var createGameView = ViewMgr.PopLayer();     // pop create game view
+			EnterMainLobbyView(createGameView);
         }
 		private void MainLobby_ShowCreateGameView(object sender, EventArgs e)
         {
@@ -238,8 +238,8 @@
             {
                 InvokeOnMainThread(arg =>
                 {
-					ViewMgr.PopLayer(); // pop game lobby
-					EnterMainLobbyView();
+					var gameLobby = ViewMgr.PopLayer(); // pop game lobby
+					EnterMainLobbyView(gameLobby);
                 });
             }
         }
@@ -383,8 +383,10 @@
             {
                 UnbindNetworkEvents();
 
-				ViewMgr.PopLayer(); // GameLobbyView
-				EnterMainLobbyView();
+				var gameLobby = ViewMgr.PeekLayer() as GameLobbyView; // GameLobbyView
+				gameLobby.KickReceived();
+				ViewMgr.PopLayer();
+				EnterMainLobbyView(null);
 
                 var messageBox = new MessageBox(this, MessageBoxButtons.OK)
                 {
@@ -409,9 +411,9 @@
 
 		#region View enter functions (event binding)
 
-		private void EnterMainLobbyView()
+		private void EnterMainLobbyView(BaseView prevWindow)
 		{
-			var lobbyMenu = new MainLobbyView(this);
+			var lobbyMenu = new MainLobbyView(this, (prevWindow != null) ? ViewState.ReturnedTo : ViewState.Loaded);
 			ViewMgr.PushLayer(lobbyMenu);
 			lobbyMenu.JoinGamePressed += MainLobby_JoinGame;
 			lobbyMenu.LogoutPressed += MainLobby_Logout;

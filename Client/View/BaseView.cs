@@ -10,10 +10,11 @@
 	{
 		Loading,
 		Loaded,
+		ReturnedTo,
 		FadeIn,
 		Visible,
 		FadeOut,
-		Hidden
+		Hidden,
 	}
 
     public abstract class BaseView
@@ -40,11 +41,15 @@
 		{
 			screen.Desktop.Animate(this).SlideOut().AddCallback(x => State = ViewState.Hidden);
 		}
+		protected virtual void OnReturnTo(double time)
+		{
+			// No default OnReturn behavior
+		}
 
 		#endregion
 
 		public GameState GameState { get; protected set; }
-		public ViewState State { get; protected set; }
+		public ViewState State { get;  protected set; }
         public bool IsTransparent { get; protected set; }
         public IInputReceiver InputReceiver { get; protected set; }
 
@@ -54,6 +59,13 @@
 			State = ViewState.FadeIn;
 
 			OnShow(time);
+		}
+		public void ReturnTo(ViewManager viewMgr, double time)
+		{
+			ViewMgr = viewMgr;
+			State = ViewState.FadeIn;
+
+			OnReturnTo(time);
 		}
 		public void Hide(double time)
 		{

@@ -728,6 +728,18 @@
 			<region source="hud_icons" hplacement="right" vplacement="bottom" x="302" y="117" w="5" h="5" />
 		</frame>
 
+		<frame name="stats_column_highlight">
+			<region source="hud_icons" hplacement="stretch" vplacement="stretch" x="0" y="340" w="32" h="32" />
+		</frame>
+
+		<frame name="stats_cell_highlight">
+			<region source="hud_icons" hplacement="stretch" vplacement="stretch" x="33" y="340" w="32" h="32" />
+		</frame>
+
+		<frame name="null_frame">
+			<region source="hud_icons" hplacement="stretch" vplacement="stretch" x="511" y="511" w="1" h="1" />
+		</frame>
+
 	</frames>
 
 </skin>
