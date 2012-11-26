@@ -47,6 +47,11 @@
 			Children.Add(row);						
 		}
 
+		public void Clear()
+		{
+			Children.Clear();
+		}
+
 		private UniScalar _elementHeight;
 	}
 }

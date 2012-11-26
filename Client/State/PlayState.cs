@@ -531,10 +531,10 @@
 					const int radius = frameSize / 4;
 					const int center = frameSize / 2;
 					int x = col - center;
-					int y = row - center;
+					int y = row - center;					
 					if (x*x + y*y < radius*radius)
 					{
-						pixels[p] = 0xff000000u + (uint)color.Value;
+						pixels[p] = color.XnaColor.PackedValue;
 					}
 				}
 

@@ -29,8 +29,24 @@
 
 		public void UpdatePlayerList(List<Player> players)
 		{
-			_playerList.Items.Clear();
-			_playerList.Items.AddRange(players.Select(player => player.Username));
+			_playerList.Clear();
+
+			foreach (var item in players)
+			{
+				var row = new ExtendedListControl.ExtendedListRow();
+				var colorIcon = new IconControl(string.Format("color_{0}", item.Color.ColorId))
+				{
+					Bounds = new UniRectangle(new UniScalar(), new UniScalar(4), new UniScalar(), new UniScalar(24))
+				};
+				var nickLabel = new LabelControl(item.Username)
+				{
+					Bounds = new UniRectangle(new UniScalar(), new UniScalar(4), new UniScalar(), new UniScalar())
+				};
+
+				row.AddSegment(colorIcon, new UniScalar(32));
+				row.AddSegment(nickLabel, new UniScalar());
+				_playerList.AddRow(row);				
+			}
 		}
 
 		public void SetEnableButtons(bool enable)
@@ -103,11 +119,10 @@
 
 		private void CreatePlayersTab()
 		{
-			_playerList = new ListControl()
+			_playerList = new ExtendedListControl(new UniScalar(32), "input.normal")
 			{
 				Name = PlayersTabName,
-				SelectionMode = ListSelectionMode.None,
-				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.93f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.02f, 0), new UniScalar(0.9f, 0), new UniScalar(0.93f, 0))
 			};
 
 			var off = new string[] { "playersIconInactive", "playersIconInactive", "playersIconHover", "playersIconInactive" };
@@ -142,7 +157,7 @@
 		}
 
 		private WrappableListControl _commandList;
-		private ListControl _playerList;
+		private ExtendedListControl _playerList;
 		private ButtonControl _deleteCommand;
 		private Tuple<List<UserCommand>, int> _lastCommandListAndSelectedOrder;
 

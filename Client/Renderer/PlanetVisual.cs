@@ -160,14 +160,7 @@
 			var fleetsText = Planet.NumFleetsPresent.ToString();
 			var fleetsTextSize = InfoFont.MeasureString(fleetsText);
 			var fleetsTextScreen = new Vector2(planetScreen.X - fleetsTextSize.X / 2.0f, planetScreen.Y - fleetsTextSize.Y / 2.0f);
-			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen + FleetsTextOffset, Color.LightSteelBlue);
-
-			// owner name
-			var ownerText = Planet.Owner != null ? Planet.Owner.Username : string.Empty;
-			var ownerTextSize = InfoFont.MeasureString(ownerText);
-			var ownerTextScreen = new Vector2(planetScreen.X - ownerTextSize.X / 2.0f, planetScreen.Y - ownerTextSize.Y / 2.0f);
-			var ownerTextColor = Planet.Owner != null ? Planet.Owner.Color.XnaColor : Color.Gray;
-			batch.DrawString(InfoFont, ownerText, ownerTextScreen + OwnerTextOffset, ownerTextColor);
+			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen + FleetsTextOffset, Color.LightSteelBlue);		
 
 			if (Planet.FleetChange != 0)
 			{
