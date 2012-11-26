@@ -2,18 +2,32 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
 	using System.Threading;
 	using Client.Common;
 	using Client.Renderer;
 	using Client.Renderer.Particles;
 	using Client.View;
+	using Microsoft.Xna.Framework;
 	using Model;
+	using Nuclex.UserInterface.Visuals.Flat;
 	using View.Play;
-	using System.Diagnostics;
 
 	class PlayState : GameState
 	{
+		#region Internal enum - HudState
+
+		private enum HudState
+		{
+			Initializing,
+			WaitingForRoundStart,
+			WaitingForRoundEnd,
+			AnimatingSimulationResult
+		}
+
+		#endregion
+
 		#region Private members
 
 		private Map _loadedMap;
@@ -495,12 +509,37 @@
 
 		public readonly Scene Scene;
 
-		private enum HudState
+		private void CreatePlayerColorIcons()
 		{
-			Initializing,
-			WaitingForRoundStart,
-			WaitingForRoundEnd,
-			AnimatingSimulationResult
+			const int frameYPosition = 479;
+			const int frameSize = 32;
+
+			var flatGui = Client.Visualizer as FlatGuiVisualizer;
+			var iconTexture = flatGui.flatGuiGraphics.bitmaps["hud_icons"];
+			foreach (var color in _loadedMap.Colors)
+			{
+				// Valid Ids begin from 1				
+				int frameXPosition = (frameSize + 1) * (color.ColorId - 1);
+				uint[] pixels = new uint[frameSize * frameSize];
+
+				for (int p = 0; p < pixels.Length; ++p)
+				{
+					int col = p % frameSize;
+					int row = p / frameSize;
+
+					// Circle inequality
+					const int radius = frameSize / 4;
+					const int center = frameSize / 2;
+					int x = col - center;
+					int y = row - center;
+					if (x*x + y*y < radius*radius)
+					{
+						pixels[p] = 0xff000000u + (uint)color.Value;
+					}
+				}
+
+				iconTexture.SetData<uint>(0, new Rectangle(frameXPosition, frameYPosition, frameSize, frameSize), pixels, 0, pixels.Length);
+			}
 		}
 
 		public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer)
@@ -509,6 +548,8 @@
 			_loadedMap = loadedMap;
 			_clientPlayer = clientPlayer;
 			_clientPlayer.IsClientPlayer = true;
+
+			CreatePlayerColorIcons();
 
 			Scene = new Scene(_loadedMap);
 			Scene.Visual = new SceneVisual(Client, Scene, ViewMgr.AnimationManager);
