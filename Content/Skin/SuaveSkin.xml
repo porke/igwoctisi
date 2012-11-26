@@ -733,13 +733,44 @@
 		</frame>
 
 		<frame name="stats_cell_highlight">
-			<region source="hud_icons" hplacement="stretch" vplacement="stretch" x="33" y="340" w="32" h="32" />
+			<region source="hud_icons" hplacement="stretch" vplacement="top" x="33" y="340" w="32" h="32" />
 		</frame>
 
 		<frame name="null_frame">
-			<region source="hud_icons" hplacement="stretch" vplacement="stretch" x="511" y="511" w="1" h="1" />
+			<region source="hud_icons" hplacement="stretch" vplacement="top" x="511" y="479" w="32" h="32" />
 		</frame>
 
+		<frame name="color_1">
+			<region source="hud_icons" hplacement="left" vplacement="top" x="0" y="479" w="32" h="32" />
+		</frame>
+
+		<frame name="color_2">
+			<region source="hud_icons" hplacement="left" vplacement="top" x="33" y="479" w="32" h="32" />
+		</frame>
+
+		<frame name="color_3">
+			<region source="hud_icons" hplacement="left" vplacement="top" x="66" y="479" w="32" h="32" />
+		</frame>
+
+		<frame name="color_4">
+			<region source="hud_icons" hplacement="left" vplacement="top" x="99" y="479" w="32" h="32" />
+		</frame>
+
+		<frame name="color_5">
+			<region source="hud_icons" hplacement="left" vplacement="top" x="132" y="479" w="32" h="32" />
+		</frame>
+
+		<frame name="color_6">
+			<region source="hud_icons" hplacement="left" vplacement="top" x="155" y="479" w="32" h="32" />
+		</frame>
+
+		<frame name="color_7">
+			<region source="hud_icons" hplacement="left" vplacement="top" x="188" y="479" w="32" h="32" />
+		</frame>
+
+		<frame name="color_8">
+			<region source="hud_icons" hplacement="left" vplacement="top" x="221" y="479" w="32" h="32" />
+		</frame>
 	</frames>
 
 </skin>

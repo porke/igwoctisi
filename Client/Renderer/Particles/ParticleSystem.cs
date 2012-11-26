@@ -386,7 +386,7 @@ namespace Client.Renderer.Particles
 				device.BlendState = settings.BlendState;
 				device.DepthStencilState = DepthStencilState.DepthRead;
 
-				// Set an effect parameter describing the viewport size. This is
+				// Set an effect parameter describing the viewport frameSize. This is
 				// needed to convert particle sizes into screen space point sizes.
 				effectViewportScaleParameter.SetValue(new Vector2(0.5f / device.Viewport.AspectRatio, -0.5f));
 
@@ -561,7 +561,7 @@ namespace Client.Renderer.Particles
 										  (float)random.NextDouble());
 
 			// Choose four random control values. These will be used by the vertex
-			// shader to give each particle a different size, rotation, and color.
+			// shader to give each particle a different frameSize, rotation, and color.
 			Color randomValues = new Color((byte)random.Next(255),
 										   (byte)random.Next(255),
 										   (byte)random.Next(255),

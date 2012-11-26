@@ -52,7 +52,7 @@
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.5f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))
             };
 #if DEBUG
-			tbPassword.SetPassword("passw0rld");
+			tbPassword.SetPassword("p");
 #endif
             tbPassword.OnCommandHandler += Login_Pressed;
 

@@ -46,7 +46,7 @@
 		);
 
 
-		// Describe the size of this vertex structure.
+		// Describe the frameSize of this vertex structure.
 		public const int SizeInBytes = 36;
 	}
 }
