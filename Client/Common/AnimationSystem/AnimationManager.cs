@@ -19,17 +19,17 @@ namespace Client.Common.AnimationSystem
 		}
 		public void Update(double delta)
 		{
+			lock (_animationsToAdd)
+			{
+				foreach (var newAnim in _animationsToAdd)
+				{
+					_animations.Add(newAnim);
+				}
+				_animationsToAdd.Clear();
+			}
+
 			lock (_animations)
 			{
-				lock (_animationsToAdd)
-				{
-					foreach (var newAnim in _animationsToAdd)
-					{
-						_animations.Add(newAnim);
-					}
-					_animationsToAdd.Clear();
-				}
-
 				for (int i = 0; i < _animations.Count; )
 				{
 					var animation = _animations[i];

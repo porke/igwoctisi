@@ -379,7 +379,10 @@
 						commands = Scene.AnimateChanges(simResults,
 							 (startedCommandIndex) =>
 							 {
-								 _gameHud.UpdateCommandList(commands, startedCommandIndex);
+								 InvokeOnMainThread(arg =>
+								 {
+									 _gameHud.UpdateCommandList(commands, startedCommandIndex);
+								 });
 							 },
 							 () =>
 							 {
