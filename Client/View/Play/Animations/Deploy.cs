@@ -7,6 +7,7 @@
 	using Client.Common.AnimationSystem;
 	using Client.Model;
 	using Client.Renderer;
+	using System.Diagnostics;
 
     public static class DeployAnimation
     {
@@ -18,7 +19,7 @@
 			var bw = new BackgroundWorker();
 			bw.DoWork += new DoWorkEventHandler((sender, workArgs) =>
 			{
-				var waiter = new ManualResetEvent(true);
+				var waiter = new ManualResetEventSlim(false);
 				foreach (var deploy in deploys)
 				{
 					Planet targetPlanet = deploy.Item1;
@@ -26,23 +27,23 @@
 					Action onDeployStart = deploy.Item3;
 					Action onDeployEnd = deploy.Item4;
 					Player player = targetPlanet.Owner;
-
-					waiter.Reset();
+					
 					onDeployStart();
+					waiter.Reset();
 					camera.Animate(animationManager)
 						.MoveToDeploy(targetPlanet)
 						.AddCallback(action =>
 						{
 							moveSpaceship(targetPlanet, newFleetsCount, waiter, player, scene, animationManager, camera);
 						});
-					waiter.WaitOne();
+					waiter.Wait();
 					onDeployEnd.Invoke();
 				}
 			});
 			bw.RunWorkerAsync();
         }
 
-		private static void moveSpaceship(Planet targetPlanet, int newFleetsCount, ManualResetEvent waiter, Player player,
+		private static void moveSpaceship(Planet targetPlanet, int newFleetsCount, ManualResetEventSlim waiter, Player player,
 			SceneVisual scene, AnimationManager animationManager, SimpleCamera camera)
 		{
 			bool performShipRotate = rand.Next() % 3 == 0;
