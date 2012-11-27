@@ -1,4 +1,4 @@
-<Map Name="Duel">
+<Map Name="Duel" Points="5">
 	<Planets>
 		<Planet Id="1" Name="Alpha"       BaseUnitsPerTurn="5" X="-300" Y="-200" Z="0" Radius="35" Diffuse="Textures\\Planets\\MarsDiffuse" />
 		<Planet Id="2" Name="Beta"        BaseUnitsPerTurn="3" X="-300" Y="100"  Z="0" Radius="45" Diffuse="Textures\\Planets\\VenusDiffuse" />
