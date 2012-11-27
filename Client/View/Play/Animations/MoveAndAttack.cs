@@ -19,7 +19,6 @@
 			var bw = new BackgroundWorker();
 			bw.DoWork += new DoWorkEventHandler((sender, workArgs) =>
 			{
-				var waiter = new ManualResetEvent(true);
 				foreach (var tpl in movesAndAttacks)
 				{
 					var sourcePlanet = tpl.Item1;
@@ -28,7 +27,8 @@
 					var onActionStart = tpl.Item4;
 					var onActinEnd = tpl.Item5;
 
-					waiter.Reset();
+					var waiter = new ManualResetEvent(false);
+
 					onActionStart();
 					camera.Animate(animationManager)
 						.MoveToAttack(sourcePlanet, targetPlanet)
@@ -98,13 +98,25 @@
 		{
 			var sourcePosition = sourcePlanet.Visual.GetPosition();
 			var targetPosition = targetPlanet.Visual.GetPosition();
+			var direction = Vector3.Normalize(targetPosition - sourcePosition);
 			var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, sourcePlanet.Owner.Color);
 			
+			
+			const float shipSpeedFactor = 0.007f;
+			float duration1 = (targetPosition - sourcePosition).Length() * shipSpeedFactor;
 			scene.AddSpaceship(ship);
 			ship.SetPosition(sourcePosition);
 			ship.LookAt(targetPosition, Vector3.Forward);
+			float waitDuration = 0.4f;
+			float duration2 = 1;
+
 			ship.Animate(animationManager)
-				.MoveTo(targetPosition, 2, Interpolators.AccelerateDecelerate())
+				.MoveTo(targetPosition - direction * (targetPlanet.Radius * 2 + ship.Length), duration1, Interpolators.Decelerate(1.4))
+				.Wait(waitDuration)
+				.Compound(duration2, c =>
+				{
+					c.MoveTo(targetPosition, duration2);
+				})
 				.AddCallback(s =>
 				{
 					Spaceship.Recycle(s);
