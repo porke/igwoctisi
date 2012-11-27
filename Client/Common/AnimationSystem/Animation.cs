@@ -50,6 +50,7 @@ namespace Client.Common.AnimationSystem
 
 		#region Animation members
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override void End()
 		{
 			base.End();
@@ -77,6 +78,10 @@ namespace Client.Common.AnimationSystem
 			{
 				_callbacks.Add(callback);
 			}
+			else
+			{
+				callback.Invoke(Context);
+			}
 		}
 		public Animation<S> AddAfter<S>(Animation<S> animation)
 		{
@@ -86,7 +91,6 @@ namespace Client.Common.AnimationSystem
 		public static Animation<T> Dummy(T context, AnimationManager animationManager)
 		{
 		    var animation = new DummyAnimation(context, animationManager);
-		    //animationManager.AddAnimation(animation);
             return animation;
 		}
 
