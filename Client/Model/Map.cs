@@ -14,6 +14,9 @@
 	[DataContract]
     public class Map
     {
+		[DataMember]
+		public int Points { get; set; }
+
         [DataMember]
         public string Name { get; set; }
 
@@ -48,6 +51,7 @@
 
         // Attributes names
         private const string NameAttribute = "Name";
+		private const string PointsAttribute = "Points";
         private const string PlanetIdAttribute = "PlanetId";
         private const string ColorIdAttribute = "ColorId";
         private const string ValueAttribute = "Value";
@@ -85,6 +89,7 @@
                 // Read map name
                 reader.ReadToFollowing(MapElement);
                 this.Name = reader.GetAttribute(NameAttribute);
+				this.Points = Convert.ToInt32(reader.GetAttribute(PointsAttribute));
 
                 // Read planets
                 reader.ReadToDescendant(PlanetsElement);
