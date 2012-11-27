@@ -396,10 +396,7 @@
 								 });
 							 });
 
-						InvokeOnMainThread(arg =>
-						{
-							_gameHud.UpdateCommandList(commands, commands.Count > 0 ? 0 : -1);
-						});
+						_gameHud.UpdateCommandList(commands, commands.Count > 0 ? 0 : -1);
 					});
 
 					// We have consumed that packet.
