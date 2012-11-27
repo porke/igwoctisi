@@ -761,15 +761,15 @@
 		</frame>
 
 		<frame name="color_6">
-			<region source="hud_icons" hplacement="left" vplacement="top" x="155" y="479" w="32" h="32" />
+			<region source="hud_icons" hplacement="left" vplacement="top" x="165" y="479" w="32" h="32" />
 		</frame>
 
 		<frame name="color_7">
-			<region source="hud_icons" hplacement="left" vplacement="top" x="188" y="479" w="32" h="32" />
+			<region source="hud_icons" hplacement="left" vplacement="top" x="198" y="479" w="32" h="32" />
 		</frame>
 
 		<frame name="color_8">
-			<region source="hud_icons" hplacement="left" vplacement="top" x="221" y="479" w="32" h="32" />
+			<region source="hud_icons" hplacement="left" vplacement="top" x="231" y="479" w="32" h="32" />
 		</frame>
 	</frames>
 
