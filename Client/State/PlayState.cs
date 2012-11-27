@@ -493,7 +493,6 @@
 					lock (_hudStateLocker)
 					{
 						_hudState = HudState.WaitingForRoundEnd;
-						HUD_SendCommands(null, EventArgs.Empty);
 					}
 				}
 				else
