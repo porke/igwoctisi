@@ -51,7 +51,9 @@
             {
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.5f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))
             };
-            tbPassword.SetPassword("pswd");
+#if DEBUG
+			tbPassword.SetPassword("p");
+#endif
             tbPassword.OnCommandHandler += Login_Pressed;
 
             btnLogin = new ButtonControl
@@ -68,13 +70,17 @@
             };
             btnQuit.Pressed += Quit_Pressed;
 
-
             var btnEnterPlayState = new ButtonControl
             {
                 Text = "Join or Create Game",
                 Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.6f, 40), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
             };
             btnEnterPlayState.Pressed += EnterPlayState_Pressed;
+
+			var testList = new ExtendedListControl(new UniScalar(0.1f, 0), "hud_background")
+			{
+				Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0))
+			};			
 
             screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit});
 #if DEBUG
@@ -88,10 +94,11 @@
 
         protected void Login_Pressed(object sender, EventArgs e)
         {
-			if (LoginPressed != null)
+			if (LoginPressed != null && tbPassword.GetPassword().Length > 0)
 			{
-				LoginPressed(sender, LoginPressed.CreateArgs(tbLogin.Text, tbPassword.GetPassword()));
-			}			
+
+				LoginPressed(sender, LoginPressed.CreateArgs(tbLogin.Text, tbPassword.GetHashedPassword()));
+			}
         }
         protected void Quit_Pressed(object sender, EventArgs e)
         {
@@ -102,19 +109,19 @@
         }
         protected void EnterPlayState_Pressed(object sender, EventArgs e)
         {
-			if (EnterPlayStatePressed != null)
+			if (EnterPlayStatePressed != null && tbPassword.GetPassword().Length > 0)
 			{
-				EnterPlayStatePressed(sender, EnterPlayStatePressed.CreateArgs(tbLogin.Text, tbPassword.GetPassword()));
+				EnterPlayStatePressed(sender, EnterPlayStatePressed.CreateArgs(tbLogin.Text, tbPassword.GetHashedPassword()));
 			}
         }
         #endregion
-	
 
 		public MainMenuView(MenuState state)
 			: base(state)
         {
             IsTransparent = true;
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
+			screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.45f, 0), new UniScalar(0.25f, 0), new UniScalar(0.55f, 0), new UniScalar(0.75f, 0));
 
             CreateChildControls();
 			State = ViewState.Loaded;

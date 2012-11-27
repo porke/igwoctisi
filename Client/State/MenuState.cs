@@ -5,7 +5,6 @@
 	using Client.Model;
 	using View;
 	using View.Menu;
-	using System.Collections.Generic;
 	using Client.View.Play;
 
 	public class MenuState : GameState

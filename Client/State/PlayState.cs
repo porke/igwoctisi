@@ -2,17 +2,32 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
 	using System.Threading;
 	using Client.Common;
 	using Client.Renderer;
 	using Client.Renderer.Particles;
 	using Client.View;
+	using Microsoft.Xna.Framework;
 	using Model;
+	using Nuclex.UserInterface.Visuals.Flat;
 	using View.Play;
 
 	class PlayState : GameState
 	{
+		#region Internal enum - HudState
+
+		private enum HudState
+		{
+			Initializing,
+			WaitingForRoundStart,
+			WaitingForRoundEnd,
+			AnimatingSimulationResult
+		}
+
+		#endregion
+
 		#region Private members
 
 		private Map _loadedMap;
@@ -53,19 +68,19 @@
 			// Deploment is only possible on clients own planet
 			if (planet.Owner == null)
 			{
-				_gameHud.AddMessage("Cannot deploy fleet: you have to own the target planet.");
+				_gameHud.SetNotification("Cannot deploy fleet: you have to own the target planet.");
 				return;
 			}
 			if (!planet.Owner.Username.Equals(_clientPlayer.Username))
 			{
-				_gameHud.AddMessage("Cannot deploy fleet: you have to own the target planet.");
+				_gameHud.SetNotification("Cannot deploy fleet: you have to own the target planet.");
 				return;
 			}
 			if (_clientPlayer.DeployableFleets < count)
 			{
 				if (_clientPlayer.DeployableFleets == 0)
 				{
-					_gameHud.AddMessage("Cannot deploy fleet: Not enough deployable fleets.");
+					_gameHud.SetNotification("Cannot deploy fleet: Not enough deployable fleets.");
 					return;
 				}
 				else
@@ -86,7 +101,7 @@
 			var command = _clientPlayer.Commands.Find(cmd => cmd.Type == UserCommand.CommandType.Deploy && cmd.TargetId == planet.Id);
 			if (command == null)
 			{
-				_gameHud.AddMessage("Cannot revert deploy: no fleets deployed to selected planet.");
+				_gameHud.SetNotification("Cannot revert deploy: no fleets deployed to selected planet.");
 				return;
 			}
 
@@ -119,7 +134,7 @@
 
 			if (source.Owner == null || !_clientPlayer.Username.Equals(source.Owner.Username))
 			{
-				_gameHud.AddMessage("Cannot move fleet: fleets can be sent only from owned planets.");
+				_gameHud.SetNotification("Cannot move fleet: fleets can be sent only from owned planets.");
 				return;
 			}
 
@@ -129,7 +144,7 @@
 				if (source.NumFleetsPresent < 1
 					|| source.FleetChange + source.NumFleetsPresent == 1)
 				{
-					_gameHud.AddMessage("Cannot move fleet: there must be at least one fleet remaining.");
+					_gameHud.SetNotification("Cannot move fleet: there must be at least one fleet remaining.");
 					return;
 				}
 				else
@@ -158,7 +173,7 @@
 			var targetCommand = _clientPlayer.Commands.Find(cmd => cmd.SourceId == source.Id && cmd.TargetId == target.Id);
 			if (targetCommand == null)
 			{
-				_gameHud.AddMessage("Cannot revert fleet move: no fleets moving.");
+				_gameHud.SetNotification("Cannot revert fleet move: no fleets moving.");
 				return;
 			}			
 
@@ -187,7 +202,7 @@
 			}
 			else
 			{
-				_gameHud.AddMessage(reason);
+				_gameHud.SetNotification(reason);
 			}
 		}
 		private void HUD_DeleteCommand(object sender, EventArgs<int> arg)
@@ -212,6 +227,10 @@
 			Client.Network.BeginSendCommands(_clientPlayer.Commands, OnSendOrders, null);
 			_clientPlayer.ClearCommandList();
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
+		}
+		private void HUD_ShowLadder(object sender, EventArgs arg)
+		{
+			Process.Start("http://www.google.com");
 		}
 
 		#endregion
@@ -271,7 +290,6 @@
 					InvokeOnMainThread(obj =>
 					{
 						Scene.Initialize(roundInfo, _players, _clientPlayer);
-						Scene.Map.UpdatePlanetShowDetails(_clientPlayer);
 						_gameHud.UpdateResourceData(_clientPlayer);
 						_gameHud.UpdatePlayerList(_players);
 						locker.Set();
@@ -328,7 +346,6 @@
 
 						_gameHud.UpdateResourceData(_clientPlayer);
 						_gameHud.EnableCommandButtons();
-						_loadedMap.UpdatePlanetShowDetails(_clientPlayer);
 
 						// Now wait to the end of the round.
 						_hudState = HudState.WaitingForRoundEnd;
@@ -358,12 +375,31 @@
 
                         // Begin animation and wait until it is done.
 						_hudState = HudState.AnimatingSimulationResult;
-                        Scene.AnimateChanges(simResults, () =>
-                        {
-							// Animation is done.
-                            _hudState = HudState.WaitingForRoundStart;
-                            Client.Network.BeginSetReady(null, null);
-                        });
+						List<UserCommand> commands = null;
+						commands = Scene.AnimateChanges(simResults,
+							 (startedCommandIndex) =>
+							 {
+								 InvokeOnMainThread(arg =>
+								 {
+									 _gameHud.UpdateCommandList(commands, startedCommandIndex);
+								 });
+							 },
+							 () =>
+							 {
+								 // Animation is done.
+								 InvokeOnMainThread(arg =>
+								 {
+									 commands.Clear();
+									 _gameHud.UpdateCommandList(commands, -1);
+									 _hudState = HudState.WaitingForRoundStart;
+									 Client.Network.BeginSetReady(null, null);
+								 });
+							 });
+
+						InvokeOnMainThread(arg =>
+						{
+							_gameHud.UpdateCommandList(commands, commands.Count > 0 ? 0 : -1);
+						});
 					});
 
 					// We have consumed that packet.
@@ -378,8 +414,9 @@
 		{			
 			InvokeOnMainThread(obj =>
 			{
-				var statsWindow = new GameStats(this, stats);
+				var statsWindow = new GameStats(this, stats, _clientPlayer.Username);
 				statsWindow.LeavePressed += HUD_LeaveGame;
+				statsWindow.LadderPressed += HUD_ShowLadder;
 				ViewMgr.PushLayer(statsWindow);
 			});
 		}
@@ -390,7 +427,7 @@
 			{
 				_players.RemoveAll(player => player.Username.Equals(username));
 				_gameHud.UpdatePlayerList(_players);
-				_gameHud.AddMessage(string.Format("Player {0} has left.", username));
+				_gameHud.SetNotification(string.Format("Player {0} has left.", username));
 			});
 		}
 
@@ -443,7 +480,7 @@
 					i++;
 				}
 			}
-		}
+		}		
 		public override void Update(double delta, double time)
 		{
 			base.Update(delta, time);
@@ -458,16 +495,8 @@
 
 					lock (_hudStateLocker)
 					{
-						if (_hudState == HudState.WaitingForRoundEnd)
-						{
-							// Create message box that will be shown until server'stat roundEnd or gameEnd message arrives.
-							var messageBox = new MessageBox(this, MessageBoxButtons.None)
-							{
-								Title = "Round simulating",
-								Message = "Waiting for server to simulate the turn."
-							};
-							ViewMgr.PushLayer(messageBox);
-						}
+						_hudState = HudState.WaitingForRoundEnd;
+						HUD_SendCommands(null, EventArgs.Empty);
 					}
 				}
 				else
@@ -483,12 +512,37 @@
 
 		public readonly Scene Scene;
 
-		private enum HudState
+		private void CreatePlayerColorIcons()
 		{
-			Initializing,
-			WaitingForRoundStart,
-			WaitingForRoundEnd,
-			AnimatingSimulationResult
+			const int frameYPosition = 479;
+			const int frameSize = 32;
+
+			var flatGui = Client.Visualizer as FlatGuiVisualizer;
+			var iconTexture = flatGui.flatGuiGraphics.bitmaps["hud_icons"];
+			foreach (var color in _loadedMap.Colors)
+			{
+				// Valid Ids begin from 1				
+				int frameXPosition = (frameSize + 1) * (color.ColorId - 1);
+				uint[] pixels = new uint[frameSize * frameSize];
+
+				for (int p = 0; p < pixels.Length; ++p)
+				{
+					int col = p % frameSize;
+					int row = p / frameSize;
+
+					// Circle inequality
+					const int radius = frameSize / 4;
+					const int center = frameSize / 2;
+					int x = col - center;
+					int y = row - center;					
+					if (x*x + y*y < radius*radius)
+					{
+						pixels[p] = color.XnaColor.PackedValue;
+					}
+				}
+
+				iconTexture.SetData<uint>(0, new Rectangle(frameXPosition, frameYPosition, frameSize, frameSize), pixels, 0, pixels.Length);
+			}
 		}
 
 		public PlayState(IGWOCTISI game, Map loadedMap, Player clientPlayer)
@@ -497,6 +551,8 @@
 			_loadedMap = loadedMap;
 			_clientPlayer = clientPlayer;
 			_clientPlayer.IsClientPlayer = true;
+
+			CreatePlayerColorIcons();
 
 			Scene = new Scene(_loadedMap);
 			Scene.Visual = new SceneVisual(Client, Scene, ViewMgr.AnimationManager);

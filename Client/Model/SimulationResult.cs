@@ -1,5 +1,6 @@
 ﻿namespace Client.Model
 {
+	using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -11,6 +12,7 @@
         /// <summary>
         /// Owner of move.
         /// </summary>
+        [DataMember]
         public string Player;
 
         /// <summary>
@@ -63,5 +65,28 @@
             Move,
             Deploy
         }
-    }
+
+		/// <summary>
+		/// Should the client player see this result's animation?
+		/// </summary>
+		/// <param name="scene"></param>
+		/// <returns></returns>
+		internal bool ShouldPlayerSeeAnimation(Scene scene)
+		{
+			var clientPlayer = scene.ClientPlayer;
+
+			// Check whether it's current player's order
+			if (Player.Equals(clientPlayer.Username))
+				return true;
+
+			// Check for deployment, move and attack
+			if (clientPlayer.OwnedPlanets.Any(
+				p => p.Id == TargetId || p.NeighbourPlanets.Any(np => np.Id == TargetId)))
+			{
+				return true;
+			}
+
+			return false;
+		}
+	}
 }

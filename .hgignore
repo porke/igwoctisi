@@ -11,3 +11,6 @@ _ReSharper.*
 *.user
 Content/Textures/Thumbs.db
 *.smproj
+Content/Skin/Thumbs.db
+Content/Textures/Effects/Thumbs.db
+Thumbs.db

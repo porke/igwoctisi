@@ -23,14 +23,24 @@
 		#region Events for SceneVisual
 
 		/// <summary>
+		/// Arguments: none
+		/// </summary>
+		internal event Action SaveCameraPosition;
+
+		/// <summary>
 		/// Arguments: [{targetPlanet, newFleetsCount, onEndCallback}]
 		/// </summary>
-		internal event Action<List<Tuple<Planet, int, Action>>> AnimDeploys;
+		internal event Action<List<Tuple<Planet, int, Action, Action>>> AnimDeploys;
 		
 		/// <summary>
 		/// Arguments: [{simResult, onEndCallback}]
 		/// </summary>
-		internal event Action<List<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>>> AnimMovesAndAttacks;
+		internal event Action<List<Tuple<Planet, Planet, SimulationResult, Action, Action<SimulationResult>>>> AnimMovesAndAttacks;
+
+		/// <summary>
+		/// Arguments: none
+		/// </summary>
+		internal event Action AnimCameraBack;
 
 		#endregion
 
@@ -75,18 +85,30 @@
 			}
 			return null;
 		}
-		public void AnimateChanges(IList<SimulationResult> simResults, Action endCallback)
+		public List<UserCommand> AnimateChanges(IList<SimulationResult> simResults, Action<int> startedNextCommandCallback, Action endCallback)
 		{
+			var commands = new List<UserCommand>();
 			CountdownEvent deployAnimsCounter = null;
 			CountdownEvent moveAndAttackAnimsCounter = null;
+			int lastActionDone = -1;
 
 			// Collect data
 			var deploys = simResults
-				.Where(sr => sr.Type == SimulationResult.MoveType.Deploy)
+				.Where(sr => sr.Type == SimulationResult.MoveType.Deploy
+					&& sr.ShouldPlayerSeeAnimation(this)
+				)
 				.Select(sr =>
 				{
 					var targetPlanet = Map.GetPlanetById(sr.TargetId);
-					return Tuple.Create<Planet, int, Action>(targetPlanet, sr.FleetCount,
+					var command = new UserCommand(targetPlanet, sr.FleetCount);
+					commands.Add(command);
+
+					return Tuple.Create<Planet, int, Action, Action>(targetPlanet, sr.FleetCount,
+						() => //action called when one deploy animation is about to start
+						{
+							Interlocked.Increment(ref lastActionDone);
+							startedNextCommandCallback(lastActionDone);
+						},
 						() => //action called when one deploy animation ends
 						{
 							targetPlanet.NumFleetsPresent = sr.TargetLeft;
@@ -96,15 +118,24 @@
 				.ToList();
 
 			var movesAndAttacks = simResults
-				.Where(sr => sr.Type == SimulationResult.MoveType.Move || sr.Type == SimulationResult.MoveType.Attack)
+				.Where(sr => (sr.Type == SimulationResult.MoveType.Move || sr.Type == SimulationResult.MoveType.Attack)
+					&& sr.ShouldPlayerSeeAnimation(this)
+				)
 				.Select(sr =>
 				{
 					var sourcePlanet = Map.GetPlanetById(sr.SourceId);
 					var targetPlanet = Map.GetPlanetById(sr.TargetId);
-					return Tuple.Create<Planet, Planet, SimulationResult, Action<SimulationResult>>(sourcePlanet, targetPlanet, sr,
+					var command = new UserCommand(sourcePlanet, targetPlanet);
+					commands.Add(command);
+
+					return Tuple.Create<Planet, Planet, SimulationResult, Action, Action<SimulationResult>>(sourcePlanet, targetPlanet, sr,
+						() =>
+						{
+							Interlocked.Increment(ref lastActionDone);
+							startedNextCommandCallback(lastActionDone);	
+						},
 						(srDone) => //action called when one move or attack animation ends
 						{
-							// TODO add animation changes
 							sourcePlanet.NumFleetsPresent = sr.SourceLeft;
 							targetPlanet.NumFleetsPresent = sr.TargetLeft;
 
@@ -117,21 +148,38 @@
 			deployAnimsCounter = new CountdownEvent(deploys.Count);
 			moveAndAttackAnimsCounter = new CountdownEvent(movesAndAttacks.Count);
 
-			AnimDeploys(deploys);
-
 			var bw = new BackgroundWorker();
 			bw.DoWork += new DoWorkEventHandler((sender, workArgs) =>
 			{
-				// First deploy all fleets
-				deployAnimsCounter.Wait();
+				SaveCameraPosition();
 
-				// Then move and attack
-				AnimMovesAndAttacks(movesAndAttacks);
-				moveAndAttackAnimsCounter.Wait();
+				// First deploy all fleets
+				if (deploys.Count > 0)
+				{
+					AnimDeploys(deploys);
+					deployAnimsCounter.Wait();
+				}
+
+				// Then show moves and attacks
+				if (movesAndAttacks.Count > 0)
+				{
+					AnimMovesAndAttacks(movesAndAttacks);
+					moveAndAttackAnimsCounter.Wait();
+				}
+
+				// Move camera to the old position
+				AnimCameraBack();
 
 				endCallback.Invoke();
 			});
-			bw.RunWorkerAsync();
+
+			// Don't try to animate if nothing happens
+			if (deploys.Count + movesAndAttacks.Count > 0)
+			{
+				bw.RunWorkerAsync();
+			}
+
+			return commands;
 		}
 		public void Initialize(NewRoundInfo roundInfo, List<Player> players, Player clientPlayer)
 		{

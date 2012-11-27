@@ -1,12 +1,12 @@
 ﻿namespace Client.Model
 {
-    using System;
-    using System.Runtime.Serialization;
-    using System.Xml.Serialization;
-    using Client.Renderer;
-    using Microsoft.Xna.Framework;
-    using Newtonsoft.Json;
-using System.Collections.Generic;
+	using System;
+	using System.Collections.Generic;
+	using System.Runtime.Serialization;
+	using System.Xml.Serialization;
+	using Client.Renderer;
+	using Microsoft.Xna.Framework;
+	using Newtonsoft.Json;
 
     [Serializable]
     [DataContract]
@@ -52,7 +52,6 @@ using System.Collections.Generic;
         [DataMember]
         public string CloudsAlpha { get; set; }
 
-        public bool ShowDetails { get; set; }
 		public int FleetChange { get; set; }
         public int NumFleetsPresent { get; set; }
 
@@ -66,8 +65,11 @@ using System.Collections.Generic;
 		[XmlIgnore, JsonIgnore]
 		public List<Planet> NeighbourPlanets { get; private set; }
 
-
-		internal void SetNeighbours(System.Collections.Generic.List<Planet> neighbourPlanets)
+		public Planet()
+		{
+			NeighbourPlanets = new List<Planet>();
+		}
+		internal void SetNeighbours(List<Planet> neighbourPlanets)
 		{
 			NeighbourPlanets = neighbourPlanets;
 		}

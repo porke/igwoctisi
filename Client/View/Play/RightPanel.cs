@@ -12,11 +12,10 @@
 
 	public class RightPanel : TabbedPaneControl
 	{
-		public event EventHandler CommandDeleted;
-		public event EventHandler CommandsSent;
+		public event EventHandler CommandDeleted;		
 	
 		public RightPanel()
-			: base(new UniRectangle(new UniVector(new UniScalar(1.0f, 0), new UniScalar(64)), new UniVector(new UniScalar(0.2f, 0), new UniScalar(0.3f, 0))), TabHeaderPosition.Left)
+			: base(new UniRectangle(new UniVector(new UniScalar(1.0f, 0), new UniScalar(64)), new UniVector(new UniScalar(0.2f, 0), new UniScalar(0.6f, 0))), TabHeaderPosition.Left)
 		{
 			TogglePosition = new UniVector(new UniScalar(1.0f, -40), new UniScalar(64));
 			DefaultPosition = new UniVector(new UniScalar(0.8f, 0), new UniScalar(64));
@@ -30,14 +29,29 @@
 
 		public void UpdatePlayerList(List<Player> players)
 		{
-			_playerList.Items.Clear();
-			_playerList.Items.AddRange(players.Select(player => player.Username));
+			_playerList.Clear();
+
+			foreach (var item in players)
+			{
+				var row = new ExtendedListControl.ExtendedListRow();
+				var colorIcon = new IconControl(string.Format("color_{0}", item.Color.ColorId))
+				{
+					Bounds = new UniRectangle(new UniScalar(), new UniScalar(4), new UniScalar(), new UniScalar(24))
+				};
+				var nickLabel = new LabelControl(item.Username)
+				{
+					Bounds = new UniRectangle(new UniScalar(), new UniScalar(4), new UniScalar(), new UniScalar())
+				};
+
+				row.AddSegment(colorIcon, new UniScalar(32));
+				row.AddSegment(nickLabel, new UniScalar());
+				_playerList.AddRow(row);				
+			}
 		}
 
-		public void EnableCommandButtons()
-		{
-			_sendCommands.Enabled = true;
-			_deleteCommand.Enabled = true;
+		public void SetEnableButtons(bool enable)
+		{			
+			_deleteCommand.Enabled = enable;
 		}
 
 		public void UpdateCommands(List<UserCommand> commands, int selectedCommand = -1)
@@ -81,16 +95,6 @@
 
 		#region Event handlers
 
-		private void SendCommands_Pressed(object sender, EventArgs e)
-		{
-			if (CommandsSent != null)
-			{
-				CommandsSent(_commandList, e);
-				_sendCommands.Enabled = false;
-				_deleteCommand.Enabled = false;
-			}
-		}
-
 		private void DeleteCommand_Pressed(object sender, EventArgs e)
 		{
 			if (CommandDeleted != null)
@@ -115,11 +119,10 @@
 
 		private void CreatePlayersTab()
 		{
-			_playerList = new ListControl()
+			_playerList = new ExtendedListControl(new UniScalar(32), "input.normal")
 			{
 				Name = PlayersTabName,
-				SelectionMode = ListSelectionMode.None,
-				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.9f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.02f, 0), new UniScalar(0.9f, 0), new UniScalar(0.93f, 0))
 			};
 
 			var off = new string[] { "playersIconInactive", "playersIconInactive", "playersIconHover", "playersIconInactive" };
@@ -136,24 +139,17 @@
 			};
 			_commandList = new WrappableListControl()
 			{
-				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.75f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.83f, 0))
 			};
 
 			_deleteCommand = new ButtonControl()
 			{
 				Text = "Delete",
-				Bounds = new UniRectangle(new UniScalar(0.55f, 0), new UniScalar(0.82f, 0), new UniScalar(0.4f, 0), new UniScalar(0.15f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.9f, 0), new UniScalar(0.4f, 0), new UniScalar(0.08f, 0))
 			};
 			_deleteCommand.Pressed += DeleteCommand_Pressed;
 
-			_sendCommands = new ButtonControl()
-			{
-				Text = "Send",
-				Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.82f, 0), new UniScalar(0.4f, 0), new UniScalar(0.15f, 0))
-			};
-			_sendCommands.Pressed += SendCommands_Pressed;
-
-			panel.Children.AddRange(new Control[] { _commandList, _deleteCommand, _sendCommands });
+			panel.Children.AddRange(new Control[] { _commandList, _deleteCommand });
 
 			var off = new string[] { "commandsIconInactive", "commandsIconInactive", "commandsIconHover", "commandsIconInactive" };
 			var on = new string[] { "commandsIconActive", "commandsIconActive", "commandsIconHover", "commandsIconActive" };
@@ -161,8 +157,7 @@
 		}
 
 		private WrappableListControl _commandList;
-		private ListControl _playerList;
-		private ButtonControl _sendCommands;
+		private ExtendedListControl _playerList;
 		private ButtonControl _deleteCommand;
 		private Tuple<List<UserCommand>, int> _lastCommandListAndSelectedOrder;
 

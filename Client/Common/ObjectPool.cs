@@ -4,7 +4,7 @@
     using System.Collections.Generic;    
 
     /// <summary>
-    /// Represents a pool of objects with a size limit.
+    /// Represents a pool of objects with a frameSize limit.
     /// </summary>
     /// <typeparam name="T">The type of object in the pool.</typeparam>
     public sealed class ObjectPool<T> : IDisposable
@@ -40,7 +40,7 @@
         /// <summary>
         /// Initializes a new instance of the ObjectPool class.
         /// </summary>
-        /// <param name="size">The size of the object pool.</param>
+        /// <param name="frameSize">The frameSize of the object pool.</param>
         /// <param name="factory">Factory method called when new object is required.</param>
         public ObjectPool(int size, Func<T> factoryFunc)
         {

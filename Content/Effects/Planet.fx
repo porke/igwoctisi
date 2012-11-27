@@ -61,32 +61,6 @@ struct VertexShaderOutput
     // over the triangle, and provided as input to your pixel shader.
 };
 
-VertexShaderOutput Glow_VertexShader(VertexShaderInput input)
-{
-    VertexShaderOutput output;
-
-	float4 position = input.Position * float4(1.05, 1.05, 1.05, 1.0);
-    float4 worldPosition = mul(position, World);
-    float4 viewPosition = mul(worldPosition, View);
-    output.Position = mul(viewPosition, Projection);
-	output.Normal = mul(input.Normal, World);
-	output.UV = input.UV;
-	
-    return output;
-}
-
-float4 Glow_PixelShader(VertexShaderOutput input) : COLOR0
-{
-	float4 color = Glow;
-
-	if (PlanetGrayScale > 0)
-		color.rgb = PlanetGrayScale * dot(color.rgb, float3(0.3, 0.59, 0.11));
-
-	color.w = sqrt(PlanetOpacity);
-
-	return color;
-}
-
 VertexShaderOutput Surface_VertexShader(VertexShaderInput input)
 {
     VertexShaderOutput output;
@@ -138,53 +112,25 @@ float4 Clouds_PixelShader(VertexShaderOutput input) : COLOR0
 
 technique Planet
 {
-    pass Pass1
+    pass Surface
     {
-		ZEnable = true;
-		ZWriteEnable = true;
+		StencilEnable = true;
+		
 		AlphaBlendEnable = true;
 		SrcBlend = SrcAlpha;
 		DestBlend = InvSrcAlpha;
-		
-		StencilEnable = true;
-		StencilMask = 0xFF;
-		StencilWriteMask = 0xFF;
-		StencilFail = Keep;
-		StencilZFail = Keep;
-		StencilPass = IncrSat;
-		StencilFunc = Always;
 
         VertexShader = compile vs_2_0 Surface_VertexShader();
         PixelShader = compile ps_2_0 Surface_PixelShader();
     }
-	pass Glow
-	{
-		ZEnable = true;
-		ZWriteEnable = true;
-		AlphaBlendEnable = true;		
-		SrcBlend = SrcAlpha;
-		DestBlend = InvSrcAlpha;
-		
-		StencilEnable = true;
-		StencilMask = 0xFF;
-		StencilWriteMask = 0xFF;
-		StencilFail = IncrSat;
-		StencilZFail = Keep;
-		StencilPass = Keep;
-		StencilFunc = Equal;
-
-        VertexShader = compile vs_2_0 Glow_VertexShader();
-        PixelShader = compile ps_2_0 Glow_PixelShader();
-	}
-    pass Pass2
+    pass Clouds
     {
-		ZEnable = false;
+		StencilEnable = false;
 		ZWriteEnable = false;
+
 		AlphaBlendEnable = true;
 		SrcBlend = SrcAlpha;
 		DestBlend = One;
-
-		StencilEnable = false;
 
         VertexShader = compile vs_2_0 Clouds_VertexShader();
         PixelShader = compile ps_2_0 Clouds_PixelShader();

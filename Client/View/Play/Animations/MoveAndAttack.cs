@@ -8,14 +8,16 @@
 	using Client.Model;
 	using Client.Renderer;
 	using Microsoft.Xna.Framework;
+	using System.ComponentModel;
 
 	public static class MoveAndAttack
 	{
 		public static void AnimateMovesAndAttacks(this SceneVisual scene,
-			IList<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>> movesAndAttacks,
+			IList<Tuple<Planet, Planet, SimulationResult, Action, Action<SimulationResult>>> movesAndAttacks,
 			AnimationManager animationManager, SimpleCamera camera)
 		{
-			ThreadPool.QueueUserWorkItem(obj =>
+			var bw = new BackgroundWorker();
+			bw.DoWork += new DoWorkEventHandler((sender, workArgs) =>
 			{
 				var waiter = new ManualResetEvent(true);
 				foreach (var tpl in movesAndAttacks)
@@ -23,55 +25,63 @@
 					var sourcePlanet = tpl.Item1;
 					var targetPlanet = tpl.Item2;
 					var simResult = tpl.Item3;
-					var callback = tpl.Item4;
+					var onActionStart = tpl.Item4;
+					var onActinEnd = tpl.Item5;
 
 					waiter.Reset();
-					if (simResult.Type == SimulationResult.MoveType.Move)
-					{
-						AnimateMove(sourcePlanet, targetPlanet, simResult, scene, animationManager, camera, waiter);
-					}
-					else
-					{
-						Debug.Assert(simResult.Type == SimulationResult.MoveType.Attack);
-						AnimateAttack(sourcePlanet, targetPlanet, simResult, scene, animationManager, camera, waiter);
-					}
+					onActionStart();
+					camera.Animate(animationManager)
+						.MoveToAttack(sourcePlanet, targetPlanet)
+						.AddCallback(action =>
+						{
+							if (simResult.Type == SimulationResult.MoveType.Move)
+							{
+								AnimateMove(sourcePlanet, targetPlanet, simResult, scene, animationManager, camera, waiter);
+							}
+							else
+							{
+								AnimateAttack(sourcePlanet, targetPlanet, simResult, scene, animationManager, camera, waiter);
+							}
+						});
 					waiter.WaitOne();
-					callback.Invoke(simResult);
+					onActinEnd.Invoke(simResult);
 				}
 			});
+			bw.RunWorkerAsync();
 		}
 
 		private static void AnimateMove(Planet sourcePlanet, Planet targetPlanet, SimulationResult simResult,
 			SceneVisual scene, AnimationManager animationManager, SimpleCamera camera, ManualResetEvent waiter)
 		{
 			var player = sourcePlanet.Owner;
-			var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, player.Color);
-			scene.AddSpaceship(ship);
+			var sourcePosition = sourcePlanet.Visual.GetPosition();
+			var targetPosition = targetPlanet.Visual.GetPosition();
+			var direction = Vector3.Normalize(targetPosition - sourcePosition);
+			sourcePosition += direction * sourcePlanet.Radius;
+			targetPosition -= direction * targetPlanet.Radius;
 
-			ship.SetPosition(sourcePlanet.Position);
-			ship.LookAt(targetPlanet.Position, Vector3.Forward);
+			var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, player.Color);
+
+			const float shipSpeedFactor = 0.015f;
+			float moveDuration = (targetPosition - sourcePosition).Length() * shipSpeedFactor;
+			float fadeDuration = ship.Length * shipSpeedFactor;
+
+			scene.AddSpaceship(ship);
+			ship.SetPosition(sourcePosition);
+			ship.LookAt(targetPosition, Vector3.Forward);
 			ship.Animate(animationManager)
-				.Compound(2.0, c =>
+				.Compound(moveDuration, c =>
 				{
 					// Move
-					c.InterpolateTo(targetPlanet.Position.X, 2.0, Interpolators.AccelerateDecelerate(),
-						(s) => s.X,
-						(s, x) => { s.X = (float)x; });
-					c.InterpolateTo(targetPlanet.Position.Y, 2.0, Interpolators.Decelerate(),
-						(s) => s.Y,
-						(s, y) => { s.Y = (float)y; });
-					c.InterpolateTo(targetPlanet.Position.Z, 1.5, Interpolators.Anticipate(),
-						(s) => s.Z,
-						(s, z) => { s.Z = (float)z; });
+					c.MoveTo(targetPlanet.Visual.GetPosition(), moveDuration, Interpolators.AccelerateDecelerate());
 
 					// Fade in and fade out
-					c.Wait(0.4)
-					.InterpolateTo(1, 0.4, Interpolators.OvershootInterpolator(),
+					c.InterpolateTo(1, fadeDuration, Interpolators.Accelerate(),
 						(s) => 0,
 						(s, o) => { s.Opacity = (float)o; }
 					)
-					.Wait(0.35)
-					.InterpolateTo(0, 0.8, Interpolators.Decelerate(1.4),
+					.Wait(moveDuration - 2 * fadeDuration)
+					.InterpolateTo(0, fadeDuration, Interpolators.Decelerate(1.4),
 						(s) => 1,
 						(s, o) => { s.Opacity = (float)o; }
 					);
@@ -86,13 +96,15 @@
 		private static void AnimateAttack(Planet sourcePlanet, Planet targetPlanet, SimulationResult simResult,
 			SceneVisual scene, AnimationManager animationManager, SimpleCamera camera, ManualResetEvent waiter)
 		{
+			var sourcePosition = sourcePlanet.Visual.GetPosition();
+			var targetPosition = targetPlanet.Visual.GetPosition();
 			var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, sourcePlanet.Owner.Color);
+			
 			scene.AddSpaceship(ship);
-
-			ship.SetPosition(sourcePlanet.Position);
-			ship.LookAt(targetPlanet.Position, Vector3.Forward);
+			ship.SetPosition(sourcePosition);
+			ship.LookAt(targetPosition, Vector3.Forward);
 			ship.Animate(animationManager)
-				.MoveTo(targetPlanet.Position, 2, Interpolators.AccelerateDecelerate())
+				.MoveTo(targetPosition, 2, Interpolators.AccelerateDecelerate())
 				.AddCallback(s =>
 				{
 					Spaceship.Recycle(s);

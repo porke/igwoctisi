@@ -13,14 +13,14 @@
 	public sealed class SceneVisual
 	{
 		#region Private members
-
-
+		
 		private Scene Scene { get; set; }
 		private Effect _fxLinks;
 		private VertexBuffer _sphereVB;
 		private readonly AnimationManager AnimationManager;
 		private readonly List<Spaceship> _spaceships = new List<Spaceship>();
 		private readonly List<Spaceship> _spaceshipsToAdd = new List<Spaceship>();
+		private Vector3 _cameraOldPosition;
 
 		public void UpdateSpaceSheeps()
 		{
@@ -44,13 +44,21 @@
 
 		#region Event handlers
 
-		private void Animation_Deploys(IList<Tuple<Planet, int, Action>> deploys)
+		private void Animation_SaveCameraPosition()
+		{
+			_cameraOldPosition = Scene.Map.Camera.GetPosition();
+		}
+		private void Animation_Deploys(IList<Tuple<Planet, int, Action, Action>> deploys)
 		{
 			this.AnimateDeploys(AnimationManager, Scene.Map.Camera, deploys);
 		}
-		private void Animation_MovesAndAttacks(IList<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>> movesAndAttacks)
+		private void Animation_MovesAndAttacks(IList<Tuple<Planet, Planet, SimulationResult, Action, Action<SimulationResult>>> movesAndAttacks)
 		{
 			this.AnimateMovesAndAttacks(movesAndAttacks, AnimationManager, Scene.Map.Camera);
+		}
+		private void Animation_CameraBack()
+		{
+			this.AnimateCameraBack(AnimationManager, Scene.Map.Camera, _cameraOldPosition);
 		}
 
 		#endregion
@@ -70,8 +78,10 @@
 			_sphereVB.SetData(vertices);
 
 			// Install handlers
-			scene.AnimDeploys += new Action<IList<Tuple<Planet, int, Action>>>(Animation_Deploys);
-			scene.AnimMovesAndAttacks += new Action<List<Tuple<Planet, Planet, SimulationResult, Action<SimulationResult>>>>(Animation_MovesAndAttacks);
+			scene.SaveCameraPosition += new Action(Animation_SaveCameraPosition);
+			scene.AnimDeploys += new Action<IList<Tuple<Planet, int, Action, Action>>>(Animation_Deploys);
+			scene.AnimMovesAndAttacks += new Action<List<Tuple<Planet, Planet, SimulationResult, Action, Action<SimulationResult>>>>(Animation_MovesAndAttacks);
+			scene.AnimCameraBack += new Action(Animation_CameraBack);
 
 			scene.Map.Visual = new MapVisual(client, scene.Map);
 			scene.Map.Visual.Initialize();
@@ -101,8 +111,6 @@
 		}
 		public void DrawIndicators(GraphicsDevice device, ICamera camera, double delta, double time)
 		{
-			Scene.Map.Visual.DrawLinks(device, camera, delta, time);
-
 			// move indicators
 			var selectedPlanet = Scene.Map.GetPlanetById(Scene.SelectedPlanet);
 
@@ -131,6 +139,22 @@
 						device.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
 					}
 				}*/
+			}
+		}
+		public void DrawGlow(GraphicsDevice device, ICamera camera, double delta, double time)
+		{
+			Scene.Map.Visual.DrawLinks(device, camera, delta, time);
+
+			// planets
+			foreach (var planet in Scene.Map.Planets)
+			{
+				var planetarySystem = Scene.Map.GetSystemByPlanetid(planet.Id);
+
+				var glow = planetarySystem != null && planet.Owner != null ? planet.Owner.Color.XnaColor : Color.LightGray;
+
+				bool grayPlanet = planet.Owner != Scene.ClientPlayer
+					&& planet.NeighbourPlanets.All(p => p.Owner != Scene.ClientPlayer);
+				planet.Visual.DrawGlow(device, camera, delta, time, glow, grayPlanet);
 			}
 		}
 	}

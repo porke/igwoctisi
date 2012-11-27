@@ -12,7 +12,7 @@
 	using Nuclex.UserInterface.Controls;
 	using State;
 
-    class GameHud : BaseView
+	class GameHud : BaseView
 	{
 		public event EventHandler<EventArgs<TechnologyType>> RaiseTechPressed;
 		public event EventHandler<EventArgs<string>> ChatMessageSent;
@@ -42,22 +42,22 @@
 			_topPanel = new TopPanel();
 			_topPanel.TechRaised += RaiseTech_Pressed;
 			_topPanel.LeftGame += LeaveGame_Pressed;
+			_topPanel.CommandsSent += SendCommands_Pressed;
 
 			_rightPanel = new RightPanel();
-			_rightPanel.CommandDeleted += DeleteCommand_Pressed;
-			_rightPanel.CommandsSent += SendCommands_Pressed;
+			_rightPanel.CommandDeleted += DeleteCommand_Pressed;			
 			_rightPanel.Toggled += PanelToggle_Pressed;
 
 			_bottomPanel = new BottomPanel();
 			_bottomPanel.ChatMessageSent += ChatMessage_Execute;
-			_bottomPanel.Toggled += PanelToggle_Pressed;
+			_bottomPanel.Toggled += PanelToggle_Pressed;			
 
             screen.Desktop.Children.AddRange(
                 new Control[] 
                 {
 					_topPanel,
 					_rightPanel,
-					_bottomPanel
+					_bottomPanel,
                 });
         }        
 
@@ -94,6 +94,7 @@
 			if (SendCommandsPressed != null)
 			{
 				SendCommandsPressed(sender, EventArgs.Empty);
+				_rightPanel.SetEnableButtons(false);
 			}
         }
 
@@ -165,6 +166,29 @@
 			BottomFlashAnimate();
         }
 
+		public void SetNotification(string message)
+		{
+			var notification = new NotificationPanel();			
+			screen.Desktop.Children.Add(notification);
+			notification.BringToFront();
+			notification.SetNotification(message);
+			
+			// Enqueuing the notification animation in the standard way (Move, Wait, Move) does not seem to work - 
+			// the panel disappears instantly after Wait finishes
+			notification.Animate(this)
+						.MoveControlTo(notification.DefaultPosition)
+						.Wait(notification.Timeout)
+						.AddCallback((c) =>
+						{
+							notification.Animate(this)
+										.MoveControlTo(notification.TogglePosition)
+										.AddCallback((ctrl) =>
+										{
+											screen.Desktop.Children.Remove(notification);
+										});
+						 });			
+		}
+
 		private void BottomFlashAnimate()
 		{
 			if (_bottomPanel.IsToggled)
@@ -179,7 +203,8 @@
 
 		public void EnableCommandButtons()
 		{
-			_rightPanel.EnableCommandButtons();
+			_rightPanel.SetEnableButtons(true);
+			_topPanel.EnableSendButton();
 		}
 
         #endregion

@@ -14,8 +14,12 @@ using Client.Renderer;
         [DataMember]
         public string Username { get; private set; }
 
-		public List<Planet> OwnedPlanets
+		public IList<Planet> OwnedPlanets
 		{
+			get
+			{
+				return _ownedPlanets.AsReadOnly();
+			}
 			set
 			{
 				_ownedPlanets.Clear();

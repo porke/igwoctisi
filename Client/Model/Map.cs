@@ -243,9 +243,7 @@
         [OnDeserialized]
         public void OnJsonDeserialized(StreamingContext context)
         {
-            // TODO Make Player (& Planet) references to be the same objects?
 			Camera.SetPosition((Camera.Min + Camera.Max) / 2.0f);
-
 			LoadNeighbours();
         }
 
@@ -269,50 +267,7 @@
 		public PlanetarySystem GetSystemByPlanetid(int planetId)
 		{
 			return PlanetarySystems.FirstOrDefault(x => x.Planets.Contains(planetId));
-		}
-        /// <summary>
-        /// The function determines which planets should have details visible, based on their owner
-        /// and proximity to the client players planets (that is only neighbouring ones).
-        /// </summary>        
-        public void UpdatePlanetShowDetails(Player clientPlayer)
-        {
-            var bidirectionalLinks = Links.SelectMany(linkElement =>
-            {
-                var swappedLink = new PlanetLink
-                {
-                    SourcePlanet = linkElement.TargetPlanet,
-                    TargetPlanet = linkElement.SourcePlanet
-                };
-                return new List<PlanetLink> { linkElement, swappedLink };
-            });
-
-            foreach (var planet in Planets)
-            {
-                planet.ShowDetails = false;
-
-                // Check if the client player is the owner
-                if (planet.Owner == clientPlayer)
-                {
-                    planet.ShowDetails = true;
-                }
-                // Find any neighbouring planets also owned by the client player
-                else
-                {
-                    // Select the links and duplicate them with swapped target and source
-                    // because the graph edges are bidirectional
-                    var neighbourIds = bidirectionalLinks.Where(link => link.SourcePlanet == planet.Id);                    
-                    var neighbours = neighbourIds.Select(link => GetPlanetById(link.TargetPlanet));
-                    foreach (var neighbour in neighbours)
-                    {
-                        if (neighbour.Owner == clientPlayer)
-                        {
-                            planet.ShowDetails = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+		}        
         public PlayerColor GetColorById(int colorId)
         {
             return Colors.First(c => c.ColorId == colorId);

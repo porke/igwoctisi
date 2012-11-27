@@ -1,24 +1,35 @@
 ﻿namespace Client.View.Controls
 {
-    using System;
-    using Microsoft.Xna.Framework.Input;
-    using Nuclex.UserInterface.Controls.Desktop;
-    using Nuclex.UserInterface.Input;
+	using System;
+	using System.Linq;
+	using System.Security.Cryptography;
+	using System.Text;
+	using Microsoft.Xna.Framework.Input;
 
     public class PasswordInputControl : CommandInputControl
     {
-        private string _value;
+        private string _value = "";
         public event EventHandler Activated;
         private object locker = new object();
+		private HMACSHA256 _hash;
 
         public PasswordInputControl()
-        {
+		{
+			_hash = new HMACSHA256(Encoding.UTF8.GetBytes("wotxD".ToCharArray()));
         }
 
         public string GetPassword()
         {
             return _value;
         }
+
+		public string GetHashedPassword()
+		{
+			var hashBytes = _hash.ComputeHash(Encoding.UTF8.GetBytes(GetPassword()));
+			string hashStr = new String(BitConverter.ToString(hashBytes).Replace("-", "").Select(c => Char.ToLower(c)).ToArray());
+
+			return hashStr;
+		}
 
         public void SetPassword(string password)
         {
@@ -109,6 +120,6 @@
                 Activated(this, EventArgs.Empty);
                 Text = string.Empty;
             }
-        }        
-    }
+        }
+	}
 }

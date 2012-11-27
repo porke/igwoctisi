@@ -123,6 +123,7 @@
     <Compile Include="Common\XnaExtensions.cs" />
     <Compile Include="Model\BackgroundLayer.cs" />
     <Compile Include="Renderer\Controls\FlatBottomPanelRenderer.cs" />
+    <Compile Include="Renderer\Controls\FlatExtendedListControl.cs" />
     <Compile Include="Renderer\Controls\FlatImageButtonControlRenderer.cs" />
     <Compile Include="Renderer\Controls\FlatImageChoiceControlRenderer.cs" />
     <Compile Include="Renderer\Controls\FlatRightPanelRenderer.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Renderer\Particles\ParticleSystems\PlanetarySystemConvexParticleSystem.cs" />
     <Compile Include="Renderer\PlanetarySystemVisual.cs" />
     <Compile Include="View\Controls\CommandInputControl.cs" />
+    <Compile Include="View\Controls\ExtendedListControl.cs" />
     <Compile Include="View\Controls\IconControl.cs" />
     <Compile Include="View\Controls\ImageButtonControl.cs" />
     <Compile Include="View\Controls\ImageCheckButtonControl.cs" />
@@ -208,6 +210,7 @@
     <Compile Include="View\Lobby\GameLobbyView.cs" />
     <Compile Include="View\Menu\MenuBackground.cs" />
     <Compile Include="View\MessageBox.cs" />
+    <Compile Include="View\Play\NotificationPanel.cs" />
     <Compile Include="View\Play\RightPanel.cs" />
     <Compile Include="View\Play\TopPanel.cs" />
     <Compile Include="View\SplashScreen.cs" />
@@ -255,7 +258,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

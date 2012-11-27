@@ -1,11 +1,10 @@
 ﻿namespace Client.Renderer
 {
-	using System.Linq;
-	using Microsoft.Xna.Framework.Graphics;
-	using Client.Model;
-	using Microsoft.Xna.Framework.Content;
-	using Microsoft.Xna.Framework;
 	using System;
+	using System.Linq;
+	using Client.Model;
+	using Microsoft.Xna.Framework;
+	using Microsoft.Xna.Framework.Graphics;
 	
 	public class MapVisual
 	{

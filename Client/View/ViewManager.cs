@@ -125,6 +125,11 @@
 						view.Show(this, currentTime);
 					}
 
+					if (view.State == ViewState.ReturnedTo)
+					{
+						view.ReturnTo(this, currentTime);
+					}
+
 					if (view.State == ViewState.Hidden)
 					{
 						_viewStack.RemoveAt(i);
