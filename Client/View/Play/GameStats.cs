@@ -14,14 +14,14 @@
 	class GameStats : BaseView
 	{
 		public event EventHandler LeavePressed;
-		public event EventHandler LadderPressed;
+		public event EventHandler<EventArgs<int>> LadderPressed;
 
 		private void CreateChildControls(string clientUsername, EndgameData stats)
 		{
 			CreateGrid(clientUsername, stats);
 			CreateTopSection(stats.Time, stats.Rounds, stats.Places.IndexOf(clientUsername) + 1);
 			CreatePlayersSection(stats.Places, clientUsername);
-			CreateBottomSection();
+			CreateBottomSection(stats.GameId);
 			CreateStatsSection(stats.Stats, stats.Places, clientUsername);
 		}
 
@@ -105,10 +105,10 @@
 			}
 		}
 
-		private void CreateBottomSection()
+		private void CreateBottomSection(int gameId)
 		{
 			var bottomDesc = new LabelControl("You can view the scores on the ladder page.");			
-			var linkDesc = new LabelControl("Press the Ladder button to open the browser.");
+			var linkDesc = new LabelControl("Press the View game button to open the browser.");
 			if (_isCompact)
 			{
 				InsertToCell(bottomDesc, 0, _vertCells - 4, _horzCells - 2);
@@ -132,11 +132,13 @@
 
 			var btnLadder = new ButtonControl
 			{
-				Text = "Ladder",
+				Text = "View game",
 			};
 			InsertToCell(btnLadder, _horzCells - 2, _vertCells - 2, 1, 2);
 			SetPadding(btnLadder, 8);
 			btnLadder.Pressed += Ladder_Pressed;
+
+			_browserGameId = gameId;
 		}
 
 		private void InsertToCell(Control content, int x, int y, int colspan = 1, int rowspan = 1)
@@ -185,7 +187,7 @@
 		{
 			if (LadderPressed != null)
 			{
-				LadderPressed(this, EventArgs.Empty);
+				LadderPressed(this, LadderPressed.CreateArgs(_browserGameId));
 			}
 		}
 
@@ -206,6 +208,8 @@
 		private int _vertCells;
 		private WindowControl _gridHost;
 		private bool _isCompact;
+
+		private int _browserGameId;
 
 		private const string WindowTitle = "You have {0} the game";
 		private const string TopLabelTimeText = "You played for {0} rounds which lasted {1}{2}{3} in total.";

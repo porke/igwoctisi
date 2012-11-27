@@ -26,5 +26,8 @@
 
 		[DataMember]
 		public string EndType { get; set; }
+
+		[DataMember]
+		public int GameId { get; set; }
 	}
 }

@@ -228,9 +228,9 @@
 			_clientPlayer.ClearCommandList();
 			_gameHud.UpdateCommandList(_clientPlayer.Commands);
 		}
-		private void HUD_ShowLadder(object sender, EventArgs arg)
+		private void HUD_ShowGameInBrowser(object sender, EventArgs<int> arg)
 		{
-			Process.Start("http://www.google.com");
+			Process.Start(string.Format("http://zpi.modriv.net/game/{0}", arg.Item));
 		}
 
 		#endregion
@@ -413,7 +413,7 @@
 			{
 				var statsWindow = new GameStats(this, stats, _clientPlayer.Username);
 				statsWindow.LeavePressed += HUD_LeaveGame;
-				statsWindow.LadderPressed += HUD_ShowLadder;
+				statsWindow.LadderPressed += HUD_ShowGameInBrowser;
 				ViewMgr.PushLayer(statsWindow);
 			});
 		}
