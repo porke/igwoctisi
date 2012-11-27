@@ -23,18 +23,6 @@
 
             ViewMgr.PushLayer(menuBackground);
 			ViewMgr.PushLayer(mainMenu);
-
-			var eg = new EndgameData();
-			eg.Places.AddRange(new List<string>() { "asadas", "sadsad", "asdsadsa" });
-			eg.Stats.Add(new GameStatistic() { Name = "sasas", Values = new List<int>() { 1, 2, 3 } });
-			eg.Stats.Add(new GameStatistic() { Name = "sasas", Values = new List<int>() { 2, 3, 1 } });
-			eg.Stats.Add(new GameStatistic() { Name = "sasas", Values = new List<int>() { 3, 2, 1 } });
-			eg.Stats.Add(new GameStatistic() { Name = "sasas", Values = new List<int>() { 1, 2, 3 } });
-			eg.Stats.Add(new GameStatistic() { Name = "sasas", Values = new List<int>() { 2, 3, 1 } });
-			eg.Stats.Add(new GameStatistic() { Name = "sasas", Values = new List<int>() { 3, 2, 1 } });
-			eg.Stats.Add(new GameStatistic() { Name = "sasas", Values = new List<int>() { 1, 2, 3 } });
-
-			ViewMgr.PushLayer(new GameStats(this, eg, "sadsad"));
         }
 
         public override void OnEnter()
