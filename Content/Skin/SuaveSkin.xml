@@ -733,7 +733,7 @@
 		</frame>
 
 		<frame name="stats_cell_highlight">
-			<region source="hud_icons" hplacement="stretch" vplacement="top" x="33" y="340" w="32" h="32" />
+			<region source="hud_icons" hplacement="stretch" vplacement="stretch" x="33" y="340" w="32" h="32" />
 		</frame>
 
 		<frame name="null_frame">

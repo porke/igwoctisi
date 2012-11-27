@@ -35,7 +35,7 @@
 			_vertCells = stats.Stats.Count + 2 + 2 + 1;
 
 			// If the window is too thin, add two additional rows for ladder labels
-			_isCompact = _horzCells < 4;
+			_isCompact = _horzCells < 5;
 			if (_isCompact)
 			{
 				_vertCells += 2;
@@ -83,9 +83,14 @@
 			for (int stat = 0; stat < stats.Count; ++stat)
 			{
 				var statistic = stats[stat];
-				var statName = new LabelControl(statistic.Name);
-				InsertToCell(statName, 0, stat + 3);
-				SetPadding(statName, 12, 0, 0, 0);
+				var statName = string.Empty;
+				if (!StatisticNames.TryGetValue(statistic.Name, out statName))
+				{
+					statName = statistic.Name;
+				}
+				var statNameLabel = new LabelControl(statName);
+				InsertToCell(statNameLabel, 0, stat + 3);
+				SetPadding(statNameLabel, 12, 0, 0, 0);
 
 				for (int plr = 0; plr < places.Count; plr++)
 				{
@@ -206,8 +211,8 @@
 
 		private int _horzCells;
 		private int _vertCells;
-		private WindowControl _gridHost;
 		private bool _isCompact;
+		private WindowControl _gridHost;
 
 		private int _browserGameId;
 
@@ -220,5 +225,18 @@
 		private const int StatCellPadding = 8;
 		private const int RowHeightInPx = 24;
 		private const int ColumnWidthInPx = 128;
+
+		private readonly Dictionary<string, string> StatisticNames = new Dictionary<string, string>()
+		{
+			{"planetsLost", "Planets lost"},
+			{"techSpent", "Tech points spent"},
+			{"fleetsDeployed", "Fleets deployed"},
+			{"fleetsLost", "Fleets lost"},
+			{"systemsLost", "Systems lost"},
+			{"techGained", "Tech points gained"},
+			{"moveCount", "Move count"},
+			{"fleetsDestroyed", "Fleets destroyed"},
+			{"planetsConquered", "Planets conquered"},
+		};
 	}
 }
