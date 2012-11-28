@@ -21,6 +21,8 @@
 		public event EventHandler<EventArgs<Planet, int>> FleetDeployReverted;
 		public event EventHandler<EventArgs<Planet, int>> FleetDeployed;
 
+		public bool Enabled { get; set; }
+
 		#region Protected members
 
 		protected ViewportControl _viewport;
@@ -72,6 +74,8 @@
 
 		public void Viewport_MouseClick(ViewportControl viewport, MouseButtons button)
 		{
+			if (!Enabled) return;
+
 			var scene = PlayState.Scene;
 			var keyboard = Keyboard.GetState();
 			var count = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift)
@@ -186,6 +190,7 @@
             IsTransparent = false;
 			InputReceiver = new NuclexScreenInputReceiver(screen, false);
             PlayState = state;
+			Enabled = true;
 			State = ViewState.Loaded;
 
 			_viewport = new ViewportControl(PlayState.Client.Renderer);

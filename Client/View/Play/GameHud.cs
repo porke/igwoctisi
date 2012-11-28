@@ -97,7 +97,7 @@
 			if (SendCommandsPressed != null)
 			{
 				SendCommandsPressed(sender, EventArgs.Empty);
-				_rightPanel.SetEnableButtons(false);
+				_rightPanel.SetEnableCommandButtons(false);
 			}
         }
 
@@ -237,8 +237,8 @@
 
 		public void EnableCommandButtons()
 		{
-			_rightPanel.SetEnableButtons(true);
-			_topPanel.EnableSendButton();
+			_rightPanel.SetEnableCommandButtons(true);
+			_topPanel.SetEnableCommandButtons(true);
 		}
 
         #endregion
