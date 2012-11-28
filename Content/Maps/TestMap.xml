@@ -1,0 +1,80 @@
+<Map Name="Duel" Points="5">
+	<Planets>
+		<Planet Id="1" Name="Alpha"       BaseUnitsPerTurn="5" X="-300" Y="-200" Z="0" Radius="35" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		<Planet Id="2" Name="Beta"        BaseUnitsPerTurn="3" X="-300" Y="100"  Z="0" Radius="45" Diffuse="Textures\\Planets\\VenusDiffuse" />
+		<Planet Id="3" Name="Gamma"       BaseUnitsPerTurn="3" X="0"    Y="-200" Z="0" Radius="55" Diffuse="Textures\\Planets\\JupiterDiffuse" />
+		<Planet Id="4" Name="A"           BaseUnitsPerTurn="5" X="200"  Y="300"  Z="0" Radius="25" Diffuse="Textures\\Planets\\MoonDiffuse" />
+		<Planet Id="5" Name="B"		      BaseUnitsPerTurn="3" X="0"    Y="300"  Z="0" Radius="40" Diffuse="Textures\\Planets\\EarthDiffuse" Clouds="Textures\\Planets\\EarthClouds" CloudsAlpha="Textures\\Planets\\EarthCloudsAlpha" />
+		<Planet Id="6" Name="C" 		  BaseUnitsPerTurn="3" X="200"  Y="100"  Z="0" Radius="30" Diffuse="Textures\\Planets\\PlutonDiffuse" />
+		<Planet Id="7" Name="Core Prime"  BaseUnitsPerTurn="6" X="0"    Y="100"  Z="0" Radius="50" Diffuse="Textures\\Planets\\PlanetDiffuse1" />
+	</Planets>
+	
+	<Links>
+		<PlanetLink SourceId="1" TargetId="2"/>
+		<PlanetLink SourceId="1" TargetId="3"/>
+		<PlanetLink SourceId="2" TargetId="7"/>
+		<PlanetLink SourceId="3" TargetId="7"/>
+		<PlanetLink SourceId="7" TargetId="5"/>
+		<PlanetLink SourceId="7" TargetId="6"/>
+		<PlanetLink SourceId="4" TargetId="5"/>
+		<PlanetLink SourceId="4" TargetId="6"/>
+	</Links>
+	
+	<Systems>
+		<PlanetarySystem Name="Southern Sector" FleetBonusPerTurn="4" Id="1">
+			<Planets>
+				<PlanetId>1</PlanetId>
+				<PlanetId>2</PlanetId>
+				<PlanetId>3</PlanetId>			
+			</Planets>
+			<Bounds>
+				<Point3 X="-350"	Y="-250"	Z="0"/>
+				<Point3 X="-350"	Y="150"		Z="0"/>
+				<Point3 X="-200"	Y="150"		Z="0"/>
+				<Point3 X="50"		Y="-125"	Z="0"/>
+				<Point3 X="50"		Y="-250"	Z="0"/>
+			</Bounds>
+		</PlanetarySystem>
+		<PlanetarySystem Name="Northern Sector" FleetBonusPerTurn="4" Id="2">
+			<Planets>
+				<PlanetId>4</PlanetId>
+				<PlanetId>5</PlanetId>
+				<PlanetId>6</PlanetId>
+			</Planets>
+			<Bounds>
+				<Point3 X="-50"	Y="250"		Z="0"/>
+				<Point3 X="-50"	Y="350"		Z="0"/>
+				<Point3 X="250"	Y="350"		Z="0"/>				
+				<Point3 X="250"	Y="50"		Z="0"/>
+				<Point3 X="150"	Y="50"		Z="0"/>
+			</Bounds>
+		</PlanetarySystem>		
+	</Systems>
+
+  <PlayerStartingData>
+    <StartingData PlanetId="1" ColorId="1"/>
+    <StartingData PlanetId="3" ColorId="2"/>
+    
+	<!--
+	<StartingData PlanetId="5" ColorId="3"/>
+	<StartingData PlanetId="6" ColorId="4"/>
+	-->
+	</PlayerStartingData>
+
+	<Background>
+		<Layer Texture="Textures\\Space" Origin="-960;540" Size="1920;1080" Speed="0,1" />
+	</Background>
+	
+  <Colors>
+    <Color Id="1" Value="0x00FC0300" />
+    <Color Id="2" Value="0x0000FF00" />
+    <Color Id="3" Value="0x000000FF" />
+    <Color Id="4" Value="0x0000FFFF" />
+    <Color Id="5" Value="0x00FFEF00" />
+    <Color Id="6" Value="0x0093F600" />
+    <Color Id="7" Value="0x00FFFFFF" />
+    <Color Id="8" Value="0x00FE7F00" />
+  </Colors>
+
+	<Camera Min="-200;-200;-2000" Max="200;200;-500" />
+</Map>
