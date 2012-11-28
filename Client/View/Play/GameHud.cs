@@ -37,6 +37,9 @@
 		private RightPanel _rightPanel;
 		private BottomPanel _bottomPanel;
 
+		private bool _rightAnimToggled;
+		private bool _bottomAnimToggled;
+
         protected void CreateChildControls()
         {
 			_topPanel = new TopPanel();
@@ -159,6 +162,37 @@
         {
 			_rightPanel.UpdateCommands(commands, selectedCommand);
         }
+
+		public void EnterAnimationMode()
+		{
+			// Hide the chat panel if necessary, but unhide the command panel so that
+			// the user can see their commands executed
+			_rightAnimToggled = _rightPanel.IsToggled;
+			if (_rightPanel.IsToggled)
+			{
+				_rightPanel.InvokeToggle();
+			}
+
+			_bottomAnimToggled = _bottomPanel.IsToggled;
+			if (!_bottomPanel.IsToggled)
+			{
+				_bottomPanel.InvokeToggle();
+			}
+		}
+
+		public void ExitAnimationMode()
+		{
+			// Unhide the panels if necessary
+			if (!_bottomAnimToggled)
+			{
+				_bottomPanel.InvokeToggle();
+			}
+
+			if (_rightAnimToggled)
+			{
+				_rightPanel.InvokeToggle();
+			}
+		}
 
         public void AddMessage(string message)
         {
