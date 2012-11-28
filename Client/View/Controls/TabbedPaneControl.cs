@@ -133,6 +133,11 @@
 			UpdateHideButtonStyle();
 		}
 
+		public void InvokeToggle()
+		{
+			TogglePanel(null, EventArgs.Empty);
+		}
+
 		// TODO: fix awful code duplication in AddTab
 		public void AddTab(string tabText, Control content)
 		{

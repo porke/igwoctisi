@@ -5,7 +5,6 @@
 	using System.Reflection;
 	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Graphics;
-	using System.Diagnostics;
 
 	public static class Utils
     {
