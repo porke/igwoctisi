@@ -31,9 +31,13 @@
 
 		#region Update functions
 
-		public void EnableSendButton()
+		public void SetEnableCommandButtons(bool enabled)
 		{
-			_sendCommands.Enabled = true;			
+			_sendCommands.Enabled = enabled;
+			_offensiveTech.Enabled = enabled;
+			_defensiveTech.Enabled = enabled;
+			_defensiveTech.Enabled = enabled;
+			_economicTech.Enabled = enabled;
 		}
 
 		public void UpdateResources(Player player)
@@ -80,7 +84,7 @@
 			if (CommandsSent != null)
 			{
 				CommandsSent(this, e);
-				_sendCommands.Enabled = false;
+				SetEnableCommandButtons(false);
 			}
 		}
 

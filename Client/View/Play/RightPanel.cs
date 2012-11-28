@@ -49,7 +49,7 @@
 			}
 		}
 
-		public void SetEnableButtons(bool enable)
+		public void SetEnableCommandButtons(bool enable)
 		{			
 			_deleteCommand.Enabled = enable;
 		}

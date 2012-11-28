@@ -375,6 +375,7 @@
 
                         // Begin animation and wait until it is done.
 						_hudState = HudState.AnimatingSimulationResult;
+						_gameViewport.Enabled = false;
 						_gameHud.EnterAnimationMode();
 						List<UserCommand> commands = null;
 						commands = Scene.AnimateChanges(simResults,
@@ -393,6 +394,7 @@
 									 commands.Clear();
 									 _gameHud.UpdateCommandList(commands, -1);
 									 _gameHud.ExitAnimationMode();
+									 _gameViewport.Enabled = true;
 									 _hudState = HudState.WaitingForRoundStart;
 									 Client.Network.BeginSetReady(null, null);
 								 });
