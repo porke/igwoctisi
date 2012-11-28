@@ -117,28 +117,6 @@
 			if (selectedPlanet != null)
 			{
 				selectedPlanet.Visual.DrawIndicators(device, camera, delta, time, Scene.HoveredLink);
-				
-				/*
-				foreach (var link in Scene.Map.Links.Where(x => x.SourcePlanet == selectedPlanet.Id || x.TargetPlanet == selectedPlanet.Id))
-				{
-					var sourcePlanet = Scene.Map.GetPlanetById(link.SourcePlanet);
-					var targetPlanet = Scene.Map.GetPlanetById(link.TargetPlanet);
-
-					var linkWorld = Matrix.CreateScale(XnaRenderer.LinkJointSize) *
-						Matrix.CreateTranslation(
-						(sourcePlanet.X + targetPlanet.X) / 2.0f,
-						(sourcePlanet.Y + targetPlanet.Y) / 2.0f,
-						(sourcePlanet.Z + targetPlanet.Z) / 2.0f);
-
-					_fxLinks.Parameters["World"].SetValue(linkWorld);
-					_fxLinks.Parameters["Ambient"].SetValue(Scene.HoveredLink == link ? XnaRenderer.HoverAmbient : 0.0f);
-					foreach (var pass in _fxLinks.CurrentTechnique.Passes)
-					{
-						pass.Apply();
-						device.SetVertexBuffer(_sphereVB);
-						device.DrawPrimitives(PrimitiveType.TriangleList, 0, _sphereVB.VertexCount / 3);
-					}
-				}*/
 			}
 		}
 		public void DrawGlow(GraphicsDevice device, ICamera camera, double delta, double time)
