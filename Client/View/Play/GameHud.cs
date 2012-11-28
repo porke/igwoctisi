@@ -183,12 +183,14 @@
 		public void ExitAnimationMode()
 		{
 			// Unhide the panels if necessary
-			if (!_bottomAnimToggled)
+			bool hasBottomChanged = _bottomPanel.IsToggled == !_bottomAnimToggled;
+			if (!_bottomAnimToggled && !hasBottomChanged)
 			{
 				_bottomPanel.InvokeToggle();
 			}
 
-			if (_rightAnimToggled)
+			bool hasRightChanged = _rightPanel.IsToggled == !_rightAnimToggled;
+			if (_rightAnimToggled && !hasRightChanged)
 			{
 				_rightPanel.InvokeToggle();
 			}
@@ -197,7 +199,7 @@
         public void AddMessage(string message)
         {
 			_bottomPanel.AddMessage(message);
-			BottomFlashAnimate();
+			BottomPanelFlash(true);
         }
 
 		public void SetNotification(string message)
@@ -223,14 +225,17 @@
 						 });			
 		}
 
-		private void BottomFlashAnimate()
+		private void BottomPanelFlash(bool newMessage)
 		{
+			if (_bottomPanel.IsFlashing && newMessage) return;
+
 			if (_bottomPanel.IsToggled)
 			{
+				_bottomPanel.IsFlashing = true;
 				_bottomPanel.Animate(this).Wait(1.0f).AddCallback((ctrl) =>
 				{
 					_bottomPanel.ToggleChatButtonFlash();
-					BottomFlashAnimate();
+					BottomPanelFlash(false);
 				});
 			}
 		}

@@ -9,13 +9,17 @@
 
 	public class BottomPanel : TabbedPaneControl
 	{
-		public event EventHandler ChatMessageSent;		
+		public event EventHandler ChatMessageSent;
+
+		public bool IsFlashing { get; set; }
 
 		public BottomPanel() 
 			: base(new UniRectangle(new UniScalar(0.0f, 32), new UniScalar(1.0f, 0), new UniScalar(0.4f, 0.0f), new UniScalar(0.3f, 40)))
 		{
 			DefaultPosition = new UniVector(new UniScalar(0, 32), new UniScalar(0.7f, -40));
 			TogglePosition = new UniVector(new UniScalar(0.0f, 32), new UniScalar(1.0f, -40));
+			IsFlashing = false;
+			Toggled += Toggled_Handler;
 
 			var panel = new LabelControl
 			{
@@ -45,6 +49,14 @@
 			var chatIcon = new string[] { "chatIconPulsing", "chatIconActive", "chatIconHover", "chatIconPushed" };
 			var chatIconPulse = new string[] { "chatIconPulsing", "chatIconPulsing", "chatIconPulsing", "chatIconPulsing" };
 			AddTab(chatIcon, chatIconPulse, panel);
+		}
+
+		private void Toggled_Handler(object sender, EventArgs e)
+		{
+			if (!IsToggled && IsFlashing)
+			{
+				IsFlashing = false;
+			}
 		}
 
 		#region Update functions
