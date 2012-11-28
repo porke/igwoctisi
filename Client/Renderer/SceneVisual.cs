@@ -127,8 +127,7 @@
 			foreach (var planet in Scene.Map.Planets)
 			{
 				var planetarySystem = Scene.Map.GetSystemByPlanetid(planet.Id);
-
-				var glow = planetarySystem != null && planet.Owner != null ? planet.Owner.Color.XnaColor : Color.LightGray;
+				var glow = planet.Owner != null ? planet.Owner.Color.XnaColor : Color.LightGray;
 
 				bool grayPlanet = planet.Owner != Scene.ClientPlayer
 					&& planet.NeighbourPlanets.All(p => p.Owner != Scene.ClientPlayer);
