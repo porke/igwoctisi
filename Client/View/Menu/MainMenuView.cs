@@ -40,16 +40,21 @@
 
         protected void CreateChildControls()
         {
+			var loginWindow = new IconControl("rounded_background")
+			{
+				Bounds = new UniRectangle(new UniScalar(0.65f, 0), new UniScalar(0.55f, 0), new UniScalar(0.25f, 0), new UniScalar(0.25f, 0))
+			};
+
             tbLogin = new CommandInputControl
             {
 				Text = GetOSUniqueUsername(),
-                Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.4f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))                
+                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.1f, 0), new UniScalar(0.9f, 0), new UniScalar(0.2f, 0))                
             };
             tbLogin.OnCommandHandler += Login_Pressed;
 
             tbPassword = new PasswordInputControl
             {
-                Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.5f, 0), new UniScalar(0.42f, 0), new UniScalar(0.05f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.4f, 0), new UniScalar(0.9f, 0), new UniScalar(0.2f, 0))
             };
 #if DEBUG
 			tbPassword.SetPassword("p");
@@ -59,32 +64,33 @@
             btnLogin = new ButtonControl
             {
                 Text = "Login",
-                Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.6f, 0), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.7f, 0), new UniScalar(0.4f, 0), new UniScalar(0.2f, 0))
             };
             btnLogin.Pressed += Login_Pressed;
 
             btnQuit = new ButtonControl
             {
                 Text = "Quit",
-                Bounds = new UniRectangle(new UniScalar(0.51f, 0), new UniScalar(0.6f, 0), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.55f, 0), new UniScalar(0.7f, 0), new UniScalar(0.4f, 0), new UniScalar(0.2f, 0))
             };
             btnQuit.Pressed += Quit_Pressed;
 
             var btnEnterPlayState = new ButtonControl
             {
                 Text = "Join or Create Game",
-                Bounds = new UniRectangle(new UniScalar(0.29f, 0), new UniScalar(0.6f, 40), new UniScalar(0.2f, 0), new UniScalar(0.05f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.8f, 0), new UniScalar(1.0f, -40), new UniScalar(0.2f, 0), new UniScalar(0.0f, 40))
             };
             btnEnterPlayState.Pressed += EnterPlayState_Pressed;
 
 			var testList = new ExtendedListControl(new UniScalar(0.1f, 0), "hud_background")
 			{
 				Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0))
-			};			
+			};
 
-            screen.Desktop.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit});
+			screen.Desktop.Children.Add(loginWindow);
+			loginWindow.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit });
 #if DEBUG
-            screen.Desktop.Children.Add(btnEnterPlayState);
+			screen.Desktop.Children.Add(btnEnterPlayState);
 #endif
         }
 
@@ -96,7 +102,6 @@
         {
 			if (LoginPressed != null && tbPassword.GetPassword().Length > 0)
 			{
-
 				LoginPressed(sender, LoginPressed.CreateArgs(tbLogin.Text, tbPassword.GetHashedPassword()));
 			}
         }
@@ -121,7 +126,7 @@
         {
             IsTransparent = true;
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
-			screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.45f, 0), new UniScalar(0.25f, 0), new UniScalar(0.55f, 0), new UniScalar(0.75f, 0));
+			screen.Desktop.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0));
 
             CreateChildControls();
 			State = ViewState.Loaded;
