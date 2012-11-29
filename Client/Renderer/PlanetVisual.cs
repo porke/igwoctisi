@@ -121,14 +121,14 @@
 				device.DrawPrimitives(PrimitiveType.TriangleList, 0, VB.VertexCount / 3);
 			}
 		}
-		public void DrawIndicators(GraphicsDevice device, ICamera camera, double delta, double time, PlanetLink hoveredLink)
+		public void DrawIndicators(GraphicsDevice device, ICamera camera, double delta, double time, PlanetLink hoveredLink, float opacity)
 		{
 			foreach (var indicator in _indicators)
 			{
 				bool hovered = hoveredLink != null
 					&& indicator.TargetPlanet.Id == hoveredLink.TargetPlanet;
 
-				indicator.Draw(device, camera, delta, time, hovered);
+				indicator.Draw(device, camera, delta, time, hovered, opacity);
 			}
 		}
 		public void DrawGlow(GraphicsDevice device, ICamera camera, double delta, double time, Color glow, bool grayPlanet)

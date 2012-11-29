@@ -21,8 +21,9 @@
 		private readonly List<Spaceship> _spaceships = new List<Spaceship>();
 		private readonly List<Spaceship> _spaceshipsToAdd = new List<Spaceship>();
 		private Vector3 _cameraOldPosition;
+		private float _indicatorsOpacity = 1.0f;
 
-		public void UpdateSpaceSheeps()
+		private void UpdateSpaceSheeps()
 		{
 			// add spacesheeps
 			lock (_spaceshipsToAdd)
@@ -47,6 +48,7 @@
 		private void Animation_SaveCameraPosition()
 		{
 			_cameraOldPosition = Scene.Map.Camera.GetPosition();
+			_indicatorsOpacity = 0;
 		}
 		private void Animation_Deploys(IList<Tuple<Planet, int, Action, Action>> deploys)
 		{
@@ -59,6 +61,7 @@
 		private void Animation_CameraBack()
 		{
 			this.AnimateCameraBack(AnimationManager, Scene.Map.Camera, _cameraOldPosition);
+			_indicatorsOpacity = 1;
 		}
 
 		#endregion
@@ -116,7 +119,7 @@
 
 			if (selectedPlanet != null)
 			{
-				selectedPlanet.Visual.DrawIndicators(device, camera, delta, time, Scene.HoveredLink);
+				selectedPlanet.Visual.DrawIndicators(device, camera, delta, time, Scene.HoveredLink, _indicatorsOpacity);
 			}
 		}
 		public void DrawGlow(GraphicsDevice device, ICamera camera, double delta, double time)

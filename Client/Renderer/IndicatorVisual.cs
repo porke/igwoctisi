@@ -66,7 +66,7 @@
 			_transformedModelBBox = new BoundingBox(Vector3.Transform(bbox.Min, _worldMatrix), Vector3.Transform(bbox.Max, _worldMatrix));
 		}
 
-		public void Draw(GraphicsDevice device, ICamera camera, double delta, double time, bool hovered)
+		public void Draw(GraphicsDevice device, ICamera camera, double delta, double time, bool hovered, float opacity)
 		{
 			Color color = Color.DarkRed;
 			if (TargetPlanet.Owner == SourcePlanet.Owner)
@@ -94,7 +94,7 @@
 					effect.View = camera.GetView();
 					effect.Projection = camera.Projection;
 					effect.DiffuseColor = color.ToVector3();
-					effect.Alpha = hovered ? 2.0f : 0.6f;
+					effect.Alpha = opacity * (hovered ? 2.0f : 0.6f);
 				}
 				mesh.Draw();
 			}

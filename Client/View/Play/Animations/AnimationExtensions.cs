@@ -50,7 +50,7 @@
 		}
 
 		public static Rotate<Spaceship> Rotate(this Animation<Spaceship> animation, Vector3 rotateAxis, float startingAngle, float targetAngle,
-			float duration, Func<double, double> interpolator = null)
+			double duration, Func<double, double> interpolator = null)
 		{
 			return animation.Rotate<Spaceship>(rotateAxis, startingAngle, targetAngle, duration, interpolator);
 		}
@@ -64,6 +64,12 @@
 			Func<double, double> interpolator, Func<Spaceship, double> startingValueGetter, Action<Spaceship, double> valueChanger)
 		{
 			return animation.InterpolateTo<Spaceship>(targetValue, duration, interpolator, startingValueGetter, valueChanger);
+		}
+
+		public static Interpolate<Spaceship> Interpolate(this Animation<Spaceship> animation, float duration, Func<double, double> interpolator,
+			Action<Spaceship, double> valueChanger)
+		{
+			return animation.Interpolate<Spaceship>(duration, interpolator, valueChanger);
 		}
 
 		#endregion

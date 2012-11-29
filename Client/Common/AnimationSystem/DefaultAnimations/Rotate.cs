@@ -21,7 +21,7 @@
 		/// <param name="duration"></param>
 		/// <param name="interpolator"></param>
 		public Rotate(T context, AnimationManager animationManager, Vector3 rotateAxis, float startingAngle, float targetAngle,
-			float duration, Func<double, double> interpolator)
+			double duration, Func<double, double> interpolator)
 			: base (context, animationManager, duration, interpolator)
 		{
 			_rotateAxis = rotateAxis;
@@ -58,7 +58,7 @@
 		/// <param name="interpolator"></param>
 		/// <returns></returns>
 		public static Rotate<T> Rotate<T>(this Animation<T> animation, Vector3 rotateAxis, float startingAngle, float targetAngle,
-			float duration, Func<double, double> interpolator = null)
+			double duration, Func<double, double> interpolator = null)
 			where T : ITransformable
 		{
 			var after = new Rotate<T>(animation.Context, animation.AnimationMgr, rotateAxis, startingAngle, targetAngle, duration, interpolator);
