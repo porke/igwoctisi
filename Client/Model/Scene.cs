@@ -178,6 +178,10 @@
 			{
 				bw.RunWorkerAsync();
 			}
+			else
+			{
+				endCallback.Invoke();
+			}
 
 			return commands;
 		}

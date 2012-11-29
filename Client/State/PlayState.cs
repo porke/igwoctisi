@@ -488,7 +488,7 @@
 			Scene.Update(delta, time);
 
 			// Update timer
-			if (_secondsLeft > 0)
+			if (_secondsLeft >= 0)
 			{
 				if (_secondsLeft - delta <= 0)
 				{
