@@ -47,11 +47,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Skin\SuaveSheet.png">
-      <Name>SuaveSheet</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Fonts\Timer.spritefont">
       <Name>Timer</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -295,6 +290,13 @@
     </Compile>
     <Compile Include="Textures\Layer5.png">
       <Name>Layer5</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Skin\SuaveSheet.png">
+      <Name>SuaveSheet</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
