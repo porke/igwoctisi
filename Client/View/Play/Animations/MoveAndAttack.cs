@@ -110,12 +110,23 @@
 			float waitDuration = 0.4f;
 			float duration2 = 1;
 
+			int attackerFleetsBack = simResult.AttackerFleetsBack;
+			bool surrender = attackerFleetsBack > 0;
+
 			ship.Animate(animationManager)
-				.MoveTo(targetPosition - direction * (targetPlanet.Radius * 2 + ship.Length), duration1, Interpolators.Decelerate(1.4))
+				.MoveTo(targetPosition - direction * (targetPlanet.Radius + ship.Length), duration1, Interpolators.Decelerate(1.4))
 				.Wait(waitDuration)
 				.Compound(duration2, c =>
 				{
-					c.MoveTo(targetPosition, duration2);
+					if (surrender)
+					{
+						ship.LookAt(sourcePosition, Vector3.Forward);
+						c.MoveTo(sourcePosition, duration2);
+					}
+					else
+					{
+						c.MoveTo(targetPosition, duration2);
+					}
 				})
 				.AddCallback(s =>
 				{
