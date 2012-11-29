@@ -1,0 +1,320 @@
+<Map Name="Hexagon" Points="5">
+	<Planets>
+		<!-- Uklad 1 -->
+		<Planet Id="1" Name="A1" BaseUnitsPerTurn="3" X="800" Y="1200" Z="0" Radius="30" Diffuse="Textures\\Planets\\EarthDiffuse" Clouds="Textures\\Planets\\EarthClouds" CloudsAlpha="Textures\\Planets\\EarthCloudsAlpha" />
+		<Planet Id="2" Name="A2" BaseUnitsPerTurn="2" X="800" Y="1000" Z="0" Radius="20" Diffuse="Textures\\Planets\\VenusDiffuse" />
+		<Planet Id="3" Name="A3" BaseUnitsPerTurn="2" X="600" Y="1200" Z="0" Radius="20" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		<Planet Id="4" Name="A4" BaseUnitsPerTurn="6" X="600" Y="1000" Z="0" Radius="60" Diffuse="Textures\\Planets\\JupiterDiffuse" />
+		<!-- Uklad 2 -->
+		<Planet Id="5" Name="B1" BaseUnitsPerTurn="3" X="1200" Y="0" Z="0" Radius="30" Diffuse="Textures\\Planets\\EarthDiffuse" Clouds="Textures\\Planets\\EarthClouds" CloudsAlpha="Textures\\Planets\\EarthCloudsAlpha" />
+		<Planet Id="6" Name="B2" BaseUnitsPerTurn="2" X="1100" Y="100" Z="0" Radius="20" Diffuse="Textures\\Planets\\VenusDiffuse" />
+		<Planet Id="7" Name="B3" BaseUnitsPerTurn="2" X="1100" Y="-100" Z="0" Radius="20" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		<Planet Id="8" Name="B4" BaseUnitsPerTurn="6" X="950" Y="0" Z="0" Radius="60" Diffuse="Textures\\Planets\\JupiterDiffuse" />
+		<!-- Uklad 3 -->
+		<Planet Id="9" Name="C1" BaseUnitsPerTurn="3" X="800" Y="-1200" Z="0" Radius="30" Diffuse="Textures\\Planets\\EarthDiffuse" Clouds="Textures\\Planets\\EarthClouds" CloudsAlpha="Textures\\Planets\\EarthCloudsAlpha" />
+		<Planet Id="10" Name="C2" BaseUnitsPerTurn="2" X="600" Y="-1200" Z="0" Radius="20" Diffuse="Textures\\Planets\\VenusDiffuse" />
+		<Planet Id="11" Name="C3" BaseUnitsPerTurn="2" X="800" Y="-1000" Z="0" Radius="20" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		<Planet Id="12" Name="C4" BaseUnitsPerTurn="6" X="600" Y="-1000" Z="0" Radius="60" Diffuse="Textures\\Planets\\JupiterDiffuse" />
+		<!-- Uklad 4 -->
+		<Planet Id="13" Name="D1" BaseUnitsPerTurn="3" X="-800" Y="-1200" Z="0" Radius="30" Diffuse="Textures\\Planets\\EarthDiffuse" Clouds="Textures\\Planets\\EarthClouds" CloudsAlpha="Textures\\Planets\\EarthCloudsAlpha" />
+		<Planet Id="14" Name="D2" BaseUnitsPerTurn="2" X="-600" Y="-1200" Z="0" Radius="20" Diffuse="Textures\\Planets\\VenusDiffuse" />
+		<Planet Id="15" Name="D3" BaseUnitsPerTurn="2" X="-800" Y="-1000" Z="0" Radius="20" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		<Planet Id="16" Name="D4" BaseUnitsPerTurn="6" X="-600" Y="-1000" Z="0" Radius="60" Diffuse="Textures\\Planets\\JupiterDiffuse" />
+		<!-- Uklad 5 -->
+		<Planet Id="17" Name="E1" BaseUnitsPerTurn="3" X="-1200" Y="0" Z="0" Radius="30" Diffuse="Textures\\Planets\\EarthDiffuse" Clouds="Textures\\Planets\\EarthClouds" CloudsAlpha="Textures\\Planets\\EarthCloudsAlpha" />
+		<Planet Id="18" Name="E2" BaseUnitsPerTurn="2" X="-1100" Y="100" Z="0" Radius="20" Diffuse="Textures\\Planets\\VenusDiffuse" />
+		<Planet Id="19" Name="E3" BaseUnitsPerTurn="2" X="-1100" Y="-100" Z="0" Radius="20" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		<Planet Id="20" Name="E4" BaseUnitsPerTurn="6" X="-950" Y="0" Z="0" Radius="60" Diffuse="Textures\\Planets\\JupiterDiffuse" />
+		<!-- Uklad 6 -->
+		<Planet Id="21" Name="F1" BaseUnitsPerTurn="3" X="-800" Y="1200" Z="0" Radius="30" Diffuse="Textures\\Planets\\EarthDiffuse" Clouds="Textures\\Planets\\EarthClouds" CloudsAlpha="Textures\\Planets\\EarthCloudsAlpha" />
+		<Planet Id="22" Name="F2" BaseUnitsPerTurn="2" X="-800" Y="1000" Z="0" Radius="20" Diffuse="Textures\\Planets\\VenusDiffuse" />
+		<Planet Id="23" Name="F3" BaseUnitsPerTurn="2" X="-600" Y="1200" Z="0" Radius="20" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		<Planet Id="24" Name="F4" BaseUnitsPerTurn="6" X="-600" Y="1000" Z="0" Radius="60" Diffuse="Textures\\Planets\\JupiterDiffuse" />
+		
+		<!-- Krawedzie heksagonu -->
+		<Planet Id="25" Name="K1" BaseUnitsPerTurn="1" X="1000" Y="600" Z="0" Radius="10" Diffuse="Textures\\Planets\\PlutonDiffuse" />
+		<Planet Id="26" Name="K2" BaseUnitsPerTurn="1" X="1000" Y="-600" Z="0" Radius="10" Diffuse="Textures\\Planets\\PlutonDiffuse" />
+		<Planet Id="27" Name="K3" BaseUnitsPerTurn="1" X="0" Y="-1300" Z="0" Radius="10" Diffuse="Textures\\Planets\\PlutonDiffuse" />
+		<Planet Id="28" Name="K4" BaseUnitsPerTurn="1" X="-1000" Y="-600" Z="0" Radius="10" Diffuse="Textures\\Planets\\PlutonDiffuse" />
+		<Planet Id="29" Name="K5" BaseUnitsPerTurn="1" X="-1000" Y="600" Z="0" Radius="10" Diffuse="Textures\\Planets\\PlutonDiffuse" />
+		<Planet Id="30" Name="K6" BaseUnitsPerTurn="1" X="0" Y="1300" Z="0" Radius="10" Diffuse="Textures\\Planets\\PlutonDiffuse" />
+
+		<!-- Polaczenia z trojkatem -->
+		<Planet Id="31" Name="P1" BaseUnitsPerTurn="2" X="420" Y="750" Z="0" Radius="20" Diffuse="Textures\\Planets\\MercuryDiffuse" />
+		<Planet Id="32" Name="P2" BaseUnitsPerTurn="2" X="755" Y="-180" Z="0" Radius="20" Diffuse="Textures\\Planets\\MercuryDiffuse" />
+		<Planet Id="33" Name="P3" BaseUnitsPerTurn="2" X="480" Y="-775" Z="0" Radius="20" Diffuse="Textures\\Planets\\MercuryDiffuse" />
+		<Planet Id="34" Name="P4" BaseUnitsPerTurn="2" X="-480" Y="-775" Z="0" Radius="20" Diffuse="Textures\\Planets\\MercuryDiffuse" />
+		<Planet Id="35" Name="P5" BaseUnitsPerTurn="2" X="-755" Y="-180" Z="0" Radius="20" Diffuse="Textures\\Planets\\MercuryDiffuse" />
+		<Planet Id="36" Name="P6" BaseUnitsPerTurn="2" X="-420" Y="750" Z="0" Radius="20" Diffuse="Textures\\Planets\\MercuryDiffuse" />
+		
+		<!-- Krawedz trojkata -->
+		<Planet Id="37" Name="Kr1_1" BaseUnitsPerTurn="1" X="240" Y="500" Z="0" Radius="10" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		<Planet Id="38" Name="Kr1_2" BaseUnitsPerTurn="4" X="400" Y="140" Z="0" Radius="40" Diffuse="Textures\\Planets\\VenusDiffuse" />
+		<Planet Id="39" Name="Kr1_3" BaseUnitsPerTurn="1" X="560" Y="-360" Z="0" Radius="10" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		
+		<Planet Id="40" Name="Kr2_1" BaseUnitsPerTurn="1" X="360" Y="-550" Z="0" Radius="10" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		<Planet Id="41" Name="Kr2_2" BaseUnitsPerTurn="4" X="0" Y="-550" Z="0" Radius="40" Diffuse="Textures\\Planets\\VenusDiffuse" />
+		<Planet Id="42" Name="Kr2_3" BaseUnitsPerTurn="1" X="-360" Y="-550" Z="0" Radius="10" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		
+		<Planet Id="43" Name="Kr3_1" BaseUnitsPerTurn="1" X="-560" Y="-360" Z="0" Radius="10" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		<Planet Id="44" Name="Kr3_2" BaseUnitsPerTurn="4" X="-400" Y="140" Z="0" Radius="40" Diffuse="Textures\\Planets\\VenusDiffuse" />
+		<Planet Id="45" Name="Kr3_3" BaseUnitsPerTurn="1" X="-240" Y="500" Z="0" Radius="10" Diffuse="Textures\\Planets\\MarsDiffuse" />
+		
+		<!-- Trojkat -->
+		<Planet Id="46" Name="T1" BaseUnitsPerTurn="4" X="220" Y="-220" Z="0" Radius="40" Diffuse="Textures\\Planets\\NeptuneDiffuse" />
+		<Planet Id="47" Name="T2" BaseUnitsPerTurn="4" X="0" Y="280" Z="0" Radius="40" Diffuse="Textures\\Planets\\NeptuneDiffuse" />
+		<Planet Id="48" Name="T3" BaseUnitsPerTurn="4" X="-220" Y="-220" Z="0" Radius="40" Diffuse="Textures\\Planets\\NeptuneDiffuse" />
+		<Planet Id="49" Name="TX" BaseUnitsPerTurn="15" X="0" Y="0" Z="0" Radius="150" Diffuse="Textures\\Planets\\SaturnDiffuse" />
+	</Planets>
+	
+	<Links>
+		<!-- Uklady -->
+		<PlanetLink SourceId="1" TargetId="2"/>
+		<PlanetLink SourceId="1" TargetId="3"/>
+		<PlanetLink SourceId="2" TargetId="4"/>
+		<PlanetLink SourceId="3" TargetId="4"/>
+
+		<PlanetLink SourceId="5" TargetId="6"/>
+		<PlanetLink SourceId="5" TargetId="7"/>
+		<PlanetLink SourceId="6" TargetId="8"/>
+		<PlanetLink SourceId="7" TargetId="8"/>
+
+		<PlanetLink SourceId="9" TargetId="10"/>
+		<PlanetLink SourceId="9" TargetId="11"/>
+		<PlanetLink SourceId="10" TargetId="12"/>
+		<PlanetLink SourceId="11" TargetId="12"/>
+
+		<PlanetLink SourceId="13" TargetId="14"/>
+		<PlanetLink SourceId="13" TargetId="15"/>
+		<PlanetLink SourceId="14" TargetId="16"/>
+		<PlanetLink SourceId="15" TargetId="16"/>
+
+		<PlanetLink SourceId="17" TargetId="18"/>
+		<PlanetLink SourceId="17" TargetId="19"/>
+		<PlanetLink SourceId="18" TargetId="20"/>
+		<PlanetLink SourceId="19" TargetId="20"/>
+
+		<PlanetLink SourceId="21" TargetId="22"/>
+		<PlanetLink SourceId="21" TargetId="23"/>
+		<PlanetLink SourceId="22" TargetId="24"/>
+		<PlanetLink SourceId="23" TargetId="24"/>
+
+		<!-- Krawedzie -->
+		<PlanetLink SourceId="25" TargetId="2"/>
+		<PlanetLink SourceId="25" TargetId="6"/>
+		<PlanetLink SourceId="26" TargetId="7"/>
+		<PlanetLink SourceId="26" TargetId="11"/>
+		<PlanetLink SourceId="27" TargetId="10"/>
+		<PlanetLink SourceId="27" TargetId="14"/>
+		<PlanetLink SourceId="28" TargetId="15"/>
+		<PlanetLink SourceId="28" TargetId="19"/>
+		<PlanetLink SourceId="29" TargetId="18"/>
+		<PlanetLink SourceId="29" TargetId="22"/>
+		<PlanetLink SourceId="30" TargetId="23"/>
+		<PlanetLink SourceId="30" TargetId="3"/>
+		
+		<!-- Polaczenie z trojkatem -->
+		<PlanetLink SourceId="31" TargetId="4"/>
+		<PlanetLink SourceId="31" TargetId="37"/>
+		<PlanetLink SourceId="32" TargetId="8"/>
+		<PlanetLink SourceId="32" TargetId="39"/>
+		<PlanetLink SourceId="33" TargetId="12"/>
+		<PlanetLink SourceId="33" TargetId="40"/>
+		<PlanetLink SourceId="34" TargetId="16"/>
+		<PlanetLink SourceId="34" TargetId="42"/>
+		<PlanetLink SourceId="35" TargetId="20"/>
+		<PlanetLink SourceId="35" TargetId="43"/>
+		<PlanetLink SourceId="36" TargetId="24"/>
+		<PlanetLink SourceId="36" TargetId="45"/>
+		
+		<PlanetLink SourceId="37" TargetId="38"/>
+		<PlanetLink SourceId="38" TargetId="39"/>
+		<PlanetLink SourceId="39" TargetId="40"/>
+		<PlanetLink SourceId="40" TargetId="41"/>
+		<PlanetLink SourceId="41" TargetId="42"/>
+		<PlanetLink SourceId="42" TargetId="43"/>
+		<PlanetLink SourceId="43" TargetId="44"/>
+		<PlanetLink SourceId="44" TargetId="45"/>
+		<PlanetLink SourceId="45" TargetId="37"/>
+		
+		<PlanetLink SourceId="38" TargetId="46"/>
+		<PlanetLink SourceId="38" TargetId="47"/>
+		<PlanetLink SourceId="41" TargetId="46"/>
+		<PlanetLink SourceId="41" TargetId="48"/>
+		<PlanetLink SourceId="44" TargetId="47"/>
+		<PlanetLink SourceId="44" TargetId="48"/>
+		<PlanetLink SourceId="46" TargetId="49"/>
+		<PlanetLink SourceId="47" TargetId="49"/>
+		<PlanetLink SourceId="48" TargetId="49"/>
+	</Links>
+	
+	<Systems>
+		<PlanetarySystem Name="A" FleetBonusPerTurn="0" Id="1">
+			<Planets>
+				<PlanetId>1</PlanetId>
+				<PlanetId>2</PlanetId>
+				<PlanetId>3</PlanetId>
+				<PlanetId>4</PlanetId>
+			</Planets>
+			<Bounds>
+				<Point3 X="850" Y="1250" Z="0"/>
+				<Point3 X="850" Y="950" Z="0"/>
+				<Point3 X="550" Y="950" Z="0"/>
+				<Point3 X="550" Y="1250" Z="0"/>
+			</Bounds>
+		</PlanetarySystem>
+		<PlanetarySystem Name="B" FleetBonusPerTurn="0" Id="2">
+			<Planets>
+				<PlanetId>5</PlanetId>
+				<PlanetId>6</PlanetId>
+				<PlanetId>7</PlanetId>
+				<PlanetId>8</PlanetId>
+			</Planets>
+			<Bounds>
+				<Point3 X="1250" Y="0" Z="0"/>
+				<Point3 X="1100" Y="150" Z="0"/>
+				<Point3 X="900" Y="0" Z="0"/>
+				<Point3 X="1100" Y="-150" Z="0"/>
+			</Bounds>
+		</PlanetarySystem>
+		<PlanetarySystem Name="C" FleetBonusPerTurn="0" Id="3">
+			<Planets>
+				<PlanetId>9</PlanetId>
+				<PlanetId>10</PlanetId>
+				<PlanetId>11</PlanetId>
+				<PlanetId>12</PlanetId>
+			</Planets>
+			<Bounds>
+				<Point3 X="850" Y="-1250" Z="0"/>
+				<Point3 X="850" Y="-950" Z="0"/>
+				<Point3 X="550" Y="-950" Z="0"/>
+				<Point3 X="550" Y="-1250" Z="0"/>
+			</Bounds>
+		</PlanetarySystem>
+		<PlanetarySystem Name="D" FleetBonusPerTurn="0" Id="4">
+			<Planets>
+				<PlanetId>13</PlanetId>
+				<PlanetId>14</PlanetId>
+				<PlanetId>15</PlanetId>
+				<PlanetId>16</PlanetId>
+			</Planets>
+			<Bounds>
+				<Point3 X="-850" Y="-1250" Z="0"/>
+				<Point3 X="-850" Y="-950" Z="0"/>
+				<Point3 X="-550" Y="-950" Z="0"/>
+				<Point3 X="-550" Y="-1250" Z="0"/>
+			</Bounds>
+		</PlanetarySystem>
+		<PlanetarySystem Name="E" FleetBonusPerTurn="0" Id="5">
+			<Planets>
+				<PlanetId>17</PlanetId>
+				<PlanetId>18</PlanetId>
+				<PlanetId>19</PlanetId>
+				<PlanetId>20</PlanetId>
+			</Planets>
+			<Bounds>
+				<Point3 X="-1250" Y="0" Z="0"/>
+				<Point3 X="-1100" Y="150" Z="0"/>
+				<Point3 X="-900" Y="0" Z="0"/>
+				<Point3 X="-1100" Y="-150" Z="0"/>
+			</Bounds>
+		</PlanetarySystem>
+		<PlanetarySystem Name="F" FleetBonusPerTurn="0" Id="6">
+			<Planets>
+				<PlanetId>21</PlanetId>
+				<PlanetId>22</PlanetId>
+				<PlanetId>23</PlanetId>
+				<PlanetId>24</PlanetId>
+			</Planets>
+			<Bounds>
+				<Point3 X="-850" Y="1250" Z="0"/>
+				<Point3 X="-850" Y="950" Z="0"/>
+				<Point3 X="-550" Y="950" Z="0"/>
+				<Point3 X="-550" Y="1250" Z="0"/>
+			</Bounds>
+		</PlanetarySystem>
+		<PlanetarySystem Name="Kr1" FleetBonusPerTurn="0" Id="7">
+			<Planets>
+				<PlanetId>37</PlanetId>
+				<PlanetId>38</PlanetId>
+				<PlanetId>39</PlanetId>
+			</Planets>
+			<Bounds>
+				<Point3 X="280" Y="550" Z="0"/>
+				<Point3 X="600" Y="-310" Z="0"/>
+				<Point3 X="520" Y="-410" Z="0"/>
+				<Point3 X="200" Y="450" Z="0"/>
+			</Bounds>
+		</PlanetarySystem>
+		<PlanetarySystem Name="Kr2" FleetBonusPerTurn="0" Id="8">
+			<Planets>
+				<PlanetId>40</PlanetId>
+				<PlanetId>41</PlanetId>
+				<PlanetId>42</PlanetId>
+			</Planets>
+			<Bounds>
+				<Point3 X="-400" Y="-510" Z="0"/>
+				<Point3 X="-400" Y="-590" Z="0"/>
+				<Point3 X="400" Y="-590" Z="0"/>
+				<Point3 X="400" Y="-510" Z="0"/>
+			</Bounds>
+		</PlanetarySystem>
+		<PlanetarySystem Name="Kr3" FleetBonusPerTurn="0" Id="9">
+			<Planets>
+				<PlanetId>43</PlanetId>
+				<PlanetId>44</PlanetId>
+				<PlanetId>45</PlanetId>
+			</Planets>
+			<Bounds>
+				<Point3 X="-280" Y="550" Z="0"/>
+				<Point3 X="-600" Y="-310" Z="0"/>
+				<Point3 X="-520" Y="-410" Z="0"/>
+				<Point3 X="-200" Y="450" Z="0"/>
+			</Bounds>
+		</PlanetarySystem>
+		<PlanetarySystem Name="T" FleetBonusPerTurn="0" Id="10">
+			<Planets>
+				<PlanetId>46</PlanetId>
+				<PlanetId>47</PlanetId>
+				<PlanetId>48</PlanetId>
+				<PlanetId>49</PlanetId>
+			</Planets>
+			<Bounds>
+				<Point3 X="0" Y="320" Z="0"/>
+				<Point3 X="-260" Y="-260" Z="0"/>
+				<Point3 X="260" Y="-260" Z="0"/>
+			</Bounds>
+		</PlanetarySystem>
+	</Systems>
+
+	<PlayerStartingData>
+		<StartingData PlanetId="1" ColorId="1"/>
+		<StartingData PlanetId="5" ColorId="2"/>
+		<StartingData PlanetId="9" ColorId="3"/>
+		<StartingData PlanetId="13" ColorId="4"/>
+		<StartingData PlanetId="17" ColorId="5"/>
+		<StartingData PlanetId="21" ColorId="6"/>
+	</PlayerStartingData>
+	
+	<Background>
+		<Layer Texture="Textures\\Space" Origin="-960;540" Size="1920;1080" Speed="0,01" />
+		<Layer Texture="Textures\\Layer1" Origin="320;280" Size="320;318" Speed="0,07" />
+		<Layer Texture="Textures\\Layer2" Origin="-610;0" Size="800;600" Speed="0,13" />
+		<Layer Texture="Textures\\Layer3" Origin="-360;550" Size="800;600" Speed="0,1" />
+		<Layer Texture="Textures\\Layer4" Origin="130;-100" Size="500;375" Speed="0,12" />
+		<Layer Texture="Textures\\Layer5" Origin="-950;500" Size="1000;713" Speed="0,13" />
+	</Background>
+
+	<Colors>
+		<Color Id="1" Value="0x00FC0300" />
+		<Color Id="2" Value="0x0000FF00" />
+		<Color Id="3" Value="0x000000FF" />
+		<Color Id="4" Value="0x0000FFFF" />
+		<Color Id="5" Value="0x00FFEF00" />
+		<Color Id="6" Value="0x0093F600" />
+		<Color Id="7" Value="0x00FFFFFF" />
+		<Color Id="8" Value="0x00FE7F00" />
+	</Colors>
+
+	<Camera Min="-1200;-1200;-6000" Max="1200;1200;-500" />
+</Map>
