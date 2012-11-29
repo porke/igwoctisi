@@ -12,7 +12,6 @@
     public class PlanetVisual : ITransformable
     {
 		public static readonly Vector2 NameTextOffset = new Vector2(0, -42.0f);
-		public static readonly Vector2 FleetsTextOffset = new Vector2(0.0f, 42.0f);
 		public static readonly Vector2 FleetsIncomeTextOffset = new Vector2(21.0f, 42.0f);
 		public static readonly Vector2 FleetsDeltaTextOffset = new Vector2(21, -42.0f);
 		public static readonly Vector2 OwnerTextOffset = new Vector2(0, 25.0f);
@@ -160,7 +159,13 @@
 			var fleetsText = Planet.NumFleetsPresent.ToString();
 			var fleetsTextSize = InfoFont.MeasureString(fleetsText);
 			var fleetsTextScreen = new Vector2(planetScreen.X - fleetsTextSize.X / 2.0f, planetScreen.Y - fleetsTextSize.Y / 2.0f);
-			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen + FleetsTextOffset, Color.LightSteelBlue);		
+			
+			// Draw the outline and the actual fleet count
+			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen + new Vector2(OutlineOffset, 0.0f), Color.Black);
+			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen + new Vector2(-OutlineOffset, 0.0f), Color.Black);
+			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen + new Vector2(0.0f, OutlineOffset), Color.Black);
+			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen + new Vector2(0.0f, -OutlineOffset), Color.Black);
+			batch.DrawString(InfoFont, fleetsText, fleetsTextScreen, Color.White);
 
 			if (Planet.FleetChange != 0)
 			{
@@ -185,5 +190,7 @@
 		{
 			return _indicators.First(iv => iv.TargetPlanet.Id == targetPlanetId);
 		}
+
+		private const float OutlineOffset = 1.0f;
 	}
 }

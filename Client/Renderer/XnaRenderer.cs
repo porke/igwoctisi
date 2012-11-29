@@ -2,11 +2,9 @@
 {
 	using System.Collections.Generic;
 	using System.Linq;
-	using Client.Common;
 	using Microsoft.Xna.Framework;
 	using Microsoft.Xna.Framework.Graphics;
 	using Model;
-	using Microsoft.Xna.Framework.Input;
 
 	public class XnaRenderer : IRenderer
 	{
