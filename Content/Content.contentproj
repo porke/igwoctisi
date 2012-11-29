@@ -257,13 +257,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Skin\HudIcons.png">
-      <Name>HudIcons</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Layer1.png">
       <Name>Layer1</Name>
       <Importer>TextureImporter</Importer>
@@ -297,6 +290,13 @@
   <ItemGroup>
     <Compile Include="Skin\SuaveSheet.png">
       <Name>SuaveSheet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Skin\HudIcons.png">
+      <Name>HudIcons</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
