@@ -40,7 +40,7 @@
       Frame used for a label
     -->
 		<frame name="label">
-			<text font="default" hplacement="left" vplacement="center" yoffset="15" color="#3F3F3F" />
+			<text font="default" hplacement="left" vplacement="center" yoffset="15" color="#FD7C09" />
 		</frame>
 
 		<!--

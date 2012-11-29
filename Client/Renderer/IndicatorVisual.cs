@@ -94,7 +94,7 @@
 					effect.View = camera.GetView();
 					effect.Projection = camera.Projection;
 					effect.DiffuseColor = color.ToVector3();
-					effect.Alpha = hovered ? 0.6f : 1.0f;
+					effect.Alpha = hovered ? 2.0f : 0.6f;
 				}
 				mesh.Draw();
 			}
