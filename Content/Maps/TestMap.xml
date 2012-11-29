@@ -62,7 +62,12 @@
 	</PlayerStartingData>
 
 	<Background>
-		<Layer Texture="Textures\\Space" Origin="-960;540" Size="1920;1080" Speed="0,1" />
+		<Layer Texture="Textures\\Space" Origin="-960;540" Size="1920;1080" Speed="0,01" />
+		<Layer Texture="Textures\\Layer1" Origin="280;380" Size="320;318" Speed="0,07" />
+		<Layer Texture="Textures\\Layer2" Origin="-560;-50" Size="400;300" Speed="0,13" />
+		<Layer Texture="Textures\\Layer3" Origin="-260;350" Size="400;300" Speed="0,1" />
+		<Layer Texture="Textures\\Layer4" Origin="-30;-10" Size="500;375" Speed="0,12" />
+		<Layer Texture="Textures\\Layer5" Origin="-500;320" Size="500;356" Speed="0,13" />
 	</Background>
 	
   <Colors>
