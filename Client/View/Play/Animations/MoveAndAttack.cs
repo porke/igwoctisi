@@ -101,17 +101,24 @@
 			var direction = Vector3.Normalize(targetPosition - sourcePosition);
 			var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, sourcePlanet.Owner.Color);
 			
-			
 			const float shipSpeedFactor = 0.007f;
 			float duration1 = (targetPosition - sourcePosition).Length() * shipSpeedFactor;
+			float waitDuration = 0.4f;
+			float duration2 = 1;
+			float surrenderRotateDuration = 0.5f;
+			float surrenderMoveDuration = duration2 - surrenderRotateDuration;
+			int attackerFleetsBack = simResult.AttackerFleetsBack;
+			bool surrender = attackerFleetsBack > 0;
+			bool totallyLost = simResult.FleetCount - simResult.AttackerLosses == 0;
+
+			// temporary variables
+			Vector3 rotateCenter, cameraDir;
+			float previousAngle = 0;
+			Matrix beginningRotation;
+
 			scene.AddSpaceship(ship);
 			ship.SetPosition(sourcePosition);
 			ship.LookAt(targetPosition, Vector3.Forward);
-			float waitDuration = 0.4f;
-			float duration2 = 1;
-
-			int attackerFleetsBack = simResult.AttackerFleetsBack;
-			bool surrender = attackerFleetsBack > 0;
 
 			ship.Animate(animationManager)
 				.MoveTo(targetPosition - direction * (targetPlanet.Radius + ship.Length), duration1, Interpolators.Decelerate(1.4))
@@ -120,11 +127,54 @@
 				{
 					if (surrender)
 					{
-						ship.LookAt(sourcePosition, Vector3.Forward);
-						c.MoveTo(sourcePosition, duration2);
+						cameraDir = Vector3.Normalize(camera.GetPosition() - ship.GetPosition());
+						rotateCenter = ship.GetPosition() + new Vector3(0, 0, cameraDir.Z * ship.Length * 2);
+
+						c.Interpolate(surrenderRotateDuration, Interpolators.Linear(),
+							(s, percent) =>
+							{
+								// Start turning back
+								var previousPosition = s.GetPosition();
+								var virtualPos = previousPosition - rotateCenter;
+								float angle = (float)percent * MathHelper.ToRadians(180);
+								float angleDiff = previousAngle - angle;
+
+								var oldTransform = s.CalculateWorldTransform();
+								var rotation = Matrix.CreateFromAxisAngle(s.Rotation.Right, angleDiff);
+								previousAngle = angle;
+
+								var newVirtualPos = Vector3.Transform(virtualPos, rotation);
+								s.SetPosition(newVirtualPos + rotateCenter);
+								s.Rotation *= rotation;
+							})
+							.AddCallbackCompound(surrenderMoveDuration, (s, cc) =>
+							{
+								// Roll 180 degrees
+								var rollStartRotation = Matrix.CreateFromAxisAngle(ship.GetLook(), 0);
+								var rollTargetRotation = Matrix.CreateFromAxisAngle(ship.GetLook(), MathHelper.ToRadians(180));
+
+								beginningRotation = s.Rotation;
+								cc.Interpolate(surrenderMoveDuration / 2, Interpolators.OvershootInterpolator(),
+									(s2, percent) =>
+									{
+										s2.Rotation = beginningRotation * Matrix.Lerp(rollStartRotation, rollTargetRotation, (float)percent);
+									});
+
+								// Move to source planet
+								cc.MoveTo(sourcePosition, surrenderMoveDuration);
+							});
+					}
+					else if (totallyLost)
+					{
+						// We have lost our only ships. Make them disappear.
+						c.InterpolateTo(0, duration2, Interpolators.SinusOscillator(5),
+							(s) => 1.0f,
+							(s, v) => s.Opacity = (float)v
+						);
 					}
 					else
 					{
+						// Move to target planet
 						c.MoveTo(targetPosition, duration2);
 					}
 				})

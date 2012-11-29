@@ -30,5 +30,17 @@
 			animation.AddAfter(after);
 			return after;
 		}
+
+		public static Animation<T> AddCallbackCompound<T>(this Animation<T> animation, double duration, Action<T, Animation<T>> callback)
+		{
+			var compoundAnimation = new Action<Animation<T>>(anim => callback(anim.Context, animation));
+			var compound = new CompoundAnimation<T>(animation.Context, animation.AnimationMgr, duration, compoundAnimation, animation);
+
+			animation.AddCallback(context =>
+			{
+				animation.AddAfter(compound);
+			});
+			return compound;
+		}
 	}
 }

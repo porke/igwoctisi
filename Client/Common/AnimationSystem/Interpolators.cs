@@ -85,5 +85,19 @@
 				return t*t*((factor + 1)*t + factor) + 1.0;
 			};
 		}
+		
+		/// <summary>
+		/// An interpolator that oscillates using sinus in domain from 0 to 180 degrees.
+		/// </summary>
+		/// <param name="widthFactor">value multiplying the argument of sinus</param>
+		/// <param name="heightFactor">value multiplying the output value of sinus</param>
+		/// <returns>value in domain from 0 to 1 multipled by height factor</returns>
+		public static Func<double, double> SinusOscillator(double widthFactor = 1.0, double heightFactor = 1.0)
+		{
+			return t =>
+			{
+				return Math.Abs(Math.Sin(widthFactor * t * Math.PI)) * heightFactor;
+			};
+		}
 	}
 }
