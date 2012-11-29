@@ -73,7 +73,10 @@
 			var camera = animation.Context;
 			var p1 = sourcePlanet.Visual.GetPosition();
 			var p2 = targetPlanet.Visual.GetPosition();
-			float desiredFov = camera.FieldOfView + MathHelper.ToRadians(10);
+			var p1ToP2 = Vector3.Normalize(p2 - p1);
+			p1 -= p1ToP2 * sourcePlanet.Radius;
+			p2 += p1ToP2 * targetPlanet.Radius;
+			float desiredFov = camera.FieldOfView + MathHelper.ToRadians(15);
 
 			float distanceBetweenPlanets = (p2 - p1).Length();
 			float halfDesiredFovTan = (float)Math.Tan(desiredFov / 2);
