@@ -56,7 +56,7 @@
 
         public int AttackerFleetsBack
         {
-            get { return Type == MoveType.Attack ? FleetCount - AttackerLosses : 0; }
+			get { return Type == MoveType.Attack && !TargetOwnerChanged ? FleetCount - AttackerLosses : 0; }
         }
 
         public enum MoveType
