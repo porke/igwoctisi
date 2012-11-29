@@ -5,6 +5,7 @@
 	using Client.Model;
 	using Microsoft.Xna.Framework;
 	using Client.Renderer;
+	using System;
 
 	public static class CameraMovementExtensions
 	{
@@ -74,27 +75,15 @@
 			var p2 = targetPlanet.Visual.GetPosition();
 			float desiredFov = camera.FieldOfView + MathHelper.ToRadians(10);
 
-			var p1ToP2 = Vector3.Normalize(p2 - p1);
-			var p1ToCamRotation = Matrix.CreateRotationY(desiredFov);
-			var p1ToCam = Vector3.Transform(p1ToP2, p1ToCamRotation);
-
-			var p2ToP1 = -p1ToP2;
-			var p2ToCamRotation = Matrix.Invert(p1ToCamRotation);
-			var p2ToCam = Vector3.Transform(p2ToP1, p2ToCamRotation);
-
-			var p1TowardsCam = p1 + p1ToCam;
-			var p2TowardsCam = p2 + p2ToCam;
-			float a1 = (p1TowardsCam.Z - p1.Z) / (p1TowardsCam.X - p1.X);
-			float b1 = (p1TowardsCam.Z - p1.Z / p1.X) / (1 - p1TowardsCam.X / p1.X);
-			float a2 = (p2TowardsCam.Z - p2.Z) / (p2TowardsCam.X - p2.X);
-			float b2 = (p2TowardsCam.Z - p2.Z / p2.X) / (1 - p2TowardsCam.X / p2.X);
-
-			bool anyNaN = float.IsNaN(a1) || float.IsNaN(a2) || float.IsNaN(b1) || float.IsNaN(b2);
+			float distanceBetweenPlanets = (p2 - p1).Length();
+			float halfDesiredFovTan = (float)Math.Tan(desiredFov / 2);
+			float cameraDistance = distanceBetweenPlanets * 0.5f / halfDesiredFovTan;
+			
 			var pCamOld = camera.GetPosition();
 			var pCam = new Vector3(
-				0.5f * (p1.X + p2.X),
-				0.5f * (p1.Y + p2.Y), 
-				anyNaN ? camera.Max.Z : MathHelper.Min(-(b1 - a1/a2*b2)/(1-a1/a2), camera.Max.Z)
+				(p1.X + p2.X) / 2,
+				(p1.Y + p2.Y) / 2,
+				MathHelper.Min((p1.Z + p2.Z) / 2 - cameraDistance, camera.Max.Z)
 			);
 
 			animation.Interpolate<SimpleCamera>(0.5f, Interpolators.Decelerate(),
