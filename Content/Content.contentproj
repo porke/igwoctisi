@@ -47,11 +47,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Skin\SuaveSheet.png">
-      <Name>SuaveSheet</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Fonts\Timer.spritefont">
       <Name>Timer</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -262,13 +257,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Skin\HudIcons.png">
-      <Name>HudIcons</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Layer1.png">
       <Name>Layer1</Name>
       <Importer>TextureImporter</Importer>
@@ -295,6 +283,20 @@
     </Compile>
     <Compile Include="Textures\Layer5.png">
       <Name>Layer5</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Skin\SuaveSheet.png">
+      <Name>SuaveSheet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Skin\HudIcons.png">
+      <Name>HudIcons</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

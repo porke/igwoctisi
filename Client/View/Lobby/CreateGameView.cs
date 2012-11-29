@@ -24,6 +24,11 @@
 
         private void CreateChildControls()
         {
+			var mainDialog = new IconControl("rounded_background")
+			{
+				Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.25f, 0), new UniScalar(0.4f, 0), new UniScalar(0.5f, 0))
+			};
+
             var lblGameName = new LabelControl("Game name")
             {
                 Bounds = new UniRectangle(new UniScalar(0.7f, 0), new UniScalar(0.0f, 0), new UniScalar(0.1f, 0), new UniScalar(0.05f, 0))
@@ -37,31 +42,32 @@
             _mapList = new ListControl()
             {
                 SelectionMode = ListSelectionMode.Single,
-                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.5f, 0), new UniScalar(1.0f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.5f, 0), new UniScalar(0.9f, 0))
             };
 
             _gameName = new CommandInputControl()
             {
                 Text = "My Game Name",
-                Bounds = new UniRectangle(new UniScalar(0.6f, 0), new UniScalar(0.05f, 0), new UniScalar(0.4f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.6f, 0), new UniScalar(0.05f, 0), new UniScalar(0.375f, 0), new UniScalar(0.1f, 0))
             };
             _gameName.OnCommandHandler += CreateGame_Pressed;
 
             var btnCreateGame = new ButtonControl()
             {
                 Text = "Create",
-                Bounds = new UniRectangle(new UniScalar(0.6f, 0), new UniScalar(0.175f, 0), new UniScalar(0.4f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.6f, 0), new UniScalar(0.175f, 0), new UniScalar(0.375f, 0), new UniScalar(0.1f, 0))
             };
             btnCreateGame.Pressed += CreateGame_Pressed;
 
             var btnCancel = new ButtonControl()
             {
                 Text = "Cancel",
-                Bounds = new UniRectangle(new UniScalar(0.6f, 0), new UniScalar(0.3f, 0), new UniScalar(0.4f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.6f, 0), new UniScalar(0.3f, 0), new UniScalar(0.375f, 0), new UniScalar(0.1f, 0))
             };
             btnCancel.Pressed += Cancel_Pressed;
 
-            screen.Desktop.Children.AddRange(new Control[] {lblGameName, lblMaps, _mapList, btnCancel, btnCreateGame, _gameName} );
+			screen.Desktop.Children.Add(mainDialog);
+            mainDialog.Children.AddRange(new Control[] {lblGameName, lblMaps, _mapList, btnCancel, btnCreateGame, _gameName} );
 
             LoadMapNames();
             if (_mapList.Items.Count > 0)
@@ -134,7 +140,7 @@
             : base(state)
         {
             IsTransparent = true;
-            screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.3f, 0), new UniScalar(0.25f, 0), new UniScalar(0.4f, 0), new UniScalar(0.5f, 0));
+            screen.Desktop.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0));
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();

@@ -11,6 +11,7 @@
 	using Nuclex.UserInterface;
 	using Nuclex.UserInterface.Controls;
 	using Nuclex.UserInterface.Controls.Desktop;
+	using Client.View.Controls;
 
     class MainLobbyView : BaseView
     {
@@ -26,6 +27,11 @@
 
         protected void CreateChildControls()
         {
+			var mainDialog = new IconControl("rounded_background")
+			{
+				Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.2f, 0), new UniScalar(0.6f, 0), new UniScalar(0.6f, 0))
+			};
+
             var btnJoinGame = new ButtonControl
             {
                 Text = "Join Game",
@@ -60,7 +66,8 @@
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.9f, 0), new UniScalar(0.75f, 0))
             };
 
-            screen.Desktop.Children.AddRange(new Control[] { btnJoinGame, btnCreateGame, btnLogout, btnRefresh, _gameList });
+			screen.Desktop.Children.Add(mainDialog);
+			mainDialog.Children.AddRange(new Control[] { btnJoinGame, btnCreateGame, btnLogout, btnRefresh, _gameList });
         }
 
         #endregion
@@ -138,7 +145,7 @@
             : base(state)
         {
             IsTransparent = true;
-            screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.2f, 0), new UniScalar(0.6f, 0), new UniScalar(0.6f, 0));
+            screen.Desktop.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0));
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls();

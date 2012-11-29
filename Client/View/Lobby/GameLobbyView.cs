@@ -27,6 +27,11 @@
 
         protected void CreateChildControls(bool showHostButtons)
         {
+			var mainDialog = new IconControl("rounded_background")
+			{
+				Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.25f, 0), new UniScalar(0.6f, 0), new UniScalar(0.5f, 0))
+			};
+
             var btnBeginGame = new ButtonControl()
             {
                 Text = "Begin Game",
@@ -51,19 +56,19 @@
             var btnSendChatMessage = new ButtonControl()
             {
                 Text = "Send",
-                Bounds = new UniRectangle(new UniScalar(0.85f, 0), new UniScalar(0.925f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.85f, 0), new UniScalar(0.85f, 0), new UniScalar(0.1f, 0), new UniScalar(0.1f, 0))
             };
             btnSendChatMessage.Pressed += SendChatMessage_Pressed;
 
             _messageList = new WrappableListControl()
             {
-                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.5f, 0), new UniScalar(0.9f, 0), new UniScalar(0.4f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.5f, 0), new UniScalar(0.9f, 0), new UniScalar(0.35f, 0))
             };
 
             _currentMessage = new CommandInputControl()
             {
                 Text = "",
-                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.925f, 0), new UniScalar(0.8f, 0), new UniScalar(0.1f, 0))
+                Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.85f, 0), new UniScalar(0.8f, 0), new UniScalar(0.1f, 0))
             };
             _currentMessage.OnCommandHandler += SendChatMessage_Pressed;
 
@@ -73,7 +78,8 @@
                 Bounds = new UniRectangle(new UniScalar(0.05f, 0), new UniScalar(0.05f, 0), new UniScalar(0.6f, 0), new UniScalar(0.4f, 0))
             };
 
-            screen.Desktop.Children.AddRange(
+			screen.Desktop.Children.Add(mainDialog);
+            mainDialog.Children.AddRange(
                 new Control[] 
                 {
                     btnLeaveGame, btnSendChatMessage, _messageList, _currentMessage, _playerList
@@ -81,7 +87,7 @@
 
             if (showHostButtons)
             {
-                screen.Desktop.Children.AddRange(new ButtonControl[] {btnBeginGame, btnKickPlayer});
+				mainDialog.Children.AddRange(new ButtonControl[] { btnBeginGame, btnKickPlayer });
             }
         }
 
@@ -192,7 +198,7 @@
             : base(state)
         {
             IsTransparent = true;
-            screen.Desktop.Bounds = new UniRectangle(new UniScalar(0.2f, 0), new UniScalar(0.25f, 0), new UniScalar(0.6f, 0), new UniScalar(0.5f, 0));
+            screen.Desktop.Bounds = new UniRectangle(new UniScalar(), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0));
             InputReceiver = new NuclexScreenInputReceiver(screen, false);
 
             CreateChildControls(showHostButtons);
