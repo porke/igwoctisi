@@ -135,8 +135,8 @@
 
 		protected override void OnReturnTo(double time)
 		{
-			screen.Desktop.Bounds = new UniRectangle(new UniScalar(-0.8f, 0), new UniScalar(0.2f, 0), new UniScalar(0.6f, 0), new UniScalar(0.6f, 0));
-			screen.Desktop.Animate(this).MoveControlTo(new UniVector(new UniScalar(0.2f, 0), new UniScalar(0.2f, 0))).AddCallback(x => State = ViewState.Visible);
+			screen.Desktop.Bounds = new UniRectangle(new UniScalar(-1.0f, 0), new UniScalar(), new UniScalar(1.0f, 0), new UniScalar(1.0f, 0));
+			screen.Desktop.Animate(this).MoveControlTo(UniVector.Zero).AddCallback(x => State = ViewState.Visible);
 		}
 
 		#endregion
