@@ -7,6 +7,7 @@ namespace Client
     using Client.Common;
     using Nuclex.UserInterface;
 	using Microsoft.Xna.Framework.Graphics;
+	using Client.Renderer;
 
     public class IGWOCTISI : GameClient
     {
