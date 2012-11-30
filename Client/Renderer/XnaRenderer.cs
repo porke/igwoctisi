@@ -81,7 +81,7 @@
 		{
 			var ray = camera.GetRay(GraphicsDevice.Viewport, new Vector3(screenPosition, 0));
 			var indicator = sourcePlanet.Visual.GetIndicator(targetPlanet.Id);
-			return indicator.IsIntersected(ray);
+			return indicator != null ? indicator.IsIntersected(ray) : false;
 		}
 
 		public void Initialize(GameClient client)
