@@ -35,7 +35,7 @@
 
 			var spaceshipsCount = random.Next() % 4 + 6;
 			_spaceships = new List<Tuple<Spaceship, float, float, float>>(spaceshipsCount);
-			var color = new PlayerColor(0, (int)Color.Blue.PackedValue);
+			var color = new PlayerColor(0, (uint)Color.White.PackedValue);
 			for (var i = 0; i < spaceshipsCount; ++i)
 			{
 				var ship = Spaceship.Acquire(SpaceshipModelType.LittleSpaceship, color);
@@ -96,7 +96,7 @@
 			foreach (var tuple in _spaceships)
 			{
 				var ship = tuple.Item1;
-				ship.Draw(_camera, delta, time);
+				ship.Draw(_camera, delta, time, false);
 			}
         }
 

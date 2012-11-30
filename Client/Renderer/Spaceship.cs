@@ -152,6 +152,10 @@ namespace Client.Renderer
 		}
 		public void Draw(ICamera camera, double delta, double time)
 		{
+			Draw(camera, delta, time, true);
+		}
+		public void Draw(ICamera camera, double delta, double time, bool pulse)
+		{
 			foreach (ModelMesh mesh in Model.Meshes)
 			{
 				foreach (BasicEffect effect in mesh.Effects)
@@ -161,6 +165,10 @@ namespace Client.Renderer
 					effect.View = camera.GetView();
 					effect.Projection = camera.Projection;
 					effect.PreferPerPixelLighting = true;
+
+					var amount = pulse ? Math.Sin(time * 8.0) / 10.0 + 0.5 : 1;
+					var color = Color.Lerp(Color.White, PlayerColor.XnaColor, (float)amount);
+					effect.DiffuseColor = color.ToVector3();
 
 					// Transparency
 					effect.GraphicsDevice.BlendState = BlendState.AlphaBlend;

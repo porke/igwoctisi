@@ -175,7 +175,7 @@
                     {
                         int colorId = Convert.ToInt32(reader.GetAttribute(IdAttribute));
                         string colorHex = reader.GetAttribute(ValueAttribute);
-                        int value = Convert.ToInt32(colorHex, 16);
+                        uint value = Convert.ToUInt32(colorHex, 16);
                         Colors.Add(new PlayerColor(colorId, value));
                     }
                 } while (reader.ReadToNextSibling(ColorElement));

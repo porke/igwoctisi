@@ -12,7 +12,7 @@
         public int ColorId { get; set; }
 
         [DataMember]
-        public int Value
+        public uint Value
         {
             get { return _value; }
             set
@@ -21,16 +21,15 @@
                 int r = (byte)((int)_value >> 16);
                 int g = (byte)((int)_value >> 8);
                 int b = (byte)((int)_value >> 0);
-                int transparency = (byte)((int)_value >> 24);
-                int alpha = 0xFF - transparency;
-                XnaColor = Color.FromNonPremultiplied(r, g, b, alpha);
+                int opacity = (byte)((int)_value >> 24);
+                XnaColor = Color.FromNonPremultiplied(r, g, b, opacity);
             }
         }
-        private int _value;
+        private uint _value;
 
         public Color XnaColor { get; private set; }
 
-        public PlayerColor(int colorId, int value)
+        public PlayerColor(int colorId, uint value)
         {
             Value = value;
             ColorId = colorId;
