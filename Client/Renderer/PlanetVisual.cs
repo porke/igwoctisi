@@ -188,7 +188,7 @@
 		}
 		public IndicatorVisual GetIndicator(int targetPlanetId)
 		{
-			return _indicators.First(iv => iv.TargetPlanet.Id == targetPlanetId);
+			return _indicators.FirstOrDefault(iv => iv.TargetPlanet.Id == targetPlanetId);
 		}
 
 		private const float OutlineOffset = 1.0f;
