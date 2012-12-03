@@ -40,9 +40,14 @@
 
         protected void CreateChildControls()
         {
+			var logo = new IconControl("main_logo")
+			{
+				Bounds = new UniRectangle(new UniScalar(0.55f, 0), new UniScalar(0.2f, 0), new UniScalar(512), new UniScalar(80))
+			};
+
 			var loginWindow = new IconControl("rounded_background")
 			{
-				Bounds = new UniRectangle(new UniScalar(0.65f, 0), new UniScalar(0.55f, 0), new UniScalar(0.25f, 0), new UniScalar(0.25f, 0))
+				Bounds = new UniRectangle(new UniScalar(0.625f, 0), new UniScalar(0.5f, 0), new UniScalar(0.25f, 0), new UniScalar(0.25f, 0))
 			};
 
             tbLogin = new CommandInputControl
@@ -88,6 +93,7 @@
 			};
 
 			screen.Desktop.Children.Add(loginWindow);
+			screen.Desktop.Children.Add(logo);
 			loginWindow.Children.AddRange(new Control[] { tbLogin, tbPassword, btnLogin, btnQuit });
 #if DEBUG
 			screen.Desktop.Children.Add(btnEnterPlayState);
