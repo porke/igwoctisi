@@ -13,6 +13,7 @@
 		<font name="default" contentPath="DefaultFont" />
 		<bitmap name="controls" contentPath="SuaveSheet" />
 		<bitmap name="hud_icons" contentPath="HudIcons" />
+		<bitmap name="logo" contentPath="Logo" />
 	</resources>
 
 	<!--
@@ -491,6 +492,10 @@
 			<region source="controls" hplacement="right" vplacement="top" x="36" y="1" w="5" h="23" />
 		</frame>
 
+		<frame name="main_logo">
+			<region source="logo" hplacement="left" vplacement="top" x="0" y="0" w="512" h="80" />
+		</frame>
+		
 		<!-- 
 		Static UI icons
 	  -->
