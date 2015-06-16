@@ -2,6 +2,11 @@
 
 **IGWOCTISI** is a pure multiplayer turn-based strategy game developed as a team project on the last term of my bachelor grade university education. Its rules are more or less similar to those of the popular browser game [Warlight](http://warlight.net/) and the classical board game [Risk](http://en.wikipedia.org/wiki/Risk_(game)). The setting is different however as all the action takes place in space. The aim of the description is to be a brief retrospection of the project.
 
+**See also:**
+* [IGWOCTISI Server](https://github.com/modrzew/igwoctisi-server)
+* [IGWOCTISI Web Interface](https://github.com/modrzew/igwoctisi-web)
+* [Lambda Cipher Genesis, codename IGWOCTISI 2: The revenge of IGWOCTISI](https://github.com/Namek/lets-code-game)
+
 ## Challenges
 
 The major challenges which the team encountered during the 3 month development phase consisted of:
@@ -44,7 +49,3 @@ The client was developed using C# along with XNA and the Nuclex Framework (speci
       alt="Planetary systems" width="648px" height="380px">
 <img src="https://dl.dropboxusercontent.com/u/362823/GitHub/IGWOCTISI/igwoctisi-8-game-statistics.jpg" 
       alt="Game statistics" width="648px" height="380px">
-<img src="https://dl.dropboxusercontent.com/u/362823/GitHub/IGWOCTISI/igwoctisi-9-players-ranking.jpg" 
-      alt="Player ladder" width="648px" height="380px">      
-<img src="https://dl.dropboxusercontent.com/u/362823/GitHub/IGWOCTISI/igwoctisi-10-player-profile.jpg" 
-      alt="Player profile" width="648px" height="380px">
