@@ -33,19 +33,33 @@ The client was developed using C# along with XNA and the Nuclex Framework (speci
 
 ## Screenshots
 
-<img src="https://dl.dropboxusercontent.com/u/362823/GitHub/IGWOCTISI/igwoctisi-1-logowanie.jpg" 
-      alt="Logging screen" width="648px" height="380px">
-<img src="https://dl.dropboxusercontent.com/u/362823/GitHub/IGWOCTISI/igwoctisi-2-game-lobby-chat.jpg" 
-      alt="Game lobby" width="648px" height="380px">
-<img src="https://dl.dropboxusercontent.com/u/362823/GitHub/IGWOCTISI/igwoctisi-3-in-game-chat-player-list.jpg" 
-      alt="Ingame chat" width="648px" height="380px">
-<img src="https://dl.dropboxusercontent.com/u/362823/GitHub/IGWOCTISI/igwoctisi-4-deploy-animation.jpg" 
-      alt="Deploying fleets" width="648px" height="380px">
-<img src="https://dl.dropboxusercontent.com/u/362823/GitHub/IGWOCTISI/igwoctisi-5-move-fleets-between-planets.jpg" 
-      alt="Moving fleets" width="648px" height="380px">
-<img src="https://dl.dropboxusercontent.com/u/362823/GitHub/IGWOCTISI/igwoctisi-6-commanding-moves-and-attacks.jpg" 
-      alt="Commands - moves and invasions" width="648px" height="380px">
-<img src="https://dl.dropboxusercontent.com/u/362823/GitHub/IGWOCTISI/igwoctisi-7-planetary-systems.jpg" 
-      alt="Planetary systems" width="648px" height="380px">
-<img src="https://dl.dropboxusercontent.com/u/362823/GitHub/IGWOCTISI/igwoctisi-8-game-statistics.jpg" 
-      alt="Game statistics" width="648px" height="380px">
+<img src="https://github.com/porke/igwoctisi/blob/master/images/igwoctisi-1-logowanie.jpg" 
+      alt="Logging screen" width="648px" height="380px"/>      
+      
+      
+<img src="https://github.com/porke/igwoctisi/blob/master/images/igwoctisi-2-game-lobby-chat.jpg" 
+      alt="Game lobby" width="648px" height="380px"/>
+      
+      
+<img src="https://github.com/porke/igwoctisi/blob/master/images/igwoctisi-3-in-game-chat-player-list.jpg" 
+      alt="Ingame chat" width="648px" height="380px"/>
+      
+      
+<img src="https://github.com/porke/igwoctisi/blob/master/images/igwoctisi-4-deploy-animation.jpg" 
+      alt="Deploying fleets" width="648px" height="380px"/>
+      
+      
+<img src="https://github.com/porke/igwoctisi/blob/master/images/igwoctisi-5-move-fleets-between-planets.jpg" 
+      alt="Moving fleets" width="648px" height="380px"/>
+      
+      
+<img src="https://github.com/porke/igwoctisi/blob/master/images/igwoctisi-6-commanding-moves-and-attacks.jpg" 
+      alt="Commands - moves and invasions" width="648px" height="380px"/>
+      
+      
+<img src="https://github.com/porke/igwoctisi/blob/master/images/igwoctisi-7-planetary-systems.jpg" 
+      alt="Planetary systems" width="648px" height="380px"/>
+      
+      
+<img src="https://github.com/porke/igwoctisi/blob/master/images/igwoctisi-8-game-statistics.jpg" 
+      alt="Game statistics" width="648px" height="380px"/>
